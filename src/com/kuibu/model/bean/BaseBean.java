@@ -2,7 +2,13 @@ package com.kuibu.model.bean;
 
 import org.json.JSONObject;
 
-public abstract class BaseBean {	
-	public abstract void parseFromJson(JSONObject obj);
-	
+
+/**
+ * @author ThinkPad
+ * class BaseBean 
+ * 
+ */
+
+public abstract class BaseBean {	 
+	public abstract void parseFromJson(JSONObject obj);	
 }
