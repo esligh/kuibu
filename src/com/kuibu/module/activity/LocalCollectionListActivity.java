@@ -175,7 +175,7 @@ public class LocalCollectionListActivity extends BaseActivity {
 	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.notes_context_menu, menu);
+		getMenuInflater().inflate(R.menu.collection_list_context_menu, menu);
 		MenuItem moveMenu = menu.findItem(R.id.context_menu_move);
 		MenuItem delMenu = menu.findItem(R.id.context_menu_delete);
 		if(showContextMenu){

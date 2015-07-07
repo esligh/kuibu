@@ -118,7 +118,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 		
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.note_menu, menu);
+		getMenuInflater().inflate(R.menu.editor_menu, menu);
 		return true;
 	}
 
