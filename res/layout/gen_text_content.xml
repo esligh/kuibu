@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<EditText
+    android:layout_marginTop="15dp"    
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:id="@+id/edittitle" 
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:hint="标题"
+    android:textSize="20sp"
+	/>
+
+<EditText
+    android:layout_marginTop="20dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="10dp"
+    android:id="@+id/edittext"
+    android:gravity="top"    
+    android:textSize="18sp"
+    android:layout_width="fill_parent" 
+    android:layout_height="fill_parent" 
+    android:hint="内容"/>
+
+</LinearLayout>

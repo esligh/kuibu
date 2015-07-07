@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:holo="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="@string/preference_base">
+        <CheckBoxPreference
+            android:key="dark_theme"
+            android:title="夜间模式" />
+        <CheckBoxPreference
+            android:key="no_pictrue"
+            android:defaultValue="false"
+            android:title="@string/preference_have_picture" />
+        <SwitchPreference
+            android:key="pre_download"
+            android:title="预加载" />
+        <PreferenceScreen
+            android:key="clear_buffer"
+            android:summary="当前缓存大小 0KB"
+            android:title="清除缓存">
+        </PreferenceScreen>      
+    </PreferenceCategory>
+   
+    <PreferenceCategory android:title="通用">
+		<ListPreference
+            android:key="fondsize"
+            android:dialogTitle="@string/preference_list_fondsize"
+            android:entries="@array/fontname"
+            android:entryValues="@array/fontsize"
+            android:defaultValue="@string/font_default"
+            android:title="字体大小" />
+		
+        <PreferenceScreen
+            android:key="flow_statistics"           
+            android:title="流量统计"/>
+          
+        <PreferenceScreen
+            android:key="account_protect"
+            android:title="账号保护" />       
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/preference_other">
+        <PreferenceScreen
+            android:key="latest_version"
+            android:title="最新版本">            
+        </PreferenceScreen>   
+        
+        <PreferenceScreen 
+            android:key="about_me"
+            android:title="关于">           
+        </PreferenceScreen>             
+    </PreferenceCategory>
+</PreferenceScreen>

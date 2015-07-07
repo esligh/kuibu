@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="vertical" 
+    android:background="?listCardViewBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?listViewBackground" >
+
+            <ImageView
+                android:id="@+id/topic_pic_iv"
+                android:layout_width="@dimen/topic_pic_width_big"
+                android:layout_height="@dimen/topic_pic_height_big"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:contentDescription="@null"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/image_small_default" />
+
+            <TextView
+                android:id="@+id/topic_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/topic_pic_iv"
+                android:layout_toRightOf="@id/topic_pic_iv"
+                android:padding="10dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/topic_desc_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/topic_pic_iv"
+                android:background="?listViewBackground"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="?android:attr/listDivider" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?listCardViewBackground" >
+
+            <ImageView
+                android:id="@+id/abc_visit_icon_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_followers" />
+
+            <TextView
+                android:id="@+id/follow_count_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/abc_visit_icon_iv"
+                android:gravity="center" />
+
+            <com.kuibu.custom.widget.FButton
+                android:id="@+id/focus_collectpack_bt"
+                android:layout_width="@dimen/btn_width"
+                android:layout_height="@dimen/btn_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="10dp"
+                android:text="关注"
+                android:textColor="@android:color/white"
+                fbutton:buttonColor="@color/fbutton_color_green_sea"
+                fbutton:cornerRadius="1dp"
+                fbutton:shadowEnabled="false" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:text="最佳收集者" >
+        </TextView>
+
+        <com.kuibu.custom.widget.NoScrollListView
+            android:id="@+id/best_author_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="?listViewBackground" />
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,106 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="SplashScreenTheme">
+        <item name="android:padding">0dp</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@drawable/launch_bg</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    <!-- light theme -->
+    <style name="Theme.Kuibu.AppTheme.Light" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/Kuibu.Widget.ActionBar.Light</item>
+        <item name="actionBarStyle">@style/Kuibu.Widget.ActionBar.Light</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="listItemBackground">@drawable/mate_list_item_selector_light</item>
+        <item name="listItemDefaultImage">@drawable/image_small_default</item>
+        <item name="listItemTextColor">@color/list_item_title_light</item>
+        <item name="listItemExtraTextColor">@color/list_item_intro_light</item>
+        <item name="listViewBackground">@color/white</item>
+        <item name="listCardViewBackground">@color/list_view_bg_light</item>
+        <item name="webViewBackground">@color/webview_light</item>
+        <item name="toolbarBackground">@color/colorPrimary</item>   
+        <item name="homeHeaderBackground">@color/colorPrimary</item>  
+        <item name="navigationBackground">@color/white</item>             
+        <item name="navigationDivider">@color/navigation_divider_light</item>
+    </style>
+
+    <style name="Kuibu.Widget.ActionBar.Light" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/actionbar_background_light</item>
+        <item name="android:titleTextStyle">@style/Kuibu.Widget.ActionBar.Light.Title</item>
+        <item name="background">@drawable/actionbar_background_light</item>
+        <item name="titleTextStyle">@style/Kuibu.Widget.ActionBar.Light.Title</item>
+    </style>
+
+    <style name="Kuibu.Widget.ActionBar.Light.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+
+    <!-- dark theme -->
+	
+    <style name="Theme.Kuibu.AppTheme.Dark" parent="@style/Theme.AppCompat">
+        <item name="android:actionBarStyle">@style/Kuibu.Widget.ActionBar.Dark</item>
+        <item name="actionBarStyle">@style/Kuibu.Widget.ActionBar.Dark</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="listItemBackground">@drawable/mate_list_item_selector_dark</item>
+        <item name="listItemDefaultImage">@drawable/dark_image_small_default</item>
+        <item name="listItemTextColor">@color/list_item_title_dark</item>
+        <item name="listItemExtraTextColor">@color/list_item_intro_dark</item>
+        <item name="listViewBackground">@color/list_view_bg_dark</item>
+        <item name="listCardViewBackground">@color/list_card_view_bg_dark</item>
+        <item name="webViewBackground">@color/webview_dark</item>
+        <item name="toolbarBackground">@drawable/abc_ab_solid_dark_holo</item>   
+        <item name="homeHeaderBackground">@color/home_header_dark</item>
+        <item name="navigationBackground">@color/navigation_backgroud_dark</item>
+        <item name="navigationDivider">@color/navigation_divider_dark</item>
+                     
+    </style>
+
+    <style name="Kuibu.Widget.ActionBar.Dark" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/abc_ab_solid_dark_holo</item>
+        <item name="android:titleTextStyle">@style/Kuibu.Widget.ActionBar.Dark.Title</item>
+        <item name="background">@drawable/abc_ab_solid_dark_holo</item>
+        <item name="titleTextStyle">@style/Kuibu.Widget.ActionBar.Dark.Title</item>
+    </style>
+
+    <style name="Kuibu.Widget.ActionBar.Dark.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+	 
+    <!-- Tab pager -->
+    <style name="StyledIndicatorsLight" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/Kuibu.Widget.ActionBar.Light</item>
+        <item name="actionBarStyle">@style/Kuibu.Widget.ActionBar.Light</item>
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+    </style>
+	
+    <style name="StyledIndicatorsDark" parent="@style/Theme.AppCompat">
+        <item name="android:actionBarStyle">@style/Kuibu.Widget.ActionBar.Dark</item>
+        <item name="actionBarStyle">@style/Kuibu.Widget.ActionBar.Dark</item>
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+    </style>
+    
+    <style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
+        <item name="android:background">@drawable/custom_tab_indicator</item>
+        <item name="selectedColor">@color/white</item>
+        <item name="android:textAppearance">@style/CustomTabPageIndicator.Text</item>
+        <item name="android:textColor">#FF555555</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:divider">@drawable/custom_tab_indicator_divider</item>
+        <item name="android:dividerPadding">5dp</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:fadingEdge">horizontal</item>
+        <item name="android:fadingEdgeLength">2dp</item>
+    </style>
+
+
+    <style name="CustomTabPageIndicator.Text" parent="android:TextAppearance.Medium">
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="ProgressBarStyle" parent="@android:style/Widget.Holo.ProgressBar.Horizontal" />
+
+</resources>

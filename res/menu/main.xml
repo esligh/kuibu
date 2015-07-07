@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
+
+   	<item
+        android:id="@+id/action_search_for"
+        android:title="@string/action_search_for"
+        android:icon="@drawable/ic_action_search"
+        app:showAsAction="ifRoom"/>
+    	
+    <item
+        android:id="@+id/action_notify"
+        android:title="@string/action_notify"
+        android:icon="@drawable/ic_action_notify"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_logout"
+        android:title="@string/action_logout"/>
+</menu>

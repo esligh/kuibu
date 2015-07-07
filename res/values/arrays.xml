@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="home_tab_name">
+        <item>本月热榜</item>
+        <item>热门收藏</item>
+        <item>热门推荐</item>
+    </string-array>
+    <string-array name="home_tab_tag">
+    	<item>rank</item>
+        <item>hot</item>
+        <item>recommend</item>
+    </string-array>
+    <string-array name="focus_tab_name">
+    	<item>关注的收集</item>
+    	<item>关注的话题</item>
+    </string-array>
+    
+    <string-array name="focus_tab_tag">
+    	<item>focus_collect</item>
+        <item>focus_topic</item>
+        <item>focus_column</item>
+    </string-array>
+      
+    <string-array name="drawer_item_title_nolgoin">
+        <item>注册账号</item>
+        <item>发现</item>        
+        <item>设置</item>    
+    </string-array>
+    
+    <string-array name="drawer_item_tag_nologin">
+        <item>register</item>
+        <item>explore</item>
+        <item>setting</item>
+    </string-array>
+        
+    <integer-array name="drawer_item_icon_res_nologin">
+        <item>@drawable/ic_drawer_register</item>
+        <item>@drawable/ic_drawer_explore</item>        
+        <item>@drawable/ic_drawer_setting</item>
+    </integer-array>
+    
+    
+    <string-array name="drawer_item_title_login">
+        <item>首页</item>
+        <item>发现</item>
+     	<item>关注</item>
+        <item>收藏</item>
+        <item>收集</item>       
+        <item>设置</item>
+    </string-array>
+    
+    <string-array name="drawer_item_tag_login">
+        <item>home</item>
+        <item>explore</item>
+        <item>focus</item>
+        <item>collect</item>
+        <item>draft</item>
+        <item>setting</item>
+    </string-array>
+    
+    <string-array name="drawer_item_logout_tag">
+        <item>home</item>
+        <item>focus</item>
+        <item>collect</item>
+        <item>draft</item>
+    </string-array>    
+    
+    
+    <string-array name="notify_message_name">
+        <item>评论</item>
+        <item>私信</item>
+    </string-array>
+    
+    <string-array name="notify_message_tag">
+    	<item>comment</item>
+        <item>message</item>
+    </string-array>
+    
+    <integer-array name="drawer_item_icon_res_login">
+        <item>1</item>
+        <item>@drawable/ic_drawer_explore</item>
+        <item>@drawable/ic_drawer_follow</item>
+        <item>@drawable/ic_drawer_collect</item>
+        <item>@drawable/ic_drawer_draft</item>
+        <item>@drawable/ic_drawer_setting</item>
+    </integer-array>
+      
+    <string-array name="userInfo_tab_name">
+        <item>个人主页</item>
+        <item>详细信息</item>	
+     </string-array>
+     
+     <string-array name="userInfo_tab_tag">
+         <item>userInfo_home</item>
+         <item>userInfo_detail</item>
+     </string-array>
+     
+     
+    <string-array name="nirvana">
+        <item>Kurt Donald Cobain</item>
+        <item>Krist Anthony Novoselic</item>
+        <item>David Eric Grohl</item>
+    </string-array>
+    
+    <string-array name="fontname">
+        <item>小字体</item>
+        <item>标准</item>
+        <item>大字体</item>
+    </string-array>
+    
+    <string-array name="fontsize">
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+    </string-array>
+    
+
+  	<string-array name="popup_menu_item">
+  		<item>拍照</item>
+  		<item>相册</item>
+  	</string-array>
+  	
+  	<string-array name="comment_menu_item0">
+  	    <item>赞</item>
+  	    <item>回复</item>
+  	    <item>复制</item>
+  	    <item>举报</item>
+  	</string-array>
+  	
+  	<string-array name="comment_menu_item1">
+  	    <item>删除</item>
+  	</string-array>
+  	 	
+  	<string-array name="collectpack_operator">
+  	    <item>修改</item>
+  	    <item>删除</item>
+  	    <item>重命名</item>
+  	    <item>取消</item>
+  	</string-array>
+</resources>

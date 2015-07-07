@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?listViewBackground"
+    android:orientation="vertical" >    
+    <com.kuibu.custom.widget.FButton
+         android:id="@+id/create_collectpack_bt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="新建收集册"
+                android:textColor="@android:color/white"
+                fbutton:buttonColor="@color/fbutton_color_green_sea"
+                fbutton:cornerRadius="1dp"               
+                fbutton:shadowEnabled="false" />
+   <ListView
+       android:id="@+id/collectpack_lv"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"/>
+</LinearLayout>

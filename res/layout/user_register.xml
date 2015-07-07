@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"   
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?listViewBackground" >
+
+    <ImageView
+        android:id="@+id/user_photo"
+        android:layout_width="@dimen/user_pic_width_big"
+        android:layout_height="@dimen/user_pic_height_big"
+        android:layout_margin="16dp"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_addpic_focused" />
+
+    <RelativeLayout
+        android:id = "@+id/sex_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:layout_below="@id/user_photo"        
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_centerHorizontal="true">
+
+        <RadioGroup
+            android:id="@+id/user_sex_rg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"  
+            android:layout_gravity="center"     
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/male_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="男" />
+
+            <RadioButton
+                android:id="@+id/female_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:gravity="center"
+                android:text="女" />
+        </RadioGroup>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/edit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/sex_layout"
+        android:layout_margin="16dp"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="姓名" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/user_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="邮箱"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/user_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="密码"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/user_pwd_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="确认密码"
+            android:inputType="textPassword" />
+    </LinearLayout>
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/finishi_reg"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin = "16dp"
+        android:layout_below = "@id/edit_layout"
+        android:text="注册"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        custom:pb_colorComplete="@color/green_complete"
+        custom:pb_colorNormal="@color/blue_normal"
+        custom:pb_colorPressed="@color/blue_pressed"
+        custom:pb_colorProgress="@color/purple_progress"
+        custom:pb_textComplete="完成"
+        custom:pb_textProgress="正在注册" />
+    
+</RelativeLayout>

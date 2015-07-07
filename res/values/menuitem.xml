@@ -1,0 +1,7 @@
+ <resources>
+    <array name="ItemArray">
+         <item>文字</item>
+         <item>图文</item>
+         <item>图片</item>
+     </array>
+ </resources>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?listCardViewBackground"
+    android:orientation="vertical" >
+   
+    <com.kuibu.custom.widget.PaginationListView  
+        android:id="@+id/search_view_list"  
+        android:layout_width="match_parent"  
+        android:layout_height="wrap_content" />  
+  	
+  	<View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="?android:attr/listDivider" />
+  	
+    <LinearLayout
+        android:id = "@+id/search_view_btns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?listViewBackground"
+        android:orientation="horizontal">
+        <TextView
+    	    android:id="@+id/topic_tv"
+    	    android:layout_width="0dp"
+    	    android:layout_height="wrap_content"
+    	    android:layout_weight="1"
+    	    android:gravity="center"
+    	    android:paddingTop="15dp"
+    	    android:paddingBottom="15dp"
+    	    android:clickable="true"
+    	    android:focusable="true"
+    	    android:text="话题"/>
+ 
+    	<View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="?android:attr/listDivider" />
+    	
+    	<TextView
+    	    android:id="@+id/collection_tv"
+    	    android:layout_width="0dp"
+    	    android:layout_height="wrap_content"
+    	    android:layout_weight="1"
+    	    android:gravity="center"
+    	    android:paddingTop="15dp"
+    	    android:paddingBottom="15dp"
+    	    android:clickable="true"
+    	    android:focusable="true"
+    	    android:text="内容"/>	
+ 	   	  	 
+    	 <View
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="?android:attr/listDivider" />
+    	 
+        <TextView
+    	    android:id="@+id/collector_tv"
+    	    android:layout_width="0dp"
+    	    android:layout_height="wrap_content"
+    	    android:layout_weight="1"
+    	    android:gravity="center"    	    
+    	    android:paddingTop="15dp"
+    	    android:paddingBottom="15dp"
+    	    android:clickable="true"
+    	    android:focusable="true"
+    	    android:text="人"/>
+    </LinearLayout>
+</RelativeLayout>

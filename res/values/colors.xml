@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>        
+    <!-- commen color -->
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="green">#00ff00</color>
+    <color name="transparent">#00000000</color>
+    <color name="default_green">#49C120</color>
+	<color name="stroke_gray">#ffbbbbbb</color>
+	<color name="ground">#EE4F3622</color>
+    <color name="background">#FF004068</color>
+    <color name="guide_start_background">@color/background</color>
+    <color name="guide_end_background">#FF006480</color>
+    
+    
+    <!-- 第一种配色方案 -->
+ 	<color name="colorPrimaryDark">#006480</color>     	
+ 	<color name="colorPrimary">#006480</color>   
+ 	<color name="toolbar_background_light">#006480</color>
+    <drawable name="actionbar_background_light">#006480</drawable>
+    <drawable name="activated_background_color">#006480</drawable>  
+    <color name="slidingtab_background_light">#006480</color>
+    <color name="mate_list_item_background">#006480</color>
+    <color name="CornflowerBlue">#6495ED</color>
+    <color name="SkyBlue">#87CEEB</color>
+    
+    <!-- 第二种配色方案-->
+        
+        
+    <!-- 第三种配色方案 
+    <drawable name="actionbar_background">#00a7ff</drawable>
+    <drawable name="activated_background_color">#00a7ff</drawable>
+    -->
+    
+    <color name="light_blue">#b0f0f6</color>
+    <color name="dodger_blue">#1E90FF</color>
+    <color name="light_grey">#dcdcdc</color>
+    <color name="grey">#dbdbdb</color>  
+    <color name="super_light_grey">#f6f6f6</color>
+  	<drawable name="textColor">#ff0000</drawable>  
+    
+    <color name="dark_grey">#ff212121</color>
+    <color name="lighter_grey">#ffE0E0E0</color>
+    <color name="primary">#388E3C</color>
+    <color name="light_primary">#81C784</color>
+    <color name="dark_primary">#2E7D32</color>
+    <color name="secondary">#EF6C00</color>
+    <color name="light_secondary">#FF9800</color>
+    
+	<!-- color for flat button -->
+    <color name="fbutton_default_color">#3eadeb</color>
+    <color name="fbutton_default_shadow_color">#ff3493c8</color>
+    <color name="fbutton_color_green_sea">#16a085</color>
+    <color name="fbutton_color_clouds">#ecf0f1</color>
+    <color name="fbutton_color_silver">#bdc3c7</color>
+    <color name="fbutton_color_concrete">#95a5a6</color>
+    <color name="fbutton_color_asbestos">#7f8c8d</color>
+    <color name="fbutton_color_transparent">@android:color/transparent</color>    
+
+	<color name="holo_red_light">#ffff4444</color>
+	<color name="holo_green_light">#ff99cc00</color>
+	<color name="holo_blue_light">#ff33b5e5</color>
+	
+	<color name="ab_text_color">#fff1f9ff</color>
+    <color name="ab_text_color_hint">#fff1f9ff</color>
+    <color name="ab_text_color_transparent">#80f1f9ff</color>
+	<color name="text_color_black">#ff444444</color>
+    <color name="text_color_blue">#ff108ff0</color>
+    <color name="text_color_blue_bright">#ff698ebf</color>
+    <color name="text_color_blue_dark">#ff0077d9</color>
+    <color name="text_color_blue_light">#ff5198bd</color>
+    <color name="text_color_gray">#ff999999</color>
+    <color name="text_color_gray_dark">#ff888888</color>
+    <color name="text_color_gray_deep">#ff666666</color>
+    <color name="text_color_gray_light">#ffb8b8b8</color>
+    <color name="text_color_orange">#ffff8752</color>
+    <color name="text_color_red">#ffcc3333</color>
+    <color name="text_color_white">#ffffffff</color>
+    <color name="list_view_bg_dark">#ff343434</color>
+    <color name="list_card_view_bg_dark">#ff202020</color>
+    
+    <color name="list_view_bg_light">#ffdcdcdc</color>
+    <color name="list_view_divider">#ffe7e7e7</color>
+    <color name="webview_light">#FFFFFF</color>
+    <color name="webview_dark">#272727</color>
+    <color name="list_item_extra_dark">#ff116f9e</color>
+    <color name="list_item_title_dark">#ffE0E0E0</color>
+    <color name="list_item_intro_dark">#ff696969</color>
+    <color name="list_item_bg_dark_super_highlight">#ff515151</color>
+    <color name="list_item_bg_dark_highlight">#ff414141</color>
+    <color name="layout_border_backgroud_dark">#ff292929</color>
+    <color name="layout_border_divider_light">#ffa8abad</color>
+    <color name="layout_border_divider_dark">#ff909090</color>
+    <color name="key_border_button_dark">#ff404040</color>
+    <color name="key_border_button_dark_highlight">#ff414141</color>
+    
+    <color name="list_item_intro_light">#ff777777</color>
+    <color name="list_item_title_light">#ff000000</color>
+    <color name= "home_header_dark">#ff202020</color>
+    <color name="navigation_backgroud_dark">#ff202020</color>
+    
+    <color name="navigation_divider_light">#ffc3c3c3</color>
+    <color name="navigation_divider_dark">#ff434343</color>
+</resources>

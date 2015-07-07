@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="FButton">
+        <attr name="shadowEnabled" format="boolean" />
+        <attr name="buttonColor" format="color" />
+        <attr name="shadowColor" format="color" />
+        <attr name="shadowHeight" format="dimension" />
+        <attr name="cornerRadius" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="CircleProgress">
+        <attr name="color1" format="reference|color" />
+        <attr name="color2" format="reference|color" />
+        <attr name="color3" format="reference|color" />
+    </declare-styleable>
+   
+    <declare-styleable name="MultiStateView">
+        <attr name="msv_loadingView" format="reference" />
+        <attr name="msv_emptyView" format="reference" />
+        <attr name="msv_errorView" format="reference" />
+        <attr name="msv_viewState" format="enum">
+            <enum name="content" value="0" />
+            <enum name="error" value="1" />
+            <enum name="empty" value="2" />
+            <enum name="loading" value="3" />
+        </attr>
+    </declare-styleable>
+
+    <attr name="listItemBackground" format="reference" />
+    <attr name="listItemDefaultImage" format="reference" />
+    <attr name="listItemExtraBackground" format="reference" />
+    <attr name="listItemExtraDividerColor" format="reference" />
+    <attr name="listItemExtraTextColor" format="reference" />
+   	<attr name="listItemIntroTextColor" format="reference" />     
+    <attr name="listItemDateTextColor" format="reference" />    
+    <attr name="listItemTextColor" format="reference" />
+    <attr name="webViewBackground" format="reference" />
+    <attr name="listViewBackground" format="reference" />
+    <attr name="listCardViewBackground" format="reference" />
+    <attr name="listViewDivider" format="reference" />
+    <attr name="listViewItemTitleColor" format="reference|color" />
+    <attr name="toolbarBackground" format="reference" />   
+    <attr name="layoutBorderBackground" format="reference" />
+    <attr name="homeHeaderBackground" format="reference" />
+    <attr name="navigationDivider" format="reference" />
+    <attr name="navigationBackground" format="reference" />        
+</resources>

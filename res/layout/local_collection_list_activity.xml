@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?listViewBackground" >
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >        
+        <ListView
+            android:id="@+id/colleciton_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?listViewBackground" />
+        <include layout="@layout/fab" />
+    </RelativeLayout>
+    
+</LinearLayout>

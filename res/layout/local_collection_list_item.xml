@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?listItemBackground"
+    android:descendantFocusability="blocksDescendants" >
+
+    <TextView
+        android:id="@+id/collection_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textColor="?listItemTextColor"
+        android:textSize = "18sp"/>
+
+    <TextView
+        android:id="@+id/collection_desc_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/collection_title_tv"
+        android:layout_marginTop = "5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="5dp"        
+        android:textColor="?listItemExtraTextColor"
+        android:textSize="16sp"         
+        android:ellipsize="end"
+        android:singleLine="true"/>
+
+    <TextView
+        android:id="@+id/collection_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/collection_desc_tv"
+       	android:layout_marginRight="16dp"
+       	android:layout_marginLeft="16dp"
+       	android:layout_marginBottom="5dp"
+       	android:textColor="?listItemExtraTextColor"
+        android:layout_alignParentRight="true"        
+        android:layout_alignParentBottom="true"
+        android:textSize="14sp"/>
+    
+    <CheckBox 
+         android:id="@+id/collection_check"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignParentRight="true"
+         android:layout_centerInParent="true"
+         android:layout_marginRight="8dp"
+         android:visibility="gone"
+         android:layout_centerHorizontal="true"
+         android:clickable="false"
+    />
+</RelativeLayout>

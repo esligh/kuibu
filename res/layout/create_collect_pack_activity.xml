@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?listViewBackground"
+    android:orientation="vertical" >
+
+    <AutoCompleteTextView
+        android:id="@+id/collect_pack_topic_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:hint="添加话题(最多5个)"  
+        android:completionThreshold="1"  
+        android:textColor="@android:color/darker_gray" />
+	
+	<me.gujun.android.taggroup.TagGroup
+        android:id="@+id/topic_tag_group"        
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TagGroup"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:focusable="true"
+        android:clickable="true"
+        android:background="?listItemBackground"/>
+	
+    <!-- <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="?android:attr/listDivider" />
+    -->
+    <EditText
+        android:id="@+id/collect_pack_name_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="名称" />
+
+    <EditText
+        android:id="@+id/collect_pack_desc_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="简介"  />
+   
+    <CheckBox
+        android:id="@+id/collect_pack_dialog_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:text="私有(私有集册的内容发布只作为备份，其他人看不到)" />
+      
+</LinearLayout>

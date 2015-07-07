@@ -1,0 +1,55 @@
+<resources>
+
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+	<dimen name="navigation_drawer_width">180dp</dimen>
+	
+	<dimen name="login_pic_width">40dp</dimen>
+	
+	<!-- list item size-->
+	<dimen name="topic_pic_width">25dp</dimen>
+	<dimen name="topic_pic_height">25dp</dimen>
+	<dimen name="topic_pic_width_big">60dp</dimen>
+	<dimen name="topic_pic_height_big">60dp</dimen>
+	
+	<dimen name="item_pic_width">120dp</dimen>
+	<dimen name="item_pic_height">100dp</dimen>
+	
+	<dimen name="user_pic_width">40dp</dimen>
+	<dimen name="user_pic_height">40dp</dimen>	
+	<dimen name="user_pic_width_big">80dp</dimen>
+	<dimen name="user_pic_height_big">80dp</dimen>
+	
+	<dimen name= "btn_width">100dp</dimen>
+	<dimen name= "btn_height">30dp</dimen>
+	
+	<!--  -->
+	<dimen name="tab_padding_MarginTop">0dp</dimen>
+	<dimen name="tab_padding_MarginBottom">2dp</dimen>
+	<dimen name="tab_padding_MarginLeft">8dp</dimen>
+	<dimen name="tab_padding_MarginRight">8dp</dimen>
+	
+	<!--flat button -->
+	<dimen name="fbutton_default_conner_radius">8dp</dimen>
+    <dimen name="fbutton_default_padding_left">10dp</dimen>
+    <dimen name="fbutton_default_padding_right">10dp</dimen>
+    <dimen name="fbutton_default_padding_top">5dp</dimen>
+    <dimen name="fbutton_default_padding_bottom">5dp</dimen>
+    <dimen name="fbutton_default_shadow_height">4dp</dimen>
+    <!-- CircleProgress -->
+    <dimen name="default_circle_view_size">200dp</dimen>
+    <!-- WelcomPage -->
+    <dimen name="margin_xlarge">16dp</dimen>
+    <dimen name="margin_xxxlarge">40dp</dimen>
+    <dimen name="margin_large">12dp</dimen>
+    <dimen name="margin_xxlarge">20dp</dimen>
+    <dimen name="margin_medium">10.0dip</dimen>
+    <dimen name="margin_small">8.0dip</dimen>
+    <dimen name="margin_tiny">5.0dip</dimen>
+
+    <dimen name="text_size_medium">15sp</dimen>
+    <dimen name="text_size_large">18sp</dimen>
+
+    <dimen name="btn_card_height">48dp</dimen>
+</resources>

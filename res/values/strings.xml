@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">跬步</string>    
+    <string name="logout">：ogout</string>
+    <string name="about">About</string>
+    <string name="switch_theme">Switch Theme</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_notify">Example action</string>
+    <string name="action_search_for">search</string>
+    <string name="action_logout">登出</string>
+    
+    <string name="action_settings">Settings</string>
+    
+    <string name="login_username_hint">邮箱/昵称</string>
+    <string name="login_pwd_hint">密码</string>
+    <string name="register_name">注册</string>
+    
+    <string name="last_modified">Last modified: %s</string>
+    
+	<string name="menu_item_clear_memory_cache">Clear memory cache</string>
+	<string name="menu_item_clear_disc_cache">Clear disc cache</string>
+	<string name="menu_item_pause_on_scroll">Pause on scroll</string>
+	<string name="menu_item_pause_on_fling">Pause on fling</string>
+	
+	
+	<!-- *******************************************-->
+	<string name="login_name">登录</string>
+	<string name="drawer_list_head_desc">drawer list head</string>
+	
+	<item type="id" name="text_mode_tag_key"></item>
+    <item type="id" name="text_pic_mode_tag_key"></item>
+    <item type="id" name="pic_mode_tag_key"></item>
+      
+    <string name="open_drawer">打开抽屉</string>
+    <string name="close_drawer">关闭抽屉</string>
+    <string name="notes">笔记</string>
+    <string name="archive">归档</string>
+    <string name="new_note">新建笔记</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">暗色</string>
+    <string name="delete">删除</string>
+    <string name="star">星标</string>
+    <string name="starred">已加星标</string>
+    <string name="restore">恢复</string>
+    <string name="wr_import">导入</string>
+    <string name="unstar">取消星标</string>
+    <string name="confirm_delete">确认删除</string>
+    <string name="incorrect_pin_text">PIN 码不正确</string>
+    <string name="title">标题</string>
+    <string name="untitled">未命名</string>
+    <string name="empty_directory">空文件夹</string>
+    <string name="navigate_up_folder">返回上一级目录</string>
+    <string name="folder_name_hint">输入文件夹名</string>
+    <string name="create_folder">创建文件夹</string>
+    <string name="move">移动</string>
+
+    <string name="import_from_device">从设备导入</string>
+    <string name="select_folder_move">选择文件夹</string>
+
+    <string name="empty_notes_list_hint">当您创建新笔记时，\n它会显示在这里</string>
+    <string name="empty_archives_hint">当您存档笔记时，\n它会显示在这里</string>
+    <string name="empty_starred_hint">当您星标笔记时，\n它会显示在这里</string>
+    <string name="search_hint">搜索笔记</string>
+    <string name="share_string">分享到&#8230;</string>
+    <string name="share">分享</string>
+    <string name="search">搜索</string>
+    <string name="preview">预览</string>
+    <string name="insert_img">插入图片</string>
+    <string name="edit">编辑</string>
+    <string name="app_settings">应用设置</string>
+    <string name="editor_settings">编辑器设置</string>
+    <string name="social">社交</string>
+    <string name="meta">杂项</string>
+    
+    <string name="share_html">HTML</string>
+    <string name="share_html_source">HTML Source</string>
+       
+    <string name="pref_remember_directory">启动时打开上次的文件夹</string>
+    <string name="pref_font_choice">编辑器字体</string>
+    <string name="pref_theme">主题</string>
+    <string name="pref_rate_writeily">给个好评</string>
+    <string name="pref_donate_writeily">捐赠</string>
+    <string name="pref_preview_first">打开笔记时先预览</string>
+    <string name="translators_title">翻译人员</string>
+    <string name="pref_about_dialog_title">关于 Writeily</string>
+    <string name="pref_attribution_dialog_title">Attributions</string>
+    <string name="pref_twitter">在 Twitter 上关注 Writeily</string>
+    <string name="pref_email">给作者发邮件</string>
+    <string name="share_text">纯文本</string>
+    <string name="share_image">Image</string>
+    <string name="share_as">分享为&#8230;</string>
+    <string name="pref_font_size">字体大小</string>
+    <string name="pref_pin_lock">PIN 锁</string>
+    <string name="pref_show_markdown_shortcuts">显示 Markdown 快捷栏</string>
+    <string name="pref_highlighting_activated">Markdown syntax highlighting</string>
+    <string name="pref_highlighting_delay">Delay in milliseconds for highlighting refresh</string>
+    <string name="pref_highlighting_delay_summary">Higher values are easier on the battery</string>
+    <string name="pin_title">输入你的 PIN</string>
+    <string name="pin_go">接受</string>
+    
+    <string name="add_tag">Add Tag</string>
+    
+    <string name="drawer_login_by_qq_sort">QQ登录</string>
+    <string name="drawer_login_by_sina_sort">微博登录</string>
+
+    <string name="goto_world">随便看看</string>
+
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+
+    <string name="tip_guide_first">不积跬步    无以至千里</string>
+    <string name="tip_guide_second">不积小流    无以成江海</string>
+    <string name="tip_guide_third">骐骥一跃    不能十步</string>
+    <string name="tip_guide_fourth">驽马十驾    功在不舍</string>
+    <string name="tip_guide_fifth">锲而舍之    朽木不折</string>
+    <string name="tip_guide_six">锲而不舍    金石可镂</string>
+
+    <array name="array_guide_tips">
+        <item>@string/tip_guide_first</item>
+        <item>@string/tip_guide_second</item>
+        <item>@string/tip_guide_third</item>
+        <item>@string/tip_guide_fourth</item>
+        <item>@string/tip_guide_fifth</item>
+        <item>@null</item>
+    </array>
+    
+    <string name="setting_aboutme_text">%1$s%2$s%3$s</string>
+</resources>
