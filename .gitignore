@@ -1,3 +1,8 @@
 /bin
 /gen
 /META-INF
+/.settings
+/hs_err_pid3224.log
+/lint.xml
+/proguard-project.txt
+/project.properties
