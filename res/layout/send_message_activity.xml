@@ -35,7 +35,7 @@
                 android:layout_marginBottom="2dp"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:hint="发送私信..." />
+                android:hint="@string/send_message" />
 
             <ImageButton
                 android:id="@+id/btn_send"

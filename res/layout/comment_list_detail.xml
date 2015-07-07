@@ -34,7 +34,7 @@
                 android:layout_marginBottom="2dp"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:hint="写下你的评论..." />
+                android:hint="@string/write_down_comment" />
 
             <ImageButton
                 android:id="@+id/btn_send"
@@ -43,7 +43,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="5dp"
                 android:background="@color/transparent"
-                android:src="@drawable/bt_send_comment_selector" />
+                android:src="@drawable/bt_send_comment_selector" 
+                android:contentDescription="@null"/>
         </LinearLayout>
     </RelativeLayout>
 

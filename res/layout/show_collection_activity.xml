@@ -191,7 +191,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingTop="3dp"
-                android:text="不感兴趣" 
+                android:text="@string/boring_text" 
                 android:textSize="14sp"
                 android:textColor="?attr/listItemExtraTextColor"/>
 
@@ -201,7 +201,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:paddingTop="3dp"
-                android:text="有意思" 
+                android:text="@string/funny_text" 
                 android:textSize="14sp"
                 android:textColor="?attr/listItemExtraTextColor"/>
 
@@ -211,7 +211,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="3dp"
-                android:text="收藏" 
+                android:text="@string/collect_text" 
                 android:textSize="14sp"
                 android:textColor="?attr/listItemExtraTextColor"/>
 
@@ -222,7 +222,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="3dp"
-                android:text="评论" 
+                android:text="@string/comment_text" 
                 android:textSize="14sp"
                 android:textColor="?attr/listItemExtraTextColor"/>
         </LinearLayout>

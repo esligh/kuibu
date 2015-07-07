@@ -14,8 +14,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="8dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/img_ooops" />
+            android:scaleType="centerInside" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -27,8 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
-                android:paddingTop="8dp"
-                android:text="TextView" />
+                android:paddingTop="8dp"/>
 
             <TextView
                 android:id="@+id/collect_pack_intro"
@@ -36,7 +34,6 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
                 android:paddingLeft="5dp"
-                android:text="TextView"
                 android:textColor="@color/secondary_text_disabled_material_light" />
         </LinearLayout>       
     </LinearLayout>
@@ -65,7 +62,6 @@
                 android:layout_toRightOf="@id/collect_focus_pic"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:text="1000人关注" 
                 android:textColor="@color/secondary_text_disabled_material_light"/>
 				
             <Button
@@ -77,7 +73,7 @@
                 android:layout_margin="8dp"
                 android:textColor="@color/secondary_text_disabled_material_light"
                 android:textSize="14sp"
-                android:text="取消关注" />             
+                android:text="@string/btn_cancel_focus" />             
         </RelativeLayout>
 		
         <com.kuibu.custom.widget.PaginationListView

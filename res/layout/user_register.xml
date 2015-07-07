@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="男" />
+                android:text="@string/sex_male" />
 
             <RadioButton
                 android:id="@+id/female_rb"
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
                 android:gravity="center"
-                android:text="女" />
+                android:text="@string/sex_female" />
         </RadioGroup>
     </RelativeLayout>
 
@@ -62,7 +62,7 @@
             android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="姓名" >
+            android:hint="@string/user_name" >
         </EditText>
 
         <EditText
@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="邮箱"
+            android:hint="@string/email"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="密码"
+            android:hint="@string/user_pwd"
             android:inputType="textPassword" />
 
         <EditText
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="确认密码"
+            android:hint="@string/user_pwdconfirm"
             android:inputType="textPassword" />
     </LinearLayout>
 
@@ -96,14 +96,14 @@
         android:layout_height="48dp"
         android:layout_margin = "16dp"
         android:layout_below = "@id/edit_layout"
-        android:text="注册"
+        android:text="@string/register_name"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         custom:pb_colorComplete="@color/green_complete"
         custom:pb_colorNormal="@color/blue_normal"
         custom:pb_colorPressed="@color/blue_pressed"
         custom:pb_colorProgress="@color/purple_progress"
-        custom:pb_textComplete="完成"
-        custom:pb_textProgress="正在注册" />
+        custom:pb_textComplete="@string/action_complete"
+        custom:pb_textProgress="@string/onregistering" />
     
 </RelativeLayout>

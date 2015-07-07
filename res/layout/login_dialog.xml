@@ -29,14 +29,14 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin = "16dp"
-        android:text="登录"
+        android:text="@string/login"
         android:textColor="@android:color/white"
         android:textSize="18sp"
         custom:pb_colorComplete="@color/green_complete"
         custom:pb_colorNormal="@color/blue_normal"
         custom:pb_colorPressed="@color/blue_pressed"
         custom:pb_colorProgress="@color/purple_progress"
-        custom:pb_textComplete="完成"
-        custom:pb_textProgress="正在登录" />
+        custom:pb_textComplete="@string/action_complete"
+        custom:pb_textProgress="@string/onlogining" />
 
 </LinearLayout>

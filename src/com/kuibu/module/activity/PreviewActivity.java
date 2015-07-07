@@ -130,15 +130,12 @@ public class PreviewActivity extends ActionBarActivity {
 		getMenuInflater().inflate(R.menu.preview_menu, menu);
 		pubMenu = menu.findItem(R.id.action_publish);
 		MenuItem edit = menu.findItem(R.id.action_edit);
-		MenuItem share = menu.findItem(R.id.action_share);
 		int from_who = getIntent().getIntExtra(
 				StaticValue.EDITOR_VALUE.FROM_WHO, 0);
 		if (from_who == StaticValue.EDITOR_VALUE.EDITOR_TO_PREVIEW) {
 			edit.setVisible(false);
-			share.setVisible(false);
 		} else {
 			edit.setVisible(true);
-			share.setVisible(false);
 		}
 
 		if (collection == null

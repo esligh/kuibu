@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:hint="添加话题(最多5个)"  
+        android:hint="@string/add_topic"  
         android:completionThreshold="1"  
         android:textColor="@android:color/darker_gray" />
 	
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:hint="名称" />
+        android:hint="@string/hint_name" />
 
     <EditText
         android:id="@+id/collect_pack_desc_et"
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:hint="简介"  />
+        android:hint="@string/hint_extra"  />
    
     <CheckBox
         android:id="@+id/collect_pack_dialog_cb"
@@ -58,6 +58,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
-        android:text="私有(私有集册的内容发布只作为备份，其他人看不到)" />
+        android:text="@string/hint_topic_private" />
       
 </LinearLayout>

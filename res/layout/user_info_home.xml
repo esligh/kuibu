@@ -53,7 +53,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="4dp"
-                android:text="暂无职业描述"
+                android:text="@string/profession_default"
                 android:textColor="@color/white"
                 android:textSize="15sp" >
             </TextView>
@@ -105,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/follow_me_count_tv"
-                android:text="关注我的人"
+                android:text="@string/follow_me_text"
                 android:textColor="@color/white" >
             </TextView>
         </RelativeLayout>
@@ -141,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/my_follow_count_tv"
-                android:text="我关注的人"
+                android:text="@string/my_follow_text"
                 android:textColor="@color/white" >
             </TextView>
         </RelativeLayout>
@@ -176,7 +176,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/pack_count_tv"
-                android:text="我的收集册"
+                android:text="@string/my_pack_text"
                 android:textColor="@color/white" >
             </TextView>
         </RelativeLayout>
@@ -215,7 +215,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_margin="16dp"
-            android:text="关注"
+            android:text="@string/btn_focus"
             android:textColor="@android:color/white"
             fbutton:buttonColor="@color/fbutton_color_green_sea"
             fbutton:cornerRadius="1dp"
@@ -242,7 +242,7 @@
             android:background="?listItemBackground"             
             android:focusable="true"
             android:clickable="true"
-            android:text="我的收藏"
+            android:text="@string/my_favoritebox"
             android:textSize="16sp" />
 
         <View
@@ -261,7 +261,7 @@
             android:background="?listItemBackground"  
             android:focusable="true"
             android:clickable="true"           
-            android:text="我的话题"
+            android:text="@string/my_topic"
             android:textSize="16sp" />
     </LinearLayout>
   
@@ -286,7 +286,7 @@
 	        <TextView
 	            android:layout_width="80dp"
 	            android:layout_height="wrap_content"      
-	            android:text="居住地"
+	            android:text="@string/residence"
 	            android:textSize="16sp" />
 	        <TextView
 	            android:id="@+id/user_residence_tv"
@@ -312,7 +312,7 @@
 	        <TextView
 	            android:layout_width="80dp"
 	            android:layout_height="wrap_content"
-	            android:text="邮箱"
+	            android:text="@string/email"
 	            android:textSize="16sp" />
 	        <TextView
 	            android:id="@+id/user_email_tv"

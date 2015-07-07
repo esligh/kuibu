@@ -63,7 +63,7 @@
                 android:clickable="true"
             	android:focusable="true"
                 android:padding="10dp"
-                android:text="男"
+                android:text="@string/sex_male"
                 android:textSize="16sp"
                 android:textColor="?listItemTextColor" />
             
@@ -83,7 +83,7 @@
             	android:focusable="true"
                 android:padding="10dp"
                 android:gravity="center"
-                android:text="女"
+                android:text="@string/sex_female"
                 android:textSize="16sp" 
                 android:textColor="?listItemTextColor"/>
         </LinearLayout>
@@ -98,7 +98,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="简介" />
+            android:text="@string/hint_extra" />
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
@@ -128,7 +128,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="职业/专业" />
+            android:text="@string/profession" />
 
         <View
             android:layout_width="match_parent"
@@ -160,7 +160,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="居住地" />
+            android:text="@string/residence" />
 
         <View
             android:layout_width="match_parent"
@@ -192,7 +192,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="教育" />
+            android:text="@string/education" />
 
         <View
             android:layout_width="match_parent"

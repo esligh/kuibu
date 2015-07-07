@@ -10,7 +10,7 @@
          android:id="@+id/create_collectpack_bt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="新建收集册"
+                android:text="@string/create_new_cpack"
                 android:textColor="@android:color/white"
                 fbutton:buttonColor="@color/fbutton_color_green_sea"
                 fbutton:cornerRadius="1dp"               

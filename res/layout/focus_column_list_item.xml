@@ -21,7 +21,6 @@
             android:id="@+id/focus_column_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" 
             android:paddingTop="8dp"
             android:paddingLeft="5dp"/>
 
@@ -29,7 +28,6 @@
             android:id="@+id/focus_column_introduce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" 
             android:paddingLeft="5dp"
             android:paddingBottom="8dp"
             android:textColor="@color/secondary_text_disabled_material_light"/>
@@ -38,7 +36,6 @@
             android:id="@+id/focus_column_ccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" 
             android:paddingLeft="5dp"
             android:textColor="@color/secondary_text_disabled_material_light"/>
               

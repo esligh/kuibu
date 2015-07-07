@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:hint="名称" />
+        android:hint="@string/hint_name" />
 
     <EditText
         android:id="@+id/favorite_box_desc_et"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:hint="简介"  />
+        android:hint="@string/hint_extra"  />
    
     <CheckBox
         android:id="@+id/favorte_box_dialog_cb"
@@ -31,5 +31,5 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
-        android:text="私有(私有集册只对自己可见)" />      
+        android:text="@string/hint_fbox_private" />      
 </LinearLayout>

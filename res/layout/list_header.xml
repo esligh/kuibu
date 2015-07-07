@@ -16,7 +16,7 @@
         android:id="@+id/drawerheader_icon"
         android:layout_width="@dimen/login_pic_width"
         android:layout_height="@dimen/login_pic_width"
-        android:contentDescription="@string/drawer_list_head_desc"/>
+        android:contentDescription="@null"/>
     
 	<TextView 
 	    android:id="@+id/drawerheader_title"
