@@ -1,11 +1,18 @@
 package com.kuibu.model.bean;
 
+import java.io.Serializable;
+
 
 /**主要的列表项数据定义
  * 如首页列表，本月热榜等
  * */
 
-public class MateListItem {
+/**
+ * @author ThinkPad
+ *
+ */
+public class MateListItem implements Serializable{
+	private static final long serialVersionUID = 1L;
 	public static final int ITEM_TYPE_COUNT = 3; 
 	public static class ItemType{
 		public static final int TEXT_MODE=0,TEXT_PICS_MODE=1,PICS_MODE=2 ; 
@@ -126,4 +133,6 @@ public class MateListItem {
 	public void setLastModify(String lastModify) {
 		this.lastModify = lastModify;
 	}		
+	
+	
 }

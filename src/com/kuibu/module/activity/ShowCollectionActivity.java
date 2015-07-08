@@ -46,7 +46,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.DataFormatUtil;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.DensityUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.MultiStateView;
@@ -249,8 +249,8 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 					content = adjustMarkDownText(content);
 				}
 			}
-			comment_text_tv.setText("评论 "+DataFormatUtil.formatNumber(getIntent().getIntExtra("comment_count",0)));
-			vote_count_tv.setText(DataFormatUtil.formatNumber(getIntent().getIntExtra("vote_count",0)));  
+			comment_text_tv.setText("评论 "+DataUtils.formatNumber(getIntent().getIntExtra("comment_count",0)));
+			vote_count_tv.setText(DataUtils.formatNumber(getIntent().getIntExtra("vote_count",0)));  
 			int dpheight = fl_top.getHeight();
 			int pxheight = (int)(DensityUtils.dp2px(this, dpheight) * (0.35f-title_tv.getLineCount()*0.01));
 			StringBuffer buffer = new StringBuffer("<div style=\"height:").append(pxheight).append("px;\"></div>\n");
@@ -306,12 +306,12 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 										author_pic);
 							}
 							String content = obj.getString("content");
-							vote_count_tv.setText(DataFormatUtil.formatNumber(obj.getInt("vote_count")));		
+							vote_count_tv.setText(DataUtils.formatNumber(obj.getInt("vote_count")));		
 							StringBuffer buffer = new StringBuffer("<p class=\"headerplace\"></p>");
 							buffer.append(content);
 							buffer.append("\n<br/><br/><br/>");
 							contentView.loadMarkdown(buffer.toString(),cssFile);	
-							comment_text_tv.setText("评论 "+DataFormatUtil.formatNumber(obj.getInt("comment_count")));		
+							comment_text_tv.setText("评论 "+DataUtils.formatNumber(obj.getInt("comment_count")));		
 							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 						}
 					}

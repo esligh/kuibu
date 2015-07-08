@@ -2,19 +2,20 @@ package com.kuibu.module.fragment;
 
 import android.support.v4.app.Fragment;
 
+import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.iterf.IConstructFragment;
 
-public final class ExploreConstructFragment extends Fragment 
-	implements IConstructFragment {
+public final class ExploreConstruct 
+	implements IConstructFragment{
 	
 	@Override
 	public Fragment newInstance(String tag) {
 		Fragment fragment = null; 
-		if(tag.equals("rank")){
+		if(StaticValue.TAB_PAGE.TAB_PAGE_RANK.equals(tag)){
 			fragment = new ExploreRankFragment();
-		}else if (tag.equals("hot")){
+		}else if (StaticValue.TAB_PAGE.TAB_PAGE_HOT.equals(tag)){
 			fragment = new ExploreHotFragment();
-		}else if (tag.equals("recommend")) {
+		}else if (StaticValue.TAB_PAGE.TAB_PAGE_RECOMMEND.equals(tag)) {
 			fragment = new ExploreRecommendFragment();
 		}
 		return fragment;

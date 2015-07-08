@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,7 @@ public  class ExplorePageFragment extends Fragment
 	private final int DEFAULT_BACKUP_TABPAGE_NUM = 3;	
 	private List<TabTitleObject> exportpageTabTitle = null; 
 	private TabPageViewAdapter adapter= null;
-	
+	private ViewPager pager ; 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {			
@@ -44,10 +46,10 @@ public  class ExplorePageFragment extends Fragment
 			}
 		    LayoutInflater themeflater = inflater.cloneInContext(contextTheme);
 			View rootView = themeflater.inflate(R.layout.frame_tabpage, container, false);
-			ViewPager pager = (ViewPager)rootView.findViewById(R.id.pager);
+			pager = (ViewPager)rootView.findViewById(R.id.pager);
 			if(adapter == null){
 				adapter =  new TabPageViewAdapter(getActivity().getSupportFragmentManager(),
-						exportpageTabTitle,new ExploreConstructFragment());
+						exportpageTabTitle,new ExploreConstruct());
 				pager.setAdapter(adapter);
 			}
 			else{
@@ -56,7 +58,16 @@ public  class ExplorePageFragment extends Fragment
 			pager.setOffscreenPageLimit(DEFAULT_BACKUP_TABPAGE_NUM); 
 			SlidingTabIndicator indicator = (SlidingTabIndicator)rootView.findViewById(R.id.indicator);
 		    indicator.setViewPager(pager);
-		   	    
+		   	indicator.setOnPageChangeListener(new SimpleOnPageChangeListener() {
+				@Override
+				public void onPageSelected(int position) {
+					// TODO Auto-generated method stub	
+					FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter)pager.getAdapter();
+					BaseFragment f = (BaseFragment)adapter.getItem(position);
+					f.onTabPageChanged();
+				}
+			});
+		   	
 		    if(isDarkTheme){
 		    	indicator.setBackgroundResource(R.drawable.abc_ab_solid_dark_holo);
 		    	indicator.setCustomTabColorizer(new SlidingTabIndicator.TabColorizer() {

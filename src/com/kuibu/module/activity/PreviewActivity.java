@@ -18,6 +18,9 @@ import net.tsz.afinal.http.AjaxParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import us.feras.mdv.MarkdownView;
 import android.annotation.SuppressLint;
@@ -31,6 +34,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -44,10 +48,13 @@ import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.CollectionBean;
+import com.kuibu.model.js.InJavaScriptObject;
+import com.kuibu.model.js.WebViewClientExt;
 import com.kuibu.model.vo.CollectionVo;
 import com.kuibu.model.vo.ImageLibVo;
+import com.kuibu.module.iterf.OnPageLoadFinished;
 
-public class PreviewActivity extends ActionBarActivity {
+public class PreviewActivity extends ActionBarActivity implements OnPageLoadFinished{
 	private MarkdownView previewWebView;
 	private boolean isEditIncoming = false;
 	private Map<String,String> imgurl_map;
@@ -58,6 +65,7 @@ public class PreviewActivity extends ActionBarActivity {
 	private ImageLibVo imageVo;
 	private MenuItem pubMenu;
 	private String cssFile ; 
+	private String htmlSource ; 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		SharedPreferences mPerferences = PreferenceManager
@@ -81,7 +89,7 @@ public class PreviewActivity extends ActionBarActivity {
 		}
 		initData();
 		previewWebView = (MarkdownView) findViewById(R.id.preview_webview);
-		previewWebView.setBackgroundColor(0);
+		setUpWebViewDefaults();
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
 		if (collection != null && !TextUtils.isEmpty(collection.getContent()))
@@ -89,8 +97,21 @@ public class PreviewActivity extends ActionBarActivity {
 
 		finalHttp = new FinalHttp();
 	}
-
-	void initData() {
+	
+	@SuppressLint("SetJavaScriptEnabled")
+	private void setUpWebViewDefaults()
+	{
+		previewWebView.setBackgroundColor(0);
+		previewWebView.getSettings().setJavaScriptEnabled(true);
+		previewWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+		InJavaScriptObject jsObj = new InJavaScriptObject(this);
+		jsObj.setOnPageLoadFinishedListener(this);
+		previewWebView.addJavascriptInterface(jsObj, "injectedObject");
+		previewWebView.setWebViewClient(new WebViewClientExt(this));
+		previewWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+	}
+	
+	private void initData() {
 		imageVo = new ImageLibVo(this);
 		collectionVo = new CollectionVo(this);
 		String id = getIntent().getStringExtra(
@@ -209,7 +230,8 @@ public class PreviewActivity extends ActionBarActivity {
 			request_imginfo();			
 		} else {
 			collection.content = adjustMarkDownText(collection.getContent());
-			params.put("content", collection.content);		
+			params.put("content", collection.content);	
+			params.put("abstract", getAbstract());
 			params.put("create_by", Session.getSession().getuId());
 			params.put("topic_id", "1");
 			String pid = getIntent().getStringExtra(
@@ -325,6 +347,7 @@ public class PreviewActivity extends ActionBarActivity {
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
+	@SuppressLint("SimpleDateFormat")
 	private void dealModify(JSONArray arr) throws JSONException
 	{
 		List<String> localImgs = imageVo.getImgList(collection._id);
@@ -523,6 +546,15 @@ public class PreviewActivity extends ActionBarActivity {
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		overridePendingTransition(R.anim.anim_slide_out_right,
+				R.anim.anim_slide_in_right);
+	}
+	
 	private String getExtensionName(String filename) {
 		if ((filename != null) && (filename.length() > 0)) {
 			int dot = filename.lastIndexOf('.');
@@ -532,7 +564,7 @@ public class PreviewActivity extends ActionBarActivity {
 		}
 		return null;
 	}
-
+	
 	private String adjustMarkDownText(String markdownText) {
 		String pattern = "!\\[.*\\]\\(\\s*(file:.*)\\)";
 		Pattern p = Pattern.compile(pattern);
@@ -551,12 +583,19 @@ public class PreviewActivity extends ActionBarActivity {
 		m.appendTail(sb);
 		return sb.toString();
 	}
+	
+	private String getAbstract()
+	{
+		StringBuffer result = new StringBuffer();
+		Document doc = Jsoup.parse(htmlSource);
+		Elements es = doc.getElementsByTag("p");
+		return result.toString();
+	}
 
 	@Override
-	public void onBackPressed() {
+	public void getHtmlSource(String html) {
 		// TODO Auto-generated method stub
-		super.onBackPressed();
-		overridePendingTransition(R.anim.anim_slide_out_right,
-				R.anim.anim_slide_in_right);
+		htmlSource = html ; 
 	}
+
 }

@@ -24,7 +24,7 @@ public class TabPageViewAdapter extends FragmentStatePagerAdapter {
 		this.notifyDataSetChanged();
 	}
     
-    @Override
+	@Override
     public Fragment getItem(int position) {
         return constructer.newInstance(tabList.get(position).getTag());
     }

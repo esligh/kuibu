@@ -21,11 +21,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.CollectInfoListActivity;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.ShowCollectionActivity;
 import com.kuibu.module.activity.UserInfoActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -345,7 +345,6 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 						holderfortextPic.topic_icon_iv,options,null);
 			}
 			
-			
 			holderfortextPic.content_tv.setText(datas.get(position)
 					.getSummary());
 			
@@ -423,4 +422,6 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 		}
 	}
+	
+	
 }

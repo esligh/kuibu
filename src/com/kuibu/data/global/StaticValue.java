@@ -195,6 +195,7 @@ public class StaticValue {
 		
 	public static class LOCALCACHE
 	{
+		public static final int   DEFAULT_CACHE_SIZE = 20 ;  
 		public static final String HOME_LIST_CACHE = "home_list_cache";
 		public static final String HOME_RANK_CACHE = "home_rank_cache";
 		public static final String HOME_HOT_CACHE = "home_hot_cache";
@@ -203,5 +204,19 @@ public class StaticValue {
 		public static final String FOCUS_COLLECTPACK_CACHE = "focus_collectpack_cache";
 		public static final String FOCUS_TOPIC_CACHE = "focus_topic_cache";
 
+	}
+	
+	public static class TAB_PAGE
+	{
+		public static final String TAB_PAGE_RANK= "rank";
+		public static final String TAB_PAGE_HOT= "hot";
+		public static final String TAB_PAGE_RECOMMEND= "recommend";
+		
+		public static final String TAB_PAGE_FOCUS_TOPIC = "focus_topic";
+		public static final String TAB_PAGE_FOCUS_COLLECT = "focus_collect";
+		
+		public static final String TAB_PAGE_COMMENT = "comment";
+		public static final String TAB_PAGE_MESSAGE = "message";
+		
 	}
 }

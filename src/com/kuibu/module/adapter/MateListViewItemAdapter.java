@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.kuibu.common.utils.DataFormatUtil;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.CollectInfoListActivity;
@@ -277,7 +277,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 			holderforText.content_tv.setText(datas.get(position)
 					.getSummary());
 			holderforText.count_tv.setText(
-					DataFormatUtil.formatNumber(datas.get(position).getVoteCount()));
+					DataUtils.formatNumber(datas.get(position).getVoteCount()));
 			break;
 		case MateListItem.ItemType.TEXT_PICS_MODE:
 			holderfortextPic.layout1_rl.setOnClickListener(new OnClickListener() {				
@@ -327,7 +327,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 			holderfortextPic.content_tv.setText(datas.get(position)
 					.getSummary());
 			holderfortextPic.count_tv.setText(
-					DataFormatUtil.formatNumber(datas.get(position).getVoteCount()));	
+					DataUtils.formatNumber(datas.get(position).getVoteCount()));	
 			
 			ImageLoader.getInstance().displayImage(datas.get(position).getTopUrl(),
 					holderfortextPic.user_icon_iv,options,null);

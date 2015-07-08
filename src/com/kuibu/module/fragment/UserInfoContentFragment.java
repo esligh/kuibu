@@ -27,7 +27,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.DataFormatUtil;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.data.global.KuibuApplication;
@@ -275,9 +275,9 @@ public final class UserInfoContentFragment extends Fragment implements
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						JSONObject obj = new JSONObject(response.getString("result"));
-						pack_count_tv.setText(DataFormatUtil.formatNumber(obj.getInt("pack_count")));						
-						my_follow_count_tv.setText(DataFormatUtil.formatNumber(obj.getInt("my_follow_count")));
-						follow_me_count_tv.setText(DataFormatUtil.formatNumber(obj.getInt("follow_me_count")));
+						pack_count_tv.setText(DataUtils.formatNumber(obj.getInt("pack_count")));						
+						my_follow_count_tv.setText(DataUtils.formatNumber(obj.getInt("my_follow_count")));
+						follow_me_count_tv.setText(DataUtils.formatNumber(obj.getInt("follow_me_count")));
 						user_email_tv.setText(obj.getString("email"));
 						String profession = obj.getString("profession");
 						if(TextUtils.isEmpty(profession) || profession.equals("null")){

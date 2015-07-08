@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +31,12 @@ import com.kuibu.module.activity.FavoriteBoxInfoActivity;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.HotListViewItemAdapter;
 
-public class ExploreHotFragment extends Fragment implements OnLoadListener {
+public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 
 	private PaginationListView hotList = null;
 	private HotListViewItemAdapter hotAdapter = null;
 	private List<Map<String, String>> mdatas = new ArrayList<Map<String, String>>();
 	private ACache mCache;
-	private boolean isCache;
 	private MultiStateView mMultiStateView;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +74,7 @@ public class ExploreHotFragment extends Fragment implements OnLoadListener {
 		});
 		JSONArray arr = mCache
 				.getAsJSONArray(StaticValue.LOCALCACHE.HOME_HOT_CACHE);
-		if (arr != null) {
+		if (arr != null && arr.length()>0) {
 			loadFromArray(arr);
 		} else {
 			loadData();
@@ -112,6 +110,7 @@ public class ExploreHotFragment extends Fragment implements OnLoadListener {
 		}
 	}
 
+	
 	private void loadData() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("off", String.valueOf(mdatas.size()));
@@ -128,11 +127,8 @@ public class ExploreHotFragment extends Fragment implements OnLoadListener {
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
 						loadFromArray(arr);
-						if (!isCache) {
-							mCache.put(StaticValue.LOCALCACHE.HOME_HOT_CACHE,arr);
-							isCache = true;
-						}
 						hotList.loadComplete();
+						mCache.put(StaticValue.LOCALCACHE.HOME_HOT_CACHE,arr);
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block

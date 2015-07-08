@@ -43,7 +43,7 @@ public class NotifyTabPageFragment extends Fragment{
 			ViewPager pager = (ViewPager)rootView.findViewById(R.id.pager);
 			if(adapter == null){
 				adapter =  new TabPageViewAdapter(getActivity().getSupportFragmentManager(),
-						tabTitles,new NotifyConstructFragment());
+						tabTitles,new NotifyConstruct());
 				pager.setAdapter(adapter);
 			}
 			else{

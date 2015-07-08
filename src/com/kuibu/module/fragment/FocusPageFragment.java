@@ -47,7 +47,7 @@ public class FocusPageFragment extends Fragment {
 		ViewPager pager = (ViewPager)rootView.findViewById(R.id.focus_pager);
 		if(adapter == null){
 			adapter =  new TabPageViewAdapter(getActivity().getSupportFragmentManager(),
-					focuspageTabTitle,new FocusConstructFrament());
+					focuspageTabTitle,new FocusConstruct());
 			pager.setAdapter(adapter);
 		}
 		else{

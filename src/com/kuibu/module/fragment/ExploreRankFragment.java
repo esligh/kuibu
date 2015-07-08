@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,7 @@ import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.MateListViewItemAdapter;
 
-public class ExploreRankFragment extends Fragment implements
+public class ExploreRankFragment extends BaseFragment implements
 	OnLoadListener{
 	
 	private PaginationListView rankList = null;
@@ -66,6 +65,7 @@ public class ExploreRankFragment extends Fragment implements
 			showView();
 			return rootView;
 	}
+
 	private void loadFromArray(JSONArray arr)
 	{
 			try{

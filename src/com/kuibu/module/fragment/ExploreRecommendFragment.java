@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.MateListViewItemAdapter;
 
-public class ExploreRecommendFragment extends Fragment implements
+public class ExploreRecommendFragment extends BaseFragment implements
 		OnLoadListener {
 
 	private PaginationListView recommendList = null;
@@ -63,7 +62,6 @@ public class ExploreRecommendFragment extends Fragment implements
 		recommendList = (PaginationListView) rootView
 				.findViewById(R.id.pagination_lv);
 		recommendList.setOnLoadListener(this);
-
 		JSONArray arr = mCache
 				.getAsJSONArray(StaticValue.LOCALCACHE.HOME_RECOMMAND_CACHE);
 		if (arr != null) {
@@ -72,7 +70,6 @@ public class ExploreRecommendFragment extends Fragment implements
 			loadData();
 		}
 		showView();
-		recommendList.setTag("recommend");
 		return rootView;
 	}
 
