@@ -3,7 +3,7 @@
 #### Introduction 
 kuibu is an android application focuses on collecting .we can use it to write or record some worthful things to cultivate 
 our intrest gradually in some field ,and also share our funny things and collection with others . the idea of kuibu is 
-A journey of a thousand miles begins with a single step. whice stems from the article "encouraging learning" written by 
+A journey of a thousand miles begins with a single step. which stems from the article "encouraging learning" written by 
 XunZi,a famous chinese ideologist.
 
 #### Function 
