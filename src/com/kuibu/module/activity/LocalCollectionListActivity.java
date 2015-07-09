@@ -104,7 +104,6 @@ public class LocalCollectionListActivity extends BaseActivity {
 						}
 						int n = selIds.size() ; 
 						setTitle("已选"+n+"项");
-						Toast.makeText(context, selIds.toString(), Toast.LENGTH_SHORT).show();						
 					}
 				}
 		});
@@ -278,6 +277,7 @@ public class LocalCollectionListActivity extends BaseActivity {
 		fabMenu.setVisibility(View.VISIBLE);
 		collectionAdapter = new LocalCollectionAdapter(this,mData,isMulChoice);
 		collectionList.setAdapter(collectionAdapter);
+		setTitle(getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_NAME));
 	}	
 	
 	private void requestDel(List<String> ids)

@@ -21,7 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.ACache;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -36,7 +36,6 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 	private PaginationListView hotList = null;
 	private HotListViewItemAdapter hotAdapter = null;
 	private List<Map<String, String>> mdatas = new ArrayList<Map<String, String>>();
-	private ACache mCache;
 	private MultiStateView mMultiStateView;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,9 +51,10 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 					public void onClick(View arg0) {
 						mMultiStateView
 								.setViewState(MultiStateView.ViewState.LOADING);
+						loadData("REQ_NEWDATA");
 					}
 				});
-		mCache = ACache.get(this.getActivity());
+
 		hotList = (PaginationListView) rootView
 				.findViewById(R.id.pagination_lv);
 		hotList.setOnLoadListener(this);
@@ -72,31 +72,35 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
 			}
 		});
-		JSONArray arr = mCache
+		JSONArray arr = KuibuApplication.getCacheInstance()
 				.getAsJSONArray(StaticValue.LOCALCACHE.HOME_HOT_CACHE);
 		if (arr != null && arr.length()>0) {
-			loadFromArray(arr);
-		} else {
-			loadData();
+			loadFromArray(arr,"REQ_HISTORY");
 		}
+		loadData("REQ_NEWDATA");
 		showView();
 		return rootView;
 	}
 
-	private void loadFromArray(JSONArray arr) {
+	private void loadFromArray(JSONArray arr,String action) {
 		try {
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject temp = (JSONObject) arr.get(i);
 				Map<String, String> item = new HashMap<String, String>();
 				item.put("box_id", temp.getString("box_id"));
 				item.put("box_name", temp.getString("box_name"));
+				item.put("focus_count", temp.getString("focus_count"));
 				item.put("box_desc", temp.getString("box_desc"));
 				item.put("box_count", temp.getString("box_count"));
 				item.put("uid", temp.getString("uid"));
 				item.put("user_name", temp.getString("name"));
 				item.put("user_sex", temp.getString("sex"));
 				item.put("user_pic", temp.getString("photo"));
-				mdatas.add(item);
+			    if(action.equals("REQ_NEWDATA")){
+			    	mdatas.add(0,item);
+			    }else{
+			    	mdatas.add(item);
+			    }
 			}
 			showView();
 		} catch (JSONException e) {
@@ -109,11 +113,18 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 			mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 		}
 	}
-
 	
-	private void loadData() {
+	private void loadData(final String action) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("off", String.valueOf(mdatas.size()));
+		params.put("action", action);
+		int n = mdatas.size(); 
+		if(action.equals("REQ_HISTORY")){		
+			params.put("threshold",String.valueOf(mdatas.get(n-1).get("focus_count")));
+		}
+		else if(action.equals("REQ_NEWDATA") && n >0){
+			params.put("threshold",String.valueOf(mdatas.get(0).get("focus_count")));
+		}
 		final String URL = StaticValue.SERVER_INFO.SERVER_URI
 				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_hotpacks";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
@@ -126,9 +137,18 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
-						loadFromArray(arr);
+						if(arr.length()>0){
+							if(action.equals("REQ_NEWDATA")){
+								JSONArray oldarr = KuibuApplication.getCacheInstance()
+										.getAsJSONArray(StaticValue.LOCALCACHE.HOME_HOT_CACHE);
+						    	JSONArray newarr = DataUtils.joinJSONArray(oldarr, arr, 
+						    			StaticValue.LOCALCACHE.DEFAULT_CACHE_SIZE);
+						    	KuibuApplication.getCacheInstance()
+						    	.put(StaticValue.LOCALCACHE.HOME_HOT_CACHE, newarr);
+							}
+							loadFromArray(arr,action);
+						}						
 						hotList.loadComplete();
-						mCache.put(StaticValue.LOCALCACHE.HOME_HOT_CACHE,arr);
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -159,6 +179,6 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 	@Override
 	public void onLoad(String tag) {
 		// TODO Auto-generated method stub
-		loadData();
+		loadData("REQ_HISTORY");
 	}
 }

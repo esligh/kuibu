@@ -47,6 +47,7 @@ public class StaticValue {
 		public static final int EDIT_ID = 202 ; 		
 		public static final int SHARE_ID = 203 ;
 		public static final int SEND_ID = 204 ; 
+		public static final int CLEAR_ID = 205 ; 
 	}
 	
 	public static class MENU_ORDER{

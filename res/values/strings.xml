@@ -41,9 +41,9 @@
     <string name="btn_cancel">取消</string>
     <string name="onloading">正在加载&#8230;</string>
     
-    <string name="search_topic_text">话题</string>
-    <string name="search_content_text">内容</string>
-    <string name="search_person_text">人</string>
+    <string name="topic_text">话题</string>
+    <string name="content_text">内容</string>
+    <string name="person_text">人</string>
     
     <string name="send_message">发送私信&#8230;</string>
     
@@ -68,6 +68,16 @@
     <string name="my_topic">我的话题</string>
     <string name="email">邮箱</string>
     
+    <string name="choose_favoritebox">选择收藏夹</string>
+    <string name="focus_topics">关注的话题</string>
+    <string name="settings">设置</string>
+    <string name="private_letter">私信</string>
+    <string name="message">消息</string>
+    
+    <string name="pictures">图片</string>
+    <string name="choose_pics">选择图片</string>
+        
+        
     <!-- menu text -->
     <string name="action_search_for">搜索</string>
     <string name="action_notify">通知</string>

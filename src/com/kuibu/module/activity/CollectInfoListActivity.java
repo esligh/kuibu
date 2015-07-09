@@ -66,7 +66,6 @@ public class CollectInfoListActivity extends BaseActivity implements
 	private RelativeLayout tagLayout;
 	private String topic_id;
 	private MultiStateView mMultiStateView;
-
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,15 +90,18 @@ public class CollectInfoListActivity extends BaseActivity implements
 		tagGroup = (TagGroup) findViewById(R.id.topic_name_tags);
 				
 		if(isDarkTheme){
-			tagGroup.setBackGroudColor(getResources().getColor(R.color.list_view_bg_dark));
+			int color =getResources().getColor(R.color.list_view_bg_dark);
+			tagGroup.setBackGroudColor(color);
+			tagGroup.setPressedColor(color);
 		}else{
-			tagGroup.setBackgroundColor(getResources().getColor(R.color.white));
+			int color = getResources().getColor(R.color.white);
+			tagGroup.setBackgroundColor(color);
+			tagGroup.setPressedColor(getResources().getColor(R.color.SkyBlue));
 		}
 		tagLayout = (RelativeLayout) findViewById(R.id.tags_layout);
 		tagLayout.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
+			public void onClick(View arg0) {				
 				Intent intent = new Intent(CollectInfoListActivity.this,
 						TopicListActivity.class);
 				intent.putExtra("topic_id", topic_id);

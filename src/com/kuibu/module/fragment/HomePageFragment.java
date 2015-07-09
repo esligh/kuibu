@@ -20,7 +20,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.baoyz.widget.PullRefreshLayout;
-import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
@@ -41,7 +40,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 	private List <MateListItem> mHomeDatas = new ArrayList <MateListItem>();
 	private PaginationListView mListView;  
     private PullRefreshLayout pullFreshlayout;
-    private ACache mCache  ;
     private MultiStateView mMultiStateView;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,7 +54,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				loadData("INIT",true);				
 			}   	
         });          
-		mCache = ACache.get(this.getActivity());
 		mListView = (PaginationListView) rootView.findViewById(R.id.pagination_lv);
 		pullFreshlayout = (PullRefreshLayout)rootView.findViewById(R.id.swipeRefreshLayout);
 		pullFreshlayout.setRefreshStyle(PullRefreshLayout.STYLE_RING);
@@ -67,21 +64,18 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
                 loadData("DOWN",false);
             }
         });
-		JSONArray arr = mCache.getAsJSONArray(StaticValue.LOCALCACHE.HOME_LIST_CACHE);
+		JSONArray arr = KuibuApplication.getCacheInstance()
+				.getAsJSONArray(StaticValue.LOCALCACHE.HOME_LIST_CACHE);
 		if(arr!=null && arr.length()>0){
-			parseFromJson(arr);
+			parseFromJson(arr,"UP");
 		}else{
 			loadData("INIT",true);
 		}
+		if(mHomeDatas.size()>0){
+			loadData("DOWN",true);
+		}		
 		showHomeView();
 		return rootView;
-	}
-		
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		loadData("DOWN",true);
-		super.onResume();
 	}
 
 	/* (non-Javadoc)
@@ -140,38 +134,18 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data); 
 						if(arr.length()>0){
-							for (int i = 0; i < arr.length(); i++) {
-							    JSONObject temp = (JSONObject) arr.get(i);
-							    MateListItem bean = new MateListItem();
-							    bean.set_id(temp.getString("cid"));
-							    bean.setType(Integer.parseInt(temp.getString("type")));
-							    bean.setTitle(temp.getString("title"));
-							    bean.setSummary(temp.getString("content"));
-							    bean.setItemPic(temp.getString("image_url"));
-							    bean.setPackId(temp.getString("pid"));
-							    bean.setTopText(temp.getString("name"));
-							    bean.setVoteCount(temp.getInt("vote_count"));
-							    bean.setCreateBy(temp.getString("create_by"));
-							    bean.setUserSex(temp.getString("sex"));
-							    bean.setUserSignature(temp.getString("signature"));
-							    bean.setLastModify(temp.getString("last_modify"));
-							    bean.setCommentCount(temp.getInt("comment_count"));
-							    bean.setTopUrl(temp.getString("photo"));
-							    if(action.equals("DOWN"))
-							    	mHomeDatas.add(0,bean);
-							    else 
-							    	mHomeDatas.add(bean);
-							    showHomeView();
-							    
-							    if(action.equals("INIT")&& bcache){
-							    	mCache.put(StaticValue.LOCALCACHE.HOME_LIST_CACHE, arr);
-							    }else if(action.equals("DOWN")&& bcache){
-							    	JSONArray oldarr = mCache.getAsJSONArray(StaticValue.LOCALCACHE.HOME_LIST_CACHE);
+							parseFromJson(arr,action);
+							if(action.equals("INIT")&& bcache){
+							    	KuibuApplication.getCacheInstance()
+							    	.put(StaticValue.LOCALCACHE.HOME_LIST_CACHE, arr);
+							}else if(action.equals("DOWN")&& bcache){
+							    	JSONArray oldarr = KuibuApplication.getCacheInstance()
+							    			.getAsJSONArray(StaticValue.LOCALCACHE.HOME_LIST_CACHE);
 							    	JSONArray newarr = DataUtils.joinJSONArray(oldarr, arr, 
 							    			StaticValue.LOCALCACHE.DEFAULT_CACHE_SIZE);
-							    	mCache.put(StaticValue.LOCALCACHE.HOME_LIST_CACHE, newarr);
-							    }
-							}							
+							    	KuibuApplication.getCacheInstance()
+							    	.put(StaticValue.LOCALCACHE.HOME_LIST_CACHE, newarr);
+							}
 						}
 					}
 					pullFreshlayout.setRefreshing(false);
@@ -195,7 +169,7 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
 	
-	private void parseFromJson(JSONArray arr)
+	private void parseFromJson(JSONArray arr,String action)
 	{
 		if(arr.length()>0){
 			try{
@@ -216,13 +190,20 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				    bean.setTopText(temp.getString("name"));
 				    bean.setTopUrl(temp.getString("photo"));
 				    bean.setLastModify(temp.getString("last_modify"));
-					mHomeDatas.add(bean);	
+				    if(action.equals("DOWN")){
+				    	mHomeDatas.add(0,bean);
+				    }else{
+				    	mHomeDatas.add(bean);
+				    }						
 				}
 				showHomeView();	
 			}catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
+			
+		}
+		if(mHomeDatas.size()>0){
 			mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 		}else{
 			mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);

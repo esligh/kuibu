@@ -17,7 +17,7 @@
         android:id="@+id/list_item_seperator"
         android:layout_width="match_parent"
         android:layout_height="1dip"
-        android:background="@color/light_grey" />
+        android:background="?android:attr/listDivider" />
 
     <RelativeLayout
         android:layout_width="match_parent"

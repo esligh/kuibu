@@ -18,7 +18,6 @@
         android:layout_below="@id/search_content_item_title"
         android:paddingLeft="10dp"
         android:paddingBottom="10dp"
-        android:textColor="?listItemExtraTextColor"
         android:textSize="14sp"/>
     
     <TextView
@@ -29,7 +28,6 @@
         android:layout_below="@id/search_content_item_title"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:textColor="?listItemExtraTextColor"
         android:textSize="14sp"/>
 	
 </RelativeLayout>

@@ -25,6 +25,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
+import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.PersistentCookieStore;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -36,12 +37,13 @@ public class KuibuApplication extends Application {
 	public static final String TAG = "VolleyPatterns";
 	private static KuibuApplication sInstance;
 	private static PersistentCookieStore persistentCookieStore ; 
-	
+	private static ACache mCache  ; 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		initImageLoader(getApplicationContext());
+		mCache = ACache.get(getApplicationContext());
 		sInstance = this ; 
 	}
 	
@@ -58,7 +60,9 @@ public class KuibuApplication extends Application {
 		ImageLoader.getInstance().init(config);
 	}
 
-
+	public static synchronized ACache getCacheInstance(){
+		return mCache ; 
+	}
 	public static synchronized KuibuApplication getInstance() {  
         return sInstance;  
     }  

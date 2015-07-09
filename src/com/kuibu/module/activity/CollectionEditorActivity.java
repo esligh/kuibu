@@ -262,7 +262,6 @@ public class CollectionEditorActivity extends ActionBarActivity {
 				}				
 				collectionVo.update(" content = ?,is_sync = ? ", " _id = ? ", 
 						new String[]{text,String.valueOf(0),String.valueOf(collection._id)});
-				
 			}			
 		}		
 	}

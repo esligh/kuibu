@@ -228,7 +228,9 @@ public final class UserInfoContentFragment extends Fragment implements
 				signature_tv.setText(signature);
 			}
 			sex = this.getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_SEX);
-			if(sex.equals("M")){
+			if(uid!=null && uid.equals(Session.getSession().getuId())){
+				//...
+			}else if(StaticValue.SERMODLE.USER_SEX_MALE.equals(sex)){
 				pack_text_tv.setText("他的收集册");
 				my_follow_text_tv.setText("他关注的人");
 				follow_me_text_tv.setText("关注他的人");

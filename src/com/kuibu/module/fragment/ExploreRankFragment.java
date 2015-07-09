@@ -19,7 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.ACache;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -35,14 +35,11 @@ public class ExploreRankFragment extends BaseFragment implements
 	private PaginationListView rankList = null;
 	private MateListViewItemAdapter rankAdapter = null;
 	private List<MateListItem> mdatas = new ArrayList<MateListItem>();
-	private ACache mCache  ;
-	private boolean isCache = false;
 	private MultiStateView mMultiStateView;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-			mCache = ACache.get(this.getActivity());
 			View rootView = inflater.inflate(R.layout.activity_pagination_listview,container,false);
 			mMultiStateView = (MultiStateView) rootView.findViewById(R.id.multiStateView);
 			mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
@@ -50,23 +47,23 @@ public class ExploreRankFragment extends BaseFragment implements
 				@Override
 				public void onClick(View arg0) {
 					mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
-					loadData();
+					loadData("REQ_NEWDATA");
 				}   	
 	        });
 			rankList = (PaginationListView) rootView
 					.findViewById(R.id.pagination_lv);
 			rankList.setOnLoadListener(this);
-			JSONArray arr = mCache.getAsJSONArray(StaticValue.LOCALCACHE.HOME_RANK_CACHE);
+			JSONArray arr = KuibuApplication.getCacheInstance()
+					.getAsJSONArray(StaticValue.LOCALCACHE.HOME_RANK_CACHE);
 			if(arr!=null){
-				loadFromArray(arr);
-			}else{
-				loadData();
-			}					
+				loadFromArray(arr,"REQ_HISTORY");
+			}							
 			showView();
+			loadData("REQ_NEWDATA");	
 			return rootView;
 	}
-
-	private void loadFromArray(JSONArray arr)
+	
+	private void loadFromArray(JSONArray arr,String action)
 	{
 			try{
 				for (int i = 0; i < arr.length(); i++) {
@@ -85,8 +82,13 @@ public class ExploreRankFragment extends BaseFragment implements
 				    bean.setPackId(temp.getString("pid"));
 				    bean.setCreateBy(temp.getString("create_by"));
 				    bean.setVoteCount(temp.getInt("vote_count"));
-				    bean.setCommentCount(temp.getInt("comment_count"));			    
-				    mdatas.add(bean);
+				    bean.setCommentCount(temp.getInt("comment_count"));		
+				    if(action.equals("REQ_NEWDATA")){
+				    	mdatas.add(0,bean);
+				    }else{
+				    	mdatas.add(bean);
+				    }
+				    
 				}
 				showView();
 			}catch (JSONException e) {
@@ -100,10 +102,18 @@ public class ExploreRankFragment extends BaseFragment implements
 		}
 	}
 	
-	private void loadData() {
+	private void loadData(final String action) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("off", String.valueOf(mdatas.size()));
 		params.put("data_type", "HOT_RANK");
+		params.put("action", action);
+		int n = mdatas.size(); 
+		if(action.equals("REQ_HISTORY")){			
+			params.put("threshold",String.valueOf(mdatas.get(n-1).getVoteCount()));
+		}
+		else if(action.equals("REQ_NEWDATA") && n >0){
+			params.put("threshold",String.valueOf(mdatas.get(0).getVoteCount()));
+		}
 		final String URL = StaticValue.SERVER_INFO.SERVER_URI
 				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_collections";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
@@ -115,13 +125,17 @@ public class ExploreRankFragment extends BaseFragment implements
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
-						JSONArray arr = new JSONArray(data); 	
+						JSONArray arr = new JSONArray(data); 						
 						if(arr.length()>0){
-							if(!isCache){
-								mCache.put(StaticValue.LOCALCACHE.HOME_RANK_CACHE, arr);
-								isCache = true;
+							if(action.equals("REQ_NEWDATA")){
+								JSONArray oldarr = KuibuApplication.getCacheInstance()
+										.getAsJSONArray(StaticValue.LOCALCACHE.HOME_RANK_CACHE);
+						    	JSONArray newarr = DataUtils.joinJSONArray(oldarr, arr, 
+						    			StaticValue.LOCALCACHE.DEFAULT_CACHE_SIZE);
+						    	KuibuApplication.getCacheInstance()
+						    	.put(StaticValue.LOCALCACHE.HOME_RANK_CACHE, newarr);
 							}
-							loadFromArray(arr);
+							loadFromArray(arr,action);
 						}else{
 							Toast.makeText(getActivity(), 
 									"没有数据啦！",Toast.LENGTH_SHORT).show();
@@ -157,6 +171,6 @@ public class ExploreRankFragment extends BaseFragment implements
 	@Override
 	public void onLoad(String tag) {
 		// TODO Auto-generated method stub		
-		loadData();
+		loadData("REQ_HISTORY");
 	}
 }

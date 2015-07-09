@@ -30,6 +30,7 @@ public class MateListItem implements Serializable{
 	
 	private int 		commentCount;
 	private int 		voteCount;
+	private int 		shareCount ; 
 	private String 		packId; 
 	private String      topicId; 
 	private String 		createBy; 
@@ -96,6 +97,13 @@ public class MateListItem implements Serializable{
 	}
 	public void setVoteCount(int voteCount) {
 		this.voteCount = voteCount;
+	}
+	
+	public int getShareCount() {
+		return shareCount;
+	}
+	public void setShareCount(int shareCount) {
+		this.shareCount = shareCount;
 	}
 	public String getPackId() {
 		return packId;

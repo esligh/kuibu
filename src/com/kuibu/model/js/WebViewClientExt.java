@@ -22,9 +22,9 @@ public class WebViewClientExt extends WebViewClient {
 	
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {   
-		Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse(url)); 
-        mContext.startActivity(i);
-        return true;     
+		 Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+		 mContext.startActivity(i);
+         return true;
     }  
 	
 	@Override

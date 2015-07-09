@@ -20,7 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.ACache;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -36,8 +36,6 @@ public class ExploreRecommendFragment extends BaseFragment implements
 	private PaginationListView recommendList = null;
 	private MateListViewItemAdapter recommendAdapter = null;
 	private List<MateListItem> mdatas = new ArrayList<MateListItem>();
-	private ACache mCache;
-	private boolean isCache;
 	private MultiStateView mMultiStateView;
 
 	@SuppressLint("InflateParams")
@@ -55,25 +53,23 @@ public class ExploreRecommendFragment extends BaseFragment implements
 					public void onClick(View arg0) {
 						mMultiStateView
 								.setViewState(MultiStateView.ViewState.LOADING);
-						loadData();
+						loadData("REQ_NEWDATA");
 					}
 				});
-		mCache = ACache.get(this.getActivity());
 		recommendList = (PaginationListView) rootView
 				.findViewById(R.id.pagination_lv);
 		recommendList.setOnLoadListener(this);
-		JSONArray arr = mCache
+		JSONArray arr = KuibuApplication.getCacheInstance()
 				.getAsJSONArray(StaticValue.LOCALCACHE.HOME_RECOMMAND_CACHE);
 		if (arr != null) {
-			loadFromArray(arr);
-		} else {
-			loadData();
+			loadFromArray(arr,"REQ_HISTORY");
 		}
+		loadData("REQ_NEWDATA");
 		showView();
 		return rootView;
 	}
 
-	private void loadFromArray(JSONArray arr) {
+	private void loadFromArray(JSONArray arr,String action) {
 		try {
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject temp = (JSONObject) arr.get(i);
@@ -91,7 +87,11 @@ public class ExploreRecommendFragment extends BaseFragment implements
 				bean.setCreateBy(temp.getString("create_by"));
 				bean.setVoteCount(temp.getInt("vote_count"));
 				bean.setCommentCount(temp.getInt("comment_count"));
-				mdatas.add(bean);
+			    if(action.equals("REQ_NEWDATA")){
+			    	mdatas.add(0,bean);
+			    }else{
+			    	mdatas.add(bean);
+			    }
 			}
 			showView();
 		} catch (JSONException e) {
@@ -106,10 +106,18 @@ public class ExploreRecommendFragment extends BaseFragment implements
 
 	}
 
-	private void loadData() {
+	private void loadData(final String action) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("off", String.valueOf(mdatas.size()));
 		params.put("data_type", "HOT_RECOMMEND");
+		params.put("action",action);
+		int n = mdatas.size(); 
+		if(action.equals("REQ_HISTORY")){			
+			params.put("threshold",String.valueOf(mdatas.get(n-1).getShareCount()));
+		}
+		else if(action.equals("REQ_NEWDATA") && n >0){
+			params.put("threshold",String.valueOf(mdatas.get(0).getShareCount()));
+		}
 		final String URL = StaticValue.SERVER_INFO.SERVER_URI
 				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_collections";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
@@ -123,13 +131,15 @@ public class ExploreRecommendFragment extends BaseFragment implements
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
 						if(arr.length()>0){							
-							if (!isCache) {
-								mCache.put(
-										StaticValue.LOCALCACHE.HOME_RECOMMAND_CACHE,
-										arr);
-								isCache = true;
+							if(action.equals("REQ_NEWDATA")){
+								JSONArray oldarr = KuibuApplication.getCacheInstance()
+										.getAsJSONArray(StaticValue.LOCALCACHE.HOME_RECOMMAND_CACHE);
+						    	JSONArray newarr = DataUtils.joinJSONArray(oldarr, arr, 
+						    			StaticValue.LOCALCACHE.DEFAULT_CACHE_SIZE);
+						    	KuibuApplication.getCacheInstance()
+						    		.put(StaticValue.LOCALCACHE.HOME_RECOMMAND_CACHE, newarr);
 							}
-							loadFromArray(arr);
+							loadFromArray(arr,action);
 						}else{
 							Toast.makeText(getActivity(), 
 									"没有数据啦！",Toast.LENGTH_SHORT).show();
@@ -165,7 +175,7 @@ public class ExploreRecommendFragment extends BaseFragment implements
 	@Override
 	public void onLoad(String tag) {
 		// TODO Auto-generated method stub
-		loadData();
+		loadData("REQ_HISTORY");
 	}
 
 }

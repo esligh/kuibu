@@ -20,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import us.feras.mdv.MarkdownView;
 import android.annotation.SuppressLint;
@@ -55,6 +54,7 @@ import com.kuibu.model.vo.ImageLibVo;
 import com.kuibu.module.iterf.OnPageLoadFinished;
 
 public class PreviewActivity extends ActionBarActivity implements OnPageLoadFinished{
+	public static final int ABSTRACT_MAX = 150 ; 
 	private MarkdownView previewWebView;
 	private boolean isEditIncoming = false;
 	private Map<String,String> imgurl_map;
@@ -217,12 +217,11 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 			StringBuffer buffer = new StringBuffer(url_root);
 			buffer.append(uuid).append(".").append(ext);
 			imgurl_map.put(images.get(i), buffer.toString());
-		}	
+		}
 		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("title", collection.getTitle());
-		params.put(
-			"type",images.size() > 0 ? String
+		params.put("type",images.size() > 0 ? String
 					.valueOf(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE)
 					: String.valueOf(StaticValue.EDITOR_VALUE.COLLECTION_TEXT));
 		if (collection.isPublish == 1 && collection.isSync == 0) { // 已经发布，未同步  update collection
@@ -586,10 +585,40 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	
 	private String getAbstract()
 	{
-		StringBuffer result = new StringBuffer();
+		String result = "";
+		StringBuffer buffer = new StringBuffer();
 		Document doc = Jsoup.parse(htmlSource);
-		Elements es = doc.getElementsByTag("p");
-		return result.toString();
+		String ptext = doc.getElementsByTag("p").text();
+		if(TextUtils.isEmpty(ptext)){
+			String s = doc.getElementsByTag("h1").remove().text();
+			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			s= doc.getElementsByTag("h2").remove().text();
+			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			s= doc.getElementsByTag("h3").remove().text();
+			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			s=doc.getElementsByTag("h4").remove().text();
+			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			s=doc.getElementsByTag("h5").remove().text();
+			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			s=doc.getElementsByTag("h6").remove().text();
+			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			s=doc.getElementsByTag("ol").remove().text();
+			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			s=doc.getElementsByTag("ul").remove().text();
+			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			String body = doc.body().text();
+			if(TextUtils.isEmpty(body)){
+				result = buffer.substring(0, 
+						buffer.length() > ABSTRACT_MAX ? ABSTRACT_MAX:buffer.length());
+			}else{
+				result = body.substring(0, 
+						buffer.length() > ABSTRACT_MAX ? ABSTRACT_MAX:buffer.length());
+			}			
+		}else{
+			result = ptext.substring(0, 
+					ptext.length() > ABSTRACT_MAX ? ABSTRACT_MAX:ptext.length());
+		}		
+		return result ; 
 	}
 
 	@Override
@@ -597,5 +626,4 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		// TODO Auto-generated method stub
 		htmlSource = html ; 
 	}
-
 }

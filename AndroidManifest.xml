@@ -58,45 +58,35 @@
         </activity>         
         <activity 
             android:name="com.kuibu.module.activity.CreateImageActivity"
-            android:label="图片">           
+            android:label="@string/pictures">           
         </activity>
        
         <activity 
             android:name="com.kuibu.module.activity.ImageScanActivity"
-          	android:label="选择图片">  
+          	android:label="@string/choose_pics">  
         </activity>
         
         <activity 
             android:name="com.kuibu.module.activity.ShowImageActivity"
-          	android:label="选择图片">  
+          	android:label="@string/choose_pics">  
         </activity>
         
         <activity 
             android:name="com.kuibu.module.activity.PhotoActivity"  >
         </activity>
-        
-        <activity 
-            android:name="com.kuibu.module.activity.ShowTextPicActivity"
-            android:label="">
-        </activity>
-        	    
+                	    
         <activity 
             android:name="com.kuibu.module.activity.CommentActivity"
-            android:label="评论">
+            android:label="@string/comment_text">
         </activity>
         <activity
-            android:name="com.kuibu.module.activity.ChooseCollectAcitivy"
-            android:label="收藏夹">
-        </activity>
-        <activity 
-            android:name="com.kuibu.module.activity.ShowPicsActivity">           
-        </activity>
-        <activity
-            android:name="com.kuibu.module.activity.ShowCollectionActivity">			
+            android:name="com.kuibu.module.activity.ShowCollectionActivity">
+			<intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>			
         </activity>
         <activity
-            android:name="com.kuibu.module.activity.CollectPackListActivity"
-            android:label="收集册">
+            android:name="com.kuibu.module.activity.CollectPackListActivity">
        	</activity>
        	<activity
        	    android:name="com.kuibu.module.activity.TopicMaterialActivity">       	    
@@ -106,10 +96,13 @@
        	</activity>
        	<activity android:name="com.kuibu.module.activity.PreviewActivity"
             android:label="@string/preview">
+			<intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.kuibu.module.activity.OperCollectPackActivity"
-            android:label="创建收集册">			
+            android:label="@string/create_new_cpack">			
 		</activity>
 		<activity android:name="com.kuibu.module.activity.CollectionListActivity">    
 		</activity>
@@ -121,7 +114,7 @@
         </activity>
         <activity
             android:name = "com.kuibu.module.activity.TopicListActivity"
-            android:label="话题"
+            android:label="@string/topic_text"
          ></activity>
         <activity
             android:name = "com.kuibu.module.activity.TopicInfoActivity">
@@ -129,7 +122,7 @@
 		
         <activity
             android:name="com.kuibu.module.activity.CollectFavoriteBoxActivity"
-         	android:label="选择收藏夹">
+         	android:label="@string/choose_favoritebox">
 		</activity>
 		<activity
             android:name="com.kuibu.module.activity.FavoriteBoxActivity">
@@ -144,25 +137,25 @@
 		
 		<activity
 		    android:name="com.kuibu.module.activity.UserTopicListActivity"
-		    android:label="关注的话题">
+		    android:label="@string/focus_topics">
 		</activity>
 		<activity
 		    android:name="com.kuibu.module.activity.UserListActivity">
 		</activity>	
 		<activity 
 		    android:name="com.kuibu.module.activity.SettingsActivity"
-		    android:label="设置">
+		    android:label="@string/settings">
 		</activity>
 		<activity
 		    android:name="com.kuibu.module.activity.SearchViewActivity">
 		 </activity>
 		 <activity 
 		     android:name=".SendMessageActivity"
-		   	 android:label="私信">		     
+		   	 android:label="@string/private_letter">		     
 		 </activity>   
 		 <activity 
 		     android:name=".NotifyMessageActivity"
-		     android:label="消息">		     
+		     android:label="@string/message">		     
 		 </activity>
     </application> 
 </manifest>
