@@ -236,8 +236,8 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 			String pid = getIntent().getStringExtra(
 					StaticValue.EDITOR_VALUE.COLLECT_PACK_ID);
 			params.put("pack_id", pid);			
-			final String URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION
+			final String URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION
 					+ "/add_collection";
 			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 					params), new Response.Listener<JSONObject>() {
@@ -302,8 +302,8 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	private void request_imginfo() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", collection.cid);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_imageinfo";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_imageinfo";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -419,8 +419,8 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 			e.printStackTrace();
 		}
 
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/simple_upload";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/simple_upload";
 		finalHttp.post(URL, params, new AjaxCallBack<String>() {
 			@Override
 			public void onSuccess(String t) {
@@ -445,8 +445,8 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	}
 
 	private void request_update(Map<String, String> params) {
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/update_collection";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/update_collection";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -503,8 +503,8 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("ids", ids);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/update_collection";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/update_collection";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

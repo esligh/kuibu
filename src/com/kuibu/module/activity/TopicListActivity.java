@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.TopicItemBean;
@@ -72,8 +73,8 @@ public class TopicListActivity extends BaseActivity {
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("topic_ids", getIntent().getStringExtra("topic_id"));		
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_packtopics";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_packtopics";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

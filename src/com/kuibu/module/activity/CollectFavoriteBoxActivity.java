@@ -39,6 +39,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -185,8 +186,8 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("uid",Session.getSession().getuId());
 		params.put("off", String.valueOf(mDatas.size()));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_favoriteboxes";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_favoriteboxes";
 
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -238,8 +239,8 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("uid",Session.getSession().getuId());
 		params.put("cid",cid);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_collectedboxes";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_collectedboxes";
 
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -274,8 +275,8 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 	}
 	
 	private void request_addbox(Map<String,String> params) {
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_favoritebox";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/add_favoritebox";
 
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -340,8 +341,8 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		params.put("create_by", Session.getSession().getuId());
 		params.put("bids", ids);
 		params.put("cid", getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_favorite";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/add_favorite";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -391,8 +392,8 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		}		
 		params.put("box_ids", buffer.toString());
 		params.put("cid", getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_favorite";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/del_favorite";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

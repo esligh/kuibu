@@ -18,6 +18,7 @@ import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -84,8 +85,8 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("off", String.valueOf(datas.size()));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_msgusers";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_msgusers";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

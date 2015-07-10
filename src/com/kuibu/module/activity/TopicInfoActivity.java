@@ -32,6 +32,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.FButton;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -126,8 +127,8 @@ public class TopicInfoActivity extends BaseActivity {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", topic_id);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_topicinfo";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_topicinfo";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -168,8 +169,8 @@ public class TopicInfoActivity extends BaseActivity {
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("tid", topic_id);	
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_bestauthor";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_bestauthor";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -219,11 +220,11 @@ public class TopicInfoActivity extends BaseActivity {
 		params.put("obj_id", topic_id);
 		final String URL;
 		if(bfocus){ 
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_follows";
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/del_follows";
 		}else{
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_follows";
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/add_follows";
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {

@@ -23,6 +23,7 @@ import com.kuibu.common.utils.DataUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
@@ -114,8 +115,8 @@ public class ExploreRankFragment extends BaseFragment implements
 		else if(action.equals("REQ_NEWDATA") && n >0){
 			params.put("threshold",String.valueOf(mdatas.get(0).getVoteCount()));
 		}
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_collections";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_collections";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

@@ -36,6 +36,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -162,8 +163,8 @@ public class OperCollectPackActivity extends BaseActivity {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("pack_id", pack_id);
 			params.put("uid", Session.getSession().getuId());
-			final String URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION
+			final String URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION
 					+ "/get_collectpack";
 			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 					params), new Response.Listener<JSONObject>() {
@@ -275,8 +276,8 @@ public class OperCollectPackActivity extends BaseActivity {
 				return;
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("slice", query);
-			final String URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION
+			final String URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION
 					+ "/get_topiclist";
 			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 					params), new Response.Listener<JSONObject>() {
@@ -339,8 +340,8 @@ public class OperCollectPackActivity extends BaseActivity {
 		params.put("topic_id", newOne.getTopic_id());
 		params.put("private", newOne.get_private()==1 ? "1":"");
 		params.put("create_by", Session.getSession().getuId());
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_collectpack";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/add_collectpack";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -397,8 +398,8 @@ public class OperCollectPackActivity extends BaseActivity {
 		params.put("topic_id", bean.getTopic_id());
 		params.put("is_private", bean.get_private()==1 ? "1":"");
 		params.put("create_by", Session.getSession().getuId());
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/update_collectpack";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/update_collectpack";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

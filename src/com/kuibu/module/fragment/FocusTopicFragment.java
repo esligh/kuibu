@@ -25,8 +25,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
-import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.TopicItemBean;
 import com.kuibu.module.activity.R;
@@ -91,8 +91,8 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 		params.put("uid", getArguments().getString("uid"));
 		params.put("target", StaticValue.SERMODLE.FOCUS_TARGET_TOPIC);
 		params.put("off", String.valueOf(mdatas.size()));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_focuslist";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_focuslist";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

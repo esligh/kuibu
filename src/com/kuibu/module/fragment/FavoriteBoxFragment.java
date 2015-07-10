@@ -32,6 +32,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.MultiStateView;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -164,8 +165,8 @@ public class FavoriteBoxFragment extends Fragment {
     	}
 		params.put("uid",uid);
 		params.put("off", String.valueOf(datas.size()));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_boxdetail";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_boxdetail";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -204,8 +205,8 @@ public class FavoriteBoxFragment extends Fragment {
     	Map<String,String> params = new HashMap<String,String>();
 		params.put("uid",Session.getSession().getuId());
 		params.put("box_id", datas.get(position).get("box_id"));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_favoritebox";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/del_favoritebox";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

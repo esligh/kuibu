@@ -26,6 +26,7 @@ import com.kuibu.module.activity.R;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.UserInfoActivity;
@@ -102,8 +103,8 @@ public class UserListFragment extends Fragment implements OnLoadListener{
 		params.put("off", String.valueOf(datas.size()));
 		params.put("target", StaticValue.SERMODLE.FOCUS_TARGET_COLLECTOR);
 		params.put("follow_who", mParams.get("follow_who"));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_focuslist";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_focuslist";
 
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {

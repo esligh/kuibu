@@ -37,6 +37,7 @@ import com.kuibu.custom.widget.BorderScrollView;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.BorderScrollView.OnBorderListener;
 import com.kuibu.custom.widget.FButton;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -184,8 +185,8 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", getIntent().getStringExtra("create_by"));
 		params.put("box_id", box_id);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_boxinfo";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_boxinfo";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -242,11 +243,11 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		params.put("obj_id", box_id);
 		final String URL;
 		if (bfocus) {
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_follows";
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/del_follows";
 		} else {
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_follows";
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/add_follows";
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -298,8 +299,8 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		params.put("box_id", box_id);
 		params.put("off", item_datas.size() + "");
 
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_boxlist";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_boxlist";
 
 		JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, URL,
 				new JSONObject(params), new Response.Listener<JSONObject>() {
@@ -361,8 +362,8 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		String create_by = getIntent().getStringExtra("create_by");
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", create_by);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_userinfo";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_userinfo";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

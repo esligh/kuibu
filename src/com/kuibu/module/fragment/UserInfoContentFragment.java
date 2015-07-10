@@ -30,6 +30,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.FButton;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -266,8 +267,8 @@ public final class UserInfoContentFragment extends Fragment implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", (String)uInfo.get("uid"));
 		params.put("requestor_id", Session.getSession().getuId());
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_userdetail";
+		final String URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/get_userdetail";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -324,11 +325,11 @@ public final class UserInfoContentFragment extends Fragment implements
 		params.put("obj_id", (String)uInfo.get("uid"));
 		final String URL;
 		if(bfocus){ 
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_follows";
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/del_follows";
 		}else{
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_follows";
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/add_follows";
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {

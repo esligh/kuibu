@@ -1,5 +1,7 @@
 package com.kuibu.module.dlg;
 
+import java.net.MalformedURLException;
+import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +30,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.module.activity.R;
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -98,8 +101,8 @@ public class LoginDialog {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("name", name);
 		params.put("pwd", pwd);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/user_login";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/user_login";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@SuppressLint("SimpleDateFormat")
@@ -177,7 +180,22 @@ public class LoginDialog {
 						KuibuApplication.getInstance()
 								.getPersistentCookieStore()
 								.addCookie("reg_state", regState, date);
-						
+						//success,establish persistent connection 
+						try {
+							KuibuApplication.getSocketIoInstance().SetUp();
+							JSONObject obj = new JSONObject();
+							obj.put("uid", uid);
+							obj.put("name", uname);
+							KuibuApplication.getSocketIoInstance().getSocketIO().
+//									send(obj);
+									emit(Constants.EVENT.LOGIN_EVENT, obj);
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (NoSuchAlgorithmException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						alertLogIn.dismiss();
 					} else if (StaticValue.RESPONSE_STATUS.LOGIN_NFUSER
 							.equals(state)) {
@@ -260,6 +278,25 @@ public class LoginDialog {
 			params.put("uPhoto", photoUrl);
 			params.put("isAuto", "true");
 			loginListener.onLoginComplete(params); //回调接口
+			
+			try {
+				KuibuApplication.getSocketIoInstance().SetUp();
+				JSONObject obj = new JSONObject();
+				obj.put("uid", uId);
+				obj.put("name", uName);
+				KuibuApplication.getSocketIoInstance().getSocketIO().
+//				send(obj);
+				emit(Constants.EVENT.LOGIN_EVENT, obj);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return true;
 		}
 	}

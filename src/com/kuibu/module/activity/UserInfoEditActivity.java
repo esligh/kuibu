@@ -19,7 +19,6 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -248,8 +247,8 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
-			final String URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/upload_userpic";
+			final String URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/upload_userpic";
 			finalHttp.post(URL, params, new AjaxCallBack<String>() {
 				@Override
 				public void onSuccess(String t) {
@@ -277,8 +276,8 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", Session.getSession().getuId());
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_userinfo";
+		final String URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/get_userinfo";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -360,8 +359,8 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			params.put("profession", mInfo.getProfession());
 			params.put("residence", mInfo.getResidence());
 			params.put("education", mInfo.getEducation());
-			final String URL = StaticValue.SERVER_INFO.SERVER_URI
-						+ StaticValue.SERVER_INFO.REST_API_VERSION + "/update_userinfo";
+			final String URL = Constants.Config.SERVER_URI
+						+ Constants.Config.REST_API_VERSION + "/update_userinfo";
 			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 					params), new Response.Listener<JSONObject>() {
 				@Override

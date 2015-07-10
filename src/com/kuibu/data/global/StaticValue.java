@@ -71,13 +71,7 @@ public class StaticValue {
 			TEXT,TEXT_WITH_PIC,PICS
 		}	
 	}	
-	
-	public static class SERVER_INFO 
-	{
-		public static final String SERVER_URI = "http://192.168.1.104:5000";
-		public static final String REST_API_VERSION = "/caddy/api/v1.0";		
-	}
-	
+		
 	public static class EDITOR_VALUE
 	{
 		public static final String FROM_WHO="preview_from_who";

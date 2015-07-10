@@ -31,6 +31,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.TopicItemBean;
@@ -294,8 +295,8 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("off",topicDatas==null ? "0":String.valueOf(topicDatas.size()));
 		params.put("slice", query);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION
 				+ "/get_topiclist";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -344,8 +345,8 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("off",userDatas==null ? "0":String.valueOf(userDatas.size()));
 		params.put("slice", query);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_userlist";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_userlist";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -395,8 +396,8 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("off",contentDatas==null ? "0":String.valueOf(contentDatas.size()));
 		params.put("slice", query);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_contentlist";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_contentlist";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

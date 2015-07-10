@@ -40,6 +40,7 @@ import com.kuibu.custom.widget.BorderScrollView;
 import com.kuibu.custom.widget.BorderScrollView.OnBorderListener;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -204,8 +205,8 @@ public class CollectInfoListActivity extends BaseActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("pack_id", pack_id);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_collectpack";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_collectpack";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -273,11 +274,11 @@ public class CollectInfoListActivity extends BaseActivity implements
 		params.put("obj_id", pack_id);
 		final String URL;
 		if (bfocus) {
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_follows";
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/del_follows";
 		} else {
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_follows";
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/add_follows";
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -329,8 +330,8 @@ public class CollectInfoListActivity extends BaseActivity implements
 		params.put("pack_id", pack_id);
 		params.put("off", String.valueOf(item_datas.size()));
 		params.put("uid", Session.getSession().getuId());
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_packlist";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_packlist";
 		JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, URL,
 				new JSONObject(params), new Response.Listener<JSONObject>() {
 					@Override

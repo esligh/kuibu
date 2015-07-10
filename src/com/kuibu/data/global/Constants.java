@@ -10,12 +10,17 @@ public final class Constants {
 	public final static String VERISION_CODE =  "version_code";
 	
 	public static class Config {
+		public static final String SERVER_URI = "http://192.168.1.104:5000/";
+		public static final String SOCKETIO_SERVER = "http://192.168.1.104:5000/";
+		public static final String REST_API_VERSION = "/caddy/api/v1.0";	
 		public static final boolean DEBUG_MODE = true ; 
 		public static final String USER_PHOTO_TMP  = "pictmp";//用户头像裁剪的缓存文件
 		public static final String CAMERA_TMP="userphoto.jpg";
 		public static final String CAMERA_IMG_DIR = "/kuibu/tmp/";
 	}
-	
+	public static class EVENT{
+		public static final String LOGIN_EVENT = "login";
+	}
 	public static class Tag{
 		public static final String LOGIN = "login";
 		public static final String REGISTER = "register";

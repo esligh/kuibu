@@ -132,8 +132,8 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 				StaticValue.SERMODLE.USER_SEX_MALE:StaticValue.SERMODLE.USER_SEX_FEMALE;
 		params.put("sex", sex);		
 		
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/user_register";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/user_register";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -181,8 +181,8 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/upload_userpic";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/upload_userpic";
 		finalHttp.post(URL, params, new AjaxCallBack<String>() {
 			@Override
 			public void onSuccess(String t) {

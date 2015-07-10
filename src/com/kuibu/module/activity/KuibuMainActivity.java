@@ -31,7 +31,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-
 import com.kuibu.common.utils.ACache;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;

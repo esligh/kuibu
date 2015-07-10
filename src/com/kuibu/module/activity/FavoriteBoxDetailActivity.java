@@ -34,6 +34,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.BorderScrollView;
 import com.kuibu.custom.widget.BorderScrollView.OnBorderListener;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -185,8 +186,8 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 		params.put("uid",Session.getSession().getuId());
 		params.put("box_id", mboxId);
 		params.put("off", String.valueOf(datas.size()));
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_favorite";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_favorite";
 
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -239,8 +240,8 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("uid",Session.getSession().getuId());
 		params.put("box_id", mboxId);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/clear_favoritebox";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/clear_favoritebox";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -281,8 +282,8 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 		params.put("uid",Session.getSession().getuId());
 		params.put("cid", datas.get(position).getId());
 		params.put("box_id", mboxId);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_favorite";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/del_favorite";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

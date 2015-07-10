@@ -10,9 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
-import com.kuibu.common.utils.ImageUtil;
 import com.kuibu.model.bean.TopicItemBean;
+import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class FocusTopicItemAdapter extends BaseAdapter{

@@ -38,6 +38,7 @@ import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -93,10 +94,11 @@ public class CommentActivity extends BaseActivity implements
 		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
 		collection_creator_id = getIntent().getStringExtra("create_by");
 		Map<String, String> params = new HashMap<String, String>();
+		params.put("uid", Session.getSession().getuId());
 		params.put("off", String.valueOf(datas.size()));
 		params.put("cid", cid);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_comments";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_comments";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -213,6 +215,12 @@ public class CommentActivity extends BaseActivity implements
 								}
 								break;
 							case 2: // copy
+								boolean isConn = KuibuApplication.getSocketIoInstance().getSocketIO().
+										isConnected(); 
+								if(isConn){
+									KuibuApplication.getSocketIoInstance().getSocketIO().send("I'm alive");
+									KuibuApplication.getSocketIoInstance().getSocketIO().emit("my event", "I'm alive.");
+								}
 								break;
 							case 3:// report
 								break;
@@ -271,8 +279,8 @@ public class CommentActivity extends BaseActivity implements
 			params.put("type", StaticValue.COMMENT.TYPE_COMMON);
 			params.put("receiver_id", collection_creator_id);
 		}
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_comment";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/add_comment";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@SuppressLint("SimpleDateFormat")
@@ -340,8 +348,8 @@ public class CommentActivity extends BaseActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", item.getCid());
 		params.put("comment_id", item.getId());
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_comment";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/del_comment";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

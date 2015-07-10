@@ -281,8 +281,8 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", cid);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-				+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_collectiondetail";
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_collectiondetail";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -336,8 +336,8 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", cid);
-		final String URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/get_useraction";				
+		final String URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/get_useraction";				
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -386,11 +386,11 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		params.put("obj_id", cid);
 		String URL=""; 
 		if(isChecked){
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/add_useraction";		
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/add_useraction";		
 		}else{
-			URL = StaticValue.SERVER_INFO.SERVER_URI
-					+ StaticValue.SERVER_INFO.REST_API_VERSION + "/del_useraction";			
+			URL = Constants.Config.SERVER_URI
+					+ Constants.Config.REST_API_VERSION + "/del_useraction";			
 		}
 		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
