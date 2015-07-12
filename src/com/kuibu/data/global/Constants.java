@@ -18,9 +18,6 @@ public final class Constants {
 		public static final String CAMERA_TMP="userphoto.jpg";
 		public static final String CAMERA_IMG_DIR = "/kuibu/tmp/";
 	}
-	public static class EVENT{
-		public static final String LOGIN_EVENT = "login";
-	}
 	public static class Tag{
 		public static final String LOGIN = "login";
 		public static final String REGISTER = "register";

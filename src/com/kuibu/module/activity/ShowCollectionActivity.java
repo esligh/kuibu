@@ -207,7 +207,6 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stu
 				if(Session.getSession().isLogin()){
-					cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
 					Intent intent = new Intent(ShowCollectionActivity.this,CollectFavoriteBoxActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
 					intent.putExtra(StaticValue.COLLECTION.IS_COLLECTED, isCollected);
@@ -230,6 +229,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 				do_action(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, funcb.isChecked());
 			}
 		});
+		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}	
@@ -250,15 +250,10 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 				}
 			}
 			comment_text_tv.setText("评论 "+DataUtils.formatNumber(getIntent().getIntExtra("comment_count",0)));
-			vote_count_tv.setText(DataUtils.formatNumber(getIntent().getIntExtra("vote_count",0)));  
-			int dpheight = fl_top.getHeight();
-			int pxheight = (int)(DensityUtils.dp2px(this, dpheight) * (0.35f-title_tv.getLineCount()*0.01));
-			StringBuffer buffer = new StringBuffer("<div style=\"height:").append(pxheight).append("px;\"></div>\n");
-			buffer.append(content);
-			buffer.append("\n<br/><br/><br/>");
-			contentView.loadMarkdown(buffer.toString(),cssFile);
+			vote_count_tv.setText(DataUtils.formatNumber(getIntent().getIntExtra("vote_count",0)));
 			author_name.setText(getIntent().getStringExtra("name"));
 			author_desc.setText(getIntent().getStringExtra("signature"));
+			contentView.loadMarkdown(contentWarpper(content),cssFile);
 			String url = getIntent().getStringExtra("photo");
 			if(TextUtils.isEmpty(url) || url.equals("null")){
 				String sex = getIntent().getStringExtra("sex");
@@ -294,6 +289,8 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 						if(obj!=null){
 							author_name.setText(obj.getString("name"));
 							author_desc.setText(obj.getString("signature"));
+							String content = obj.getString("content");
+							contentView.loadMarkdown(contentWarpper(content),cssFile);								
 							String url = obj.getString("photo");							
 							if(TextUtils.isEmpty(url) || url.equals("null")){
 								if(obj.getString("sex").equals(StaticValue.SERMODLE.USER_SEX_MALE)){
@@ -304,17 +301,12 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 							}else{
 								ImageLoader.getInstance().displayImage(url,
 										author_pic);
-							}
-							String content = obj.getString("content");
-							vote_count_tv.setText(DataUtils.formatNumber(obj.getInt("vote_count")));		
-							StringBuffer buffer = new StringBuffer("<p class=\"headerplace\"></p>");
-							buffer.append(content);
-							buffer.append("\n<br/><br/><br/>");
-							contentView.loadMarkdown(buffer.toString(),cssFile);	
-							comment_text_tv.setText("评论 "+DataUtils.formatNumber(obj.getInt("comment_count")));		
-							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+							}				
+							vote_count_tv.setText(DataUtils.formatNumber(obj.getInt("vote_count")));
+							comment_text_tv.setText("评论 "+DataUtils.formatNumber(obj.getInt("comment_count")));														
 						}
 					}
+					mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -612,4 +604,13 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
+	private String contentWarpper(String content)
+	{
+		int dpheight = fl_top.getHeight();
+		int pxheight = (int)(DensityUtils.dp2px(this, dpheight) * (0.35f-title_tv.getLineCount()*0.01));
+		StringBuffer buffer = new StringBuffer("<div style=\"height:").append(pxheight).append("px;\"></div>\n");
+		buffer.append(content);
+		buffer.append("\n<br/><br/><br/>");
+		return buffer.toString();
+	}
 }

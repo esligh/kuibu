@@ -187,8 +187,7 @@ public class LoginDialog {
 							obj.put("uid", uid);
 							obj.put("name", uname);
 							KuibuApplication.getSocketIoInstance().getSocketIO().
-//									send(obj);
-									emit(Constants.EVENT.LOGIN_EVENT, obj);
+									emit(StaticValue.EVENT.LOGIN_EVENT, obj);
 						} catch (MalformedURLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -285,8 +284,7 @@ public class LoginDialog {
 				obj.put("uid", uId);
 				obj.put("name", uName);
 				KuibuApplication.getSocketIoInstance().getSocketIO().
-//				send(obj);
-				emit(Constants.EVENT.LOGIN_EVENT, obj);
+				emit(StaticValue.EVENT.LOGIN_EVENT, obj);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

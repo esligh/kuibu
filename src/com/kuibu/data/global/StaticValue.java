@@ -214,4 +214,10 @@ public class StaticValue {
 		public static final String TAB_PAGE_MESSAGE = "message";
 		
 	}
+	
+	public static class EVENT{
+		public static final String LOGIN_EVENT = "login";
+		public static final String TYPE_NEWLETTERS= "NEW_LETTER";
+		public static final String TYPE_NEWCOMMETN="NEW_COMMENT";
+	}
 }

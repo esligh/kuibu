@@ -1,6 +1,5 @@
 package com.kuibu.module.net;
 
-import io.socket.IOCallback;
 import io.socket.SocketIO;
 
 import java.net.MalformedURLException;
@@ -12,12 +11,14 @@ import com.kuibu.data.global.Constants;
 
 public class EventSocket{
 	private SocketIO mSocket ; 
-	private IOCallback callback ; 
-	public EventSocket(IOCallback callback) 
+	private EventCallback callback ; 
+	
+	public EventSocket(EventCallback callback) 
 	{
 		this.callback = callback ; 
 	}
 
+	
 	public void SetUp() throws MalformedURLException, NoSuchAlgorithmException
 	{
 		SocketIO.setDefaultSSLSocketFactory(SSLContext.getDefault());

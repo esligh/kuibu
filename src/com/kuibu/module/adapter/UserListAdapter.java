@@ -12,15 +12,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kuibu.custom.widget.BadgeView;
 import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class UserListAdapter extends BaseAdapter{
 	List<Map<String,Object>> datas  ;
-	private LayoutInflater mInflater = null;
+	private Context mContext;
 	public UserListAdapter(Context context, List<Map<String, Object>> datas) {
 		this.datas = datas;
-		this.mInflater = LayoutInflater.from(context);
+		this.mContext = context ; 
+		
 	}
 	
 	public void updateView( List<Map<String, Object>> datas)
@@ -54,12 +56,13 @@ public class UserListAdapter extends BaseAdapter{
 		// TODO Auto-generated method stub
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.user_list_item, parent,false);
+			convertView = LayoutInflater.from(mContext).inflate(R.layout.user_list_item, parent,false);
 			holder = new ViewHolder();
 
 			holder.user_name_tv = (TextView) convertView.findViewById(R.id.user_name_tv);
 			holder.user_desc_tv = (TextView) convertView.findViewById(R.id.user_desc_tv);
 			holder.user_pic_iv =(ImageView)convertView.findViewById(R.id.user_pic_iv);
+			holder.badge = new BadgeView(mContext, (View)(holder.user_pic_iv));
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -76,12 +79,18 @@ public class UserListAdapter extends BaseAdapter{
 		}else{
 			ImageLoader.getInstance().displayImage(url, holder.user_pic_iv);			
 		}
+		if((Integer)datas.get(position).get("msg_count")>0){			 
+			holder.badge.setBackgroundResource(R.drawable.design_red_point);			
+			holder.badge.setText("...");
+			holder.badge.setBadgeMargin(0);
+			holder.badge.show();
+		}
 		return convertView;
 	}
 	
-	private class ViewHolder {
-		TextView user_name_tv, user_desc_tv;
-		ImageView user_pic_iv ; 
+	public class ViewHolder {
+		public TextView user_name_tv, user_desc_tv;
+		public ImageView user_pic_iv ;	
+		public BadgeView badge ;
 	}
-
 }

@@ -9,6 +9,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -25,16 +34,8 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.SendMessageActivity;
 import com.kuibu.module.adapter.UserListAdapter;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-
+import com.kuibu.module.adapter.UserListAdapter.ViewHolder;
+//private letter  
 public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 	private PaginationListView userList = null;
 	private UserListAdapter listAdapter;
@@ -66,12 +67,15 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
+				ViewHolder  holder = (ViewHolder)view.getTag();
+				holder.badge.hide();				
 				Map<String, Object> item = (Map<String, Object>) viewAdapter
 						.getAdapter().getItem(position);
 				Intent intent = new Intent(getActivity(),
 						SendMessageActivity.class);
 				intent.putExtra("uid", (String) item.get("uid"));
 				startActivity(intent);
+				readMsg((String)item.get("uid")); //receiver_id 
 				getActivity().overridePendingTransition(
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
 			}
@@ -105,6 +109,7 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 							item.put("name", obj.getString("name"));
 							item.put("signature", obj.getString("signature"));
 							item.put("photo", obj.getString("photo_url"));
+							item.put("msg_count", Integer.valueOf(obj.getInt("msg_count")));
 							datas.add(item);
 						}
 						showView();
@@ -144,6 +149,48 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
+	private void readMsg(String senderId)
+	{
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("receiver_id", Session.getSession().getuId());
+		params.put("sender_id", senderId);
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/update_message";
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+			}
+		}) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				HashMap<String, String> headers = new HashMap<String, String>();
+				String credentials = Session.getSession().getToken()
+						+ ":unused";
+				headers.put("Authorization", "Basic "
+						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
+								.replaceAll("\\s+", ""));
+				return headers;
+			}
+		};
+		KuibuApplication.getInstance().addToRequestQueue(req);
+	}
+	
 	private void showView() {
 		if (listAdapter == null) {
 			listAdapter = new UserListAdapter(getActivity(), datas);

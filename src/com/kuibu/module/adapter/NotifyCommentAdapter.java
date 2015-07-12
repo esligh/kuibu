@@ -53,21 +53,23 @@ public class NotifyCommentAdapter extends BaseAdapter {
 			convertView  = LayoutInflater.from(context).inflate(R.layout.notifycomment_list_item, 
 					container,false);
 			holder.top_left_tv = (TextView)convertView.findViewById(R.id.top_text_left_tv);
-			holder.top_left_tv = (TextView)convertView.findViewById(R.id.top_text_Right_tv);
+			holder.top_right_tv = (TextView)convertView.findViewById(R.id.top_text_Right_tv);
+			holder.title_tv = (TextView)convertView.findViewById(R.id.title_tv);
 			holder.content_tv = (TextView)convertView.findViewById(R.id.content_tv);
 			convertView.setTag(holder);
 		}else{
 			holder = (HolderView)convertView.getTag();
 		}
-		holder.top_left_tv.setText(datas.get(position).get("user_names"));
+		holder.top_left_tv.setText(datas.get(position).get("name"));
 		holder.top_right_tv.setText(datas.get(position).get("desc"));
-		holder.content_tv.setText(datas.get(position).get("title"));
+		holder.title_tv.setText(datas.get(position).get("title"));
+		holder.content_tv.setText(datas.get(position).get("content"));
 		return convertView;
 	}
 	
 	private class HolderView
 	{
 		TextView top_left_tv,top_right_tv;
-		TextView content_tv;
+		TextView title_tv,content_tv;
 	}
 }

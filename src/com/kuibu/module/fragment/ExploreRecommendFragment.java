@@ -84,6 +84,7 @@ public class ExploreRecommendFragment extends BaseFragment implements
 				bean.setPackId(temp.getString("pid"));
 				bean.setTopText(temp.getString("name"));
 				bean.setTopUrl(temp.getString("photo"));
+			    bean.setUserSignature(temp.getString("signature"));
 				bean.setUserSex(temp.getString("sex"));
 				bean.setCreateBy(temp.getString("create_by"));
 				bean.setVoteCount(temp.getInt("vote_count"));

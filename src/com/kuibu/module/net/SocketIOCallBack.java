@@ -1,28 +1,60 @@
 package com.kuibu.module.net;
 
+import io.socket.IOAcknowledge;
+import io.socket.SocketIOException;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.socket.IOAcknowledge;
-import io.socket.IOCallback;
-import io.socket.SocketIOException;
+import com.kuibu.module.iterf.IEventHandler;
 
-public class SocketIOCallBack implements IOCallback{
+public class SocketIOCallBack extends EventCallback{
+	
+	public List<IEventHandler> receivers = new ArrayList<IEventHandler>();
 	public SocketIOCallBack() 
 	{}
 	
 	@Override
+	protected void attachReceiver(IEventHandler handler) {
+		// TODO Auto-generated method stub
+		if(!receivers.contains(handler)){
+			receivers.add(handler);
+		}		
+	}
+
+	@Override
+	protected void detachReceiver(IEventHandler handler) {
+		// TODO Auto-generated method stub
+		receivers.remove(handler);
+	}
+
+	@Override
+	protected void notifyReceiver(JSONObject json) {
+		// TODO Auto-generated method stub
+		for(int i =0;i<receivers.size();i++){
+			receivers.get(i).eventResponse(json);
+		}
+	}
+	
+	@Override
 	public void onMessage(JSONObject json, IOAcknowledge ack) {
-		try {
-	          System.out.println("Server said:" + json.toString(1));
-	    } catch (JSONException e) {
-	          e.printStackTrace();
-	    }
+			notifyReceiver(json);
 	}
 	
 	@Override
 	public void onMessage(String data, IOAcknowledge ack) {
-	    System.out.println("Server said: " + data);
+	    try {
+	    	JSONObject obj = new JSONObject() ;
+			obj.put("msg", data);
+			notifyReceiver(obj);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
 	}
 	
 	@Override

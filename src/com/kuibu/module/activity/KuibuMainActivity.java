@@ -13,6 +13,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -28,10 +31,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.kuibu.common.utils.ACache;
+import com.kuibu.custom.widget.BadgeView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
@@ -179,6 +184,10 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			mNotifyMenu.setVisible(false);
 		}else{
 			mNotifyMenu.setVisible(true);
+			BadgeView badge = new BadgeView(this, mNotifyMenu.getActionView());
+			badge.setText("12");
+			badge.setBadgePosition(BadgeView.POSITION_BOTTOM_LEFT);
+			badge.show();
 		}
 		if(!Session.getSession().isLogin()){
 			mLogoutMenu.setVisible(false);
@@ -361,5 +370,21 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 				break;
 		}
 	}
-
+		
+	@Override
+	public void eventResponse(JSONObject entity)
+	{
+		String type;
+		try {			
+			type = entity.getString("event_type");
+			if(StaticValue.EVENT.TYPE_NEWLETTERS.equals(type)){ //private letter come.
+				Toast.makeText(this, "收到新私信", Toast.LENGTH_LONG).show();
+			}else if(StaticValue.EVENT.TYPE_NEWCOMMETN.equals(type)){
+				Toast.makeText(this, "收到新评论", Toast.LENGTH_LONG).show();
+			}			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
 }

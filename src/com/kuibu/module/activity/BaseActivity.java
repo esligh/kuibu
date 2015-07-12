@@ -1,6 +1,6 @@
 package com.kuibu.module.activity;
 
-import com.kuibu.data.global.StaticValue;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,7 +12,10 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 
-public abstract class BaseActivity extends ActionBarActivity {
+import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.iterf.IEventHandler;
+
+public abstract class BaseActivity extends ActionBarActivity implements IEventHandler{
 	protected Activity mInstance = null;
 	protected boolean isDarkTheme = false;
 	@Override
@@ -60,5 +63,8 @@ public abstract class BaseActivity extends ActionBarActivity {
 			}
 		}, 1);
 	}
-
+	
+	@Override
+	public void eventResponse(JSONObject entity)
+	{}
 }
