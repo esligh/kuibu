@@ -73,9 +73,8 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 						.getAdapter().getItem(position);
 				Intent intent = new Intent(getActivity(),
 						SendMessageActivity.class);
-				intent.putExtra("uid", (String) item.get("uid"));
+				intent.putExtra("sender_id", (String) item.get("sender_id"));
 				startActivity(intent);
-				readMsg((String)item.get("uid")); //receiver_id 
 				getActivity().overridePendingTransition(
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
 			}
@@ -104,7 +103,7 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 						for (int i = 0; i < arr.length(); i++) {
 							JSONObject obj = (JSONObject) arr.get(i);
 							Map<String, Object> item = new HashMap<String, Object>();
-							item.put("uid", obj.getString("id"));
+							item.put("sender_id", obj.getString("sender_id"));
 							item.put("sex", obj.getString("sex"));
 							item.put("name", obj.getString("name"));
 							item.put("signature", obj.getString("signature"));
@@ -113,7 +112,7 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 							datas.add(item);
 						}
 						showView();
-						if (arr.length() > 0) {
+						if (datas.size() > 0) {
 							mMultiStateView
 									.setViewState(MultiStateView.ViewState.CONTENT);
 						} else {
@@ -148,48 +147,7 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
-
-	private void readMsg(String senderId)
-	{
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("receiver_id", Session.getSession().getuId());
-		params.put("sender_id", senderId);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/update_message";
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-			}
-		}) {
-			@Override
-			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put("Authorization", "Basic "
-						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
-								.replaceAll("\\s+", ""));
-				return headers;
-			}
-		};
-		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
+	
 	
 	private void showView() {
 		if (listAdapter == null) {

@@ -18,6 +18,9 @@ public class StaticValue {
 		public static final String NO_PICTRUE_KEY = "no_pictrue";
 		public static final String DARK_THEME_KEY = "dark_theme";
 		public static final String ABOUT_ME = "about_me";
+		public static final String LASTEST_VERSION = "latest_version";
+		public static final String CLEAR_BUFFER = "clear_buffer";
+		public static final String ACCOUNT_PROTECT = "account_protect";
 	}
 	
 	public static class USER_ACTION{
@@ -146,6 +149,9 @@ public class StaticValue {
 		
 		public static final String USER_SEX_FEMALE = "W";
 		public static final String USER_SEX_MALE = "M";
+		
+		
+		public static final String VERSION_CODE = "version_code";
 	}
 	
 	public static class USERINFO

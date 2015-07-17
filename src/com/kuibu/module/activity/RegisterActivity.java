@@ -62,7 +62,6 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.user_register);
-		setTitle("注册");
 		progressBtn = (ActionProcessButton) findViewById(R.id.finishi_reg);
 		progressBtn.setMode(ActionProcessButton.Mode.ENDLESS);
 		user_photo_iv = (ImageView) findViewById(R.id.user_photo);

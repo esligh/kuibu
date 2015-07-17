@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kuibu.custom.widget.BadgeView;
+import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -22,7 +23,6 @@ public class UserListAdapter extends BaseAdapter{
 	public UserListAdapter(Context context, List<Map<String, Object>> datas) {
 		this.datas = datas;
 		this.mContext = context ; 
-		
 	}
 	
 	public void updateView( List<Map<String, Object>> datas)
@@ -71,7 +71,8 @@ public class UserListAdapter extends BaseAdapter{
 		holder.user_desc_tv.setText(datas.get(position).get("signature").toString());
 		String url = datas.get(position).get("photo").toString();
 		if(TextUtils.isEmpty(url) || url.equals("null")){
-			if(datas.get(position).get("sex").equals("M")){
+			if(StaticValue.SERMODLE.USER_SEX_MALE.
+					equals(datas.get(position).get("sex"))){
 				holder.user_pic_iv.setImageResource(R.drawable.default_pic_avatar_male);	
 			}else{
 				holder.user_pic_iv.setImageResource(R.drawable.default_pic_avatar_female);
@@ -79,7 +80,8 @@ public class UserListAdapter extends BaseAdapter{
 		}else{
 			ImageLoader.getInstance().displayImage(url, holder.user_pic_iv);			
 		}
-		if((Integer)datas.get(position).get("msg_count")>0){			 
+		if(datas.get(position).get("msg_count")!=null && 
+				(Integer)datas.get(position).get("msg_count")>0){			 
 			holder.badge.setBackgroundResource(R.drawable.design_red_point);			
 			holder.badge.setText("...");
 			holder.badge.setBadgeMargin(0);

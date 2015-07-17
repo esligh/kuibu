@@ -8,7 +8,7 @@ package com.kuibu.data.global;
 public final class Constants {
 	
 	public final static String VERISION_CODE =  "version_code";
-	
+	public final static String APP_NAME = "kuibu";
 	public static class Config {
 		public static final String SERVER_URI = "http://192.168.1.104:5000/";
 		public static final String SOCKETIO_SERVER = "http://192.168.1.104:5000/";

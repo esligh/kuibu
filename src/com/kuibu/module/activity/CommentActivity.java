@@ -17,12 +17,12 @@ import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -73,6 +73,15 @@ public class CommentActivity extends BaseActivity implements
         });
 		commentList = (PaginationListView) findViewById(R.id.comment_list);
 		editContent = (EditText) findViewById(R.id.edit_comment);
+		editContent.setOnFocusChangeListener(new OnFocusChangeListener() {			
+			@Override
+			public void onFocusChange(View view, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if(hasFocus){
+					commentList.setSelection(datas.size()-1);
+				}
+			}
+		});
 		btnSend = (ImageButton) findViewById(R.id.btn_send);
 		btnSend.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -389,18 +398,8 @@ public class CommentActivity extends BaseActivity implements
 	}
 	@Override
 	public void onLoad(String tag) {
-		// TODO Auto-generated method stub
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				loadData();
-				showView();
-				commentList.loadComplete();
-			}
-		}, 3000);
+		loadData();
 	}
-
 	
 	@Override
 	public void onBackPressed() {

@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -60,6 +61,16 @@ public class SendMessageActivity extends BaseActivity implements OnLoadListener{
 		msgList = (PaginationListView)findViewById(R.id.message_list);
 		msgList.setOnLoadListener(this);
 		msgEt = (EditText)findViewById(R.id.edit_message);
+		msgEt.setOnFocusChangeListener(new OnFocusChangeListener() {			
+			@Override
+			public void onFocusChange(View view, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if(hasFocus){
+					msgList.setSelection(mDatas.size()-1);
+				}
+			}
+		});
+		
 		btnSend = (ImageButton)findViewById(R.id.btn_send);		
 		btnSend.setOnClickListener(new OnClickListener() {			
 			@Override
@@ -79,7 +90,7 @@ public class SendMessageActivity extends BaseActivity implements OnLoadListener{
 		Map<String,String> params = new HashMap<String, String>();
 		params.put("off", String.valueOf(mDatas.size()));
 		params.put("requestor_id", Session.getSession().getuId());
-		params.put("uid", getIntent().getStringExtra("uid"));
+		params.put("sender_id", getIntent().getStringExtra("sender_id"));
 		final String URL = Constants.Config.SERVER_URI
 				+ Constants.Config.REST_API_VERSION + "/get_messages";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
@@ -197,6 +208,47 @@ public class SendMessageActivity extends BaseActivity implements OnLoadListener{
 		}
 	}
 
+	private void readMsg(String senderId)
+	{
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("receiver_id", Session.getSession().getuId());
+		params.put("sender_id", senderId);
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/update_message";
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+			}
+		}) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				HashMap<String, String> headers = new HashMap<String, String>();
+				String credentials = Session.getSession().getToken()
+						+ ":unused";
+				headers.put("Authorization", "Basic "
+						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
+								.replaceAll("\\s+", ""));
+				return headers;
+			}
+		};
+		KuibuApplication.getInstance().addToRequestQueue(req);
+	}
 	@Override
 	public void onLoad(String tag) {
 		// TODO Auto-generated method stub

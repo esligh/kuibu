@@ -31,11 +31,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.ACache;
+import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.BadgeView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -201,7 +206,6 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);		
 	}
 	
@@ -287,8 +291,7 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			}
 			params.put("itemData", newData);			
 			mNavigationDrawerFragment.updateDrawerList(params);
-			mNavigationDrawerFragment.selectItem(LOGIN_DEFAULT_POSITINO);
-			
+			mNavigationDrawerFragment.selectItem(LOGIN_DEFAULT_POSITINO);			
 		}
 	}
 
@@ -310,9 +313,7 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			}
 		}		
 		ft.commit();		
-		Session.getSession().setLogin(false);//修改登录状态
 		KuibuApplication.getInstance().getPersistentCookieStore().clear(); //清理cookie
-		
 		//准备切换DrawerList
 		List<DrawerListItem> newData = new ArrayList<DrawerListItem>();
 		String[] itemTitle = getResources().getStringArray(R.array.drawer_item_title_nolgoin);
@@ -336,6 +337,53 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 		//清理缓存 
 		ACache aCache = ACache.get(this);
 		aCache.clear();
+		
+		logout();
+		Session.getSession().setLogin(false);
+	}
+	
+	private void logout()
+	{
+		if(!Session.getSession().isLogin())
+			return ;		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("uid", Session.getSession().getuId());
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION
+				+ "/user_logout";
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						//logout success
+						
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+			}
+		}){
+			@Override  
+	 		public Map<String, String> getHeaders() throws AuthFailureError {  
+	 			HashMap<String, String> headers = new HashMap<String, String>();
+	 			String credentials = Session.getSession().getToken()+":unused";
+	 			headers.put("Authorization","Basic "+
+	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
+	 			return headers;  
+	 		}
+		};
+		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
 	private boolean doubleBackToExitPressedOnce;	

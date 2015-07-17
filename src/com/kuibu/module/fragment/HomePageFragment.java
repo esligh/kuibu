@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -62,7 +63,7 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 		pullFreshlayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadData("DOWN",false);
+                loadData("DOWN",true);
             }
         });
 		JSONArray arr = KuibuApplication.getCacheInstance()
@@ -72,9 +73,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 		}else{
 			loadData("INIT",true);
 		}
-		if(mHomeDatas.size()>0){
-			loadData("DOWN",true);
-		}		
 		showHomeView();
 		return rootView;
 	}
@@ -162,7 +160,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				
 				pullFreshlayout.setRefreshing(false);
 				mListView.loadComplete();
 			}

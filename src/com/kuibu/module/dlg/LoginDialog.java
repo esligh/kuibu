@@ -16,7 +16,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,12 +27,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.module.activity.R;
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.activity.R;
 
 /**
  * @class  登录窗体
@@ -42,7 +41,7 @@ import com.kuibu.data.global.StaticValue;
  */
 public class LoginDialog {
 	private Context mContext;
-	private EditText mUserNameEt;
+	private EditText mUserEmailEt;
 	private EditText mUserPwdEt;
 	private ActionProcessButton btnLogIn ; 
 	private OnLoginLisener loginListener;
@@ -58,14 +57,9 @@ public class LoginDialog {
 
 	@SuppressLint("InflateParams")
 	public void show() {
-		if (mContext == null) {
-			Log.d("com.caddy.drawer.itemlayout.LoginDialog",
-					"show method error.");
-			return;
-		}
 		LinearLayout loginLayout = (LinearLayout) LayoutInflater.from(mContext).inflate(
 				R.layout.login_dialog, null);
-		mUserNameEt = (EditText) loginLayout.findViewById(R.id.login_user_name);
+		mUserEmailEt = (EditText) loginLayout.findViewById(R.id.login_user_email);
 		mUserPwdEt = (EditText) loginLayout.findViewById(R.id.login_user_pwd);
 		btnLogIn = (ActionProcessButton)loginLayout.findViewById(R.id.btnLogIn);
 		btnLogIn.setMode(ActionProcessButton.Mode.ENDLESS);
@@ -76,13 +70,13 @@ public class LoginDialog {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				String name = mUserNameEt.getText().toString().trim();
+				String email = mUserEmailEt.getText().toString().trim();
 				String pwd = mUserPwdEt.getText().toString().trim();				
-				if(TextUtils.isEmpty(name) || TextUtils.isEmpty(pwd)){
+				if(TextUtils.isEmpty(email) || TextUtils.isEmpty(pwd)){
 					Toast.makeText(mContext, "请输入账号和密码.", Toast.LENGTH_SHORT).show();
 				}else{
 					btnLogIn.setProgress(PROGRESS_LEN);
-					doLogin(name, pwd);
+					doLogin(email, pwd);
 				}
 			}
 		});
@@ -97,14 +91,14 @@ public class LoginDialog {
 	 * @param name
 	 * @param pwd
 	 */
-	void doLogin(final String name, final String pwd) {		
+	void doLogin(final String email, final String pwd) {		
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("name", name);
+		params.put("email", email);
 		params.put("pwd", pwd);
 		final String URL = Constants.Config.SERVER_URI
 				+ Constants.Config.REST_API_VERSION + "/user_login";
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(params),
+				new Response.Listener<JSONObject>() {
 			@SuppressLint("SimpleDateFormat")
 			@Override
 			public void onResponse(JSONObject response) {
@@ -172,8 +166,7 @@ public class LoginDialog {
 						KuibuApplication
 								.getInstance()
 								.getPersistentCookieStore()
-								.addCookie("user_email",
-										info.getString("user_email"), date);
+								.addCookie("user_email",info.getString("user_email"), date);
 						KuibuApplication.getInstance()
 								.getPersistentCookieStore()
 								.addCookie("user_photo", photoUrl, date);						
@@ -286,13 +279,10 @@ public class LoginDialog {
 				KuibuApplication.getSocketIoInstance().getSocketIO().
 				emit(StaticValue.EVENT.LOGIN_EVENT, obj);
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return true;

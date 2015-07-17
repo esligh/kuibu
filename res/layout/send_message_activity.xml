@@ -12,7 +12,6 @@
     app:msv_viewState="loading" >
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >
@@ -35,7 +34,7 @@
                 android:layout_marginBottom="2dp"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:hint="@string/send_message" />
+                android:hint="@string/write_down_comment" />
 
             <ImageButton
                 android:id="@+id/btn_send"
@@ -44,7 +43,8 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginRight="5dp"
                 android:background="@color/transparent"
-                android:src="@drawable/bt_send_comment_selector" />
+                android:src="@drawable/bt_send_comment_selector" 
+                android:contentDescription="@null"/>
         </LinearLayout>
     </RelativeLayout>
 

@@ -16,6 +16,6 @@
   <string name="font_default">18</string>
   
   <string name="preference_other">其他</string>
-  <string name="preference_latest_version">最新版本</string>
+  <string name="preference_latest_version">版本更新</string>
   <string name="preference_about">关于</string>
 </resources>

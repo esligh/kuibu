@@ -5,7 +5,7 @@
     <string name="onlogining">正在登录</string>
     <string name="action_complete">完成</string>
     <string name="action_logout">登出</string>
-    <string name="login_username_hint">邮箱/昵称</string>
+    <string name="login_useremail_hint">邮箱</string>
     <string name="login_pwd_hint">密码</string>
     <string name="register_name">注册</string>
     <string name="publish">发布</string>

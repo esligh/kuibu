@@ -319,7 +319,7 @@ public class BadgeView extends TextView {
 		return increment(-offset);
 	}
 	
-	private ShapeDrawable getDefaultBackground() {
+	public ShapeDrawable getDefaultBackground() {
 		
 		int r = dipToPixels(DEFAULT_CORNER_RADIUS_DIP);
 		float[] outerR = new float[] {r, r, r, r, r, r, r, r};
