@@ -116,7 +116,7 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 							mdatas.add(item);
 						}
 						showView();
-						if (arr.length() > 0) {
+						if (mdatas.size() > 0) {
 							mMultiStateView
 									.setViewState(MultiStateView.ViewState.CONTENT);
 						} else {

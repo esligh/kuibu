@@ -20,6 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class UserListAdapter extends BaseAdapter{
 	List<Map<String,Object>> datas  ;
 	private Context mContext;
+	
 	public UserListAdapter(Context context, List<Map<String, Object>> datas) {
 		this.datas = datas;
 		this.mContext = context ; 

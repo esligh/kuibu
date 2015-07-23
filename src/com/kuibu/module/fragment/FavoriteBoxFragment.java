@@ -177,10 +177,8 @@ public class FavoriteBoxFragment extends Fragment {
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
 						if(!TextUtils.isEmpty(data)){
-							JSONArray arr = new JSONArray(data);							
-							if(arr.length()>0){
-								loadFromArray(arr);
-							}
+							JSONArray arr = new JSONArray(data);														
+							loadFromArray(arr);
 						}
 					}
 				} catch (JSONException e) {

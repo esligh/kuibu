@@ -78,7 +78,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			@Override
 			public void onClick(View arg0) {
 				mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
-				load_pack();
+				loadPack();
 			}   	
         });
 		focusLayout = (RelativeLayout) findViewById(R.id.collect_pack_info_focus_rl);
@@ -155,9 +155,9 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		});
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		load_pack();
-		load_userinfo();
-		load_list();
+		loadPack();
+		loadUserinfo();
+		loadList();
 		showView();
 	}
 
@@ -181,7 +181,52 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 	}
 
-	private void load_pack() {
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		// packVo.closeDB();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.onBackPressed();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+	}	
+
+	private void showView() {
+		if (infoAdapter == null) {
+			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
+			cardListView.setAdapter(infoAdapter);
+		} else {
+			infoAdapter.updateView(item_datas);
+		}
+	}
+
+	@Override
+	public void onBottom() {
+		// TODO Auto-generated method stub
+		footerView.setVisibility(View.VISIBLE);
+		loadList();
+	}
+
+	@Override
+	public void onTop() {
+		// TODO Auto-generated method stub
+		borderScrollView.loadComplete();
+	}
+	
+	private void loadPack() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", getIntent().getStringExtra("create_by"));
 		params.put("box_id", box_id);
@@ -294,7 +339,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
-	private void load_list() {
+	private void loadList() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("box_id", box_id);
 		params.put("off", item_datas.size() + "");
@@ -357,7 +402,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
-	private void load_userinfo() {
+	private void loadUserinfo() {
 		Map<String, String> params = new HashMap<String, String>();
 		String create_by = getIntent().getStringExtra("create_by");
 		params.put("uid", Session.getSession().getuId());
@@ -416,50 +461,5 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
-
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		// packVo.closeDB();
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			this.onBackPressed();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
-	}	
-
-	private void showView() {
-		if (infoAdapter == null) {
-			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
-			cardListView.setAdapter(infoAdapter);
-		} else {
-			infoAdapter.updateView(item_datas);
-		}
-	}
-
-	@Override
-	public void onBottom() {
-		// TODO Auto-generated method stub
-		footerView.setVisibility(View.VISIBLE);
-		load_list();
-	}
-
-	@Override
-	public void onTop() {
-		// TODO Auto-generated method stub
-		borderScrollView.loadComplete();
 	}
 }

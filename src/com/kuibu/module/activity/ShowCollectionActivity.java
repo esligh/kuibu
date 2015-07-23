@@ -13,7 +13,6 @@ import org.json.JSONObject;
 
 import us.feras.mdv.MarkdownView;
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -88,29 +87,21 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 	private String cssFile ; 
 	private boolean isDarkTheme ; 
 	private boolean isCollected =false ; 
-	@SuppressLint("ClickableViewAccessibility")
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		SharedPreferences mPerferences = PreferenceManager
 				.getDefaultSharedPreferences(this);		
-		isDarkTheme= mPerferences.getBoolean("dark_theme", false);
-		if (isDarkTheme) {
-			setTheme(R.style.AppTheme_Dark);
-			cssFile = Constants.WEBVIEW_DARK_CSSFILE;
-		}else{
-			setTheme(R.style.AppTheme_Light);
-			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
-		}	
-		
+		isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.show_collection_activity);
         mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
         mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
-        .setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-                Toast.makeText(getApplicationContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+        		.setOnClickListener(new View.OnClickListener() {
+        	@Override
+			public void onClick(View arg0) {              
+				loadMyself();
+				mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);				
 			}
         });
 		contentView =(MarkdownView)findViewById(R.id.show_text_content_tv);
@@ -134,10 +125,14 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		layout_tools = (LinearLayout)findViewById(R.id.layout_tools);
 		setSupportActionBar(toolbar); 
         if(isDarkTheme){
+        	setTheme(R.style.AppTheme_Dark);
+			cssFile = Constants.WEBVIEW_DARK_CSSFILE;
         	layout_author.setBackgroundResource(R.drawable.layout_border_line_down_dark);
         	layout_tools.setBackgroundResource(R.drawable.layout_border_line_up_dark);
         	title_tv.setBackgroundColor(getResources().getColor(R.color.ground));
         }else{
+			setTheme(R.style.AppTheme_Light);
+			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
         	layout_author.setBackgroundResource(R.drawable.layout_border_line_down_light);
         	layout_tools.setBackgroundResource(R.drawable.layout_border_line_up_light);
         	title_tv.setBackgroundColor(getResources().getColor(R.color.light_grey));
@@ -148,7 +143,6 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		mScroller.setScrollListener(this);
 		
 		mScroller.setOnTouchListener(new View.OnTouchListener() {
-			@SuppressLint("ClickableViewAccessibility")
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				switch (event.getAction()) {
@@ -193,7 +187,6 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		commentBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(ShowCollectionActivity.this,CommentActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
 				intent.putExtra("create_by", create_by);
@@ -205,7 +198,6 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		collectBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stu
 				if(Session.getSession().isLogin()){
 					Intent intent = new Intent(ShowCollectionActivity.this,CollectFavoriteBoxActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
@@ -220,13 +212,13 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		noIntrestcb.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				do_action(StaticValue.USER_ACTION.ACTION_OPPOSE_COLLECTION, noIntrestcb.isChecked());
+				doAction(StaticValue.USER_ACTION.ACTION_OPPOSE_COLLECTION, noIntrestcb.isChecked());
 			}
 		});
 		funcb.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				do_action(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, funcb.isChecked());
+				doAction(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, funcb.isChecked());
 			}
 		});
 		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
@@ -239,7 +231,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);		
 		String content = getIntent().getStringExtra("content");
 		if(TextUtils.isEmpty(content)){
-			load_myself();
+			loadMyself();
 		}else{			
 			String type = getIntent().getStringExtra("type");
 			if(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE.equals(type)){
@@ -272,7 +264,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 	
 	
 	
-	private void load_myself()
+	private void loadMyself()
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", cid);
@@ -370,7 +362,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	public void do_action(String action_type,boolean isChecked)
+	public void doAction(String action_type,boolean isChecked)
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
@@ -525,7 +517,6 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 	
 	@Override
 	public void onScrollChanged(int l, int t, int oldl, int oldt) {
-		// TODO Auto-generated method stub
 		if (t <= dp2px(TOP_DISTANCE_Y)) { //当前Scorllbar垂直位置小于预置
 			isInTopDistance = true;
 		} else {

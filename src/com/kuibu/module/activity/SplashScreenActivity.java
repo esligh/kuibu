@@ -3,13 +3,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 
+import com.kuibu.common.utils.PhoneUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.model.welcome.WelcomeActivity;
+
+/**
+ * 启动页*/
 
 public class SplashScreenActivity extends Activity {	
 	private final static int DURABLE_TIME =  3000 ; 	
@@ -17,22 +20,15 @@ public class SplashScreenActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		PackageInfo info;
-		try {
-			info = getPackageManager().getPackageInfo(getPackageName(), 0);
-			int currentVersion = info.versionCode;  
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);  
-			int lastVersion = prefs.getInt(Constants.VERISION_CODE, 0);  
-			if (currentVersion > lastVersion) {
-				bFirstLaunch  = true ; 
-			    prefs.edit().putInt(Constants.VERISION_CODE,0).commit();  
-			}
-		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
-		  
-		
+		PackageInfo info = PhoneUtils.getPackageInfo(this); 
+		int currentVersion = info.versionCode;  
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);  
+		int lastVersion = prefs.getInt(Constants.VERISION_CODE, 0);  
+		if (currentVersion > lastVersion) {
+			bFirstLaunch  = true ; 
+		    prefs.edit().putInt(Constants.VERISION_CODE,0).commit();  
+		}
+		  		
 		new Handler().postDelayed(new Runnable(){
 			@Override
 			public void run() {

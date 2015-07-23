@@ -101,7 +101,7 @@ public class TopicInfoActivity extends BaseActivity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				if(Session.getSession().isLogin()){
-					do_focus(bIsFocus);
+					doFocus(bIsFocus);
 				}else{
 					Toast.makeText(TopicInfoActivity.this, "请先登录或注册用户.", 
 							Toast.LENGTH_SHORT).show();
@@ -110,12 +110,41 @@ public class TopicInfoActivity extends BaseActivity {
 		});
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
-		load_data();
-		load_authors();
+		loadData();
+		loadAuthors();
 		showView();
 	}
 
-	void load_data() {
+	
+	private void showView() {
+		if ( authorAdapter== null) {
+			authorAdapter = new UserListAdapter(this,
+					mDatas); 
+			bestAuthorList.setAdapter(authorAdapter);
+		} else {
+			authorAdapter.updateView(mDatas);
+			
+		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.onBackPressed();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+	}	
+	
+	void loadData() {
 		String topic_name =  this.getIntent().
 				getStringExtra(StaticValue.TOPICINFO.TOPIC_NAME);
 		setTitle(topic_name);
@@ -165,7 +194,7 @@ public class TopicInfoActivity extends BaseActivity {
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	void load_authors()
+	void loadAuthors()
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("tid", topic_id);	
@@ -212,7 +241,7 @@ public class TopicInfoActivity extends BaseActivity {
 		
 	}
 	
-	private void do_focus(final boolean bfocus)
+	private void doFocus(final boolean bfocus)
 	{		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("follower_id", Session.getSession().getuId());
@@ -268,32 +297,4 @@ public class TopicInfoActivity extends BaseActivity {
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
-	
-	private void showView() {
-		if ( authorAdapter== null) {
-			authorAdapter = new UserListAdapter(this,
-					mDatas); 
-			bestAuthorList.setAdapter(authorAdapter);
-		} else {
-			authorAdapter.updateView(mDatas);
-			
-		}
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			this.onBackPressed();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-	
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
-	}	
 }

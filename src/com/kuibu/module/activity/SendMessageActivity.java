@@ -36,7 +36,9 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MessageItemBean;
 import com.kuibu.module.adapter.MessageListAdapter;
 
-public class SendMessageActivity extends BaseActivity implements OnLoadListener{
+public class SendMessageActivity extends BaseActivity 
+	implements OnLoadListener{
+	
 	private PaginationListView msgList; 
 	private EditText msgEt;
 	private ImageButton btnSend;
@@ -83,6 +85,40 @@ public class SendMessageActivity extends BaseActivity implements OnLoadListener{
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		showView();
 		loadData();
+	}
+
+	private void showView()
+	{
+		if(adapter == null){
+			adapter = new MessageListAdapter(this,mDatas);
+			msgList.setAdapter(adapter);
+		}else{
+			adapter.updateView(mDatas);
+		}
+	}
+	
+	@Override
+	public void onLoad(String tag) {
+		// TODO Auto-generated method stub
+		loadData();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:
+				this.onBackPressed();
+				break;			
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		overridePendingTransition(R.anim.anim_slide_out_right,
+				R.anim.anim_slide_in_right);
 	}
 	
 	private void loadData()
@@ -140,16 +176,6 @@ public class SendMessageActivity extends BaseActivity implements OnLoadListener{
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);		
-	}
-
-	private void showView()
-	{
-		if(adapter == null){
-			adapter = new MessageListAdapter(this,mDatas);
-			msgList.setAdapter(adapter);
-		}else{
-			adapter.updateView(mDatas);
-		}
 	}
 	
 	private void sendMsg()
@@ -249,27 +275,5 @@ public class SendMessageActivity extends BaseActivity implements OnLoadListener{
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
-	@Override
-	public void onLoad(String tag) {
-		// TODO Auto-generated method stub
-		loadData();
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				this.onBackPressed();
-				break;			
-		}
-		return super.onOptionsItemSelected(item);
-	}
-	
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		overridePendingTransition(R.anim.anim_slide_out_right,
-				R.anim.anim_slide_in_right);
-	}
+
 }

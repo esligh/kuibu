@@ -26,7 +26,6 @@ public class WelcomeActivity extends ActionBarActivity {
     final float DISTANCE_COEFFICIENT = 0.5f;
 
     private TextSwitcher mTextSwitcher;
-
     private ViewPager mPager;
     private CirclePageIndicator mPagerIndicator;
 

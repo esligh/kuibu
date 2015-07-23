@@ -183,7 +183,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			}
 		});
 		finalHttp = new FinalHttp();
-		request_detail();
+		requestDetail();
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
@@ -228,16 +228,16 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 	        		break;
 	        	case StaticValue.MENU_ITEM.SAVE_ID:
 	        		if(bModifyPhoto){
-	        			upload_userpic();
+	        			uploadUserpic();
 	        		}else{
-	        			request_update();
+	        			requestUpdate();
 	        		}    		
 	        		break;
 	        }
 	        return super.onOptionsItemSelected(item);	 
 	 }	 
 	 
-	 private void upload_userpic()
+	 private void uploadUserpic()
 	{
 			AjaxParams params = new AjaxParams();
 			try {
@@ -258,7 +258,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 							JSONObject obj = new JSONObject(t);
 							String state = obj.getString("state");
 							if(StaticValue.RESPONSE_STATUS.UPLOAD_SUCCESS.equals(state)){
-								request_update();
+								requestUpdate();
 							}else if(StaticValue.RESPONSE_STATUS.UPLOAD_FAILD.equals(state)){								
 								Toast.makeText(UserInfoEditActivity.this, "修改头像失败", Toast.LENGTH_LONG).show();
 							}						
@@ -271,7 +271,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			});
 	 }
 	 
-	 private void request_detail()
+	 private void requestDetail()
 	 {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
@@ -349,7 +349,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
 	 
-	 private void request_update()
+	 private void requestUpdate()
 	 {
 		 	Map<String, String> params = new HashMap<String, String>();
 			params.put("uid", Session.getSession().getuId());

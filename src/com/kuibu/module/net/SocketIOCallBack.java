@@ -9,11 +9,12 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.kuibu.module.iterf.EventCallback;
 import com.kuibu.module.iterf.IEventHandler;
 
 public class SocketIOCallBack extends EventCallback{
 	
-	public List<IEventHandler> receivers = new ArrayList<IEventHandler>();
+	public List<IEventHandler> receivers = new ArrayList<IEventHandler>(); //事件处理者
 	public SocketIOCallBack() 
 	{}
 	
@@ -49,7 +50,7 @@ public class SocketIOCallBack extends EventCallback{
 	    try {
 	    	JSONObject obj = new JSONObject() ;
 			obj.put("msg", data);
-			notifyReceiver(obj);
+			notifyReceiver(obj);//事件分发
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,5 +79,4 @@ public class SocketIOCallBack extends EventCallback{
 	    System.out.println("Server triggered event '" + event + "'");
 	    
 	}
-
 }

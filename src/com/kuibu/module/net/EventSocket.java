@@ -8,16 +8,18 @@ import java.security.NoSuchAlgorithmException;
 import javax.net.ssl.SSLContext;
 
 import com.kuibu.data.global.Constants;
-
+import com.kuibu.module.iterf.EventCallback;
+/**
+ * socketio 用来建立与服务端的长连接
+ * */
 public class EventSocket{
-	private SocketIO mSocket ; 
-	private EventCallback callback ; 
 	
-	public EventSocket(EventCallback callback) 
-	{
+	private SocketIO mSocket; 
+	private EventCallback callback; //回调 
+	
+	public EventSocket(EventCallback callback){
 		this.callback = callback ; 
 	}
-
 	
 	public void SetUp() throws MalformedURLException, NoSuchAlgorithmException
 	{
@@ -31,13 +33,12 @@ public class EventSocket{
 		return mSocket ; 
 	}
 	
-	public void closeSocket()
-	{
+	public void closeSocket(){
 		mSocket.disconnect();  
 	}
 	
-	public void reConnect()
-	{
+	public void reConnect(){
 		mSocket.reconnect(); 
 	}
+
 }

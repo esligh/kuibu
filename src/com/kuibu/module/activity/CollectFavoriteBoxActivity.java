@@ -45,6 +45,8 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.adapter.FavoriteBoxAdapter;
 import com.kuibu.module.adapter.FavoriteBoxAdapter.HolderView;
+/**
+ * 收藏夹页面 */
 
 public class CollectFavoriteBoxActivity extends BaseActivity{
 	private ListView boxList;
@@ -67,7 +69,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			@Override
 			public void onClick(View arg0) {
 				mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
-				load_data();
+				loadData();
 			}   	
         });
 		boxList = (ListView) findViewById(R.id.favorite_box_list_view);
@@ -115,7 +117,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				oper_favorite();
+				operFavorite();
 			}
 		});
 		
@@ -148,7 +150,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 										params.put("is_private",bcheck ? "1":"");//python bool("") is False
 										params.put("create_by", Session.getSession().getuId());
 										mDatas.add(params);
-										request_addbox(params);
+										requestAddbox(params);
 										showView();
 									}
 								})
@@ -165,10 +167,10 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
-		load_data();
+		loadData();
 		hasSelected = getIntent().getBooleanExtra(StaticValue.COLLECTION.IS_COLLECTED, false);
 		if(hasSelected){
-			get_collctedbox();
+			getCollctedbox();
 		}
 		showView();
 	}
@@ -182,7 +184,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		}
 	}
 	
-	private void load_data() {
+	private void loadData() {
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("uid",Session.getSession().getuId());
 		params.put("off", String.valueOf(mDatas.size()));
@@ -231,10 +233,11 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 			}
 		});
+		
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	private void get_collctedbox()
+	private void getCollctedbox()
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("uid",Session.getSession().getuId());
@@ -274,7 +277,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	private void request_addbox(Map<String,String> params) {
+	private void requestAddbox(Map<String,String> params) {
 		final String URL = Constants.Config.SERVER_URI
 				+ Constants.Config.REST_API_VERSION + "/add_favoritebox";
 
@@ -312,7 +315,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	private void oper_favorite()
+	private void operFavorite()
 	{
 		if(hasSelected){
 			List<String> intersect = new ArrayList<String>();
@@ -322,17 +325,17 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			selIds.removeAll(intersect);
 			
 			if(selectedIds.size()>0){
-				del_favorite(selectedIds);
+				delFavorite(selectedIds);
 			}
 			if(selIds.size()>0){
-				add_favorite(selIds);
+				addFavorite(selIds);
 			}
 		}else{
-			add_favorite(selIds);
+			addFavorite(selIds);
 		}		
 	}
 	
-	private void add_favorite(List<String> ids)
+	private void addFavorite(List<String> ids)
 	{
 		if(ids.size()<=0){
 			Toast.makeText(this, "请选择至少一个收藏夹", Toast.LENGTH_SHORT).show();
@@ -382,7 +385,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	private void del_favorite(List<String> ids)
+	private void delFavorite(List<String> ids)
 	{
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("uid", Session.getSession().getuId());		

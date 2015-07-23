@@ -3,26 +3,37 @@
     android:id="@+id/layout_guide_second"
     android:gravity="center"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent">
 
+    <ImageView
+      android:id="@id/guide_item_1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="@dimen/margin_xxxlarge"
+      android:src="@drawable/ic_guide_second_00"
+      android:contentDescription="@null"/>
+    
     <ImageView
         android:id="@id/guide_item_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_guide_second_01"/>
+        android:src="@drawable/ic_guide_second_01"
+        android:contentDescription="@null"/>
 
     <ImageView
         android:id="@id/guide_item_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_xxlarge"
-        android:layout_marginBottom="@dimen/margin_xxlarge"
-        android:src="@drawable/ic_guide_second_02"/>
+        android:layout_marginTop="@dimen/margin_xlarge"
+        android:layout_marginBottom="@dimen/margin_xlarge"
+        android:src="@drawable/ic_guide_second_02"
+        android:contentDescription="@null"/>
 
     <ImageView
         android:id="@id/guide_item_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_guide_second_03"/>
+        android:src="@drawable/ic_guide_second_03"
+        android:contentDescription="@null"/>
+    
 </LinearLayout>

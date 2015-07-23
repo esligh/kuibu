@@ -6,6 +6,7 @@ import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 public class InJavaScriptObject {
+	
 	private Activity mInstance ; 
 	private OnPageLoadFinished onLoadListener ; 
 	

@@ -79,7 +79,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 			@Override
 			public void onClick(View arg0) {
 				mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
-				load_pack();
+				loadPack();
 			}   	
         });
 		
@@ -156,7 +156,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 			public void onClick(View view) {
 				// TODO Auto-generated method stub
 				if (Session.getSession().isLogin()) {
-					do_focus(isfocus);
+					doFocus(isfocus);
 				} else {
 					Toast.makeText(CollectInfoListActivity.this, "请先登录或注册用户.",
 							Toast.LENGTH_SHORT).show();
@@ -176,7 +176,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 				showUserview();
 			}
 		});
-		load_pack();
+		loadPack();
 		showView();
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -201,7 +201,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 		overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 	}
 
-	private void load_pack() {
+	private void loadPack() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("pack_id", pack_id);
@@ -247,7 +247,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 								focusBtn.setButtonColor(btnColor);
 								focusBtn.setText("取消关注");
 							}
-							load_list();
+							loadList();
 						}
 					}
 				} catch (JSONException e) {
@@ -267,7 +267,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
-	private void do_focus(final boolean bfocus) {
+	private void doFocus(final boolean bfocus) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("follower_id", Session.getSession().getuId());
 		params.put("type", StaticValue.SERMODLE.COLLECTION_TYPE);
@@ -325,7 +325,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
-	private void load_list() {
+	private void loadList() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("pack_id", pack_id);
 		params.put("off", String.valueOf(item_datas.size()));
@@ -418,7 +418,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 	public void onBottom() {
 		// TODO Auto-generated method stub
 		footerView.setVisibility(View.VISIBLE);
-		load_list();
+		loadList();
 	}
 
 	@Override

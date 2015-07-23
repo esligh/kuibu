@@ -178,7 +178,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 					R.anim.anim_slide_in_right);
 			return true;
 		case R.id.action_publish:
-			publish_collection();
+			publishCollection();
 			return true;
 		case R.id.action_edit:
 			editNote();
@@ -198,7 +198,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	}
 
 	@SuppressLint("SimpleDateFormat")
-	private void publish_collection() {
+	private void publishCollection() {
 		progressDialog.setMessage("发布中...");
 		progressDialog.show();
 		final List<String> images = imageVo.getImgList(collection._id);
@@ -226,7 +226,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 					: String.valueOf(StaticValue.EDITOR_VALUE.COLLECTION_TEXT));
 		if (collection.isPublish == 1 && collection.isSync == 0) { // 已经发布，未同步  update collection
 			params.put("cid", collection.cid);
-			request_imginfo();			
+			requestImginfo();			
 		} else {
 			collection.content = adjustMarkDownText(collection.getContent());
 			params.put("content", collection.content);	
@@ -250,7 +250,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 								.equals(state)) {
 							collection.cid = response.getString("cid");
 							if (images != null && images.size() > 0) {
-								upload_imgs(images);
+								uploadImgs(images);
 							}							
 							collectionVo.update(
 									" cid = ? ,is_pub = ?,is_sync = ? ",
@@ -299,7 +299,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	}
 	
 	@SuppressLint("SimpleDateFormat")
-	private void request_imginfo() {
+	private void requestImginfo() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", collection.cid);
 		final String URL = Constants.Config.SERVER_URI
@@ -383,7 +383,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 				buffer.append(uuid).append(".").append(ext);
 				imgurl_map.put(localImgs.get(i), buffer.toString());
 			}
-			upload_imgs(localImgs);
+			uploadImgs(localImgs);
 		}
 		if(farImgInfo.size()>0){ //需要删除
 			StringBuffer ids = new StringBuffer();
@@ -392,17 +392,17 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 				imgurl_map.put(uri, "");			
 				ids.append(m.get("id")).append(",");
 			}
-			request_delImgs(ids.toString());
+			requestDelImgs(ids.toString());
 		}												
 		collection.content = adjustMarkDownText(collection.getContent());
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("cid", collection.cid);
 		params.put("title",collection.title);
 		params.put("content", collection.content);
-		request_update(params);
+		requestUpdate(params);
 	}
 	
-	private void upload_imgs(List<String> imgs) {
+	private void uploadImgs(List<String> imgs) {
 		AjaxParams params = new AjaxParams();
 		params.put("cid", String.valueOf(collection.cid));
 		try {
@@ -444,7 +444,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		});
 	}
 
-	private void request_update(Map<String, String> params) {
+	private void requestUpdate(Map<String, String> params) {
 		final String URL = Constants.Config.SERVER_URI
 				+ Constants.Config.REST_API_VERSION + "/update_collection";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
@@ -499,7 +499,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 		
-	private void request_delImgs(String ids)
+	private void requestDelImgs(String ids)
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("ids", ids);

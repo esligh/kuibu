@@ -152,7 +152,6 @@ public class UserListFragment extends Fragment implements OnLoadListener{
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
-
 	}
 
 	private void showView() {

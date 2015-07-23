@@ -93,7 +93,6 @@ public class ExploreRankFragment extends BaseFragment implements
 				}
 				showView();
 			}catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		if(mdatas.size()>0){
