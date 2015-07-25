@@ -3,7 +3,8 @@
     android:id="@+id/layout_guide_second"
     android:gravity="center"
     android:orientation="vertical"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
       android:id="@id/guide_item_1"

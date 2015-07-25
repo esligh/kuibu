@@ -33,11 +33,12 @@ public final class Constants {
 		public static final String FRAGMENT_INDEX = "com.nostra13.universalimageloader.FRAGMENT_INDEX";
 		public static final String IMAGE_POSITION = "com.nostra13.universalimageloader.IMAGE_POSITION";
 	}
+	
 	/*markdown 的快捷键盘*/
     public static final String[] KEYBOARD_SHORTCUTS = {"*", "-", "_", "#", "!", ":"};
     public static final String[] KEYBOARD_SHORTCUTS_BRACKETS = { "(", ")", "[", "]"};
     public static final String[] KEYBOARD_SMART_SHORTCUTS = {"()", "[]"};
-
+    public static final int KEYBOARD_DEFAULT_SIZE = 18 ; 
     public static final int MAX_TITLE_LENGTH = 20;
     public static final String URI_PREFIX = "file://";
     public static final String WEBVIEW_DARK_CSSFILE= "file:///android_asset/markdown_css_themes/dark.css";

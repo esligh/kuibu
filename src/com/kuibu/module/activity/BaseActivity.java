@@ -18,6 +18,7 @@ import com.kuibu.module.iterf.IEventHandler;
 public abstract class BaseActivity extends ActionBarActivity implements IEventHandler{
 	protected Activity mInstance = null;
 	protected boolean isDarkTheme = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -34,7 +35,6 @@ public abstract class BaseActivity extends ActionBarActivity implements IEventHa
 	@Override
 	protected void onResume() {
 		super.onResume();
-	//	MobclickAgent.onResume(this);
 	}
 
 	@Override

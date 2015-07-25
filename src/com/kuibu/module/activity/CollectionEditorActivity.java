@@ -42,9 +42,9 @@ import com.kuibu.module.markdown.HighlightingEditor;
 
 /**
  * @class Markdown编辑主Activity页
- * @author ThinkPad
- *
+ * @author esli
  */
+
 public class CollectionEditorActivity extends ActionBarActivity {
 	
 	private Context mContext;
@@ -58,6 +58,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 	private String mPhotoPath = null; 
 	private boolean isDarkTheme ; 
 	private int ALERTDLG_THEME ; 
+
 	//选择图片接收器
 	private BroadcastReceiver pickpicReceiver = new BroadcastReceiver() {
 		@Override
@@ -92,7 +93,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 		imageVo = new ImageLibVo(this);
 		setContentView(R.layout.collection_editor_activity);
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		if (toolbar != null) {
+		if(toolbar != null){
 			setSupportActionBar(toolbar);
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
@@ -392,16 +393,14 @@ public class CollectionEditorActivity extends ActionBarActivity {
 		shortcutButton.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.WRAP_CONTENT,
 				LinearLayout.LayoutParams.MATCH_PARENT));
-
-		shortcutButton.setTextSize(18);
+		shortcutButton.setTextSize(Constants.KEYBOARD_DEFAULT_SIZE);
 		shortcutButton.setTypeface(null, Typeface.BOLD);
 		shortcutButton.setOnClickListener(l);
-
-		if (isDarkTheme) {
+		if(isDarkTheme){
 			shortcutButton.setTextColor(getResources().getColor(
 					android.R.color.white));
 			shortcutButton.setBackgroundResource(R.drawable.keyboard_shortcut_button_dark);
-		} else {
+		}else{
 			shortcutButton.setTextColor(getResources().getColor(R.color.text_color_gray_deep));
 			shortcutButton.setBackgroundResource(R.drawable.keyboard_shortcut_button_light);
 		}

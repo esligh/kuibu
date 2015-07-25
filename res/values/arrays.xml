@@ -101,20 +101,7 @@
         <item>Krist Anthony Novoselic</item>
         <item>David Eric Grohl</item>
     </string-array>
-    
-    <string-array name="fontname">
-        <item>小字体</item>
-        <item>标准</item>
-        <item>大字体</item>
-    </string-array>
-    
-    <string-array name="fontsize">
-        <item>16</item>
-        <item>18</item>
-        <item>20</item>
-    </string-array>
-    
-
+   
   	<string-array name="popup_menu_item">
   		<item>拍照</item>
   		<item>相册</item>

@@ -30,7 +30,6 @@ h1 {
 }
 
 h2 {
-    border-bottom: 1px solid #CCCCCC;
     color: #000000;
     font-size: 20px;    
     line-height: 1.6em;
@@ -96,7 +95,7 @@ pre, code {
 	word-wrap:break-word; 
 	white-space: pre-wrap;
 	border-radius: 3px;
-    background-color: #F8F8F8;
+    background-color: #DDDDDD;
     color: inherit;
   	font-size: 1em;
 }
@@ -120,6 +119,17 @@ pre > code {
     padding: 0;
 }
 
+blockquote {
+	font-size:16px ;
+	font-style:italic;
+	background-color:#faebbc; 
+	margin-top:10px;
+	margin-bottom:10px;
+	margin-left:10px;	
+	padding-left:8px ;
+	padding-right:8px;
+	border-left:3px solid #ccc; 
+}
 
 img { 
 	max-width:100%;

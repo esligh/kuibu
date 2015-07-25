@@ -8,14 +8,12 @@
   <string name="preference_clearbuf_summury">当前缓存大小 0KB</string>
   
   <string name="preference_common">通用</string>
-  <string name="preference_fontsize">字体大小</string>
+  <string name="preference_message">消息推送</string>
   <string name="preference_statistics">流量统计</string>
   <string name="preference_accountprotect">账号保护</string>
   
-  <string name="preference_list_fondsize">请选择:</string>
-  <string name="font_default">18</string>
-  
   <string name="preference_other">其他</string>
+  <string name="preference_handbook">MD手册</string>
   <string name="preference_latest_version">版本更新</string>
   <string name="preference_about">关于</string>
 </resources>

@@ -45,8 +45,7 @@ public class FocusCollectPackFragment extends Fragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView;
-		rootView = inflater.inflate(R.layout.activity_focus_listview,
+		View rootView = inflater.inflate(R.layout.activity_focus_listview,
 				container, false);
 		mMultiStateView = (MultiStateView) rootView
 				.findViewById(R.id.multiStateView);
@@ -67,7 +66,6 @@ public class FocusCollectPackFragment extends Fragment implements
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(getActivity(),
 						CollectInfoListActivity.class);
 				intent.putExtra("pack_id", datas.get(position).getId());
@@ -94,7 +92,6 @@ public class FocusCollectPackFragment extends Fragment implements
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -125,7 +122,6 @@ public class FocusCollectPackFragment extends Fragment implements
 						packList.loadComplete();
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -152,7 +148,6 @@ public class FocusCollectPackFragment extends Fragment implements
 
 	@Override
 	public void onLoad(String tag) {
-		// TODO Auto-generated method stub
 		loadData();
 	}
 }

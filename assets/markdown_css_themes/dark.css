@@ -26,7 +26,6 @@ h1 {
   	font-weight: 900;  	
 }
 h2 {
-    border-bottom: 1px solid #CCCCCC;
     font-size: 20px;    
     line-height: 1.6em;
   	color: #EEE;
@@ -97,6 +96,19 @@ pre {
     line-height: 1.25em;
     overflow: auto;
     padding: 6px 10px;
+}
+
+
+blockquote {
+	font-size:16px ;
+	font-style:italic;
+	background-color:#515151; 
+	margin-top:10px;
+	margin-bottom:10px;
+	margin-left:10px;
+	padding-left:8px ;
+	padding-right:8px;
+	border-left:3px solid #ccc; 
 }
 
 img { 

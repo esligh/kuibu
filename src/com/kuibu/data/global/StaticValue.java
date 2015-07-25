@@ -21,6 +21,8 @@ public class StaticValue {
 		public static final String LASTEST_VERSION = "latest_version";
 		public static final String CLEAR_BUFFER = "clear_buffer";
 		public static final String ACCOUNT_PROTECT = "account_protect";
+		public static final String MESSAGE_PUSH = "message_push";
+		public static final String HAND_BOOK = "hand_book";
 	}
 	
 	public static class USER_ACTION{

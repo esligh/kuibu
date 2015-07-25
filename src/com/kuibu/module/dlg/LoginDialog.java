@@ -47,6 +47,7 @@ public class LoginDialog {
 	private OnLoginLisener loginListener;
 	private static final int PROGRESS_LEN  = 10 ; 
 	private AlertDialog   alertLogIn ;
+	
 	public LoginDialog(Context context) {
 		this.mContext = context;
 	}

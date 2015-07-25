@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import com.kuibu.module.iterf.IEventHandler;
 
 public abstract class BaseFragment extends Fragment implements IEventHandler{		
-		
 	public BaseFragment() {
         super();
         if (getArguments() == null)
@@ -17,6 +16,5 @@ public abstract class BaseFragment extends Fragment implements IEventHandler{
 	
 	@Override
 	public void eventResponse(JSONObject entity)
-	{
-	}
+	{}
 }

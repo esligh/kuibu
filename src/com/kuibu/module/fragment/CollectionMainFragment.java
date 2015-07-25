@@ -49,6 +49,7 @@ import com.kuibu.module.activity.OperCollectPackActivity;
 import com.kuibu.module.adapter.CollectPackItemAdapter;
 
 public class CollectionMainFragment extends Fragment {
+	
 	private FButton createPackBtn;
 	private ListView packList;
 	private CollectPackItemAdapter packAdapter;
@@ -56,11 +57,11 @@ public class CollectionMainFragment extends Fragment {
 	private Context context =null; 
 	private CollectPackVo packVo= null ; 
 	private CollectionVo collectionVo = null ;
-	private ImageLibVo imageVo = null ; 
+	private ImageLibVo imageVo = null ;
+	
 	@Override
 	public View onCreateView(final LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		context = this.getActivity() ; 
 		packVo = new CollectPackVo(this.getActivity());
@@ -183,7 +184,6 @@ public class CollectionMainFragment extends Fragment {
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if(StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){
@@ -192,7 +192,6 @@ public class CollectionMainFragment extends Fragment {
 						Toast.makeText(context, "删除失败", Toast.LENGTH_SHORT).show();
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -218,7 +217,6 @@ public class CollectionMainFragment extends Fragment {
 	
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		mData = packVo.queryAll(Session.getSession().getuId()) ;
 		packAdapter.updateView(mData);
@@ -226,10 +224,10 @@ public class CollectionMainFragment extends Fragment {
 	
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		packVo.closeDB();
 		collectionVo.closeDB();
 		imageVo.closeDB();
 		super.onDestroy();
 	}
+	
 }

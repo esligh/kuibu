@@ -20,14 +20,11 @@
     </PreferenceCategory>
    
     <PreferenceCategory android:title="@string/preference_common">
-		<ListPreference
-            android:key="fondsize"
-            android:dialogTitle="@string/preference_list_fondsize"
-            android:entries="@array/fontname"
-            android:entryValues="@array/fontsize"
-            android:defaultValue="@string/font_default"
-            android:title="@string/preference_fontsize" />
 		
+        <SwitchPreference
+            android:key="message_push"           
+            android:title="@string/preference_message"/>
+        
         <PreferenceScreen
             android:key="flow_statistics"           
             android:title="@string/preference_statistics"/>
@@ -37,7 +34,12 @@
             android:title="@string/preference_accountprotect" />       
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="@string/preference_other">
+    <PreferenceCategory android:title="@string/preference_other">        
+        <PreferenceScreen
+            android:key="hand_book"
+            android:title="@string/preference_handbook">            
+        </PreferenceScreen>   
+              
         <PreferenceScreen
             android:key="latest_version"
             android:title="@string/preference_latest_version">            

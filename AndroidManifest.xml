@@ -157,5 +157,10 @@
 		     android:name=".NotifyMessageActivity"
 		     android:label="@string/message">		     
 		 </activity>
+		 
+		 <activity
+		     android:name=".MDHandBookActivity"
+		 	 android:label="@string/handbook">   
+		 </activity>
     </application> 
 </manifest>
