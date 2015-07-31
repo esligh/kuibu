@@ -70,7 +70,7 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view, int position,
 					long id) {
-				Intent intent = new Intent(FavoriteBoxDetailActivity.this,ShowCollectionActivity.class);
+				Intent intent = new Intent(FavoriteBoxDetailActivity.this,CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
 				intent.putExtra("title", datas.get(position).getTitle());
 				intent.putExtra("content",datas.get(position).getContent());

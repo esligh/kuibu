@@ -39,7 +39,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.BadgeView;
 import com.kuibu.data.global.Constants;
@@ -56,6 +55,7 @@ import com.kuibu.module.fragment.FavoriteBoxFragment;
 import com.kuibu.module.fragment.FocusPageFragment;
 import com.kuibu.module.fragment.HomePageFragment;
 import com.kuibu.module.net.NetUtils;
+import com.kuibu.module.service.HeartBeatService;
 
 public class KuibuMainActivity extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnLoginLisener {
 	private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -89,12 +89,31 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 		if(bWithDlg){
 			mNavigationDrawerFragment.selectItem(0);
 		}
-		int netType = NetUtils.getAPNType(this);
-		if(netType == NetUtils.NO_NET){
+		if(NetUtils.isNetworkAvailable(this)){
 			Toast.makeText(this, "当前网络状态不好.", Toast.LENGTH_LONG).show();
-		}
+		}else{ 			
+			this.startService(new Intent(this,HeartBeatService.class));
+		}		
 	}
 	
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		this.startService(new Intent(this,HeartBeatService.class));
+	}
+
+	
+
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		this.stopService(new Intent(this,HeartBeatService.class));
+	}
+
+
 	@Override
 	public void onNavigationDrawerItemSelected(String title, String tag) {
 		if (Constants.Tag.LOGIN.equals(tag)) { 
@@ -239,7 +258,8 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			return true;
 		case R.id.action_logout:
-			do_logout();
+			doLogout();
+			this.stopService(new Intent(this,HeartBeatService.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -298,7 +318,7 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 	/**
 	 * 注销当前用户  
 	 */
-	private void do_logout()
+	private void doLogout()
 	{
 		mLogoutMenu.setVisible(false);	
 		mNotifyMenu.setVisible(false);
@@ -335,9 +355,8 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 		mNavigationDrawerFragment.selectItem(NOLOGIN_DEFAULT_POSITION);
 		
 		//清理缓存 
-		ACache aCache = ACache.get(this);
-		aCache.clear();
-		
+		//ACache aCache = ACache.get(this);
+		//aCache.clear();		
 		logout();
 		Session.getSession().setLogin(false);
 	}
@@ -422,17 +441,25 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 	@Override
 	public void eventResponse(JSONObject entity)
 	{
-		String type;
 		try {			
-			type = entity.getString("event_type");
+		    String type = entity.getString("event_type");
 			if(StaticValue.EVENT.TYPE_NEWLETTERS.equals(type)){ //private letter come.
 				Toast.makeText(this, "收到新私信", Toast.LENGTH_LONG).show();
 			}else if(StaticValue.EVENT.TYPE_NEWCOMMETN.equals(type)){
 				Toast.makeText(this, "收到新评论", Toast.LENGTH_LONG).show();
-			}			
+			}else if(StaticValue.EVENT.TYPE_KEEPALIVE.equals(type)){
+				Toast.makeText(this, "HELLO", Toast.LENGTH_SHORT).show();
+			}				
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		KuibuApplication.getSocketIoInstance().getSocketIO().disconnect();  
+	}
+		
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
   
-public class MyImageView extends ImageView {  
+public class MyImageView extends ImageView { 
     private OnMeasureListener onMeasureListener;  
       
     public void setOnMeasureListener(OnMeasureListener onMeasureListener) {  
@@ -21,8 +21,7 @@ public class MyImageView extends ImageView {
   
     @Override  
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {  
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);  
-          
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);            
         //将图片测量的大小回调到onMeasureSize()方法中  
         if(onMeasureListener != null){  
             onMeasureListener.onMeasureSize(getMeasuredWidth(), getMeasuredHeight());  

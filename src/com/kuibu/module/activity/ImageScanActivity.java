@@ -67,7 +67,7 @@ public class ImageScanActivity extends ActionBarActivity {
 				List<String> childList = mGroupMap.get(list.get(position)
 						.getFolderName());
 				Intent mIntent = new Intent(ImageScanActivity.this,
-						ShowImageActivity.class);
+						ImageChooseActivity.class);
 
 				mIntent.putStringArrayListExtra("data",
 						(ArrayList<String>) childList);

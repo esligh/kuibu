@@ -156,7 +156,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 						startActivity(intent);
 						overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 					}else if(tag.equals("collection")){
-						Intent intent = new Intent(SearchViewActivity.this,ShowCollectionActivity.class);
+						Intent intent = new Intent(SearchViewActivity.this,CollectionDetailActivity.class);
 						intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,item.get("item_id"));
 						intent.putExtra("title", item.get("item_title"));
 						startActivity(intent);

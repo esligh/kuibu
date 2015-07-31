@@ -30,7 +30,7 @@ import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.activity.ShowCollectionActivity;
+import com.kuibu.module.activity.CollectionDetailActivity;
 import com.kuibu.module.adapter.NotifyCommentAdapter;
 
 public class NotifyCommentFragment extends Fragment implements OnLoadListener{
@@ -59,7 +59,7 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 					long id) {
 				@SuppressWarnings("unchecked")
 				Map<String,String> item = (Map<String,String>)adpaterView.getAdapter().getItem(position);
-				Intent intent = new Intent(getActivity(),ShowCollectionActivity.class);
+				Intent intent = new Intent(getActivity(),CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,item.get("cid"));
 				intent.putExtra("title", item.get("title"));
 				startActivity(intent);

@@ -232,7 +232,11 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 			params.put("content", collection.content);	
 			params.put("abstract", getAbstract());
 			params.put("create_by", Session.getSession().getuId());
-			params.put("topic_id", "1");
+			params.put("topic_id", "");
+			String descript = new StringBuffer(Session.getSession().getuId()).append(":")
+					.append(collection.content)
+					.toString(); 
+			params.put("csn",SafeEDcoderUtil.MD5(descript));
 			String pid = getIntent().getStringExtra(
 					StaticValue.EDITOR_VALUE.COLLECT_PACK_ID);
 			params.put("pack_id", pid);			

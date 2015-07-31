@@ -9,6 +9,8 @@ public final class Constants {
 	
 	public final static String VERISION_CODE =  "version_code";
 	public final static String APP_NAME = "kuibu";
+	public static final String TEMPLATE_DEF_URL = "html/template.html";
+
 	public static class Config {
 		public static final String SERVER_URI = "http://192.168.1.104:5000/";
 		public static final String SOCKETIO_SERVER = "http://192.168.1.104:5000/";
@@ -17,7 +19,11 @@ public final class Constants {
 		public static final String USER_PHOTO_TMP  = "pictmp";//用户头像裁剪的缓存文件
 		public static final String CAMERA_TMP="userphoto.jpg";
 		public static final String CAMERA_IMG_DIR = "/kuibu/tmp/";
+		public static final int TIME_OUT_LONG = 10*1000;
+		public static final int TIME_OUT_SHORT= 8*1000; 
+		public static final int RETRY_TIMES =   1; 
 	}
+	
 	public static class Tag{
 		public static final String LOGIN = "login";
 		public static final String REGISTER = "register";
@@ -42,7 +48,7 @@ public final class Constants {
     public static final int MAX_TITLE_LENGTH = 20;
     public static final String URI_PREFIX = "file://";
     public static final String WEBVIEW_DARK_CSSFILE= "file:///android_asset/markdown_css_themes/dark.css";
-    public static final String WEBVIEW_LIGHT_CSSFILE= "file:///android_asset/markdown_css_themes/classic.css";
-    
+    public static final String WEBVIEW_LIGHT_CSSFILE= "file:///android_asset/markdown_css_themes/classic.css";    
     public static final String GITGUB_PROJECT = "https://github.com/esligh/kuibu";
+    
 }

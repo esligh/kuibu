@@ -23,7 +23,7 @@ public abstract class BaseActivity extends ActionBarActivity implements IEventHa
 	protected void onCreate(Bundle savedInstanceState) {		
 		SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(this);
 		isDarkTheme = mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false); 
-		if (isDarkTheme) {
+		if (isDarkTheme){
 			setTheme(R.style.Theme_Kuibu_AppTheme_Dark);
 		} else {
 			setTheme(R.style.Theme_Kuibu_AppTheme_Light);
@@ -66,5 +66,7 @@ public abstract class BaseActivity extends ActionBarActivity implements IEventHa
 	
 	@Override
 	public void eventResponse(JSONObject entity)
-	{}
+	{
+		
+	}
 }

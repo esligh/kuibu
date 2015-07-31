@@ -82,7 +82,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 	 */
 	@Override
 	public void onHiddenChanged(boolean hidden) {
-		// TODO Auto-generated method stub
 		super.onHiddenChanged(hidden);
 		if(hidden){ //hiding now 
 			
@@ -94,7 +93,7 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 	private void showHomeView() {
 		if (homeListViewAdapter == null) {
 			homeListViewAdapter = new HomeListViewItemAdapter(getActivity(),
-					mHomeDatas); // NullPointException ??
+					mHomeDatas);
 			mListView.setAdapter(homeListViewAdapter);
 		} else {
 			homeListViewAdapter.updateView(mHomeDatas);
@@ -103,7 +102,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 
 	@Override
 	public void onLoad(String tag) {
-		// TODO Auto-generated method stub
 		loadData("UP",false);
 	}
 		
@@ -115,9 +113,9 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 		params.put("uid", Session.getSession().getuId());
 		params.put("action", action);
 		if(action.equals("UP"))
-			params.put("threshold",mHomeDatas.get(n-1).get_id());
+			params.put("threshold",mHomeDatas.get(n-1).getId());
 		else if(action.equals("DOWN"))
-			params.put("threshold",mHomeDatas.get(0).get_id());
+			params.put("threshold",mHomeDatas.get(0).getId());
 		else 
 			params.put("threshold","-1");
 		final String URL = Constants.Config.SERVER_URI
@@ -126,7 +124,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -150,7 +147,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 					pullFreshlayout.setRefreshing(false);
 					mListView.loadComplete();
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -160,10 +156,14 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				if(!action.equals("DOWN"))
+					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 				pullFreshlayout.setRefreshing(false);
 				mListView.loadComplete();
 			}
 		});
+		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
+				Constants.Config.RETRY_TIMES, 1.0f));
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
 	
@@ -174,7 +174,7 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				for (int i = 0; i < arr.length(); i++) {
 				    JSONObject temp = (JSONObject) arr.get(i);
 				    MateListItem bean = new MateListItem();
-				    bean.set_id(temp.getString("cid"));
+				    bean.setId(temp.getString("cid"));
 				    bean.setType(Integer.parseInt(temp.getString("type")));
 				    bean.setTitle(temp.getString("title"));
 				    bean.setSummary(temp.getString("content"));
@@ -196,7 +196,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				}
 				showHomeView();	
 			}catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
 			

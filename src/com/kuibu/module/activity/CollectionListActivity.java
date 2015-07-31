@@ -79,7 +79,7 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 							for (int i = 0; i < arr.length(); i++) {
 							    JSONObject temp = (JSONObject) arr.get(i);
 							    MateListItem bean = new MateListItem();
-							    bean.set_id(temp.getString("cid"));
+							    bean.setId(temp.getString("cid"));
 							    bean.setType(Integer.parseInt(temp.getString("type")));
 							    bean.setTitle(temp.getString("title"));
 							    bean.setSummary(temp.getString("content"));

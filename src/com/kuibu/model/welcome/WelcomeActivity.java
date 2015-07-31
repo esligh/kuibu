@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -123,8 +124,9 @@ public class WelcomeActivity extends ActionBarActivity {
         @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         public GuidePageChangeListener() {
             mColorEvaluator = new ArgbEvaluator();
-
-            mPageWidth = getWindowManager().getDefaultDisplay().getWidth();
+    		DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+            mPageWidth = dm.widthPixels;
             mTotalScrollWidth = mPageWidth * mAdapter.getCount();
 
             mGuideStartBackgroundColor = getResources().getColor(R.color.guide_start_background);

@@ -25,7 +25,7 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.CollectInfoListActivity;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.activity.ShowCollectionActivity;
+import com.kuibu.module.activity.CollectionDetailActivity;
 import com.kuibu.module.activity.UserInfoActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -357,8 +357,8 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		switch(type){
 		case MateListItem.ItemType.TEXT_MODE:
 		case MateListItem.ItemType.TEXT_PICS_MODE:
-			intent = new Intent(LayoutInflater.from(context).getContext(),ShowCollectionActivity.class);
-			intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).get_id());
+			intent = new Intent(LayoutInflater.from(context).getContext(),CollectionDetailActivity.class);
+			intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
 			intent.putExtra("title", datas.get(position).getTitle());
 			intent.putExtra("content",datas.get(position).getSummary());
 			intent.putExtra("type", datas.get(position).getType());

@@ -124,7 +124,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 					int position, long id) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(CollectInfoListActivity.this,
-						ShowCollectionActivity.class);
+						CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item_datas
 						.get(position).getId());
 				intent.putExtra("title", item_datas.get(position).getTitle());

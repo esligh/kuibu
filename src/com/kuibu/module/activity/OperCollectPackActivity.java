@@ -340,13 +340,15 @@ public class OperCollectPackActivity extends BaseActivity {
 		params.put("topic_id", newOne.getTopic_id());
 		params.put("private", newOne.get_private()==1 ? "1":"");
 		params.put("create_by", Session.getSession().getuId());
+		String descript = new StringBuffer(Session.getSession().getuId()).append(":") 
+				.append(newOne.getPack_name()).toString(); //csn 生成规则		
+		params.put("csn", SafeEDcoderUtil.MD5(descript));
 		final String URL = Constants.Config.SERVER_URI
 				+ Constants.Config.REST_API_VERSION + "/add_collectpack";
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if(StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){

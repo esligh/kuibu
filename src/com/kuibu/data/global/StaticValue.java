@@ -4,10 +4,11 @@ public class StaticValue {
 	public static final String CHOOSE_PIC_OVER = "com.caddy.pickpic_complete";
 	public static final String CHOOSE_PIC_CANCEL = "com.caddy.pickpic_cancel";
 	public static final String USER_INFO_UPDATE = "com.caddy.update_userinfo" ; 
-	public static final int TAKE_PHOTO_OK = 0x000012;
+	public static final int    TAKE_PHOTO_OK = 0x000012;
 	public static final String MAINWITHDLG =  "main_with_dlg";
 	public static final String HIDE_FOCUS = "hide_focus";
-
+	public static final String IMG_URL = "img_url";
+	
 	public static class CommonData{
 		public static final int TAKE_USER_PHOTO  = 10000 ; 
 		public static final int TAKE_PIC_CROP_RESULT = 10001 ; 
@@ -225,7 +226,9 @@ public class StaticValue {
 	
 	public static class EVENT{
 		public static final String LOGIN_EVENT = "login";
+		public static final String MSG_EVENT = "message";
 		public static final String TYPE_NEWLETTERS= "NEW_LETTER";
 		public static final String TYPE_NEWCOMMETN="NEW_COMMENT";
+		public static final String TYPE_KEEPALIVE = "KEEP_ALIVE";
 	}
 }

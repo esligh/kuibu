@@ -17,6 +17,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -36,6 +37,37 @@ public class PhoneUtils {
 	// 模拟器的手机号码
 	private static final String EMULATOR_PHONE_NUMBER = "15555215554";
 
+	
+	public static String getDeviceId(Context context)
+	{
+		StringBuffer deviceId = new StringBuffer();
+		String imei0 = getRealIMEI(context);
+		String imei1 = getRealIMEI(context);
+
+		// IMEI
+		if (!"".equals(imei0) && !"".equals(imei1)
+				&& !EMULATOR_IMIE.equals(imei0)
+				&& !EMULATOR_IMIE.equals(imei1) && imei0.equals(imei1)) {
+			return deviceId.append("imei:").append(imei0).toString();
+		}
+		
+		//wifi Mac		
+		String mac = getMAC(context);
+		if(!TextUtils.isEmpty(mac)){
+			return deviceId.append("mac:").append(mac).toString();
+		}
+		
+		//serial number
+		String sn = getSimNum(context);
+		if(!TextUtils.isEmpty(sn)){
+			return deviceId.append("sim:").append(sn).toString();
+		}
+		//random 
+		return getUUID(context); 
+	}
+	
+	
+	
 	/**
 	 * IMEI号、MAC地址，在有些手机上竟然是动态的！！ 修改逻辑：
 	 * IMEI号、MAC地址，都改为取两遍，如果两次获取的不同，则不使用，改为使用一个randomUUID（该ID生成之后存在本地） 获得手机IMEI
@@ -44,11 +76,12 @@ public class PhoneUtils {
 	 * @param context
 	 * @return
 	 */
+		
 	public static String getIMEI(Context context) {
 
 		SharedPreferences sp = context.getSharedPreferences("myapp_imei",
 				Context.MODE_PRIVATE);
-
+		
 		String localImei = sp.getString("imei", "");
 		if (sp.contains("imei") && !TextUtils.isEmpty(localImei)) {
 			return localImei;
@@ -105,6 +138,27 @@ public class PhoneUtils {
 		return info != null ? info.getMacAddress() : "";
 	}
 
+	public static String getSimNum(Context context)
+	{
+
+		TelephonyManager telephonyManager = (TelephonyManager) context
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		String sn = telephonyManager.getSimSerialNumber();		
+		return sn != null ? sn : "" ; 
+	}
+	
+	public static String getUUID(Context context)
+	{
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+		String uuid = pref.getString("uuid", "");
+		if(TextUtils.isEmpty(uuid)){
+			uuid = UUID.randomUUID().toString();
+			Editor editor = pref.edit();
+			editor.putString("uuid", uuid);
+			editor.commit();
+		}
+		return uuid ; 
+	}
 	/**
 	 * 获取手机IP地址 获取失败，返回"127.0.0.1"
 	 * 

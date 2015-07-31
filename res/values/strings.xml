@@ -77,7 +77,7 @@
     <string name="pictures">图片</string>
     <string name="choose_pics">选择图片</string>
 	<string name="handbook">帮助手册</string>        
-        
+    <string name="look_at">查看</string>    
     <!-- menu text -->
     <string name="action_search_for">搜索</string>
     <string name="action_notify">通知</string>

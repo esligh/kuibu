@@ -67,7 +67,7 @@
         </activity>
         
         <activity 
-            android:name="com.kuibu.module.activity.ShowImageActivity"
+            android:name="com.kuibu.module.activity.ImageChooseActivity"
           	android:label="@string/choose_pics">  
         </activity>
         
@@ -80,7 +80,7 @@
             android:label="@string/comment_text">
         </activity>
         <activity
-            android:name="com.kuibu.module.activity.ShowCollectionActivity">
+            android:name="com.kuibu.module.activity.CollectionDetailActivity">
 			<intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>			
@@ -162,5 +162,17 @@
 		     android:name=".MDHandBookActivity"
 		 	 android:label="@string/handbook">   
 		 </activity>
+		 <activity
+		     android:name=".ImageDetailActivity"
+		     android:label="@string/look_at"></activity>
+		 <service
+		     android:name="com.kuibu.module.service.HeartBeatService">
+			 <intent-filter>
+			     <action
+			         android:name="kuibu.service.HeartBeatService">
+			     </action>
+			 </intent-filter> 
+		 </service>
+		 
     </application> 
 </manifest>

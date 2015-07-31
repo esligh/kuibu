@@ -37,6 +37,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.kuibu.common.utils.PhoneUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
@@ -126,6 +127,7 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 		params.put("name", user_name);
 		params.put("pwd", user_pwd);
 		params.put("email", user_email);
+		params.put("dev_id", PhoneUtils.getDeviceId(this));
 		int sex_id = sex_rg.getCheckedRadioButtonId();
 		String sex = sex_id == R.id.male_rb ? 
 				StaticValue.SERMODLE.USER_SEX_MALE:StaticValue.SERMODLE.USER_SEX_FEMALE;
@@ -137,7 +139,6 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("reg_state");
 					if(StaticValue.RESPONSE_STATUS.REG_SENDEMAIL.equals(state)){
@@ -151,7 +152,6 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 						progressBtn.setProgress(0);
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					progressBtn.setProgress(0);
 				}
@@ -165,7 +165,8 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 				error.printStackTrace();
 			}
 		});
-		req.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 1, 1.0f));
+		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,
+			Constants.Config.RETRY_TIMES, 1.0f));
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
 

@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -75,7 +76,7 @@ public class ExploreRecommendFragment extends BaseFragment implements
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject temp = (JSONObject) arr.get(i);
 				MateListItem bean = new MateListItem();
-				bean.set_id(temp.getString("cid"));
+				bean.setId(temp.getString("cid"));
 				bean.setType(Integer.parseInt(temp.getString("type")));
 				bean.setTitle(temp.getString("title"));
 				bean.setSummary(temp.getString("content"));
@@ -97,7 +98,6 @@ public class ExploreRecommendFragment extends BaseFragment implements
 			}
 			showView();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (mdatas.size() > 0) {
@@ -105,7 +105,6 @@ public class ExploreRecommendFragment extends BaseFragment implements
 		} else {
 			mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 		}
-
 	}
 
 	private void loadData(final String action) {
@@ -126,7 +125,6 @@ public class ExploreRecommendFragment extends BaseFragment implements
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -149,18 +147,20 @@ public class ExploreRecommendFragment extends BaseFragment implements
 					}
 					recommendList.loadComplete();
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
+				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 			}
 		});
+		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
+				Constants.Config.RETRY_TIMES, 1.0f));
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
@@ -176,7 +176,6 @@ public class ExploreRecommendFragment extends BaseFragment implements
 
 	@Override
 	public void onLoad(String tag) {
-		// TODO Auto-generated method stub
 		loadData("REQ_HISTORY");
 	}
 

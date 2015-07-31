@@ -70,7 +70,6 @@ public class LoginDialog {
 		btnLogIn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				String email = mUserEmailEt.getText().toString().trim();
 				String pwd = mUserPwdEt.getText().toString().trim();				
 				if(TextUtils.isEmpty(email) || TextUtils.isEmpty(pwd)){
@@ -118,10 +117,8 @@ public class LoginDialog {
 									"yyyy-MM-dd HH:mm:ss");
 							date = sdf.parse(expirydate);
 						} catch (ParseException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
-						
+						}						
 						//解析其他用户信息并放到session中
 						Session.getSession().setToken(token);
 						String sinfo = response.getString("user_info");
@@ -183,10 +180,8 @@ public class LoginDialog {
 							KuibuApplication.getSocketIoInstance().getSocketIO().
 									emit(StaticValue.EVENT.LOGIN_EVENT, obj);
 						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (NoSuchAlgorithmException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						alertLogIn.dismiss();

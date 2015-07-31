@@ -10,9 +10,14 @@ import net.tsz.afinal.core.Arrays;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import us.feras.mdv.MarkdownView;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +36,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
+import android.webkit.WebSettings;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -45,6 +51,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.common.utils.AssetsUtils;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.DensityUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
@@ -54,9 +61,12 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.model.js.InJavaScriptObject;
+import com.kuibu.model.js.WebViewClientExt;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.petebevin.markdown.MarkdownProcessor;
 
-public class ShowCollectionActivity extends ActionBarActivity implements 
+public class CollectionDetailActivity extends ActionBarActivity implements 
 			ScrollViewExt.BottomListener, ScrollViewExt.onScrollListener {
 
 	private static final int TOP_DISTANCE_Y = 120;
@@ -86,7 +96,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 	private MultiStateView mMultiStateView;
 	private String cssFile ; 
 	private boolean isDarkTheme ; 
-	private boolean isCollected =false ; 
+	private boolean isCollected = false ; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +110,12 @@ public class ShowCollectionActivity extends ActionBarActivity implements
         		.setOnClickListener(new View.OnClickListener() {
         	@Override
 			public void onClick(View arg0) {              
-				loadMyself();
+				loadData();
 				mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);				
 			}
         });
 		contentView =(MarkdownView)findViewById(R.id.show_text_content_tv);
+		setUpWebViewDefaults();
 		noIntrestcb = (CheckBox)findViewById(R.id.bottom_tools_no_intrest);
 		funcb = (CheckBox)findViewById(R.id.bottom_tools_funny);
 		commentBtn = (ImageButton)findViewById(R.id.bottom_tools_comment);
@@ -113,7 +124,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		vote_count_tv = (TextView)findViewById(R.id.show_text_vote_count);
         title_tv=(TextView)findViewById(R.id.show_text_title_tv);
         String title = getIntent().getStringExtra("title");
-		title_tv.setText(title); //set right now .
+		title_tv.setText(title); 
 		setTitle(title);		
         layout_author=(RelativeLayout)findViewById(R.id.layout_author_rl);
         author_name = (TextView)findViewById(R.id.show_text_author_tv);
@@ -123,6 +134,10 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		fl_top = (FrameLayout) findViewById(R.id.fl_top);
 		toolbar=(Toolbar)findViewById(R.id.show_text_toolbar);	
 		layout_tools = (LinearLayout)findViewById(R.id.layout_tools);
+		create_by = getIntent().getStringExtra("create_by");
+		if(Session.getSession().getuId().equals(create_by)){
+			layout_tools.setVisibility(View.GONE);
+		}
 		setSupportActionBar(toolbar); 
         if(isDarkTheme){
         	setTheme(R.style.AppTheme_Dark);
@@ -187,7 +202,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		commentBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(ShowCollectionActivity.this,CommentActivity.class);
+				Intent intent = new Intent(CollectionDetailActivity.this,CommentActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
 				intent.putExtra("create_by", create_by);
 				startActivity(intent);
@@ -199,13 +214,13 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 			@Override
 			public void onClick(View arg0) {
 				if(Session.getSession().isLogin()){
-					Intent intent = new Intent(ShowCollectionActivity.this,CollectFavoriteBoxActivity.class);
+					Intent intent = new Intent(CollectionDetailActivity.this,CollectFavoriteBoxActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
 					intent.putExtra(StaticValue.COLLECTION.IS_COLLECTED, isCollected);
 					startActivityForResult(intent,StaticValue.RequestCode.FAVORITE_BOX_REQCODE);
 					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}else{
-					Toast.makeText(ShowCollectionActivity.this, "注册登录后才能收藏", Toast.LENGTH_SHORT).show();
+					Toast.makeText(CollectionDetailActivity.this, "注册登录后才能收藏", Toast.LENGTH_SHORT).show();
 				}	
 			}
 		});
@@ -226,12 +241,24 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}	
 	
+	@SuppressLint("SetJavaScriptEnabled")
+	private void setUpWebViewDefaults()
+	{
+		contentView.setBackgroundColor(0);
+		contentView.getSettings().setJavaScriptEnabled(true);
+		contentView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+		InJavaScriptObject jsObj = new InJavaScriptObject(this);
+		contentView.addJavascriptInterface(jsObj, "injectedObject");
+		contentView.setWebViewClient(new WebViewClientExt(this));				
+		contentView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);		
+	}
+	
 	void initData()
 	{
 		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);		
 		String content = getIntent().getStringExtra("content");
 		if(TextUtils.isEmpty(content)){
-			loadMyself();
+			loadData();
 		}else{			
 			String type = getIntent().getStringExtra("type");
 			if(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE.equals(type)){
@@ -245,7 +272,22 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 			vote_count_tv.setText(DataUtils.formatNumber(getIntent().getIntExtra("vote_count",0)));
 			author_name.setText(getIntent().getStringExtra("name"));
 			author_desc.setText(getIntent().getStringExtra("signature"));
-			contentView.loadMarkdown(contentWarpper(content),cssFile);
+			
+			MarkdownProcessor m = new MarkdownProcessor();
+			content = m.markdown(contentWarpper(content));
+			String template = AssetsUtils.loadText(this, Constants.TEMPLATE_DEF_URL);
+			String html = template.replace("{cssFile}", cssFile);
+			html = html.replace("{content}", content);			
+			html = replaceImgTagFromHTML(html);
+			contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
+			
+//			MarkdownProcessor m = new MarkdownProcessor();
+//			String html = m.markdown(contentWarpper(content));			
+//			html = String.format("<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
+//								+ html, cssFile);
+//			replaceImgTagFromHTML(html);
+//			contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
+			
 			String url = getIntent().getStringExtra("photo");
 			if(TextUtils.isEmpty(url) || url.equals("null")){
 				String sex = getIntent().getStringExtra("sex");
@@ -261,10 +303,18 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		}
 		loadActions();
 	}
+		
+	private String replaceImgTagFromHTML(String html) {
+		Document doc = Jsoup.parse(html);
+		Elements es = doc.getElementsByTag("img");
+		for (Element e : es) {
+			String imgUrl = e.attr("src");
+				e.attr("onclick", "openImage('" + imgUrl + "')");
+		}
+		return doc.html();
+	}
 	
-	
-	
-	private void loadMyself()
+	private void loadData()
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", cid);
@@ -405,8 +455,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 						+ ":unused";
 				headers.put(
 						"Authorization",
-						"Basic "
-								+ SafeEDcoderUtil.encryptBASE64(
+						"Basic "+ SafeEDcoderUtil.encryptBASE64(
 										credentials.getBytes()).replaceAll(
 										"\\s+", ""));
 				return headers;
@@ -435,14 +484,16 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 	}	
 	
 	private class DetailGestureListener extends GestureDetector.SimpleOnGestureListener {
+		
 		@Override
 		public boolean onDown(MotionEvent e) {
 			return true;
 		}
+		
 		//完成一次单击，并确定没有二击事件后触发（300ms）
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			if (isTopHide && isToolHide) {//显示顶部和底部
+			if (isTopHide && isToolHide) {
 				showTop();
 				showTool();
 			} else if (!isToolHide && isTopHide) {
@@ -460,7 +511,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 
 	private void showTool() {
 		int startY = getWindow().getDecorView()
-				.getHeight() - getStatusHeight(this); //计算动画开始的垂直属性
+				.getHeight() - getStatusHeight(this);
 		ObjectAnimator anim = ObjectAnimator.ofFloat(layout_tools, "y", startY,
 				startY - layout_tools.getHeight());
 		anim.setDuration(TIME_ANIMATION);
@@ -468,7 +519,7 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		isToolHide = false;
 	}
 	
-	private void hideTool() {
+	private void hideTool(){
 		int startY = getWindow().getDecorView()
 				.getHeight() - getStatusHeight(this);
 		ObjectAnimator anim = ObjectAnimator.ofFloat(layout_tools, "y", 
@@ -478,7 +529,6 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 		isToolHide = true;
 	}
 	
-	//显示顶部
 	private void showTop() {
 		ObjectAnimator anim1 = ObjectAnimator.ofFloat(toolbar, "y", toolbar.getY(),
 				0);
@@ -517,18 +567,19 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 	
 	@Override
 	public void onScrollChanged(int l, int t, int oldl, int oldt) {
-		if (t <= dp2px(TOP_DISTANCE_Y)) { //当前Scorllbar垂直位置小于预置
+		if (t <= DensityUtils.dp2px(this, TOP_DISTANCE_Y)) { //当前Scorllbar垂直位置小于预置
 			isInTopDistance = true;
 		} else {
 			isInTopDistance = false;
 		}
-		if (t <= dp2px(TOP_DISTANCE_Y) && isTopHide) {//小于预置，且顶部被隐藏就将其显示出来
+		if (t <= DensityUtils.dp2px(this,TOP_DISTANCE_Y) && isTopHide) {//小于预置，且顶部被隐藏就将其显示出来
 			showTop();
-		} else if (t > dp2px(TOP_DISTANCE_Y) && !isTopHide) { //大于预置，顶部没隐藏将其隐藏
+		} else if (t > DensityUtils.dp2px(this,TOP_DISTANCE_Y) && !isTopHide) { //大于预置，顶部没隐藏将其隐藏
 			hideTop();
 		}
 
 	}
+	
 	@Override
 	public void onBottom() {//Scorllbar到顶部显示底部tool
 		if (isToolHide) {
@@ -591,7 +642,6 @@ public class ShowCollectionActivity extends ActionBarActivity implements
 			default:
 				break;
 		}
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	

@@ -65,7 +65,12 @@ h6 {
 p{
 	color: #444;
     line-height: 1.6em;
-    font-size: 17px;
+    font-size: 18px;
+}
+
+ul, ol
+{
+	font-size: 18px;
 }
 
 p, blockquote, ul, ol, dl, li, table, pre {

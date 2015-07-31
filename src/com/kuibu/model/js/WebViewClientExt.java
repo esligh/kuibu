@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 public class WebViewClientExt extends WebViewClient {
 	private Context mContext ; 
+	
 	public WebViewClientExt(Context context) {
 		this.mContext = context ; 		
 	}
@@ -27,16 +28,19 @@ public class WebViewClientExt extends WebViewClient {
          return true;
     }  
 	
+	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	public void onPageStarted(WebView view, String url, Bitmap favicon) {
 		Log.d("WebView", "onPageStarted");
 		super.onPageStarted(view, url, favicon);
+		view.getSettings().setJavaScriptEnabled(true);
 	}
 	
-	@SuppressLint("NewApi")
+	@SuppressLint({ "NewApi", "SetJavaScriptEnabled" })
 	@Override
 	public void onPageFinished(WebView view, String url) {
 		Log.d("WebView", "onPageFinished ");
+		super.onPageFinished(view, url);
 		//get html source  
 		String javascript = "javascript:window.injectedObject.getHtml('<html>'+" +
                     "document.getElementsByTagName('html')[0].innerHTML+'</html>');";
@@ -50,7 +54,7 @@ public class WebViewClientExt extends WebViewClient {
 			});
 		}else{
 			view.loadUrl(javascript);
-		}       
-		super.onPageFinished(view, url);
+		}
 	}
+	
 }

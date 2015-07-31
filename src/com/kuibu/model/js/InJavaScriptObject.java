@@ -1,14 +1,16 @@
 package com.kuibu.model.js;
-import com.kuibu.module.iterf.OnPageLoadFinished;
-
 import android.app.Activity;
-import android.util.Log;
+import android.content.Intent;
 import android.webkit.JavascriptInterface;
+
+import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.activity.ImageDetailActivity;
+import com.kuibu.module.iterf.OnPageLoadFinished;
 
 public class InJavaScriptObject {
 	
 	private Activity mInstance ; 
-	private OnPageLoadFinished onLoadListener ; 
+	private OnPageLoadFinished onLoadListener = null; 
 	
 	public InJavaScriptObject(Activity activity)
 	{
@@ -22,16 +24,16 @@ public class InJavaScriptObject {
 	
 	@JavascriptInterface
 	public void getHtml(String html) {
-		Log.d("HTML", html);
-		this.onLoadListener.getHtmlSource(html);
+		if(onLoadListener != null )
+			this.onLoadListener.getHtmlSource(html);
     }
 
 	@JavascriptInterface 
 	public void openImage(String url) {		//show Image
 		if (mInstance != null && !mInstance.isFinishing()) {			
-	//		Intent intent = new Intent(mInstance, NewsDetailImageActivity.class);
-	//		intent.putExtra("imageUrl", url);			
-	//		mInstance.startActivity(intent);
+			Intent intent = new Intent(mInstance, ImageDetailActivity.class);
+			intent.putExtra(StaticValue.IMG_URL, url);			
+			mInstance.startActivity(intent);
 		}
 	}
 }

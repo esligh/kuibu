@@ -54,9 +54,8 @@ public class KuibuApplication extends Application {
 	
 	public static EventSocket getSocketIoInstance()
 	{
-		return mSocketIo ; 
+		return mSocketIo; 
 	}
-	
 	
 	public static void initImageLoader(Context context) {
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(

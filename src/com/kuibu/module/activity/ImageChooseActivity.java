@@ -18,7 +18,7 @@ import com.kuibu.module.adapter.ChildAdapter;
  * @author ThinkPad
  *
  */
-public class ShowImageActivity extends ActionBarActivity {
+public class ImageChooseActivity extends ActionBarActivity {
 	private GridView mGridView;
 	private List<String> list;
 	private ChildAdapter adapter;
