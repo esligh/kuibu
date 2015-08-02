@@ -172,11 +172,11 @@ public class LoginDialog {
 								.getPersistentCookieStore()
 								.addCookie("reg_state", regState, date);
 						//success,establish persistent connection 
-						try {
-							KuibuApplication.getSocketIoInstance().SetUp();
+						try {							
 							JSONObject obj = new JSONObject();
 							obj.put("uid", uid);
 							obj.put("name", uname);
+							KuibuApplication.getSocketIoInstance().SetUp();
 							KuibuApplication.getSocketIoInstance().getSocketIO().
 									emit(StaticValue.EVENT.LOGIN_EVENT, obj);
 						} catch (MalformedURLException e) {
@@ -192,7 +192,7 @@ public class LoginDialog {
 						btnLogIn.setProgress(0);
 					} else if (StaticValue.RESPONSE_STATUS.LOGIN_PWDWRONG
 							.equals(state)) {
-						Toast.makeText(mContext, "密码错误!", Toast.LENGTH_SHORT)
+						Toast.makeText(mContext, "密码错误", Toast.LENGTH_SHORT)
 								.show();
 						btnLogIn.setProgress(0);
 					}
@@ -268,10 +268,10 @@ public class LoginDialog {
 			loginListener.onLoginComplete(params); //回调接口
 			
 			try {
-				KuibuApplication.getSocketIoInstance().SetUp();
 				JSONObject obj = new JSONObject();
 				obj.put("uid", uId);
 				obj.put("name", uName);
+				KuibuApplication.getSocketIoInstance().SetUp();
 				KuibuApplication.getSocketIoInstance().getSocketIO().
 				emit(StaticValue.EVENT.LOGIN_EVENT, obj);
 			} catch (MalformedURLException e) {

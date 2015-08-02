@@ -1,4 +1,4 @@
-package com.kuibu.model.js;
+package com.kuibu.model.webview;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 
 public class WebViewClientExt extends WebViewClient {
+	
 	private Context mContext ; 
 	
 	public WebViewClientExt(Context context) {
@@ -55,6 +56,5 @@ public class WebViewClientExt extends WebViewClient {
 		}else{
 			view.loadUrl(javascript);
 		}
-	}
-	
+	}	
 }

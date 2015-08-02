@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
@@ -87,7 +88,7 @@ public class CommentActivity extends BaseActivity implements
 			@Override
 			public void onClick(View view) {
 				// TODO Auto-generated method stub
-				request_add();
+				requestAdd();
 				editContent.setText("");
 			}
 		});
@@ -206,6 +207,7 @@ public class CommentActivity extends BaseActivity implements
 						public void onClick(DialogInterface dialog, int position) {
 							switch (position) {
 							case 0: // vote
+								
 								break;
 							case 1: // reply
 								if (Session.getSession().isLogin()) {
@@ -232,6 +234,49 @@ public class CommentActivity extends BaseActivity implements
 								}
 								break;
 							case 3:// report
+								AlertDialog.Builder builder = new Builder(CommentActivity.this);
+								builder.setTitle("请选择举报原因");
+								builder.setItems(getResources().getStringArray(R.array.report_item), 
+										new OnClickListener(){
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int position) {
+												
+												String reason =null;
+
+												Map<String,String> params = new HashMap<String,String>();
+												params.put("accuser_id", Session.getSession().getuId());
+												params.put("defendant_id", item.getCreateBy());
+												switch(position){
+												case 0:
+													params.put("reason","色情");
+													sendReport(params);
+													break;
+												case 1:
+													params.put("reason","广告骚扰");
+													sendReport(params);
+													break;
+												case 2:
+													params.put("reason","口头谩骂");
+													sendReport(params);
+													break;
+												case 3:
+													params.put("reason","欺诈");
+													sendReport(params);
+													break;
+												case 4:
+													params.put("reason","政治");
+													sendReport(params);
+													break;
+												case 5:
+													Intent intent = new Intent(CommentActivity.this,ReportActivity.class);
+													intent.putExtra("defendant", item.getCreateBy());
+													startActivity(intent);
+													break;
+												}
+											}									
+								});
 								break;
 							}
 						}
@@ -267,7 +312,7 @@ public class CommentActivity extends BaseActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void request_add() {
+	private void requestAdd() {
 		final String content = editContent.getText().toString().trim();
 		if (TextUtils.isEmpty(content)) {
 			Toast.makeText(this, "评论内容不能为空!", Toast.LENGTH_SHORT).show();
@@ -407,5 +452,45 @@ public class CommentActivity extends BaseActivity implements
 		super.onBackPressed();
 		overridePendingTransition(R.anim.anim_slide_out_right,
 				R.anim.anim_slide_in_right);
+	}
+	
+	private void sendReport(Map<String,String> params)
+	{
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/add_report";
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@SuppressLint("SimpleDateFormat")
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						Toast.makeText(CommentActivity.this, "感谢您的举报,我们会尽快处理",Toast.LENGTH_SHORT).show();
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+			}
+		}) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				HashMap<String, String> headers = new HashMap<String, String>();
+				String credentials = Session.getSession().getToken()
+						+ ":unused";
+				headers.put("Authorization", "Basic "
+						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
+								.replaceAll("\\s+", ""));
+				return headers;
+			}
+		};
+		KuibuApplication.getInstance().addToRequestQueue(req);		
 	}
 }

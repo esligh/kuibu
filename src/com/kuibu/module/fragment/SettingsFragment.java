@@ -47,6 +47,7 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.MDHandBookActivity;
 import com.kuibu.module.activity.R;
+import com.kuibu.module.activity.ReportActivity;
 
 public class SettingsFragment extends PreferenceFragment implements
 		OnPreferenceChangeListener ,OnPreferenceClickListener{
@@ -123,6 +124,7 @@ public class SettingsFragment extends PreferenceFragment implements
 		findPreference(StaticValue.PrefKey.DARK_THEME_KEY).setOnPreferenceChangeListener(this);
 		findPreference(StaticValue.PrefKey.ABOUT_ME).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.HAND_BOOK).setOnPreferenceClickListener(this);
+		findPreference(StaticValue.PrefKey.FLOW_STATISTICS).setOnPreferenceClickListener(this);
 		mProDlg =  new ProgressDialog(getActivity());  
 		mProDlg.setMax(MAX_PROGRESS);
 		mProDlg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 		
@@ -156,6 +158,9 @@ public class SettingsFragment extends PreferenceFragment implements
 			reqAppVersion();
 		}else if(pref.getKey().equals(StaticValue.PrefKey.HAND_BOOK)){
 			Intent intent = new Intent(getActivity(),MDHandBookActivity.class);
+			getActivity().startActivity(intent);
+		}else if(pref.getKey().equals(StaticValue.PrefKey.FLOW_STATISTICS)){
+			Intent intent = new Intent(getActivity(),ReportActivity.class);
 			getActivity().startActivity(intent);
 		}
 		return true;

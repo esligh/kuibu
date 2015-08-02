@@ -32,7 +32,8 @@
     <string name="hint_extra">简介</string>
     <string name="hint_topic_private">私有(私有集册的内容发布只作为备份，其他人看不到)</string>
     <string name="hint_fbox_private">私有(私有集册只对自己可见)</string>
-    
+	<string name="hint_report">举报原因&#8230;</string>
+	    
     <string name="empty_view_desc">暂无数据</string>
     <string name="error_view_desc">加载数据出错</string>
     <string name="error_view_retry">重试</string>
@@ -78,6 +79,7 @@
     <string name="choose_pics">选择图片</string>
 	<string name="handbook">帮助手册</string>        
     <string name="look_at">查看</string>    
+    <string name="report">举报</string>
     <!-- menu text -->
     <string name="action_search_for">搜索</string>
     <string name="action_notify">通知</string>

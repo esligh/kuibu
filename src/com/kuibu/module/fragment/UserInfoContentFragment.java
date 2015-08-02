@@ -151,7 +151,7 @@ public final class UserInfoContentFragment extends Fragment implements
 				@Override
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
-					if(Session.session.isLogin()){
+					if(Session.getSession().isLogin()){
 						do_focus(bUserIsFollow);
 					}else{
 						Toast.makeText(getActivity(), "请先登录或注册用户.", 

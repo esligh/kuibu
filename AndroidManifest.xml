@@ -164,7 +164,14 @@
 		 </activity>
 		 <activity
 		     android:name=".ImageDetailActivity"
-		     android:label="@string/look_at"></activity>
+		     android:label="@string/look_at">
+		 </activity>
+	
+		 	 <activity
+		     android:name=".ReportActivity"
+		     android:label="@string/report">
+		 </activity>
+	
 		 <service
 		     android:name="com.kuibu.module.service.HeartBeatService">
 			 <intent-filter>

@@ -8,8 +8,8 @@ import android.view.MenuItem;
 import android.webkit.WebSettings;
 
 import com.kuibu.data.global.Constants;
-import com.kuibu.model.js.InJavaScriptObject;
-import com.kuibu.model.js.WebViewClientExt;
+import com.kuibu.model.webview.InJavaScriptObject;
+import com.kuibu.model.webview.WebViewClientExt;
 
 public class MDHandBookActivity extends BaseActivity{
 	private MarkdownView bookView ; 	

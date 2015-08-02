@@ -7,54 +7,53 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.db.SqLiteManager;
 
 /**
  * @class collection view operation 
  * @author ThinkPad
  * 
  */
-public class CollectionVo extends SqLiteManager {
+public class CollectionVo extends BaseDbVo{
 	public static final String table_name = "collection" ; 
 	private final String BASE_QUERY_STR = " SELECT _id,cid ,pid,tid,type,title,content,is_pub,is_sync,last_modify FROM collection " ;
 	
     public CollectionVo(Context context) {
 		super(context);
-		// TODO Auto-generated constructor stub
 	}
   
     public void add(List<CollectionBean> collections) {  
-        db.beginTransaction();   
+        getDB().beginTransaction();   
         try {  
             for (CollectionBean c : collections) {  
-                db.execSQL("INSERT INTO collection(pid,tid,type,title,content,create_by,cid,is_sync) VALUES( ?, ?, ?, ?, ?, ?, ?,?)", 
+            	getDB().execSQL("INSERT INTO collection(pid,tid,type,title,content,create_by,cid,is_sync) VALUES( ?, ?, ?, ?, ?, ?, ?,?)", 
                 		new Object[]{c.pid, c.tid,c.type,c.title,c.content,c.createBy,c.cid,c.isSync});
             }  
-            db.setTransactionSuccessful();  
+            getDB().setTransactionSuccessful();  
         } finally {  
-            db.endTransaction();  
+        	getDB().endTransaction();  
         }  
     }  
     
     public void add(CollectionBean c)
     {
-    	db.beginTransaction();
+    	getDB().beginTransaction();
     	try{
-    		db.execSQL("INSERT INTO collection(pid,tid,type,title,content,create_by,cid,is_sync) VALUES(?, ?, ?, ?, ?, ?, ?,?)",
+    		getDB().execSQL("INSERT INTO collection(pid,tid,type,title,content,create_by,cid,is_sync) VALUES(?, ?, ?, ?, ?, ?, ?,?)",
     				new Object[]{c.pid, c.tid,c.type,c.title,c.content,c.createBy,c.cid,c.isSync});
-    		db.setTransactionSuccessful();
+    		getDB().setTransactionSuccessful();
     	}finally{
-    		db.endTransaction();
+    		getDB().endTransaction();
     	}
     }
     
     public int getlastkey()
     {
     	int key=0; 
-    	Cursor cursor = db.rawQuery("select last_insert_rowid() from collection ",null);
+    	Cursor cursor = getDB().rawQuery("select last_insert_rowid() from collection ",null);
     	if(cursor.moveToFirst()){
     		key = cursor.getInt(0);
     	}
+    	cursor.close();
     	return key ; 
     }
     
@@ -64,15 +63,15 @@ public class CollectionVo extends SqLiteManager {
      */
     public void update(String fields, String where ,String[] args)
     {
-    	db.beginTransaction();
+    	getDB().beginTransaction();
     	try{
     		StringBuffer SQL = new StringBuffer("update collection set ");
     		SQL.append(fields);
     		SQL.append(" where ").append(where);
-    		db.execSQL(SQL.toString(),args);
-    		db.setTransactionSuccessful(); 
+    		getDB().execSQL(SQL.toString(),args);
+    		getDB().setTransactionSuccessful(); 
     	}finally{
-    		db.endTransaction();
+    		getDB().endTransaction();
     	}
     }
     
@@ -81,30 +80,31 @@ public class CollectionVo extends SqLiteManager {
      * @param collection 
      */  
     public void delete(CollectionBean c) {  
-        db.delete("collection", "_id = ?", new String[]{String.valueOf(c._id)});  
+    	getDB().delete("collection", "_id = ?", new String[]{String.valueOf(c._id)});
+    	
     }  
     
     public void delete(int pid)
     {
-    	db.delete("collection", "pid = ?", new String[]{String.valueOf(pid)});
+    	getDB().delete("collection", "pid = ?", new String[]{String.valueOf(pid)});
     }
     
     public void delete (String cons,String []args)
     {
-    	db.beginTransaction();
+    	getDB().beginTransaction();
     	try{
         	StringBuffer SQL = new StringBuffer("delete from collection where "); 	
         	SQL.append(cons);
-        	db.execSQL(SQL.toString(),args);
-        	db.setTransactionSuccessful();
+        	getDB().execSQL(SQL.toString(),args);
+        	getDB().setTransactionSuccessful();
     	}finally{
-    		db.endTransaction();
+    		getDB().endTransaction();
     	} 	
     }
     
     public List<CollectionBean> queryAll() {  
         ArrayList<CollectionBean> collections = new ArrayList<CollectionBean>();  
-        Cursor c = db.rawQuery("SELECT _id,cid,pid,tid,type,title,content,is_pub,is_sync,last_modify FROM collection ", null);  
+        Cursor c = getDB().rawQuery("SELECT _id,cid,pid,tid,type,title,content,is_pub,is_sync,last_modify FROM collection ", null);  
         while (c.moveToNext()) {  
         	CollectionBean collection = new CollectionBean();  
         	collection._id = c.getString(c.getColumnIndex("_id")); 
@@ -126,9 +126,8 @@ public class CollectionVo extends SqLiteManager {
     public CollectionBean querywithkey(String id)
     {
     	CollectionBean collection = new CollectionBean();
-    	Cursor c = db.rawQuery("SELECT _id,cid,pid,tid,type,title,content,is_pub,is_sync,last_modify FROM collection where _id = ? ",
+    	Cursor c = getDB().rawQuery("SELECT _id,cid,pid,tid,type,title,content,is_pub,is_sync,last_modify FROM collection where _id = ? ",
     			new String[]{id});
-    	
         while (c.moveToNext()) {    
         	collection._id = c.getString(c.getColumnIndex("_id"));  
         	collection.cid = c.getString(c.getColumnIndex("cid"));
@@ -151,7 +150,7 @@ public class CollectionVo extends SqLiteManager {
     	ArrayList<CollectionBean> collections = new ArrayList<CollectionBean>();
     	StringBuffer SQL = new StringBuffer(BASE_QUERY_STR);
     	SQL.append(" where ").append(cons);
-        Cursor c = db.rawQuery(SQL.toString(),args);
+        Cursor c = getDB().rawQuery(SQL.toString(),args);
         
         while (c.moveToNext()) {  
         	CollectionBean collection = new CollectionBean();  

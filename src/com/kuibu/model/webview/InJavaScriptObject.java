@@ -1,4 +1,4 @@
-package com.kuibu.model.js;
+package com.kuibu.model.webview;
 import android.app.Activity;
 import android.content.Intent;
 import android.webkit.JavascriptInterface;

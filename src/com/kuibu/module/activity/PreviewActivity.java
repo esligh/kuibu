@@ -47,10 +47,10 @@ import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.js.InJavaScriptObject;
-import com.kuibu.model.js.WebViewClientExt;
 import com.kuibu.model.vo.CollectionVo;
 import com.kuibu.model.vo.ImageLibVo;
+import com.kuibu.model.webview.InJavaScriptObject;
+import com.kuibu.model.webview.WebViewClientExt;
 import com.kuibu.module.iterf.OnPageLoadFinished;
 
 public class PreviewActivity extends ActionBarActivity implements OnPageLoadFinished{
@@ -272,7 +272,6 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 						}
 						progressDialog.dismiss();
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -521,7 +520,6 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 								Toast.LENGTH_SHORT).show();					
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -587,6 +585,10 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		return sb.toString();
 	}
 	
+	
+	/**获取摘要
+	 * @return
+	 */
 	private String getAbstract()
 	{
 		String result = "";
@@ -627,7 +629,6 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 
 	@Override
 	public void getHtmlSource(String html) {
-		// TODO Auto-generated method stub
 		htmlSource = html ; 
 	}
 }

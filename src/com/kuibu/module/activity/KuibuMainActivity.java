@@ -455,11 +455,13 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 		}
 	}
 
-
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		KuibuApplication.getSocketIoInstance().getSocketIO().disconnect();  
+		if(KuibuApplication.getSocketIoInstance().
+				getSocketIO()!=null){
+			KuibuApplication.getSocketIoInstance().getSocketIO().disconnect();
+		}		  
 	}
 		
 }

@@ -3,6 +3,7 @@ package com.kuibu.model.bean;
 import java.io.Serializable;
 
 public class CollectionBean implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
 	public String _id ; 
 	public String pid ; 

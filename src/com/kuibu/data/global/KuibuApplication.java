@@ -27,6 +27,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
 import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.PersistentCookieStore;
+import com.kuibu.model.db.SqLiteHelper;
 import com.kuibu.module.net.EventSocket;
 import com.kuibu.module.net.SocketIOCallBack;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -41,6 +42,7 @@ public class KuibuApplication extends Application {
 	private static PersistentCookieStore persistentCookieStore ; 
 	private static ACache mCache  ; 
 	private static EventSocket mSocketIo ; 
+	private static SqLiteHelper mSqlHelper  ; 
 	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
@@ -49,12 +51,21 @@ public class KuibuApplication extends Application {
 		initImageLoader(getApplicationContext());
 		mCache = ACache.get(getApplicationContext());
 		sInstance = this ; 
-		mSocketIo = new EventSocket(new SocketIOCallBack()); 
+		
 	}
 	
 	public static EventSocket getSocketIoInstance()
 	{
+		if(mSocketIo==null)
+			mSocketIo = new EventSocket(new SocketIOCallBack());
 		return mSocketIo; 
+	}
+	
+	public static SqLiteHelper getSqLiteHelper(Context context)
+	{
+		if(mSqlHelper==null)
+			mSqlHelper = new SqLiteHelper(context);
+		return mSqlHelper ; 
 	}
 	
 	public static void initImageLoader(Context context) {

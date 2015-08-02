@@ -18,10 +18,12 @@ import com.kuibu.model.bean.CollectItemBean;
 public class CollectItemAdapter extends BaseAdapter {
 	private List<CollectItemBean> datas; 
 	private LayoutInflater mInfalter;
+	
 	public class HolderView {
 		public TextView topic;
 		public CheckBox ckb ; 
 	}
+	
 	public CollectItemAdapter(Context context, List<CollectItemBean> datas){
 		this.datas = datas ; 
 		this.mInfalter = LayoutInflater.from(context);

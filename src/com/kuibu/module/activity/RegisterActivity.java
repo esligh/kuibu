@@ -84,7 +84,7 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 					finish();
 				} else{
 					progressBtn.setProgress(PROGRESS_LEN);
-					request_register();
+					requestRegister();
 				}
 			}
 		});
@@ -93,7 +93,7 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 
-	private void request_register() {
+	private void requestRegister() {
 		// Post params to be sent to the server
 		HashMap<String, String> params = new HashMap<String, String>();
 		String user_name = user_name_et.getText().toString();
@@ -143,7 +143,7 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 					String state = response.getString("reg_state");
 					if(StaticValue.RESPONSE_STATUS.REG_SENDEMAIL.equals(state)){
 						if(has_photo){
-							upload_userpic(response.getString("uid"));
+							uploadUserpic(response.getString("uid"));
 						}else{
 							progressBtn.setProgress(PROGRESS_MAX);
 						}						
@@ -170,7 +170,7 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
 
-	private void upload_userpic(String uid)
+	private void uploadUserpic(String uid)
 	{
 		AjaxParams params = new AjaxParams();
 		try {

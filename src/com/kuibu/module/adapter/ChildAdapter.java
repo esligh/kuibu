@@ -28,6 +28,7 @@ import com.kuibu.custom.widget.MyImageView.OnMeasureListener;
    
   
 public class ChildAdapter extends BaseAdapter {  
+	
     private Point mPoint = new Point(0, 0);//用来封装ImageView的宽和高的对象  
     /** 
      * 用来存储图片的选中情况 
@@ -69,7 +70,7 @@ public class ChildAdapter extends BaseAdapter {
         String path = list.get(position);  
           
         if(convertView == null){  
-            convertView = mInflater.inflate(R.layout.image_scan_grid_child_item, null);  
+            convertView = mInflater.inflate(R.layout.image_scan_grid_child_item, parent,false);  
             viewHolder = new ViewHolder();  
             viewHolder.mImageView = (MyImageView) convertView.findViewById(R.id.child_image);  
             viewHolder.mCheckBox = (CheckBox) convertView.findViewById(R.id.child_checkbox);  
@@ -153,8 +154,7 @@ public class ChildAdapter extends BaseAdapter {
           
         return list;  
     }  
-      
-      
+           
     public static class ViewHolder{  
         public MyImageView mImageView;  
         public CheckBox mCheckBox;  

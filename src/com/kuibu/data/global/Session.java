@@ -1,11 +1,12 @@
 package com.kuibu.data.global;
 
 /**
- * @class :伪回话类，保存登录后用户信息
+ * @class :伪会话类，保存登录后用户信息
  * @author ThinkPad
  */
 
 public class Session {
+
 	private String uId;
 	private String uName;
 	private String uSex ; 
@@ -15,7 +16,7 @@ public class Session {
 	private String uPic;  
 	private String regState ; 
 	private boolean login = false; 	
-	public static Session session;
+	private static Session session;
 
 	public static Session getSession() {
 		if (session == null) {
@@ -99,7 +100,5 @@ public class Session {
 
 	public void setRegState(String regState) {
 		this.regState = regState;
-	}	
-	
-	
+	}		
 }

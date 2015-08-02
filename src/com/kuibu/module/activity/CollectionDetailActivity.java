@@ -61,8 +61,8 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.js.InJavaScriptObject;
-import com.kuibu.model.js.WebViewClientExt;
+import com.kuibu.model.webview.InJavaScriptObject;
+import com.kuibu.model.webview.WebViewClientExt;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petebevin.markdown.MarkdownProcessor;
 
