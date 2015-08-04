@@ -147,8 +147,13 @@ public class ExploreRankFragment extends BaseFragment implements
 			}
 		}, new Response.ErrorListener() {
 			@Override
-			public void onErrorResponse(VolleyError error) {			
-				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+			public void onErrorResponse(VolleyError error) {
+				if(mdatas!=null && mdatas.isEmpty())
+					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				else
+					Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
+				
+				rankList.loadComplete();
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();

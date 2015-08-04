@@ -52,7 +52,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.AssetsUtils;
-import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.DensityUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.MultiStateView;
@@ -63,6 +62,7 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.webview.InJavaScriptObject;
 import com.kuibu.model.webview.WebViewClientExt;
+import com.kuibu.module.net.NetUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petebevin.markdown.MarkdownProcessor;
 
@@ -96,23 +96,31 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 	private MultiStateView mMultiStateView;
 	private String cssFile ; 
 	private boolean isDarkTheme ; 
-	private boolean isCollected = false ; 
-	
+	private boolean isCollected =false ; 
+	@SuppressLint("ClickableViewAccessibility")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
 		SharedPreferences mPerferences = PreferenceManager
 				.getDefaultSharedPreferences(this);		
-		isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);		
+		isDarkTheme= mPerferences.getBoolean("dark_theme", false);
+		if(isDarkTheme){
+			setTheme(R.style.AppTheme_Dark);
+			cssFile = Constants.WEBVIEW_DARK_CSSFILE;
+		}else{
+			setTheme(R.style.AppTheme_Light);
+			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
+        
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.show_collection_activity);
         mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
         mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
-        		.setOnClickListener(new View.OnClickListener() {
-        	@Override
-			public void onClick(View arg0) {              
-				loadData();
-				mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);				
-			}
+        .setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+                Toast.makeText(getApplicationContext(), "Fetching Data", Toast.LENGTH_SHORT).show();
+			}   	
         });
 		contentView =(MarkdownView)findViewById(R.id.show_text_content_tv);
 		setUpWebViewDefaults();
@@ -123,41 +131,33 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		collectBtn =(ImageButton)findViewById(R.id.bottom_tools_collect);
 		vote_count_tv = (TextView)findViewById(R.id.show_text_vote_count);
         title_tv=(TextView)findViewById(R.id.show_text_title_tv);
-        String title = getIntent().getStringExtra("title");
-		title_tv.setText(title); 
-		setTitle(title);		
         layout_author=(RelativeLayout)findViewById(R.id.layout_author_rl);
         author_name = (TextView)findViewById(R.id.show_text_author_tv);
         author_desc = (TextView)findViewById(R.id.show_text_author_desc);
         author_pic = (ImageView)findViewById(R.id.author_pic_iv);
 		mScroller = (ScrollViewExt) findViewById(R.id.show_text_scroller);
-		fl_top = (FrameLayout) findViewById(R.id.fl_top);
-		toolbar=(Toolbar)findViewById(R.id.show_text_toolbar);	
+		fl_top = (FrameLayout) findViewById(R.id.fl_top);			
 		layout_tools = (LinearLayout)findViewById(R.id.layout_tools);
-		create_by = getIntent().getStringExtra("create_by");
-		if(Session.getSession().getuId().equals(create_by)){
-			layout_tools.setVisibility(View.GONE);
-		}
-		setSupportActionBar(toolbar); 
-        if(isDarkTheme){
-        	setTheme(R.style.AppTheme_Dark);
-			cssFile = Constants.WEBVIEW_DARK_CSSFILE;
+		toolbar=(Toolbar)findViewById(R.id.show_text_toolbar);
+		setSupportActionBar(toolbar);
+		
+		if(isDarkTheme){       	
         	layout_author.setBackgroundResource(R.drawable.layout_border_line_down_dark);
         	layout_tools.setBackgroundResource(R.drawable.layout_border_line_up_dark);
         	title_tv.setBackgroundColor(getResources().getColor(R.color.ground));
         }else{
-			setTheme(R.style.AppTheme_Light);
-			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
-        	layout_author.setBackgroundResource(R.drawable.layout_border_line_down_light);
+			layout_author.setBackgroundResource(R.drawable.layout_border_line_down_light);
         	layout_tools.setBackgroundResource(R.drawable.layout_border_line_up_light);
         	title_tv.setBackgroundColor(getResources().getColor(R.color.light_grey));
-        }        				
+        }
+	       
 		viewSlop = ViewConfiguration.get(this).getScaledTouchSlop();
 		mGestureDetector = new GestureDetector(this, new DetailGestureListener());
 		mScroller.setBottomListener(this);
 		mScroller.setScrollListener(this);
 		
 		mScroller.setOnTouchListener(new View.OnTouchListener() {
+			@SuppressLint("ClickableViewAccessibility")
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				switch (event.getAction()) {
@@ -197,11 +197,11 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 				}
 				return true;
 			}
-		});		 
-		
+		});		
 		commentBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
 				Intent intent = new Intent(CollectionDetailActivity.this,CommentActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
 				intent.putExtra("create_by", create_by);
@@ -213,7 +213,9 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		collectBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
+				// TODO Auto-generated method stu
 				if(Session.getSession().isLogin()){
+					cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
 					Intent intent = new Intent(CollectionDetailActivity.this,CollectFavoriteBoxActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
 					intent.putExtra(StaticValue.COLLECTION.IS_COLLECTED, isCollected);
@@ -227,20 +229,21 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		noIntrestcb.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				doAction(StaticValue.USER_ACTION.ACTION_OPPOSE_COLLECTION, noIntrestcb.isChecked());
+				do_action(StaticValue.USER_ACTION.ACTION_OPPOSE_COLLECTION, noIntrestcb.isChecked());
 			}
 		});
 		funcb.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				doAction(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, funcb.isChecked());
+				do_action(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, funcb.isChecked());
 			}
 		});
-		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		
 	}	
 	
+
 	@SuppressLint("SetJavaScriptEnabled")
 	private void setUpWebViewDefaults()
 	{
@@ -249,16 +252,35 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		contentView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
 		InJavaScriptObject jsObj = new InJavaScriptObject(this);
 		contentView.addJavascriptInterface(jsObj, "injectedObject");
-		contentView.setWebViewClient(new WebViewClientExt(this));				
-		contentView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);		
+		contentView.setWebViewClient(new WebViewClientExt(this));
+		int netType = NetUtils.getAPNType(this);
+		if(netType == NetUtils.NO_NET){
+			contentView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+		}else{
+			contentView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+		}
+		
+	}
+	
+	private String replaceImgTagFromHTML(String html) {
+		Document doc = Jsoup.parse(html);
+		Elements es = doc.getElementsByTag("img");
+		for (Element e : es) {
+			String imgUrl = e.attr("src");
+				e.attr("onclick", "openImage('" + imgUrl + "')");
+		}
+		return doc.html();
 	}
 	
 	void initData()
 	{
 		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);		
 		String content = getIntent().getStringExtra("content");
+		String title = getIntent().getStringExtra("title");
+		title_tv.setText(title);
+		setTitle(title);
 		if(TextUtils.isEmpty(content)){
-			loadData();
+			load_myself();
 		}else{			
 			String type = getIntent().getStringExtra("type");
 			if(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE.equals(type)){
@@ -268,10 +290,8 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 					content = adjustMarkDownText(content);
 				}
 			}
-			comment_text_tv.setText("评论 "+DataUtils.formatNumber(getIntent().getIntExtra("comment_count",0)));
-			vote_count_tv.setText(DataUtils.formatNumber(getIntent().getIntExtra("vote_count",0)));
-			author_name.setText(getIntent().getStringExtra("name"));
-			author_desc.setText(getIntent().getStringExtra("signature"));
+			comment_text_tv.setText("评论 "+getIntent().getIntExtra("comment_count", 0));
+			vote_count_tv.setText(getIntent().getStringExtra("vote_count"));		
 			
 			MarkdownProcessor m = new MarkdownProcessor();
 			content = m.markdown(contentWarpper(content));
@@ -280,18 +300,13 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 			html = html.replace("{content}", content);			
 			html = replaceImgTagFromHTML(html);
 			contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
-			
-//			MarkdownProcessor m = new MarkdownProcessor();
-//			String html = m.markdown(contentWarpper(content));			
-//			html = String.format("<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
-//								+ html, cssFile);
-//			replaceImgTagFromHTML(html);
-//			contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
-			
+
+			author_name.setText(getIntent().getStringExtra("name"));
+			author_desc.setText(getIntent().getStringExtra("signature"));
 			String url = getIntent().getStringExtra("photo");
 			if(TextUtils.isEmpty(url) || url.equals("null")){
 				String sex = getIntent().getStringExtra("sex");
-				if(!TextUtils.isEmpty(sex) && sex.equals(StaticValue.SERMODLE.USER_SEX_MALE)){
+				if(!TextUtils.isEmpty(sex) && sex.equals("M")){
 					author_pic.setImageResource(R.drawable.default_pic_avatar_male);
 				}else{
 					author_pic.setImageResource(R.drawable.default_pic_avatar_female);
@@ -303,18 +318,18 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		}
 		loadActions();
 	}
-		
-	private String replaceImgTagFromHTML(String html) {
-		Document doc = Jsoup.parse(html);
-		Elements es = doc.getElementsByTag("img");
-		for (Element e : es) {
-			String imgUrl = e.attr("src");
-				e.attr("onclick", "openImage('" + imgUrl + "')");
-		}
-		return doc.html();
+	
+	private String contentWarpper(String content)
+	{
+		int dpheight = fl_top.getHeight();
+		int pxheight = (int)(DensityUtils.dp2px(this, dpheight) * (0.35f-title_tv.getLineCount()*0.01));
+		StringBuffer buffer = new StringBuffer("<div style=\"height:").append(pxheight).append("px;\"></div>\n");
+		buffer.append(content);
+		buffer.append("\n<br/><br/><br/>");
+		return buffer.toString();
 	}
 	
-	private void loadData()
+	private void load_myself()
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", cid);
@@ -331,11 +346,9 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 						if(obj!=null){
 							author_name.setText(obj.getString("name"));
 							author_desc.setText(obj.getString("signature"));
-							String content = obj.getString("content");
-							contentView.loadMarkdown(contentWarpper(content),cssFile);								
 							String url = obj.getString("photo");							
 							if(TextUtils.isEmpty(url) || url.equals("null")){
-								if(obj.getString("sex").equals(StaticValue.SERMODLE.USER_SEX_MALE)){
+								if(obj.getString("sex").equals("M")){
 									author_pic.setImageResource(R.drawable.default_pic_avatar_male);
 								}else{
 									author_pic.setImageResource(R.drawable.default_pic_avatar_female);
@@ -343,12 +356,22 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 							}else{
 								ImageLoader.getInstance().displayImage(url,
 										author_pic);
-							}				
-							vote_count_tv.setText(DataUtils.formatNumber(obj.getInt("vote_count")));
-							comment_text_tv.setText("评论 "+DataUtils.formatNumber(obj.getInt("comment_count")));														
+							}
+							String content = obj.getString("content");
+							vote_count_tv.setText(obj.getString("vote_count"));	
+							
+							MarkdownProcessor m = new MarkdownProcessor();
+							content = m.markdown(contentWarpper(content));
+							String template = AssetsUtils.loadText(CollectionDetailActivity.this, Constants.TEMPLATE_DEF_URL);
+							String html = template.replace("{cssFile}", cssFile);
+							html = html.replace("{content}", content);			
+							html = replaceImgTagFromHTML(html);
+							contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
+									
+							comment_text_tv.setText("评论 "+obj.getString("comment_count"));		
+							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 						}
 					}
-					mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -371,7 +394,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", cid);
 		final String URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/get_useraction";				
+				+ Constants.Config.REST_API_VERSION + "/get_useraction";				
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -412,7 +435,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	public void doAction(String action_type,boolean isChecked)
+	public void do_action(String action_type,boolean isChecked)
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
@@ -455,7 +478,8 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 						+ ":unused";
 				headers.put(
 						"Authorization",
-						"Basic "+ SafeEDcoderUtil.encryptBASE64(
+						"Basic "
+								+ SafeEDcoderUtil.encryptBASE64(
 										credentials.getBytes()).replaceAll(
 										"\\s+", ""));
 				return headers;
@@ -484,16 +508,14 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 	}	
 	
 	private class DetailGestureListener extends GestureDetector.SimpleOnGestureListener {
-		
 		@Override
 		public boolean onDown(MotionEvent e) {
 			return true;
 		}
-		
 		//完成一次单击，并确定没有二击事件后触发（300ms）
 		@Override
 		public boolean onSingleTapConfirmed(MotionEvent e) {
-			if (isTopHide && isToolHide) {
+			if (isTopHide && isToolHide) {//显示顶部和底部
 				showTop();
 				showTool();
 			} else if (!isToolHide && isTopHide) {
@@ -511,7 +533,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 
 	private void showTool() {
 		int startY = getWindow().getDecorView()
-				.getHeight() - getStatusHeight(this);
+				.getHeight() - getStatusHeight(this); //计算动画开始的垂直属性
 		ObjectAnimator anim = ObjectAnimator.ofFloat(layout_tools, "y", startY,
 				startY - layout_tools.getHeight());
 		anim.setDuration(TIME_ANIMATION);
@@ -519,7 +541,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		isToolHide = false;
 	}
 	
-	private void hideTool(){
+	private void hideTool() {
 		int startY = getWindow().getDecorView()
 				.getHeight() - getStatusHeight(this);
 		ObjectAnimator anim = ObjectAnimator.ofFloat(layout_tools, "y", 
@@ -529,6 +551,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 		isToolHide = true;
 	}
 	
+	//显示顶部
 	private void showTop() {
 		ObjectAnimator anim1 = ObjectAnimator.ofFloat(toolbar, "y", toolbar.getY(),
 				0);
@@ -567,21 +590,22 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 	
 	@Override
 	public void onScrollChanged(int l, int t, int oldl, int oldt) {
-		if (t <= DensityUtils.dp2px(this, TOP_DISTANCE_Y)) { //当前Scorllbar垂直位置小于预置
+		// TODO Auto-generated method stub
+		if (t <= dp2px(TOP_DISTANCE_Y)) { //当前Scorllbar垂直位置小于预置
 			isInTopDistance = true;
 		} else {
 			isInTopDistance = false;
 		}
-		if (t <= DensityUtils.dp2px(this,TOP_DISTANCE_Y) && isTopHide) {//小于预置，且顶部被隐藏就将其显示出来
+		if (t <= dp2px(TOP_DISTANCE_Y) && isTopHide) {//小于预置，且顶部被隐藏就将其显示出来
 			showTop();
-		} else if (t > DensityUtils.dp2px(this,TOP_DISTANCE_Y) && !isTopHide) { //大于预置，顶部没隐藏将其隐藏
+		} else if (t > dp2px(TOP_DISTANCE_Y) && !isTopHide) { //大于预置，顶部没隐藏将其隐藏
 			hideTop();
 		}
 
 	}
-	
 	@Override
 	public void onBottom() {//Scorllbar到顶部显示底部tool
+		// TODO Auto-generated method stub
 		if (isToolHide) {
 			showTool();
 		}
@@ -642,16 +666,8 @@ public class CollectionDetailActivity extends ActionBarActivity implements
 			default:
 				break;
 		}
+		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
-	private String contentWarpper(String content)
-	{
-		int dpheight = fl_top.getHeight();
-		int pxheight = (int)(DensityUtils.dp2px(this, dpheight) * (0.35f-title_tv.getLineCount()*0.01));
-		StringBuffer buffer = new StringBuffer("<div style=\"height:").append(pxheight).append("px;\"></div>\n");
-		buffer.append(content);
-		buffer.append("\n<br/><br/><br/>");
-		return buffer.toString();
-	}
 }

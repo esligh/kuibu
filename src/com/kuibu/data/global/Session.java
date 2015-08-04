@@ -42,7 +42,8 @@ public class Session {
 	}
 
 	public void clearSession() {
-		session = null;
+		uId=uName=uSex=uSignature=uEmail=token=uPic=regState=null;
+		login=false;
 	}
 
 	public String getToken() {

@@ -18,6 +18,7 @@ public class StaticValue {
 	public static class PrefKey{
 		public static final String NO_PICTRUE_KEY = "no_pictrue";
 		public static final String DARK_THEME_KEY = "dark_theme";
+		public static final String LOGIN_ACCOUNT = "login_account";
 		public static final String ABOUT_ME = "about_me";
 		public static final String LASTEST_VERSION = "latest_version";
 		public static final String CLEAR_BUFFER = "clear_buffer";

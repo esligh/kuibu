@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
@@ -192,7 +193,10 @@ public class FavoriteBoxFragment extends Fragment {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				if(datas.isEmpty())
+					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				else
+					Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);

@@ -15,6 +15,9 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +64,11 @@ public class LoginDialog {
 		LinearLayout loginLayout = (LinearLayout) LayoutInflater.from(mContext).inflate(
 				R.layout.login_dialog, null);
 		mUserEmailEt = (EditText) loginLayout.findViewById(R.id.login_user_email);
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+		String account = pref.getString(StaticValue.PrefKey.LOGIN_ACCOUNT, null);
+		if(!TextUtils.isEmpty(account)){
+			mUserEmailEt.setText(account);
+		}
 		mUserPwdEt = (EditText) loginLayout.findViewById(R.id.login_user_pwd);
 		btnLogIn = (ActionProcessButton)loginLayout.findViewById(R.id.btnLogIn);
 		btnLogIn.setMode(ActionProcessButton.Mode.ENDLESS);
@@ -134,7 +142,7 @@ public class LoginDialog {
 						String signature = info.getString("signature");
 						Session.getSession().setuSignature(signature);	
 						String regState = info.getString("reg_state");
-						Session.getSession().setRegState("reg_state");
+						Session.getSession().setRegState(regState);
 						params.put("uId", uid);
 						params.put("uName", uname);
 						params.put("uPhoto", photoUrl);
@@ -171,6 +179,13 @@ public class LoginDialog {
 						KuibuApplication.getInstance()
 								.getPersistentCookieStore()
 								.addCookie("reg_state", regState, date);
+						
+
+						SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+						Editor editor= pref.edit();
+						editor.putString(StaticValue.PrefKey.LOGIN_ACCOUNT, email);
+						editor.commit();
+										
 						//success,establish persistent connection 
 						try {							
 							JSONObject obj = new JSONObject();
@@ -224,6 +239,7 @@ public class LoginDialog {
 		Cookie cookie = KuibuApplication.getInstance()
 				.getPersistentCookieStore().getCookie("token");
 		if (cookie == null || cookie.isExpired(new Date())) {
+			Session.getSession().clearSession();
 			return false;
 		} else { 
 			//读取cookie到session中

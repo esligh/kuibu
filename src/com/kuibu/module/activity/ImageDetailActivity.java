@@ -48,7 +48,6 @@ public class ImageDetailActivity extends BaseActivity{
 
         photo = new PhotoView(this);
         String imgUrl =  getIntent().getStringExtra(StaticValue.IMG_URL);
-        imgUrl = "assets://hand_book/grammer_1.jpg";
         ImageLoader.getInstance().displayImage(imgUrl,photo,options,null);        
         setContentView(photo);
 

@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -156,8 +157,10 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				if(!action.equals("DOWN"))
+				if(mHomeDatas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				else
+					Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
 				pullFreshlayout.setRefreshing(false);
 				mListView.loadComplete();
 			}

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -159,7 +160,11 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
-				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				if(mdatas!=null && mdatas.isEmpty())
+					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				else
+					Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
+				hotList.loadComplete();
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();

@@ -89,7 +89,7 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 		if(bWithDlg){
 			mNavigationDrawerFragment.selectItem(0);
 		}
-		if(NetUtils.isNetworkAvailable(this)){
+		if(!NetUtils.isNetworkAvailable(this)){
 			Toast.makeText(this, "当前网络状态不好.", Toast.LENGTH_LONG).show();
 		}else{ 			
 			this.startService(new Intent(this,HeartBeatService.class));
@@ -322,6 +322,8 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 	{
 		mLogoutMenu.setVisible(false);	
 		mNotifyMenu.setVisible(false);
+		Session.getSession().setLogin(false);
+		
 		//移除涉及到缓存的Framgent
 		String[] tags = getResources().getStringArray(R.array.drawer_item_logout_tag);
 		FragmentManager fragmentManager = getSupportFragmentManager();
@@ -348,17 +350,16 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 					itemTitle[i],itemTag[i]);
 			newData.add(item);
 		}
+
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("itemData", newData);
         params.put("uName", "登录");
         mNavigationDrawerFragment.updateDrawerList(params);
 		mNavigationDrawerFragment.selectItem(NOLOGIN_DEFAULT_POSITION);
-		
 		//清理缓存 
 		//ACache aCache = ACache.get(this);
 		//aCache.clear();		
 		logout();
-		Session.getSession().setLogin(false);
 	}
 	
 	private void logout()

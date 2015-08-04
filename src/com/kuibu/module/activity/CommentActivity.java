@@ -147,10 +147,7 @@ public class CommentActivity extends BaseActivity implements
 							}
 							showView();
 							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
-						}else{
-							mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 						}
-							
 					}
 					commentList.loadComplete();
 				} catch (JSONException e) {
