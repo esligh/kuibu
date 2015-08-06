@@ -42,7 +42,8 @@ public abstract class BaseActivity extends ActionBarActivity implements IEventHa
 		super.onPause();
 	}
 
-	protected Fragment getFragment() {
+	protected Fragment getFragment()
+	{
 		return null;
 	}
 	

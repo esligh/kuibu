@@ -1,4 +1,4 @@
-package com.kuibu.module.net;
+package com.kuibu.common.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

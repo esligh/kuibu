@@ -103,4 +103,28 @@
 
     <style name="ProgressBarStyle" parent="@android:style/Widget.Holo.ProgressBar.Horizontal" />
 
+    
+    <style name="Header.TitleText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:shadowColor">#8000</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
+    </style>
+
+    <style name="Header.SubTitleText" parent="Header.TitleText">
+        <item name="android:textSize">16sp</item>
+    </style>
+    
+    
+     <style name="Widget.ActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/launch_bg</item>
+    </style>
+
+    <style name="Widget.ActionBar.Transparent">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+    
+    
 </resources>

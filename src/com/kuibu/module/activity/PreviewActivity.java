@@ -27,6 +27,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -79,9 +81,10 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
 		}	
 		
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.collection_preview);
 
+        
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		if (toolbar != null) {
 			setSupportActionBar(toolbar);
@@ -629,5 +632,11 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	@Override
 	public void getHtmlSource(String html) {
 		htmlSource = html ; 
+	}
+
+	@Override
+	public void pageLoadFinished() {
+		// TODO Auto-generated method stub
+		
 	}
 }

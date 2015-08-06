@@ -39,8 +39,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.common.utils.NetUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
-import com.kuibu.custom.widget.BadgeView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
@@ -54,7 +54,6 @@ import com.kuibu.module.fragment.ExplorePageFragment;
 import com.kuibu.module.fragment.FavoriteBoxFragment;
 import com.kuibu.module.fragment.FocusPageFragment;
 import com.kuibu.module.fragment.HomePageFragment;
-import com.kuibu.module.net.NetUtils;
 import com.kuibu.module.service.HeartBeatService;
 
 public class KuibuMainActivity extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnLoginLisener {
@@ -208,10 +207,6 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			mNotifyMenu.setVisible(false);
 		}else{
 			mNotifyMenu.setVisible(true);
-			BadgeView badge = new BadgeView(this, mNotifyMenu.getActionView());
-			badge.setText("12");
-			badge.setBadgePosition(BadgeView.POSITION_BOTTOM_LEFT);
-			badge.show();
 		}
 		if(!Session.getSession().isLogin()){
 			mLogoutMenu.setVisible(false);

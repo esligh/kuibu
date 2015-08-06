@@ -73,14 +73,11 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 				Intent intent = new Intent(FavoriteBoxDetailActivity.this,CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
 				intent.putExtra("title", datas.get(position).getTitle());
-				intent.putExtra("content",datas.get(position).getContent());
 				intent.putExtra("create_by", datas.get(position).getCreateBy());
-				intent.putExtra("vote_count", datas.get(position).getVoteCount());
 				intent.putExtra("name", datas.get(position).getCreatorName());
 				intent.putExtra("photo",datas.get(position).getCreatorPic() );
 				intent.putExtra("signature", datas.get(position).getCreatorSignature());
-				intent.putExtra("sex", datas.get(position).getCreatorSex());	
-				intent.putExtra("comment_count", datas.get(position).getCommentCount());	
+				intent.putExtra("sex", datas.get(position).getCreatorSex());		
 				startActivity(intent);
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}
@@ -202,7 +199,7 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 							if(arr.length()>0){
 								for(int i=0;i<arr.length();i++){
 									CollectionItemBean item = new CollectionItemBean();
-								    JSONObject obj = (JSONObject) arr.get(i);
+								    JSONObject obj = (JSONObject) arr.get(i);  
 								    item.setTitle(obj.getString("title"));
 								    item.setContent(obj.getString("content"));
 								    item.setVoteCount(obj.getString("vote_count"));

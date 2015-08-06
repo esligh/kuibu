@@ -101,6 +101,19 @@
     <string name="tip_guide_fifth">锲而舍之    朽木不折</string>
     <string name="tip_guide_six">锲而不舍    金石可镂</string>
 
+    <string name="actionbar_item_fav_cancel">取消收藏</string>
+	<string name="actionbar_item_fav_add">收藏</string>
+	<string name="actionbar_item_support">支持</string>
+	<string name="actionbar_item_share">分享</string>
+	
+	<string name="actionbar_item_support_cancel">取消支持</string>
+	
+	<string name="fav_add_success">添加收藏成功</string>
+	<string name="fav_add_fail">添加收藏失败</string>
+	
+	<string name="fav_cancel_success">已取消收藏</string>
+	
+		
     <array name="array_guide_tips">
         <item>@string/tip_guide_first</item>
         <item>@string/tip_guide_second</item>

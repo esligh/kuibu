@@ -38,4 +38,22 @@
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
     
+    
+    <style name="Theme.TranslucentActionBar" parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/Widget.ActionBar</item>
+        <item name="actionBarStyle">@style/Widget.ActionBar</item>
+    </style>
+
+    <style name="Theme.TranslucentActionBar.ActionBar" />
+
+    <style name="Theme.TranslucentActionBar.ActionBar.Overlay" >
+        <item name="android:actionBarStyle">@style/Widget.ActionBar.Transparent</item>
+        <item name="actionBarStyle">@style/Widget.ActionBar.Transparent</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:titleTextStyle">@style/Kuibu.Widget.ActionBar.Dark.Title</item>
+        <item name="titleTextStyle">@style/Kuibu.Widget.ActionBar.Dark.Title</item>
+        <item name="android:windowContentOverlay">@null</item>        
+    </style>
+ 
 </resources>

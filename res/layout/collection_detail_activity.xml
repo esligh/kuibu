@@ -1,0 +1,92 @@
+<com.kuibu.custom.widget.MultiStateView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"    
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/multiStateView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    app:msv_emptyView="@layout/empty_view"
+    app:msv_errorView="@layout/error_view"
+    app:msv_loadingView="@layout/loading_view"
+    app:msv_viewState="loading" >
+
+    <com.kuibu.custom.widget.NotifyingScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:id="@+id/container_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/image_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/header_bg" />
+
+                <View
+                    android:id="@android:id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/header_ab_shadow" />
+            </FrameLayout>
+
+            <us.feras.mdv.MarkdownView
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingEnd="@dimen/android_spaces_large"
+                android:paddingLeft="@dimen/android_spaces_large"
+                android:paddingRight="@dimen/android_spaces_large"
+                android:paddingStart="@dimen/android_spaces_large" />
+
+            <LinearLayout
+                android:id="@+id/layout_tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" 
+                android:layout_margin="15dp"
+                android:layout_gravity="bottom"
+                android:visibility="gone">
+
+                <com.kuibu.custom.widget.FButton
+                    android:id="@+id/report_bt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/report"
+                    android:textColor="@android:color/white"
+                    fbutton:buttonColor="@color/fbutton_color_green_sea"
+                    fbutton:cornerRadius="1dp"
+                    fbutton:shadowEnabled="false" />
+                
+                <View
+            	android:layout_width="1px"
+            	android:layout_height="match_parent"
+            	android:background="@color/white" />
+                
+                <com.kuibu.custom.widget.FButton
+                    android:id="@+id/comment_bt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/comment_text"
+                    android:textColor="@android:color/white"
+                    fbutton:buttonColor="@color/fbutton_color_green_sea"
+                    fbutton:cornerRadius="1dp"
+                    fbutton:shadowEnabled="false" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.kuibu.custom.widget.NotifyingScrollView>
+
+</com.kuibu.custom.widget.MultiStateView>

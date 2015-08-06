@@ -1,10 +1,17 @@
 <!doctype html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,user-scalable=no">
-    <link href="{cssFile}" rel="stylesheet">
-    <script src="file:///android_asset/js/img_replace.js"></script>
-</head>
-<body>{content}</body>
+	<head>
+    	<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width,user-scalable=no">
+    	<link href="file:///android_asset/markdown_css_themes/kuibu-common.css" rel="stylesheet">
+    	<link href="{cssFile}" rel="stylesheet">
+	    <script src="file:///android_asset/js/common.js"></script>
+	</head>
+	
+	<body>
+		{place_holder}
+		<div class="content">{content}</div>
+		<div class="footer">{footer}</div>
+	</body>
+	
 </html>

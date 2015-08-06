@@ -3,16 +3,16 @@ package com.kuibu.module.service;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.kuibu.data.global.KuibuApplication;
-import com.kuibu.data.global.Session;
-import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.net.NetUtils;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.kuibu.common.utils.NetUtils;
+import com.kuibu.data.global.KuibuApplication;
+import com.kuibu.data.global.Session;
+import com.kuibu.data.global.StaticValue;
 
 public class HeartBeatService extends Service {
 

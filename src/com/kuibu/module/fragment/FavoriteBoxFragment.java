@@ -141,8 +141,7 @@ public class FavoriteBoxFragment extends Fragment {
 				item.put("box_desc", obj.getString("box_desc"));
 				item.put("box_count", obj.getString("box_count"));
 				item.put("focus_count", obj.getString("focus_count"));
-				item.put("title", obj.getString("title"));
-				item.put("content", obj.getString("content"));
+				item.put("titles", obj.getString("titles"));
 				datas.add(item);
 			}
 			showView();    	

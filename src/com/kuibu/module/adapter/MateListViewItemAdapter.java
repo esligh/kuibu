@@ -360,15 +360,12 @@ public class MateListViewItemAdapter extends BaseAdapter {
 			intent = new Intent(LayoutInflater.from(context).getContext(),CollectionDetailActivity.class);
 			intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
 			intent.putExtra("title", datas.get(position).getTitle());
-			intent.putExtra("content",datas.get(position).getSummary());
 			intent.putExtra("type", datas.get(position).getType());
 			intent.putExtra("create_by", datas.get(position).getCreateBy());
 			intent.putExtra("name", datas.get(position).getTopText());
 			intent.putExtra("photo", datas.get(position).getTopUrl());
 			intent.putExtra("signature", datas.get(position).getUserSignature());
 			intent.putExtra("sex", datas.get(position).getUserSex());
-			intent.putExtra("vote_count", datas.get(position).getVoteCount());
-			intent.putExtra("comment_count", datas.get(position).getCommentCount());
 			break;
 		default:
 			break;

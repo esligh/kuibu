@@ -127,3 +127,52 @@ img {
     margin:auto;
     margin: 15px 0;  	
 }
+
+.headline-title {
+  line-height: 1.4em;
+  color: #eee;
+  font-weight: 700;
+  font-size: 20px;
+  margin: 20px 0;
+}
+
+.meta
+{
+	 vertical-align:middle;
+}
+
+.meta .author-pic
+{
+	display: inline-block;
+    vertical-align: middle;
+}
+
+.meta .author-info
+{
+	display: inline-block;
+	width: 300px; 	
+	text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow:hidden;	
+}
+
+.meta .author {
+  color: #888;  
+  font-weight: 700;
+  padding-left:8px;  
+}
+
+.meta .avatar{
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+}
+
+.meta .bio{
+  color: #999;
+  width: 300px; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+

@@ -45,6 +45,7 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.CommentItemBean;
 import com.kuibu.module.adapter.CommentItemAdapter;
+import com.kuibu.module.net.PublicRequestor;
 
 public class CommentActivity extends BaseActivity implements
 		OnLoadListener, OnItemClickListener {
@@ -145,9 +146,9 @@ public class CommentActivity extends BaseActivity implements
 								item.setUserPicUrl(temp.getString("user_pic"));
 								datas.add(item);
 							}
-							showView();
-							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+							showView();							
 						}
+						mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 					}
 					commentList.loadComplete();
 				} catch (JSONException e) {
@@ -223,12 +224,6 @@ public class CommentActivity extends BaseActivity implements
 								}
 								break;
 							case 2: // copy
-								boolean isConn = KuibuApplication.getSocketIoInstance().getSocketIO().
-										isConnected(); 
-								if(isConn){
-									KuibuApplication.getSocketIoInstance().getSocketIO().send("I'm alive");
-									KuibuApplication.getSocketIoInstance().getSocketIO().emit("my event", "I'm alive.");
-								}
 								break;
 							case 3:// report
 								AlertDialog.Builder builder = new Builder(CommentActivity.this);
@@ -239,32 +234,29 @@ public class CommentActivity extends BaseActivity implements
 											public void onClick(
 													DialogInterface dialog,
 													int position) {
-												
-												String reason =null;
-
 												Map<String,String> params = new HashMap<String,String>();
 												params.put("accuser_id", Session.getSession().getuId());
 												params.put("defendant_id", item.getCreateBy());
 												switch(position){
 												case 0:
 													params.put("reason","色情");
-													sendReport(params);
+													PublicRequestor.sendReport(params);
 													break;
 												case 1:
 													params.put("reason","广告骚扰");
-													sendReport(params);
+													PublicRequestor.sendReport(params);
 													break;
 												case 2:
 													params.put("reason","口头谩骂");
-													sendReport(params);
+													PublicRequestor.sendReport(params);
 													break;
 												case 3:
 													params.put("reason","欺诈");
-													sendReport(params);
+													PublicRequestor.sendReport(params);
 													break;
 												case 4:
 													params.put("reason","政治");
-													sendReport(params);
+													PublicRequestor.sendReport(params);
 													break;
 												case 5:
 													Intent intent = new Intent(CommentActivity.this,ReportActivity.class);
@@ -274,6 +266,7 @@ public class CommentActivity extends BaseActivity implements
 												}
 											}									
 								});
+								builder.show();
 								break;
 							}
 						}
@@ -451,43 +444,4 @@ public class CommentActivity extends BaseActivity implements
 				R.anim.anim_slide_in_right);
 	}
 	
-	private void sendReport(Map<String,String> params)
-	{
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/add_report";
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@SuppressLint("SimpleDateFormat")
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						Toast.makeText(CommentActivity.this, "感谢您的举报,我们会尽快处理",Toast.LENGTH_SHORT).show();
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-			}
-		}) {
-			@Override
-			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put("Authorization", "Basic "
-						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
-								.replaceAll("\\s+", ""));
-				return headers;
-			}
-		};
-		KuibuApplication.getInstance().addToRequestQueue(req);		
-	}
 }

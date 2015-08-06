@@ -17,7 +17,6 @@ import android.widget.Toast;
 public class WebViewClientExt extends WebViewClient {
 	
 	private Context mContext ; 
-	
 	public WebViewClientExt(Context context) {
 		this.mContext = context ; 		
 	}
@@ -56,5 +55,6 @@ public class WebViewClientExt extends WebViewClient {
 		}else{
 			view.loadUrl(javascript);
 		}
+		
 	}	
 }

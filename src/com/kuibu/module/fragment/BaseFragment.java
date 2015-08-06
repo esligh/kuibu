@@ -12,9 +12,13 @@ public abstract class BaseFragment extends Fragment implements IEventHandler{
         if (getArguments() == null)
             setArguments(new Bundle());
     }
-	protected void onTabPageChanged(){}
+	protected void onTabPageChanged(){
+		
+	}
 	
 	@Override
 	public void eventResponse(JSONObject entity)
-	{}
+	{
+		
+	}
 }

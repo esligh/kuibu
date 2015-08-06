@@ -54,6 +54,11 @@ public class KuibuApplication extends Application {
 		
 	}
 	
+	public static Context getContext()
+	{
+			return sInstance.getApplicationContext();
+	}
+	
 	public static EventSocket getSocketIoInstance()
 	{
 		if(mSocketIo==null)

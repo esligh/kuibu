@@ -23,6 +23,13 @@ public class InJavaScriptObject {
 	}
 	
 	@JavascriptInterface
+	public void pageLoadFinished()
+	{
+		if(onLoadListener != null )
+			this.onLoadListener.pageLoadFinished();
+	}
+	
+	@JavascriptInterface
 	public void getHtml(String html) {
 		if(onLoadListener != null )
 			this.onLoadListener.getHtmlSource(html);
@@ -36,4 +43,6 @@ public class InJavaScriptObject {
 			mInstance.startActivity(intent);
 		}
 	}
+	
+	
 }

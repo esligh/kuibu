@@ -80,7 +80,10 @@
             android:label="@string/comment_text">
         </activity>
         <activity
-            android:name="com.kuibu.module.activity.CollectionDetailActivity">
+            android:name="com.kuibu.module.activity.CollectionDetailActivity"
+          	android:theme="@style/Theme.TranslucentActionBar.ActionBar.Overlay"
+            android:label="@string/app_name" >;
+			
         </activity>
         <activity
             android:name="com.kuibu.module.activity.CollectPackListActivity">

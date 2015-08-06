@@ -233,4 +233,9 @@ public class StaticValue {
 		public static final String TYPE_NEWCOMMETN="NEW_COMMENT";
 		public static final String TYPE_KEEPALIVE = "KEEP_ALIVE";
 	}
+	
+	public static class MSG_CODE
+	{
+		public static final int SHOW_TOOLS = 1000; 
+	}
 }

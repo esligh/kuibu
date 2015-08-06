@@ -23,29 +23,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-    color: #000000;
     font-size: 22px;    
-    line-height: 1.8em;  	
+    line-height: 1.7em;  	
   	font-weight: 900;  	
 }
 
 h2 {
-    color: #000000;
-    font-size: 20px;    
+    font-size: 19px;    
     line-height: 1.6em;
-  	color: #000;
   	font-weight: 800;
-  	margin: 15px 0;
 }
 
 h3 {
-    line-height: 1.4em;
+    line-height: 1.5em;
   	font-weight: 700;
   	font-size: 18px; 	
 }
 
 h4 {
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.4em;
   	font-weight: 600;
 }
@@ -53,23 +49,25 @@ h4 {
 h5 {
 	line-height: 1.4em;
   	font-weight: 500;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 h6 {
     color: #777777;
     background-color: inherit;
-    font-size: 16px;
+    font-size: 15px;
+    font-weight: 400;
 }
 
 p{
-	color: #444;
+	color: #333;
     line-height: 1.6em;
     font-size: 18px;
 }
 
 ul, ol
 {
+	color: #333;
 	font-size: 18px;
 }
 
@@ -143,3 +141,54 @@ img {
     margin:auto;
     margin: 15px 0;  	
 }
+
+
+.headline-title {
+  line-height: 1.4em;
+  color: #000;
+  font-weight: 700;
+  font-size: 20px;
+  margin: 20px 0;
+}
+
+.meta
+{
+	 vertical-align:middle;
+}
+
+.meta .author-pic
+{
+	display: inline-block;
+    vertical-align: middle;
+}
+
+.meta .author-info
+{
+	display: inline-block;
+	width: 300px; 	
+	text-overflow:ellipsis;
+    white-space:nowrap;
+    overflow:hidden;	
+}
+.meta .author {
+  color: #888;  
+  font-weight: 700;
+  padding-left:8px;
+  
+}
+
+.meta .avatar{
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+}
+
+.meta .bio{
+  color: #999;
+  width: 300px; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+}
+
+

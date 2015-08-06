@@ -37,24 +37,38 @@
         android:background="@color/light_grey"/>
 	
     <TextView
-        android:id="@+id/list_item_card_title"
+        android:id="@+id/list_item_card_title_0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp"
-        android:visibility="gone"
         android:textColor="?listItemExtraTextColor"
-        android:textSize="16sp"></TextView>
+        android:textSize="16sp"
+        android:visibility="gone"/>
     
     <TextView
-        android:id="@+id/list_item_card_content"
+        android:id="@+id/list_item_card_title_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:padding="10dp"
-        android:maxLines="3"
+        android:singleLine="true"
         android:textColor="?listItemExtraTextColor"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:visibility="gone"/>    
+        
+    <TextView
+        android:id="@+id/list_item_card_title_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:singleLine="true"
+        android:textColor="?listItemExtraTextColor"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+        
 </LinearLayout>
