@@ -42,6 +42,7 @@ public class StaticValue {
 		public static final int  USER_INFO_RESULT_CODE = 1;
 		public static final int REQ_CODE_SETTING = 2001; 
 		public static final int FAVORITE_BOX_REQCODE = 8001;
+		public static final int REPORT_COMPLETE = 3001 ; 
 	}
 	public static class MENU_GROUP{
 		public static final int SAVE_ACTIONBAR_GROUP = 100;

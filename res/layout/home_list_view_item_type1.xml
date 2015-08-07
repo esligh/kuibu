@@ -100,13 +100,12 @@
             android:id="@+id/home_1_item_time_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_below="@id/home_1_content_tv"
             android:layout_toRightOf="@id/home_1_item_time_icon_iv"
             android:layout_toEndOf="@id/home_1_item_time_icon_iv"            
            	android:layout_marginTop="10dp"
-           	android:layout_marginLeft="5dp"   
-           	android:textSize="10sp"/>
+           	android:padding="3dp"   
+           	android:textSize="12sp"/>
                        				        
     </RelativeLayout>
 </LinearLayout>

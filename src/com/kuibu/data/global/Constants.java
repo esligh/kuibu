@@ -18,10 +18,13 @@ public final class Constants {
 		public static final boolean DEBUG_MODE = true ; 
 		public static final String USER_PHOTO_TMP  = "pictmp";//用户头像裁剪的缓存文件
 		public static final String CAMERA_TMP="userphoto.jpg";
-		public static final String CAMERA_IMG_DIR = "/kuibu/tmp/";
+		public static final String CAMERA_IMG_DIR = "/camera/";
+		public static final String SAVE_IMG_DIR = "/image/";
 		public static final int TIME_OUT_LONG = 10*1000;
 		public static final int TIME_OUT_SHORT= 8*1000; 
 		public static final int RETRY_TIMES =   1; 
+		public static final String USER_PIC_SMALL = "40_40";
+		public static final String USER_PIC_BIG ="100_100";
 	}
 	
 	public static class Tag{

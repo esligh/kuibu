@@ -1,5 +1,7 @@
 package com.kuibu.module.activity;
 
+import java.io.File;
+
 import uk.co.senab.photoview.PhotoView;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -9,7 +11,10 @@ import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.kuibu.common.utils.StorageUtils;
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.StaticValue;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -63,6 +68,10 @@ public class ImageDetailActivity extends BaseActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+    	MenuItem save=menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
+        		StaticValue.MENU_ITEM.SAVE_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,"保存");	        
+		save.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
         menu.add(Menu.NONE, 0, Menu.NONE, "向右旋转");
         menu.add(Menu.NONE, 1, Menu.NONE, "向左旋转");
         menu.add(Menu.NONE, 2, Menu.NONE, "自由旋转");
@@ -76,9 +85,22 @@ public class ImageDetailActivity extends BaseActivity{
         switch (item.getItemId()) {
         	case android.R.id.home:
         		finish();
-//        		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 			break;
-			
+        	case StaticValue.MENU_ITEM.SAVE_ID:        		
+        		File file = ImageLoader.getInstance().getDiskCache().
+        			get(getIntent().getStringExtra(StaticValue.IMG_URL));
+        		if(file!=null){
+        			File dir = new File(StorageUtils.getFileDirectory(getApplicationContext()).
+        					getAbsolutePath()+Constants.Config.SAVE_IMG_DIR); 
+        			if(!dir.exists())
+        				dir.mkdirs();
+        			File newPath = new File(dir, String.valueOf(System.currentTimeMillis()) +".jpg");
+        			boolean isOk = file.renameTo(newPath);
+        			if(isOk){
+        				Toast.makeText(this, newPath.getPath(), Toast.LENGTH_SHORT).show();
+        			}
+        		}        		
+        		break;
             case 0:
                 photo.setRotationBy(90);
                 return true;

@@ -27,8 +27,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -68,6 +66,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	private MenuItem pubMenu;
 	private String cssFile ; 
 	private String htmlSource ; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		SharedPreferences mPerferences = PreferenceManager
@@ -144,9 +143,10 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		super.onDestroy();
 		imageVo.closeDB();
 		collectionVo.closeDB();
-		super.onDestroy();
+		previewWebView.clearCache(true);
 	}
 
 	@Override

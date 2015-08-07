@@ -89,8 +89,13 @@ public class CommentActivity extends BaseActivity implements
 			@Override
 			public void onClick(View view) {
 				// TODO Auto-generated method stub
-				requestAdd();
-				editContent.setText("");
+				if(Session.getSession().isLogin()){
+					requestAdd();
+					editContent.setText("");
+				}else{
+					Toast.makeText(CommentActivity.this, "请先注册登录", Toast.LENGTH_SHORT).show();
+				}
+				
 			}
 		});
 		commentList.setOnLoadListener(this);

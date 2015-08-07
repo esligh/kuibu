@@ -39,6 +39,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.nostra13.universalimageloader.utils.StorageUtils;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -65,7 +67,7 @@ public class ACache {
 	}
 
 	public static ACache get(Context ctx, String cacheName) {
-		File f = new File(ctx.getCacheDir(), cacheName);
+		File f = new File(StorageUtils.getCacheDirectory(ctx), cacheName);
 		return get(f, MAX_SIZE, MAX_COUNT);
 	}
 
@@ -74,7 +76,7 @@ public class ACache {
 	}
 
 	public static ACache get(Context ctx, long max_zise, int max_count) {
-		File f = new File(ctx.getCacheDir(), "ACache");
+		File f = new File(StorageUtils.getCacheDirectory(ctx), "ACache");
 		return get(f, max_zise, max_count);
 	}
 

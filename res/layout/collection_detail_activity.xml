@@ -25,7 +25,7 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/image_header"
@@ -33,14 +33,25 @@
                     android:layout_height="220dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/header_bg" />
-
+                
+				<ImageButton
+	                android:id="@+id/roport_bt"
+	                android:layout_width="@dimen/icon_small_width"
+	                android:layout_height="@dimen/icon_small_height"
+	                android:scaleType="fitCenter"
+	                android:layout_gravity="bottom|right|end"
+	                android:layout_marginBottom="8dp"
+	                android:layout_marginRight="20dp"
+	                android:background="@color/transparent"
+	                android:src="@drawable/ab_report_active" >
+                </ImageButton>
+            
                 <View
-                    android:id="@android:id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/header_ab_shadow" />
             </FrameLayout>
-
+            
             <us.feras.mdv.MarkdownView
                 android:id="@+id/content"
                 android:layout_width="match_parent"
@@ -60,11 +71,15 @@
                 android:visibility="gone">
 
                 <com.kuibu.custom.widget.FButton
-                    android:id="@+id/report_bt"
+                    android:id="@+id/like_bt"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/report"
+                  	android:drawableLeft="@drawable/ab_support_normal"
+            		android:drawablePadding="0dp"
+                    android:text="@string/like"
+                    android:paddingLeft="30dp"
+            		android:paddingRight="10dp"
                     android:textColor="@android:color/white"
                     fbutton:buttonColor="@color/fbutton_color_green_sea"
                     fbutton:cornerRadius="1dp"

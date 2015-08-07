@@ -17,7 +17,6 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
@@ -31,6 +30,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.kuibu.common.utils.Bimp;
+import com.kuibu.common.utils.StorageUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -165,13 +165,8 @@ public class CollectionEditorActivity extends ActionBarActivity {
 	}
 
 	public String takePhotoByCamera() {
-		String status=Environment.getExternalStorageState();
-		File dir = null; 
-		if(status.equals(Environment.MEDIA_MOUNTED)){
-			dir=new File(Environment.getExternalStorageDirectory() + Constants.Config.CAMERA_IMG_DIR); 						
-		}else{ 			
-			dir= new File(Environment.getDataDirectory().getAbsolutePath(),Constants.Config.CAMERA_IMG_DIR);
-		}
+		File dir = new File(StorageUtils.getFileDirectory(getApplicationContext())
+				.getAbsolutePath()+Constants.Config.CAMERA_IMG_DIR);		
 		if(!dir.exists())
 			dir.mkdirs();
 		File file = new File(dir, String.valueOf(System.currentTimeMillis())

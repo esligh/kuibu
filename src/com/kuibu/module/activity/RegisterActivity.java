@@ -19,7 +19,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
@@ -38,6 +37,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.kuibu.common.utils.PhoneUtils;
+import com.kuibu.common.utils.StorageUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
@@ -232,13 +232,8 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 
 	@Override
 	public void takePhotoByCamera() {
-		String status=Environment.getExternalStorageState();
-		File dir = null; 
-		if(status.equals(Environment.MEDIA_MOUNTED)){
-			dir=new File(Environment.getExternalStorageDirectory() + Constants.Config.CAMERA_IMG_DIR); 						
-		}else{ 			
-			dir= new File(Environment.getDataDirectory().getAbsolutePath(),Constants.Config.CAMERA_IMG_DIR);
-		}
+		File dir = new File(StorageUtils.getFileDirectory(getApplicationContext())
+				.getAbsolutePath()+Constants.Config.CAMERA_IMG_DIR); 
 		if(!dir.exists())
 			dir.mkdirs();
 		File file = new File(dir, String.valueOf(System.currentTimeMillis())+".jpg");

@@ -80,6 +80,7 @@
 	<string name="handbook">帮助手册</string>        
     <string name="look_at">查看</string>    
     <string name="report">举报</string>
+    <string name="like">喜欢</string>
     <!-- menu text -->
     <string name="action_search_for">搜索</string>
     <string name="action_notify">通知</string>

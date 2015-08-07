@@ -217,6 +217,7 @@ public final class UserInfoContentFragment extends Fragment implements
 			String name = this.getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_NAME);
 			String signature = this.getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_SIGNATURE);
 			String url = this.getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_PHOTO);
+			url = url.replace(Constants.Config.USER_PIC_SMALL,Constants.Config.USER_PIC_BIG);
 			if(uid!=null && uid.equals(Session.getSession().getuId())){
 				focus_layout_rl.setVisibility(View.GONE);
 			}else{

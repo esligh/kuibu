@@ -82,7 +82,7 @@
     <color name="list_view_bg_light">#ffdcdcdc</color>
     <color name="list_view_divider">#ffe7e7e7</color>
     <color name="webview_light">#FFFFFF</color>
-    <color name="webview_dark">#272727</color>
+    <color name="webview_dark">#343434</color>
     <color name="list_item_extra_dark">#ff116f9e</color>
     <color name="list_item_title_dark">#ffE0E0E0</color>
     <color name="list_item_intro_dark">#ff696969</color>

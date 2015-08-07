@@ -1,5 +1,6 @@
 package com.kuibu.module.activity;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -34,6 +35,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebSettings;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -76,22 +79,24 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
     private Drawable mActionBarBackgroundDrawable;
     private MarkdownView contentView ; 
     private MenuItem mFavActionItem ;
-    private MenuItem mSupportActionItem ; 
 	private boolean isInFavorite = false;
 	private boolean isSupport = false; 
 	private String cid ,createBy; 
 	private String cssFile ; 
 	private MultiStateView mMultiStateView;
-	private FButton reportBtn , commentBtn ; 
+	private FButton likeBtn , commentBtn ;
+	private ImageButton reportBtn ; 
 	private LinearLayout layoutTools; 
 	private Handler mHandler  ; 
-	
+	private ImageView mHeaderImage ; 
+	private int curAlpha;
     @SuppressLint("HandlerLeak")
 	@Override
     public void onCreate(Bundle savedInstanceState) {				
         super.onCreate(savedInstanceState);
 		mGestureDetector = new GestureDetector(this, mOnGestureListener);
         setContentView(R.layout.collection_detail_activity);
+        mHeaderImage = (ImageView)findViewById(R.id.image_header);
         mHandler = new Handler() {  
             @Override  
             public void handleMessage(Message msg) { //no leak,I know .   
@@ -104,7 +109,6 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
             }  
         };  
         
-        
         mMultiStateView = (MultiStateView)findViewById(R.id.multiStateView);
 		mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
         .setOnClickListener(new View.OnClickListener() {
@@ -114,11 +118,15 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 				loadContent();
 			}   	
         });
-		reportBtn = (FButton) findViewById(R.id.report_bt);
-		reportBtn.setOnClickListener(new OnClickListener() {			
+		likeBtn = (FButton) findViewById(R.id.like_bt);
+		likeBtn.setOnClickListener(new OnClickListener() {			
 			@Override
-			public void onClick(View arg0) {
-				doReport();
+			public void onClick(View arg0) {				
+				if(Session.getSession().isLogin()){
+					doVote(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, isSupport);
+				}else{
+					Toast.makeText(CollectionDetailActivity.this, "请先注册登录", Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		commentBtn = (FButton)findViewById(R.id.comment_bt);
@@ -133,6 +141,13 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 			}			
 			
 		});
+		reportBtn = (ImageButton)findViewById(R.id.roport_bt);
+		reportBtn.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View arg0) {
+				doReport();
+			}
+		});
 		layoutTools = (LinearLayout)findViewById(R.id.layout_tools);
         NotifyingScrollView scrollView = (NotifyingScrollView)findViewById(R.id.scroll_view);
         SharedPreferences mPerferences = PreferenceManager
@@ -140,23 +155,23 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 		boolean isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);
 		if(isDarkTheme){			
 			scrollView.setBackgroundColor(getResources().getColor(R.color.webview_dark));
+			mMultiStateView.setBackgroundColor(getResources().getColor(R.color.list_view_bg_dark));
 			cssFile = Constants.WEBVIEW_DARK_CSSFILE;
 			mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.abc_ab_solid_dark_holo);
 		}else{
 			scrollView.setBackgroundColor(getResources().getColor(R.color.webview_light));
+			mMultiStateView.setBackgroundColor(getResources().getColor(R.color.white));
 			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
 			mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.actionbar_background_light);			
 		}
-        mActionBarBackgroundDrawable.setAlpha(0);
         getSupportActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
-        ((NotifyingScrollView) findViewById(R.id.scroll_view)).setOnScrollChangedListener(mOnScrollChangedListener);      
+        scrollView.setOnScrollChangedListener(mOnScrollChangedListener);      
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         contentView = (MarkdownView)findViewById(R.id.content);
         setUpWebViewDefaults();
         cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
         createBy = getIntent().getStringExtra("create_by");
-        loadContent();
+        loadContent();        
     }
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -177,178 +192,33 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 		}
 		
 	}
-		
-	private String replaceImgTagFromHTML(String html) {
-		Document doc = Jsoup.parse(html);
-		Elements es = doc.getElementsByTag("img");
-		for (Element e : es) {
-			String imgUrl = e.attr("src");
-				e.attr("onclick", "openImage('" + imgUrl + "')");
-		}
-		return doc.html();
-	}
-	
+			
     private NotifyingScrollView.OnScrollChangedListener mOnScrollChangedListener = new NotifyingScrollView.OnScrollChangedListener() {
         public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
-            final int headerHeight = findViewById(R.id.image_header).getHeight() - getSupportActionBar().getHeight();
+            final int headerHeight = mHeaderImage.getHeight() - getSupportActionBar().getHeight();
             final float ratio = (float) Math.min(Math.max(t, 0), headerHeight) / headerHeight;
-            final int newAlpha = (int) (ratio * ALPHA_MAX);
-            mActionBarBackgroundDrawable.setAlpha(newAlpha);
+            curAlpha = (int) (ratio * ALPHA_MAX);
+            mActionBarBackgroundDrawable.setAlpha(curAlpha);
         }
     };
+
+    @Override
+    protected void onDestroy()
+    {
+      super.onDestroy();
+      contentView.clearCache(true);             
+    }
+     
+    @Override
+    public File getCacheDir()
+    {
+      return getApplicationContext().getCacheDir();
+    }
     
-	private String adjustMarkDownText(String markdownText) {
-		String pattern = "!\\[.*\\]\\(\\s*(http:.*)\\)";
-		Pattern p = Pattern.compile(pattern);
-		Matcher m = p.matcher(markdownText);
-		StringBuffer sb = new StringBuffer();
-		while (m.find()) {
-			m.appendReplacement(sb, "\n");		
-		}
-		m.appendTail(sb);
-		return sb.toString();
-	}
-	
-    
-	private void loadContent()
-	{	
-		final String template = prepareHeader();
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("cid", cid);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_collectiondetail";
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						JSONObject obj = new JSONObject(response.getString("result"));
-						if(obj!=null){
-							
-							String type = obj.getString("type");
-							String content = obj.getString("content");
-							if(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE.equals(type)){
-								SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(CollectionDetailActivity.this);
-								boolean noPic = pref.getBoolean(StaticValue.PrefKey.NO_PICTRUE_KEY, false);
-								if(noPic){
-									content = adjustMarkDownText(content);
-								}
-							}
-							MarkdownProcessor m = new MarkdownProcessor();
-							String html = new String(template);
-							StringBuilder footer = new StringBuilder();							
-							footer.append("<span class=\"time\">").append("编辑于 ").append(obj.getString("create_time")).append("</span><br>");
-							html = html.replace("{footer}", footer.toString());
-							content = m.markdown(content);		
-							html = html.replace("{content}", content);
-							html = replaceImgTagFromHTML(html);
-							contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
-							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
-						}
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-//				String html = new String(template);
-//				html = html.replace("{footer}", "");
-//				StringBuilder errorContent = new StringBuilder("<br><br>");
-//				errorContent.append("<div style=\"text-align:center;font-size:20px;color:#777\"><span>加载失败,请点击重试 </span></div><br>");
-//				errorContent.append("<div style=\"text-align:center; width:100%;height:100%;margin:0px;\">")
-//				.append("<button class=\"btn-normal\" onclick=\"btnReload()\">")
-//				.append("重新加载").append("</button>").append("</div>");
-//				html = html.replace("{content}", errorContent.toString());
-//				contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
-			}
-		});
-		KuibuApplication.getInstance().addToRequestQueue(req);	
-	}
-	
-	private String prepareHeader()
-	{
-		StringBuilder sb = new StringBuilder();
-		String url = getIntent().getStringExtra("photo");
-		if(TextUtils.isEmpty(url) || url.equals("null")){
-			String sex = getIntent().getStringExtra("sex");
-			if(!TextUtils.isEmpty(sex) && sex.equals("M")){
-				url = "file:///android_asset/hand_book/default_pic_avatar_male.jpg";
-			}else{
-				url = "file:///android_asset/hand_book/default_pic_avatar_female.jpg";
-			}
-		}
-		sb.append("<div><h2 class=\"headline-title\">").append(getIntent().getStringExtra("title")).append("</h2></div>")
-				.append("<div class=\"meta\">")
-				.append("<div class=\"author-pic\" ><img class=\"avatar\" style=\"vertical-align:middle\" src=\"").append(url).append("\"></div>")
-				.append("<div class=\"author-info\">")
-				.append("<span class=\"author\">").append(getIntent().getStringExtra("name")).append("&nbsp;<strong>·</strong></span>")
-				.append("<span class=\"bio\">&nbsp;").append(getIntent().getStringExtra("signature")).append("</span>")					
-				.append("</div></div>");
-		
-		String template = AssetsUtils.loadText(this, Constants.TEMPLATE_DEF_URL);
-		String html = template.replace("{cssFile}", cssFile);				
-		html = html.replace("{place_holder}", sb.toString());
-		return html ; 
-	}
-	
-	private void doReport()
-	{
-		AlertDialog.Builder builder = new Builder(CollectionDetailActivity.this);
-		builder.setTitle("举报原因");
-		builder.setItems(getResources().getStringArray(R.array.report_item), 
-				new android.content.DialogInterface.OnClickListener(){
-					@Override
-					public void onClick(
-							DialogInterface dialog,
-							int position) {
-						Map<String,String> params = new HashMap<String,String>();
-						params.put("accuser_id", Session.getSession().getuId());
-						params.put("defendant_id", createBy);
-						switch(position){
-						case 0:
-							params.put("reason","色情");
-							PublicRequestor.sendReport(params);
-							break;
-						case 1:
-							params.put("reason","广告骚扰");
-							PublicRequestor.sendReport(params);
-							break;
-						case 2:
-							params.put("reason","口头谩骂");
-							PublicRequestor.sendReport(params);
-							break;
-						case 3:
-							params.put("reason","欺诈");
-							PublicRequestor.sendReport(params);
-							break;
-						case 4:
-							params.put("reason","政治");
-							PublicRequestor.sendReport(params);
-							break;
-						case 5:
-							Intent intent = new Intent(CollectionDetailActivity.this,ReportActivity.class);
-							intent.putExtra("defendant", createBy);
-							startActivity(intent);
-							break;
-						}
-					}									
-		});
-		builder.show();
-	}
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.content_detail, menu);
 		mFavActionItem = menu.findItem(R.id.menu_item_fav_action_bar);
-		mSupportActionItem= menu.findItem(R.id.menu_item_support_action_bar);
 		if (isInFavorite) {
 			mFavActionItem.setIcon(R.drawable.ab_fav_active);
 			mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
@@ -379,13 +249,8 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 					Toast.makeText(CollectionDetailActivity.this, "请先注册登录", Toast.LENGTH_SHORT).show();
 				}	
 				break;
-			case R.id.menu_item_support_action_bar:
-				if(Session.getSession().isLogin()){
-					doVote(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, isSupport);
-				}else{
-					Toast.makeText(CollectionDetailActivity.this, "请先注册登录", Toast.LENGTH_SHORT).show();
-				}
-												
+			case R.id.menu_item_share_action_bar:
+				Toast.makeText(CollectionDetailActivity.this, "开发中...", Toast.LENGTH_SHORT).show();
 				break;
 		}
 		
@@ -462,6 +327,9 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 					}				
 				}				
 			break;
+			case StaticValue.RequestCode.REPORT_COMPLETE:
+				mActionBarBackgroundDrawable.setAlpha(curAlpha);
+				break;
 			default:
 				break;
 		}
@@ -491,10 +359,173 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 	@Override
 	public void getHtmlSource(String html) {
 		// TODO Auto-generated method stub
+		String str = html ; 
 		
+		str.length();
 	}	    
 	
-	public void doVote(String action_type,boolean isChecked)
+   
+	private String adjustMarkDownText(String markdownText) {
+		String pattern = "!\\[.*\\]\\(\\s*(http:.*)\\)";
+		Pattern p = Pattern.compile(pattern);
+		Matcher m = p.matcher(markdownText);
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			m.appendReplacement(sb, "\n");		
+		}
+		m.appendTail(sb);
+		return sb.toString();
+	}
+	
+ 
+	
+	private String prepareHeader()
+	{
+		StringBuilder sb = new StringBuilder();
+		String url = getIntent().getStringExtra("photo");
+		if(TextUtils.isEmpty(url) || url.equals("null")){
+			String sex = getIntent().getStringExtra("sex");
+			if(!TextUtils.isEmpty(sex) && sex.equals("M")){
+				url = "file:///android_asset/hand_book/default_pic_avatar_male.jpg";
+			}else{
+				url = "file:///android_asset/hand_book/default_pic_avatar_female.jpg";
+			}
+		}
+		sb.append("<div><h2 class=\"headline-title\">").append(getIntent().getStringExtra("title")).append("</h2></div>")
+				.append("<div class=\"meta\">")
+				.append("<div class=\"author-pic\" ><img class=\"avatar\" style=\"vertical-align:middle\" src=\"").append(url).append("\"></div>")
+				.append("<div class=\"author-info\">")
+				.append("<span class=\"author\">").append(getIntent().getStringExtra("name")).append("&nbsp;<strong>·</strong></span>")
+				.append("<span class=\"bio\">&nbsp;").append(getIntent().getStringExtra("signature")).append("</span>")					
+				.append("</div></div>");
+		
+		String template = AssetsUtils.loadText(this, Constants.TEMPLATE_DEF_URL);
+		String html = template.replace("{cssFile}", cssFile);				
+		html = html.replace("{place_holder}", sb.toString());
+		return html ; 
+	}
+	
+	private void doReport()
+	{
+		AlertDialog.Builder builder = new Builder(CollectionDetailActivity.this);
+		builder.setTitle("举报原因");
+		builder.setItems(getResources().getStringArray(R.array.report_item), 
+				new android.content.DialogInterface.OnClickListener(){
+					@Override
+					public void onClick(
+							DialogInterface dialog,
+							int position) {
+						Map<String,String> params = new HashMap<String,String>();
+						params.put("accuser_id", Session.getSession().getuId());
+						params.put("defendant_id", createBy);
+						switch(position){
+						case 0:
+							params.put("reason","色情");
+							PublicRequestor.sendReport(params);
+							break;
+						case 1:
+							params.put("reason","广告骚扰");
+							PublicRequestor.sendReport(params);
+							break;
+						case 2:
+							params.put("reason","口头谩骂");
+							PublicRequestor.sendReport(params);
+							break;
+						case 3:
+							params.put("reason","欺诈");
+							PublicRequestor.sendReport(params);
+							break;
+						case 4:
+							params.put("reason","政治");
+							PublicRequestor.sendReport(params);
+							break;
+						case 5:
+							mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
+							Intent intent = new Intent(CollectionDetailActivity.this,ReportActivity.class);
+							intent.putExtra("defendant", createBy);
+							startActivityForResult(intent, StaticValue.RequestCode.REPORT_COMPLETE);							
+							break;
+						}
+					}									
+		});
+		builder.show();
+	}
+	
+	private String replaceImgTagFromHTML(String html) {
+		Document doc = Jsoup.parse(html);
+		Elements es = doc.getElementsByTag("img");
+		for (Element e : es) {
+			String imgUrl = e.attr("src");
+				e.attr("onclick", "openImage('" + imgUrl + "')");
+		}
+		return doc.html();
+	}
+	
+	private void loadContent()
+	{	
+		final String template = prepareHeader();
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("cid", cid);
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/get_collectiondetail";
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						JSONObject obj = new JSONObject(response.getString("result"));
+						if(obj!=null){
+							
+							String type = obj.getString("type");
+							String content = obj.getString("content");
+							if(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE.equals(type)){
+								SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(CollectionDetailActivity.this);
+								boolean noPic = pref.getBoolean(StaticValue.PrefKey.NO_PICTRUE_KEY, false);
+								if(noPic){
+									content = adjustMarkDownText(content);
+								}
+							}
+							MarkdownProcessor m = new MarkdownProcessor();
+							String html = new String(template);
+							StringBuilder footer = new StringBuilder();							
+							footer.append("<span class=\"time\">").append("编辑于 ").append(obj.getString("create_time")).append("</span><br>");
+							html = html.replace("{footer}", footer.toString());
+							content = m.markdown(content);		
+							html = html.replace("{content}", content);
+							html = replaceImgTagFromHTML(html);
+							contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
+							mActionBarBackgroundDrawable.setAlpha(0);
+							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+						}
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+//					String html = new String(template);
+//					html = html.replace("{footer}", "");
+//					StringBuilder errorContent = new StringBuilder("<br><br>");
+//					errorContent.append("<div style=\"text-align:center;font-size:20px;color:#777\"><span>加载失败,请点击重试 </span></div><br>");
+//					errorContent.append("<div style=\"text-align:center; width:100%;height:100%;margin:0px;\">")
+//					.append("<button class=\"btn-normal\" onclick=\"btnReload()\">")
+//					.append("重新加载").append("</button>").append("</div>");
+//					html = html.replace("{content}", errorContent.toString());
+//					contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
+			}
+		});
+		KuibuApplication.getInstance().addToRequestQueue(req);	
+	}
+	
+	private void doVote(String action_type,boolean isChecked)
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
@@ -516,15 +547,16 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						if (isSupport) {			
-							mSupportActionItem.setIcon(R.drawable.ab_support_normal);
-							mSupportActionItem.setTitle(R.string.actionbar_item_support);					
+						Drawable drawable = null ; 
+						if (isSupport) {
+							drawable= getResources().getDrawable(R.drawable.ab_support_normal);												
 							isSupport = false;						
 						} else {
-							mSupportActionItem.setIcon(R.drawable.ab_support_active);
-							mSupportActionItem.setTitle(R.string.actionbar_item_support_cancel);
+							drawable= getResources().getDrawable(R.drawable.ab_support_active);
 							isSupport = true;				
 						}
+						drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+						likeBtn.setCompoundDrawables(drawable, null, null, null);
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
