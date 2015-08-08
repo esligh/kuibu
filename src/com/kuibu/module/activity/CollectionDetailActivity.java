@@ -62,15 +62,12 @@ import com.kuibu.module.iterf.OnPageLoadFinished;
 import com.kuibu.module.net.PublicRequestor;
 import com.petebevin.markdown.MarkdownProcessor;
 
-
 public class CollectionDetailActivity extends ActionBarActivity implements OnPageLoadFinished {
 
 	//手指在屏幕滑动，X轴最小变化值
 	private static final int FLING_MIN_DISTANCE_X = 200;
-	
 	//手指在屏幕滑动，Y轴最小变化值
-	private static final int FLING_MIN_DISTANCE = 10;
-	
+	private static final int FLING_MIN_DISTANCE = 10;	
 	//手指在屏幕滑动，最小速度
 	private static final int FLING_MIN_VELOCITY = 1;
 	

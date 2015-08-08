@@ -41,6 +41,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -418,7 +419,12 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 				params.put("map_url_" + i, map_uri);
 				params.put("url_" + i, uri);
 				String path = uri.substring(Constants.URI_PREFIX.length());
-				params.put("data_" + i, new File(path));
+				String dest = BitmapHelper.hasCompressFile(this, path);
+				if(dest == null){ //无相应压缩文件
+					dest = BitmapHelper.compressBitmap(this, path, 
+							Constants.COMPRESS_WIDTH,Constants.COMPRESS_HEIGHT , false); //先压缩
+				}				
+				params.put("data_" + i, new File(dest));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

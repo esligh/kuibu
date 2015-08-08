@@ -78,7 +78,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 
 		SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-		if (mPerferences.getBoolean("dark_theme", false)) {
+		if (mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false)) {
 			typedArray = theme.obtainStyledAttributes(R.style.Theme_Kuibu_AppTheme_Dark,
 					new int[] {R.attr.listItemDefaultImage });
 		} else {

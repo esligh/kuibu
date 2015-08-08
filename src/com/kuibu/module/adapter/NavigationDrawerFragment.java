@@ -31,11 +31,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.DrawerListItem;
 import com.kuibu.model.bean.UserInfoBean;
+import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class NavigationDrawerFragment extends Fragment {
@@ -80,7 +80,7 @@ public class NavigationDrawerFragment extends Fragment {
 	public void updateDrawerList(Map<String,Object> params) {
 		this.mData = (List<DrawerListItem>)params.get("itemData");
 		headerText.setText((String)params.get("uName"));
-		String url = (String)params.get("uPhoto");
+		String url = Session.getSession().getuPic();
 		if(TextUtils.isEmpty(url) || url.equals("null")){
 			if(Session.getSession().isLogin()){
 				if(Session.getSession().getuSex().equals("M")){

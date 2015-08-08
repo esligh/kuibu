@@ -20,6 +20,7 @@ import java.io.File;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -31,9 +32,11 @@ import com.android.volley.toolbox.Volley;
 import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.PersistentCookieStore;
 import com.kuibu.model.db.SqLiteHelper;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.net.EventSocket;
 import com.kuibu.module.net.SocketIOCallBack;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
@@ -47,14 +50,25 @@ public class KuibuApplication extends Application {
 	private static EventSocket mSocketIo;
 	private static SqLiteHelper mSqlHelper;
 	private File extStorageCachePath;
-
+	private static DisplayImageOptions defaultOptions ; 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		initImageLoader(getApplicationContext());
 		mCache = ACache.get(getApplicationContext());
 		sInstance = this;
+		defaultOptions = new DisplayImageOptions.Builder()
+		.showImageOnLoading(R.drawable.image_small_default)
+		.showImageForEmptyUri(R.drawable.image_small_default)
+		.showImageOnFail(R.drawable.image_small_default)
+		.cacheInMemory(false)
+		.cacheOnDisk(true)
+		.considerExifParams(true)
+		.bitmapConfig(Bitmap.Config.RGB_565)
+		.build(); 
+		
+		initImageLoader(getApplicationContext());
+
 		if (Environment.MEDIA_MOUNTED.equals(Environment
 				.getExternalStorageState())) {
 			File externalStorageDir = Environment.getExternalStorageDirectory();// SD
@@ -94,6 +108,7 @@ public class KuibuApplication extends Application {
 		}
 	}
 
+	
 	public static EventSocket getSocketIoInstance() {
 		if (mSocketIo == null)
 			mSocketIo = new EventSocket(new SocketIOCallBack());
@@ -111,6 +126,7 @@ public class KuibuApplication extends Application {
 				context).threadPriority(Thread.NORM_PRIORITY - 2)
 				.denyCacheImageMultipleSizesInMemory()
 				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
+				.defaultDisplayImageOptions(defaultOptions)
 				.diskCacheSize(50 * 1024 * 1024)
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				.writeDebugLogs().build();

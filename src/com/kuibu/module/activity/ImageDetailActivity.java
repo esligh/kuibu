@@ -96,8 +96,8 @@ public class ImageDetailActivity extends BaseActivity{
         				dir.mkdirs();
         			File newPath = new File(dir, String.valueOf(System.currentTimeMillis()) +".jpg");
         			boolean isOk = file.renameTo(newPath);
-        			if(isOk){
-        				Toast.makeText(this, newPath.getPath(), Toast.LENGTH_SHORT).show();
+        			if(isOk){ 	
+        				Toast.makeText(this, newPath.getPath(), Toast.LENGTH_LONG).show();
         			}
         		}        		
         		break;

@@ -279,7 +279,6 @@ public class LoginDialog {
 					.getPersistentCookieStore().getCookie("user_photo")
 					.getValue();
 			Session.getSession().setuPic(photoUrl);
-			params.put("uPhoto", photoUrl);
 			params.put("isAuto", "true");
 			loginListener.onLoginComplete(params); //回调接口
 			

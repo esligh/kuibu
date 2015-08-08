@@ -209,6 +209,7 @@ public final class UserInfoContentFragment extends Fragment implements
 					user_photo_iv.setImageResource(R.drawable.default_pic_avatar_female);
 				}
 			}else{
+				
 				ImageLoader.getInstance().displayImage(url, user_photo_iv);
 			}			
 		}else{

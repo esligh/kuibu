@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
+import com.kuibu.data.global.Constants;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 import android.content.Context;
@@ -33,6 +34,7 @@ import android.util.Log;
  */
 public class BitmapHelper {
  
+	public static int DEFAULT_TIMES  = 2; 
     /**
      * get the orientation of the bitmap {@link android.media.ExifInterface}
      * @param path
@@ -83,6 +85,7 @@ public class BitmapHelper {
      * @param path
      * @return
      */
+    
     public final static int caculateInSampleSize(BitmapFactory.Options options, int rqsW, int rqsH) {
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -122,6 +125,7 @@ public class BitmapHelper {
      */
     public final static String compressBitmap(Context context, String srcPath, int rqsW, int rqsH, boolean isDelSrc) {
         Bitmap bitmap = compressBitmap(srcPath, rqsW, rqsH);
+        bitmap = compressBitmap(bitmap,DEFAULT_TIMES);
         File srcFile = new File(srcPath);
         String desPath = getImageCacheDir(context) + srcFile.getName();
         int degree = getDegress(srcPath);
@@ -129,7 +133,7 @@ public class BitmapHelper {
             if (degree != 0) bitmap = rotateBitmap(bitmap, degree);
             File file = new File(desPath);
             FileOutputStream  fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 70, fos);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fos);
             fos.close();
             if (isDelSrc) srcFile.deleteOnExit();
         } catch (Exception e) {
@@ -281,18 +285,18 @@ public class BitmapHelper {
      * 基于质量的压缩算法， 此方法未 解决压缩后图像失真问题
      * <br> 可先调用比例压缩适当压缩图片后，再调用此方法可解决上述问题
      * @param bts
-     * @param maxBytes 压缩后的图像最大大小 单位为byte
+     * @param times 
      * @return
      */
-    public final static Bitmap compressBitmap(Bitmap bitmap, long maxBytes) {
+    public final static Bitmap compressBitmap(Bitmap bitmap, long times) {
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(CompressFormat.PNG, 100, baos);
+            bitmap.compress(CompressFormat.JPEG, 100, baos);
             int options = 90;
-            while (baos.toByteArray().length > maxBytes) {
+            while (times-->0) { 
                 baos.reset();
-                bitmap.compress(CompressFormat.PNG, options, baos);
                 options -= 10;
+                bitmap.compress(CompressFormat.JPEG, options, baos);                
             }
             byte[] bts = baos.toByteArray();
             Bitmap bmp = BitmapFactory.decodeByteArray(bts, 0, bts.length);
@@ -323,9 +327,22 @@ public class BitmapHelper {
      * @return
      */
     private static String getImageCacheDir(Context context) {
-        String dir = StorageUtils.getCacheDirectory(context).getAbsolutePath() + "image" + File.separator;
+        String dir = StorageUtils.getCacheDirectory(context).getAbsolutePath()
+        		+Constants.Config.IMG_COMPRESS_PATH;
         File file = new File(dir);
-        if (!file.exists()) file.mkdirs();
+        if (!file.exists()) 
+        	file.mkdirs();
         return dir;
     }
+    
+	public static String hasCompressFile(Context context ,String path)
+	{
+		File tempFile =new File(path.trim());  
+		String compressFile = StorageUtils.getCacheDirectory(context).getAbsolutePath()
+        		+Constants.Config.IMG_COMPRESS_PATH + tempFile.getName();
+		if(!FileUtils.isFileExist(compressFile)){
+			return null;
+		}
+		return compressFile ; 
+	}
 }

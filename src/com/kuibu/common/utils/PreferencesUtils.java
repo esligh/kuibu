@@ -2,6 +2,7 @@ package com.kuibu.common.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class PreferencesUtils {
 
@@ -220,6 +221,13 @@ public class PreferencesUtils {
 	public static boolean getBoolean(Context context, String preferencesName, String key, boolean defaultValue) {
 		SharedPreferences settings = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
 		return settings.getBoolean(key, defaultValue);
+	}
+	
+	//added by esli 
+	public static boolean getBooleanByDefault(Context context,String key,boolean defaultValue)
+	{
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+		return settings.getBoolean(key, defaultValue); 
 	}
 	
 	/**
