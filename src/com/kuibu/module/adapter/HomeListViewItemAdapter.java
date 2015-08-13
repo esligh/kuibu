@@ -25,8 +25,8 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.CollectInfoListActivity;
-import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.CollectionDetailActivity;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.UserInfoActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -263,20 +263,16 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 
 			String url = datas.get(position).getTopUrl();
 			if (TextUtils.isEmpty(url) || url.equals("null")) {
-				if (Session.getSession().getuSex().equals("M")) {
-					holderforText.topic_icon_iv
-							.setImageResource(R.drawable.default_pic_avatar_male);
-				} else {
-					holderforText.topic_icon_iv
-							.setImageResource(R.drawable.default_pic_avatar_female);
-				}
+				holderforText.topic_icon_iv
+							.setImageResource(R.drawable.default_pic_avata);
+				
 			} else {
 				ImageLoader.getInstance().displayImage(url,
 						holderforText.topic_icon_iv,options,null);
 			}
-			holderforText.title_tv.setText(datas.get(position).getTitle());
+			holderforText.title_tv.setText(datas.get(position).getTitle().replace("\n", ""));
 			holderforText.content_tv.setText(datas.get(position)
-					.getSummary());
+					.getSummary().replace("\n", ""));
 			String date = datas.get(position).getLastModify().trim();
 			if(!date.equals("null")){
 				holderforText.time_tv.setText(date);
@@ -320,6 +316,12 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}
 			});
+			holderfortextPic.item_pic_iv.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View arg0) {
+					startAction(position);
+				}
+			});
 			holderfortextPic.content_tv
 					.setOnClickListener(new OnClickListener() {
 						@Override
@@ -327,19 +329,14 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 							// TODO Auto-generated method stub
 							startAction(position);
 						}
-					});
+			});
 			holderfortextPic.topic_tv.setText(datas.get(position)
 					.getTopText());
 			
 			String url2 = datas.get(position).getTopUrl();
 			if (TextUtils.isEmpty(url2) || url2.equals("null") ) {
-				if (Session.getSession().getuSex().equals("M")) {
 					holderfortextPic.topic_icon_iv
-							.setImageResource(R.drawable.default_pic_avatar_male);
-				} else {
-					holderfortextPic.topic_icon_iv
-							.setImageResource(R.drawable.default_pic_avatar_female);
-				}
+							.setImageResource(R.drawable.default_pic_avata);				
 			} else {
 				ImageLoader.getInstance().displayImage(url2,
 						holderfortextPic.topic_icon_iv,options,null);
@@ -403,13 +400,13 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 				intent = new Intent(context, CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID,
 						datas.get(position).getId());
-				intent.putExtra("title", datas.get(position).getTitle());//
-				intent.putExtra("type", String.valueOf(datas.get(position).getType()));//
-				intent.putExtra("create_by", datas.get(position).getCreateBy()); // 				
-				intent.putExtra("name", datas.get(position).getTopText()); //
-				intent.putExtra("photo", datas.get(position).getTopUrl()); // 
-				intent.putExtra("signature", datas.get(position).getUserSignature()); // 
-				intent.putExtra("sex", datas.get(position).getUserSex()); // 
+//				intent.putExtra("title", datas.get(position).getTitle());//
+//				intent.putExtra("type", String.valueOf(datas.get(position).getType()));//
+//				intent.putExtra("create_by", datas.get(position).getCreateBy()); // 				
+//				intent.putExtra("name", datas.get(position).getTopText()); //
+//				intent.putExtra("photo", datas.get(position).getTopUrl()); // 
+//				intent.putExtra("signature", datas.get(position).getUserSignature()); // 
+//				intent.putExtra("sex", datas.get(position).getUserSex()); // 
 				break;
 			default:
 				break;

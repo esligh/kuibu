@@ -19,6 +19,7 @@ public class SplashScreenActivity extends Activity {
 	private boolean bFirstLaunch = false ;  
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		PackageInfo info = PhoneUtils.getPackageInfo(this); 
 		int currentVersion = info.versionCode;  

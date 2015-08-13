@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.model.bean.FocusColumnItemBean;
+import com.kuibu.module.activity.R;
 
 public class FocusColumnItemAdapter extends BaseAdapter{
 

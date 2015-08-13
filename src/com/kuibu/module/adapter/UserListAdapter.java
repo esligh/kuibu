@@ -72,12 +72,7 @@ public class UserListAdapter extends BaseAdapter{
 		holder.user_desc_tv.setText(datas.get(position).get("signature").toString());
 		String url = datas.get(position).get("photo").toString();
 		if(TextUtils.isEmpty(url) || url.equals("null")){
-			if(StaticValue.SERMODLE.USER_SEX_MALE.
-					equals(datas.get(position).get("sex"))){
-				holder.user_pic_iv.setImageResource(R.drawable.default_pic_avatar_male);	
-			}else{
-				holder.user_pic_iv.setImageResource(R.drawable.default_pic_avatar_female);
-			}
+				holder.user_pic_iv.setImageResource(R.drawable.default_pic_avata);	
 		}else{
 			ImageLoader.getInstance().displayImage(url, holder.user_pic_iv);			
 		}

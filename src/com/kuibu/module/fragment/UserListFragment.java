@@ -22,13 +22,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.module.activity.R;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.UserInfoActivity;
 import com.kuibu.module.adapter.UserListAdapter;
 
@@ -103,8 +103,9 @@ public class UserListFragment extends Fragment implements OnLoadListener{
 		params.put("off", String.valueOf(datas.size()));
 		params.put("target", StaticValue.SERMODLE.FOCUS_TARGET_COLLECTOR);
 		params.put("follow_who", mParams.get("follow_who"));
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_focuslist";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_focuslist").toString();
 
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {

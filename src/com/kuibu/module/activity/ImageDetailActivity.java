@@ -3,9 +3,6 @@ package com.kuibu.module.activity;
 import java.io.File;
 
 import uk.co.senab.photoview.PhotoView;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -13,49 +10,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.kuibu.common.utils.FileUtils;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.StorageUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.StaticValue;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ImageDetailActivity extends BaseActivity{
     private PhotoView photo;
     private final Handler handler = new Handler();
     private boolean rotating = false;
-	private DisplayImageOptions options;
+	private String imgUrl ; 
 
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-		TypedArray typedArray = null;
-		Resources.Theme theme = this.getTheme();
-		if (isDarkTheme) {
-			typedArray = theme.obtainStyledAttributes(R.style.Theme_Kuibu_AppTheme_Dark,
-					new int[] {R.attr.listItemDefaultImage });
-		} else {
-			typedArray = theme.obtainStyledAttributes(R.style.Theme_Kuibu_AppTheme_Light,
-					new int[] { R.attr.listItemDefaultImage });
-		}
-
-		int listItemDefaultImageId = typedArray.getResourceId(0, 0);
-		typedArray.recycle();
-		
-		options = new DisplayImageOptions.Builder()
-		.showImageOnLoading(this.getResources().getDrawable(listItemDefaultImageId))
-		.showImageForEmptyUri(this.getResources().getDrawable(listItemDefaultImageId))
-		.showImageOnFail(this.getResources().getDrawable(listItemDefaultImageId))
-		.cacheInMemory(false)
-		.cacheOnDisk(true)
-		.considerExifParams(true)
-		.bitmapConfig(Bitmap.Config.RGB_565)
-		.build();
-
         photo = new PhotoView(this);
-        String imgUrl =  getIntent().getStringExtra(StaticValue.IMG_URL);
-        ImageLoader.getInstance().displayImage(imgUrl,photo,options,null);        
-        setContentView(photo);
-
+        imgUrl =  getIntent().getStringExtra(StaticValue.IMG_URL);
+        String path = KuibuUtils.getCacheImgFilePath(this, imgUrl);
+        ImageLoader.getInstance().displayImage(Constants.URI_PREFIX+path,photo);
+        setContentView(photo);        
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
     }
@@ -77,6 +53,7 @@ public class ImageDetailActivity extends BaseActivity{
         menu.add(Menu.NONE, 2, Menu.NONE, "自由旋转");
         menu.add(Menu.NONE, 3, Menu.NONE, "翻转");
         menu.add(Menu.NONE, 4, Menu.NONE, "重置");
+        
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -86,16 +63,23 @@ public class ImageDetailActivity extends BaseActivity{
         	case android.R.id.home:
         		finish();
 			break;
-        	case StaticValue.MENU_ITEM.SAVE_ID:        		
-        		File file = ImageLoader.getInstance().getDiskCache().
-        			get(getIntent().getStringExtra(StaticValue.IMG_URL));
-        		if(file!=null){
+        	case StaticValue.MENU_ITEM.SAVE_ID:    
+        		File srcFile = null ; 
+                String path = KuibuUtils.getCacheImgFilePath(this, imgUrl);
+                if(FileUtils.fileIsExists(path)){
+                	srcFile = new File(path);
+                }else{
+                    srcFile = ImageLoader.getInstance().getDiskCache().
+            			get(getIntent().getStringExtra(StaticValue.IMG_URL));
+                }
+        		if(srcFile!=null){
         			File dir = new File(StorageUtils.getFileDirectory(getApplicationContext()).
         					getAbsolutePath()+Constants.Config.SAVE_IMG_DIR); 
         			if(!dir.exists())
         				dir.mkdirs();
+        			
         			File newPath = new File(dir, String.valueOf(System.currentTimeMillis()) +".jpg");
-        			boolean isOk = file.renameTo(newPath);
+        			boolean isOk = srcFile.renameTo(newPath);
         			if(isOk){ 	
         				Toast.makeText(this, newPath.getPath(), Toast.LENGTH_LONG).show();
         			}
@@ -124,6 +108,7 @@ public class ImageDetailActivity extends BaseActivity{
     private void toggleRotation() {
         if (rotating) {
             handler.removeCallbacksAndMessages(null);
+            
         } else {
             rotateLoop();
         }

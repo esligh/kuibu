@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.common.utils.Bimp;
 
 public class PhotoActivity extends Activity

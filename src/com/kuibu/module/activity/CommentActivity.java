@@ -232,8 +232,8 @@ public class CommentActivity extends BaseActivity implements
 								break;
 							case 3:// report
 								AlertDialog.Builder builder = new Builder(CommentActivity.this);
-								builder.setTitle("请选择举报原因");
-								builder.setItems(getResources().getStringArray(R.array.report_item), 
+								builder.setTitle(getString(R.string.report_reason));
+								builder.setItems(getResources().getStringArray(R.array.report_comment), 
 										new OnClickListener(){
 											@Override
 											public void onClick(
@@ -242,32 +242,22 @@ public class CommentActivity extends BaseActivity implements
 												Map<String,String> params = new HashMap<String,String>();
 												params.put("accuser_id", Session.getSession().getuId());
 												params.put("defendant_id", item.getCreateBy());
+												
+												String[] items = getResources().getStringArray(
+														R.array.report_comment);
+												
+												if(items != null && items.length > position)
+													params.put("reason",items[position]);
+												
 												switch(position){
-												case 0:
-													params.put("reason","色情");
-													PublicRequestor.sendReport(params);
-													break;
-												case 1:
-													params.put("reason","广告骚扰");
-													PublicRequestor.sendReport(params);
-													break;
-												case 2:
-													params.put("reason","口头谩骂");
-													PublicRequestor.sendReport(params);
-													break;
-												case 3:
-													params.put("reason","欺诈");
-													PublicRequestor.sendReport(params);
-													break;
-												case 4:
-													params.put("reason","政治");
-													PublicRequestor.sendReport(params);
-													break;
-												case 5:
-													Intent intent = new Intent(CommentActivity.this,ReportActivity.class);
-													intent.putExtra("defendant", item.getCreateBy());
-													startActivity(intent);
-													break;
+													case 0:case 1:case 2:case 3:case 4:
+														PublicRequestor.sendReport(params);
+														break;
+													case 5:
+														Intent intent = new Intent(CommentActivity.this,ReportActivity.class);
+														intent.putExtra("defendant", item.getCreateBy());
+														startActivity(intent);
+														break;
 												}
 											}									
 								});
@@ -286,7 +276,7 @@ public class CommentActivity extends BaseActivity implements
 		super.onCreateOptionsMenu(menu);
 		cancelReply = menu.add(StaticValue.MENU_GROUP.CANCEL_ACTIONBAR_GROUP,
 				StaticValue.MENU_ITEM.CANCEL_ID,
-				StaticValue.MENU_ORDER.CANCEL_ORDER_ID, "取消回复");
+				StaticValue.MENU_ORDER.CANCEL_ORDER_ID, getString(R.string.cancel_reply));
 
 		cancelReply.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		cancelReply.setVisible(false);
@@ -301,7 +291,7 @@ public class CommentActivity extends BaseActivity implements
 				break;			
 			case StaticValue.MENU_ITEM.CANCEL_ID:
 				cancelReply.setVisible(false);
-				editContent.setHint("写下你的评论...");
+				editContent.setHint(getString(R.string.write_down_comment));
 				break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -310,7 +300,8 @@ public class CommentActivity extends BaseActivity implements
 	private void requestAdd() {
 		final String content = editContent.getText().toString().trim();
 		if (TextUtils.isEmpty(content)) {
-			Toast.makeText(this, "评论内容不能为空!", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.comment_no_empty), 
+					Toast.LENGTH_SHORT).show();
 			return;
 		}
 
@@ -353,7 +344,7 @@ public class CommentActivity extends BaseActivity implements
 							@SuppressWarnings("unchecked")
 							Map<String, String> tag = (Map<String, String>) editContent
 									.getTag();
-							bean.setContent(new StringBuffer("回复")
+							bean.setContent(new StringBuffer(getString(R.string.reply))
 									.append(tag.get("receiver_name"))
 									.append(":").append(content).toString());
 						} else {
@@ -364,7 +355,7 @@ public class CommentActivity extends BaseActivity implements
 						showView();
 					}
 					cancelReply.setVisible(false);
-					editContent.setHint("写下你的评论...");
+					editContent.setHint(getString(R.string.write_down_comment));
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

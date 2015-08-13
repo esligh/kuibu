@@ -1,7 +1,12 @@
 package com.kuibu.module.activity;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,18 +20,26 @@ import org.jsoup.select.Elements;
 
 import us.feras.mdv.MarkdownView;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
+import android.util.JsonReader;
+import android.util.JsonToken;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Menu;
@@ -34,7 +47,12 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.JsResult;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,7 +65,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.AssetsUtils;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.NetUtils;
+import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
@@ -57,10 +77,12 @@ import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.webview.InJavaScriptObject;
-import com.kuibu.model.webview.WebViewClientExt;
 import com.kuibu.module.iterf.OnPageLoadFinished;
+import com.kuibu.module.iterf.ResponseListener;
 import com.kuibu.module.net.PublicRequestor;
+import com.kuibu.module.task.DownloadWebImgTask;
 import com.petebevin.markdown.MarkdownProcessor;
+
 
 public class CollectionDetailActivity extends ActionBarActivity implements OnPageLoadFinished {
 
@@ -87,10 +109,15 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 	private Handler mHandler  ; 
 	private ImageView mHeaderImage ; 
 	private int curAlpha;
+	private ArrayList<String> mDetailImageList = new ArrayList<String>();
+	private Context mContext ;  
+	private boolean isDarkTheme ; 
+	
     @SuppressLint("HandlerLeak")
 	@Override
     public void onCreate(Bundle savedInstanceState) {				
         super.onCreate(savedInstanceState);
+        mContext = this; 
 		mGestureDetector = new GestureDetector(this, mOnGestureListener);
         setContentView(R.layout.collection_detail_activity);
         mHeaderImage = (ImageView)findViewById(R.id.image_header);
@@ -122,7 +149,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 				if(Session.getSession().isLogin()){
 					doVote(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, isSupport);
 				}else{
-					Toast.makeText(CollectionDetailActivity.this, "请先注册登录", Toast.LENGTH_SHORT).show();
+					Toast.makeText(CollectionDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -149,7 +176,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
         NotifyingScrollView scrollView = (NotifyingScrollView)findViewById(R.id.scroll_view);
         SharedPreferences mPerferences = PreferenceManager
 				.getDefaultSharedPreferences(this);		
-		boolean isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);
+		isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);
 		if(isDarkTheme){			
 			scrollView.setBackgroundColor(getResources().getColor(R.color.webview_dark));
 			mMultiStateView.setBackgroundColor(getResources().getColor(R.color.list_view_bg_dark));
@@ -167,8 +194,8 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
         contentView = (MarkdownView)findViewById(R.id.content);
         setUpWebViewDefaults();
         cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
-        createBy = getIntent().getStringExtra("create_by");
         loadContent();        
+        loadActions();
     }
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -180,7 +207,131 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 		InJavaScriptObject jsObj = new InJavaScriptObject(this);
 		jsObj.setOnPageLoadFinishedListener(this);
 		contentView.addJavascriptInterface(jsObj, "injectedObject");
-		contentView.setWebViewClient(new WebViewClientExt(this));
+		contentView.setWebViewClient(new WebViewClient(){
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {   
+				 Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+				 startActivity(i);
+		         return true;
+		    }  
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				String urlStrArray[] = new String[mDetailImageList.size()];
+				mDetailImageList.toArray(urlStrArray);
+				if(PreferencesUtils.getBooleanByDefault(CollectionDetailActivity.this, 
+						StaticValue.PrefKey.NO_PICTRUE_KEY, false)){//无图
+					
+				}else{
+					new DownloadWebImgTask(mContext,new ResponseListener(){
+
+						@Override
+						public void onPreExecute() {
+							
+						}
+						
+						@SuppressLint("NewApi")
+						@Override
+						public void onPostExecute(String content) {
+							// TODO Auto-generated method stub
+							String javascript = "img_replace_all();";
+							
+							if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+								// In KitKat+ you should use the evaluateJavascript method
+								contentView.evaluateJavascript(javascript, new ValueCallback<String>() {
+					                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+					                @Override
+					                public void onReceiveValue(String s) {
+					                    JsonReader reader = new JsonReader(new StringReader(s));
+					                    // Must set lenient to parse single values
+					                    reader.setLenient(true);
+					                    try {
+					                        if(reader.peek() != JsonToken.NULL) {
+					                            if(reader.peek() == JsonToken.STRING) {
+					                                String msg = reader.nextString();
+					                                if(msg != null) {
+					                               //     Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+					                                }
+					                            }
+					                        }
+					                    } catch (IOException e) {
+					                        Log.e("TAG", "MainActivity: IOException", e);
+					                    } finally {
+					                        try {
+					                            reader.close();
+					                        } catch (IOException e) {
+					                            // NOOP
+					                        }
+					                    }
+					                }
+					            });
+							} else {
+								contentView.loadUrl( "javascript:" + javascript);
+							}
+						}
+
+						@SuppressLint("NewApi")
+						@Override
+						public void onProgressUpdate(String value) {
+							String javascript = "img_replace_by_url('" + value + "')";
+							
+							if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+								contentView.evaluateJavascript(javascript, new ValueCallback<String>(){
+									@Override
+									public void onReceiveValue(String s) {
+					                    JsonReader reader = new JsonReader(new StringReader(s));
+					                    // Must set lenient to parse single values
+					                    reader.setLenient(true);
+					                    try {
+					                        if(reader.peek() != JsonToken.NULL) {
+					                            if(reader.peek() == JsonToken.STRING) {
+					                                String msg = reader.nextString();
+					                                if(msg != null) {
+					                    //              Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+					                                }
+					                            }
+					                        }
+					                    } catch (IOException e) {
+					                        Log.e("TAG", "MainActivity: IOException", e);
+					                    } finally {
+					                        try {
+					                            reader.close();
+					                        } catch (IOException e) {
+					                        }
+					                    }
+									}
+							    	
+							    });
+							} else {
+								contentView.loadUrl("javascript:" + javascript);
+							}
+						}
+
+						@Override
+						public void onFail(Exception e) {
+							// TODO Auto-generated method stub
+							e.printStackTrace();
+						}
+						
+					}).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,urlStrArray);
+				}
+			}
+		});
+		contentView.setWebChromeClient(new WebChromeClient() {			 
+		    @Override
+		    public boolean onJsAlert(WebView view, String url, String message,
+		            final JsResult result) {  
+	            result.cancel();  
+	            return true; 
+		    }		 
+		    @Override
+		    public boolean onJsConfirm(WebView view, String url,
+		            String message, final JsResult result) {
+		    	
+		        return true;
+		    }
+		});
+		
 		int netType = NetUtils.getAPNType(this);
 		if(netType == NetUtils.NO_NET){
 			contentView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
@@ -223,7 +374,6 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 			mFavActionItem.setIcon(R.drawable.ab_fav_normal);
 			mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
 		}
-		
 		return true;
 	}
 	
@@ -243,7 +393,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 					startActivityForResult(intent,StaticValue.RequestCode.FAVORITE_BOX_REQCODE);
 					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}else{
-					Toast.makeText(CollectionDetailActivity.this, "请先注册登录", Toast.LENGTH_SHORT).show();
+					Toast.makeText(CollectionDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 				}	
 				break;
 			case R.id.menu_item_share_action_bar:
@@ -311,16 +461,14 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 			case StaticValue.RequestCode.FAVORITE_BOX_REQCODE:
 				if(data!=null){
 					isInFavorite = data.getBooleanExtra("isCollected", false);
-					if (isInFavorite) {//收藏成功
+					if (isInFavorite) {
 						Toast.makeText(this, R.string.fav_add_success, Toast.LENGTH_SHORT).show();				
 						mFavActionItem.setIcon(R.drawable.ab_fav_active);
-						mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
-						isInFavorite = false;	
+						mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);	
 					} else {
 						Toast.makeText(this, R.string.fav_cancel_success, Toast.LENGTH_SHORT).show();
 						mFavActionItem.setIcon(R.drawable.ab_fav_normal);
-						mFavActionItem.setTitle(R.string.actionbar_item_fav_add);					
-						isInFavorite = true;				
+						mFavActionItem.setTitle(R.string.actionbar_item_fav_add);				
 					}				
 				}				
 			break;
@@ -333,6 +481,14 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		KuibuApplication.getInstance().cancelPendingRequests(
+				StaticValue.TAG_VLAUE.DETAIL_PAGE_VOLLEY);
+	}
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
@@ -341,8 +497,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 	}
 
 	@Override
-	public void pageLoadFinished() {
-		// TODO Auto-generated method stub
+	public void pageLoadFinished() {			
 		mHandler.postDelayed(new Runnable() {			
 			@Override
 			public void run() {
@@ -350,18 +505,12 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 				mHandler.sendEmptyMessage(StaticValue.MSG_CODE.SHOW_TOOLS);
 			}
 		}, 200);
-		
 	}
 
 	@Override
 	public void getHtmlSource(String html) {
-		// TODO Auto-generated method stub
-		String str = html ; 
-		
-		str.length();
 	}	    
 	
-   
 	private String adjustMarkDownText(String markdownText) {
 		String pattern = "!\\[.*\\]\\(\\s*(http:.*)\\)";
 		Pattern p = Pattern.compile(pattern);
@@ -373,27 +522,20 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 		m.appendTail(sb);
 		return sb.toString();
 	}
-	
- 
-	
-	private String prepareHeader()
+
+	private String prepareHeader(JSONObject obj) throws JSONException
 	{
 		StringBuilder sb = new StringBuilder();
-		String url = getIntent().getStringExtra("photo");
-		if(TextUtils.isEmpty(url) || url.equals("null")){
-			String sex = getIntent().getStringExtra("sex");
-			if(!TextUtils.isEmpty(sex) && sex.equals("M")){
-				url = "file:///android_asset/hand_book/default_pic_avatar_male.jpg";
-			}else{
-				url = "file:///android_asset/hand_book/default_pic_avatar_female.jpg";
-			}
+		String url = obj.getString("photo");
+		if(TextUtils.isEmpty(url) || url.equals("null")){			
+				url = "file:///android_asset/hand_book/default_pic_avata.png";
 		}
-		sb.append("<div><h2 class=\"headline-title\">").append(getIntent().getStringExtra("title")).append("</h2></div>")
+		sb.append("<div><h2 class=\"headline-title\">").append(obj.getString("title")).append("</h2></div>")
 				.append("<div class=\"meta\">")
 				.append("<div class=\"author-pic\" ><img class=\"avatar\" style=\"vertical-align:middle\" src=\"").append(url).append("\"></div>")
 				.append("<div class=\"author-info\">")
-				.append("<span class=\"author\">").append(getIntent().getStringExtra("name")).append("&nbsp;<strong>·</strong></span>")
-				.append("<span class=\"bio\">&nbsp;").append(getIntent().getStringExtra("signature")).append("</span>")					
+				.append("<span class=\"author\">").append(obj.getString("name")).append("&nbsp;<strong>·</strong></span>")
+				.append("<span class=\"bio\">&nbsp;").append(obj.getString("signature")).append("</span>")					
 				.append("</div></div>");
 		
 		String template = AssetsUtils.loadText(this, Constants.TEMPLATE_DEF_URL);
@@ -403,10 +545,17 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 	}
 	
 	private void doReport()
-	{
-		AlertDialog.Builder builder = new Builder(CollectionDetailActivity.this);
-		builder.setTitle("举报原因");
-		builder.setItems(getResources().getStringArray(R.array.report_item), 
+	{ 
+		AlertDialog.Builder builder =null ; 
+		
+		if(isDarkTheme){
+			builder = new Builder(this,AlertDialog.THEME_HOLO_DARK);
+		}else{
+			builder = new Builder(this,AlertDialog.THEME_HOLO_LIGHT);
+		}
+		
+		builder.setTitle(getString(R.string.report_reason));
+		builder.setItems(getResources().getStringArray(R.array.report_content), 
 				new android.content.DialogInterface.OnClickListener(){
 					@Override
 					public void onClick(
@@ -415,25 +564,18 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 						Map<String,String> params = new HashMap<String,String>();
 						params.put("accuser_id", Session.getSession().getuId());
 						params.put("defendant_id", createBy);
+						
+						String[] items = getResources().getStringArray(
+								R.array.report_content);
+						
+						if(items!=null && items.length>position)
+							params.put("reason",items[position]);
+						
 						switch(position){
-						case 0:
-							params.put("reason","色情");
+						case 0:							
 							PublicRequestor.sendReport(params);
 							break;
-						case 1:
-							params.put("reason","广告骚扰");
-							PublicRequestor.sendReport(params);
-							break;
-						case 2:
-							params.put("reason","口头谩骂");
-							PublicRequestor.sendReport(params);
-							break;
-						case 3:
-							params.put("reason","欺诈");
-							PublicRequestor.sendReport(params);
-							break;
-						case 4:
-							params.put("reason","政治");
+						case 1: case 2: case 3: case 4:
 							PublicRequestor.sendReport(params);
 							break;
 						case 5:
@@ -451,20 +593,30 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 	private String replaceImgTagFromHTML(String html) {
 		Document doc = Jsoup.parse(html);
 		Elements es = doc.getElementsByTag("img");
-		for (Element e : es) {
-			String imgUrl = e.attr("src");
-				e.attr("onclick", "openImage('" + imgUrl + "')");
+		for (Element e : es) {			
+			
+			String imgUrl = e.attr("src");			
+			mDetailImageList.add(imgUrl);
+			String localImgPath = KuibuUtils.getCacheImgFilePath(this, imgUrl);			
+            e.attr("src_link","file://" + localImgPath);  
+            e.attr("ori_link",imgUrl);
+            
+            if(!e.attr("class").equals("avatar")){
+    			e.attr("src","file:///android_asset/img/default_image_loading.png");
+    			e.attr("onclick", "openImage('" + imgUrl + "')");
+            }			
 		}
 		return doc.html();
 	}
 	
+	
 	private void loadContent()
 	{	
-		final String template = prepareHeader();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", cid);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_collectiondetail";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION) 
+				.append("/get_collectiondetail").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -472,9 +624,11 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						
 						JSONObject obj = new JSONObject(response.getString("result"));
 						if(obj!=null){
-							
+					        createBy = getIntent().getStringExtra("create_by");
+							final String template = prepareHeader(obj);
 							String type = obj.getString("type");
 							String content = obj.getString("content");
 							if(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE.equals(type)){
@@ -508,15 +662,6 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-//					String html = new String(template);
-//					html = html.replace("{footer}", "");
-//					StringBuilder errorContent = new StringBuilder("<br><br>");
-//					errorContent.append("<div style=\"text-align:center;font-size:20px;color:#777\"><span>加载失败,请点击重试 </span></div><br>");
-//					errorContent.append("<div style=\"text-align:center; width:100%;height:100%;margin:0px;\">")
-//					.append("<button class=\"btn-normal\" onclick=\"btnReload()\">")
-//					.append("重新加载").append("</button>").append("</div>");
-//					html = html.replace("{content}", errorContent.toString());
-//					contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);	
@@ -530,11 +675,13 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 		params.put("obj_id", cid);
 		String URL=""; 
 		if(!isChecked){
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/add_useraction";		
+			URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/add_useraction").toString();		
 		}else{
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/del_useraction";			
+			URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/del_useraction").toString();			
 		}
 		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
@@ -581,6 +728,56 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 				return headers;
 			}
 		};
+		KuibuApplication.getInstance().addToRequestQueue(req, 
+				StaticValue.TAG_VLAUE.DETAIL_PAGE_VOLLEY);
+	}
+	
+	public void loadActions()
+	{
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("uid", Session.getSession().getuId());
+		params.put("obj_id", cid);
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_useraction").toString();				
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						String astr = response.getString("actions");
+						List<String> codes = null; 
+						if(!TextUtils.isEmpty(astr)){
+							String[] actions = astr.split(",");
+							codes = Arrays.asList(actions);
+							if(codes.contains(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION)){
+								Drawable drawable= getResources().getDrawable(R.drawable.ab_support_active);
+								drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+								likeBtn.setCompoundDrawables(drawable, null, null, null);
+								isSupport = true; 
+							}
+							if(codes.contains(StaticValue.USER_ACTION.ACTION_COLLECT_COLLECTION)){
+								mFavActionItem.setIcon(R.drawable.ab_fav_active);
+								mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
+								isInFavorite = true;
+							}
+						}						
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+			}
+		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
+	
 }

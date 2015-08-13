@@ -34,9 +34,9 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.BorderScrollView;
-import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.BorderScrollView.OnBorderListener;
 import com.kuibu.custom.widget.FButton;
+import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
@@ -135,7 +135,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				if (Session.getSession().isLogin()) {
 					do_focus(isfocus);
 				} else {
-					Toast.makeText(FavoriteBoxInfoActivity.this, "请先登录或注册用户.",
+					Toast.makeText(FavoriteBoxInfoActivity.this, getString(R.string.need_login),
 							Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -185,7 +185,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		// packVo.closeDB();
 	}
 	
 	@Override
@@ -256,7 +255,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 								int btnColor = getResources().getColor(
 										R.color.fbutton_color_concrete);
 								focusBtn.setButtonColor(btnColor);
-								focusBtn.setText("取消关注");
+								focusBtn.setText(getString(R.string.btn_cancel_focus));
 							}
 						}
 					}
@@ -278,7 +277,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 
 	private void do_focus(final boolean bfocus) {
 		if(!Session.getSession().isLogin()){
-			Toast.makeText(this, "请先注册或登录", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 			return ;
 		}
 		
@@ -298,7 +297,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -306,16 +304,15 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);
-							focusBtn.setText("关注");
+							focusBtn.setText(getString(R.string.btn_focus));
 						} else {
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);
-							focusBtn.setText("取消关注");
+							focusBtn.setText(getString(R.string.btn_cancel_focus));
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -361,6 +358,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 								for (int i = 0; i < arr.length(); i++) {
 									JSONObject temp = (JSONObject) arr.get(i);
 									CollectionItemBean bean = new CollectionItemBean();
+									bean.setId(temp.getString("id"));
 									bean.setTitle(temp.getString("title"));
 									bean.setContent(temp.getString("content"));
 									bean.setCreateBy(temp.getString("create_by"));
@@ -376,11 +374,11 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 								showView();
 							} else if (StaticValue.RESPONSE_STATUS.COLLETION_NFRECORD
 									.equals(state)) {
-								Toast.makeText(FavoriteBoxInfoActivity.this,
-										"没有数据啦！", Toast.LENGTH_SHORT).show();
+//								Toast.makeText(FavoriteBoxInfoActivity.this,
+//										"没有数据啦！", Toast.LENGTH_SHORT).show();
 							} else {
-								Toast.makeText(FavoriteBoxInfoActivity.this,
-										"加载列表失败！", Toast.LENGTH_SHORT).show();
+//								Toast.makeText(FavoriteBoxInfoActivity.this,
+//										"加载列表失败！", Toast.LENGTH_SHORT).show();
 							}
 							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 							borderScrollView.loadComplete();
@@ -432,16 +430,10 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 									.get("signature"));
 							String url = obj.getString("photo");
 							userInfo.put("photo", url);
-							if (TextUtils.isEmpty(url)) {
-								if (userInfo.get("sex").equals("M")) {
+							if (TextUtils.isEmpty(url)) {								
 									creatorPicView
-											.setImageResource(R.drawable.default_pic_avatar_male);
-								} else {
-									creatorPicView
-											.setImageResource(R.drawable.default_pic_avatar_female);
-								}
-							} else {
-								
+											.setImageResource(R.drawable.default_pic_avata); 
+							} else {								
 								ImageLoader.getInstance().displayImage((String)userInfo.get("photo"),
 										creatorPicView);
 							}

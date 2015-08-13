@@ -152,9 +152,9 @@ public final class UserInfoContentFragment extends Fragment implements
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					if(Session.getSession().isLogin()){
-						do_focus(bUserIsFollow);
+						doFocus(bUserIsFollow);
 					}else{
-						Toast.makeText(getActivity(), "请先登录或注册用户.", 
+						Toast.makeText(getActivity(), getActivity().getString(R.string.need_login), 
 								Toast.LENGTH_SHORT).show();
 					}
 				}
@@ -203,13 +203,8 @@ public final class UserInfoContentFragment extends Fragment implements
 			 
 			String url = Session.getSession().getuPic();
 			if(TextUtils.isEmpty(url) || url.equals("null")){
-				if(Session.getSession().getuSex().equals("M")){
-					user_photo_iv.setImageResource(R.drawable.default_pic_avatar_male);
-				}else{
-					user_photo_iv.setImageResource(R.drawable.default_pic_avatar_female);
-				}
+				user_photo_iv.setImageResource(R.drawable.default_pic_avata);
 			}else{
-				
 				ImageLoader.getInstance().displayImage(url, user_photo_iv);
 			}			
 		}else{
@@ -247,11 +242,7 @@ public final class UserInfoContentFragment extends Fragment implements
 				topic_box_tv.setText("她的话题");		
 			}
 			if(TextUtils.isEmpty(url) || url.equals("null")){			
-				if(sex.equals("M")){
-					user_photo_iv.setImageResource(R.drawable.default_pic_avatar_male);
-				}else{
-					user_photo_iv.setImageResource(R.drawable.default_pic_avatar_female);
-				}
+				user_photo_iv.setImageResource(R.drawable.default_pic_avata);
 			}else{
 				ImageLoader.getInstance().displayImage(url, user_photo_iv);
 			}				
@@ -261,16 +252,17 @@ public final class UserInfoContentFragment extends Fragment implements
 		}else{
 			user_sex_iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_gender_f_w));
 		}
-		request_detail();
+		requestDetail();
 	}
 	
-	private void request_detail()
+	private void requestDetail()
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", (String)uInfo.get("uid"));
 		params.put("requestor_id", Session.getSession().getuId());
-		final String URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/get_userdetail";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_userdetail").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -300,7 +292,7 @@ public final class UserInfoContentFragment extends Fragment implements
 						if(bUserIsFollow){
 							int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText("取消关注");											
+							focusBtn.setText(getActivity().getString(R.string.btn_cancel_focus));											
 						}
 					}
 				} catch (JSONException e) {
@@ -319,7 +311,7 @@ public final class UserInfoContentFragment extends Fragment implements
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
 	
-	private void do_focus(final boolean bfocus)
+	private void doFocus(final boolean bfocus)
 	{		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("follower_id", Session.getSession().getuId());
@@ -327,11 +319,13 @@ public final class UserInfoContentFragment extends Fragment implements
 		params.put("obj_id", (String)uInfo.get("uid"));
 		final String URL;
 		if(bfocus){ 
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/del_follows";
+			URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/del_follows").toString();
 		}else{
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/add_follows";
+			URL = new StringBuilder(Constants.Config.SERVER_URI)
+				  .append(Constants.Config.REST_API_VERSION)
+				  .append("/add_follows").toString();
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -344,11 +338,11 @@ public final class UserInfoContentFragment extends Fragment implements
 						if(bfocus){
 							int btnColor= getResources().getColor(R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText("关注");						
+							focusBtn.setText(getActivity().getString(R.string.btn_focus));						
 						}else{
 							int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText("取消关注");
+							focusBtn.setText(getActivity().getString(R.string.btn_cancel_focus));
 						}
 					}
 				} catch (JSONException e) {

@@ -9,10 +9,10 @@
         android:id="@+id/home_0_rela_layout0_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginBottom="@dimen/android_spaces_small"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:layout_marginTop="@dimen/android_spaces_small"
         android:background="?listItemBackground"
         android:focusable="false" >
 
@@ -43,8 +43,8 @@
         android:id="@+id/home_0_item_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
         android:background="?listItemBackground"
         android:ellipsize="end"
         android:focusable="false"
@@ -53,7 +53,7 @@
         android:paddingTop="2dp"
         android:textColor="?listItemTextColor"
         android:typeface="sans"
-        android:textSize="18sp" />
+        android:textSize="17sp" />
 
     <TextView
         android:id="@+id/home_0_content_tv"
@@ -62,27 +62,27 @@
         android:background="?listItemBackground"
         android:ellipsize="end"
         android:focusable="false"
-        android:maxLines="3"
-        android:paddingBottom="4dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="4dp"
+        android:maxLines="2"
+        android:paddingBottom="@dimen/android_spaces_small"
+        android:paddingTop="@dimen/android_spaces_small"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
         android:textColor="?listItemExtraTextColor"
-        android:textSize="16sp" />
+        android:textSize="15sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp">
+        android:layout_marginBottom="@dimen/android_spaces"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:layout_marginTop="@dimen/android_spaces_small">
 
         <ImageView
             android:id="@+id/home_0_item_time_icon_iv"
-            android:layout_width="@dimen/icon_small_width"
-            android:layout_height="@dimen/icon_small_height"
-            android:scaleType="fitCenter"
+            android:layout_width="@dimen/icon_super_small_width"
+            android:layout_height="@dimen/icon_super_small_height"
+            android:scaleType="centerInside"
             android:contentDescription="@null"
             android:src="@drawable/home_time" />
 
@@ -90,7 +90,8 @@
             android:id="@+id/home_0_item_time_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="3dp"
+            android:layout_marginLeft="@dimen/android_spaces"
+            android:layout_marginRight="@dimen/android_spaces"
             android:layout_toEndOf="@id/home_0_item_time_icon_iv"
             android:layout_toRightOf="@id/home_0_item_time_icon_iv"
             android:textSize="12sp" />

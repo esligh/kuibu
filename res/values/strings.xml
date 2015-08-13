@@ -20,24 +20,20 @@
     <string name="user_name">姓名</string>
     <string name="user_pwd">密码</string>
     <string name="user_pwdconfirm">确认密码</string>
-    <string name="onregistering">正在注册</string>
-	    
+    <string name="onregistering">正在注册</string>  
     <string name="btn_focus">关注</string>
     <string name="btn_cancel_focus">取消关注</string>
-    <string name="write_down_comment">写下你的评论&#8230;</string>
-    <string name="add_topic">添加话题(最多5个)</string>
-    
+    <string name="add_topic">添加话题(最多5个)</string>    
     <string name="hint_title">标题</string>
     <string name="hint_name">名称</string>
     <string name="hint_extra">简介</string>
     <string name="hint_topic_private">私有(私有集册的内容发布只作为备份，其他人看不到)</string>
     <string name="hint_fbox_private">私有(私有集册只对自己可见)</string>
 	<string name="hint_report">举报原因&#8230;</string>
-	    
+	<string name="report_reason">举报原因</string>
     <string name="empty_view_desc">暂无数据</string>
     <string name="error_view_desc">加载数据出错</string>
-    <string name="error_view_retry">重试</string>
-    
+    <string name="error_view_retry">重试</string>  
     <string name="btn_confirm">确定</string>
     <string name="btn_cancel">取消</string>
     <string name="onloading">正在加载&#8230;</string>
@@ -68,6 +64,7 @@
     <string name="my_favoritebox">我的收藏</string>
     <string name="my_topic">我的话题</string>
     <string name="email">邮箱</string>
+    <string name="hint_signature">签名</string>
     
     <string name="choose_favoritebox">选择收藏夹</string>
     <string name="focus_topics">关注的话题</string>
@@ -81,6 +78,10 @@
     <string name="look_at">查看</string>    
     <string name="report">举报</string>
     <string name="like">喜欢</string>
+    
+    <!-- title -->
+    <string name="add_user_pic">添加头像</string>
+    
     <!-- menu text -->
     <string name="action_search_for">搜索</string>
     <string name="action_notify">通知</string>
@@ -90,10 +91,11 @@
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
     <!--  -->
+    
     <!-- welcome activity text-->    
     <string name="drawer_login_by_qq_sort">QQ登录</string>
     <string name="drawer_login_by_sina_sort">微博登录</string>
-    <string name="goto_world">随便看看</string>
+    <string name="goto_world">开始体验</string>
     <string name="register">注册</string>
     <string name="tip_guide_first">不积跬步    无以至千里</string>
     <string name="tip_guide_second">不积小流    无以成江海</string>
@@ -114,7 +116,36 @@
 	
 	<string name="fav_cancel_success">已取消收藏</string>
 	
+
+	
+	<!-- prompt -->
+	<string name="comment_no_empty">评论内容不能为空</string>
+	<string name="write_down_comment">写下你的评论&#8230;</string>
+	<string name ="sure_clear_favorite">确定要清空该收藏夹?</string>
+	<string name ="modify_success">修改成功</string>
+	<string name ="modify_fail">修改失败</string>
+	<string name ="load_fail">加载失败</string>
+	<string name = "poor_net_state">当前网络状态不好</string>
+	<string name="press_again_exit">再按一次退出</string>
+	<string name = "received_letter">收到新私信</string>
+	<string name = "received_comment">收到新评论</string>
+	<string name ="need_login">请先注册登录</string>
+	
+	<string name="register_fail">注册失败</string>	
+	<string name="upload_pic_fail">头像上传失败</string>
+	<string name="input_name">请输入姓名</string>
+	<string name="input_email">请输入邮箱</string>
+	<string name="input_signature">请输入签名</string>
+	<string name="input_password">请输入密码</string>
+	<string name="password_not_equal">两次输入的密码不一样</string>
 		
+	<!-- menu text -->
+	<string name ="operator">操作</string>
+	<string name ="reply">回复</string>
+	<string name ="cancel_reply">取消回复</string>
+	<string name ="clear_all">清空</string>
+	
+	
     <array name="array_guide_tips">
         <item>@string/tip_guide_first</item>
         <item>@string/tip_guide_second</item>

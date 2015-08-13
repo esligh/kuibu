@@ -17,6 +17,8 @@
 
 package com.kuibu.custom.widget;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -32,8 +34,6 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author ThinkPad

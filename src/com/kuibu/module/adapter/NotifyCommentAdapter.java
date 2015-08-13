@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.kuibu.module.activity.R;
 
 public class NotifyCommentAdapter extends BaseAdapter {

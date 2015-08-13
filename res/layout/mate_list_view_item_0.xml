@@ -9,10 +9,10 @@
         android:id="@+id/mate_0_rela_layout0_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:layout_marginTop="@dimen/android_spaces_small"
+        android:layout_marginBottom="@dimen/android_spaces_small"
         android:background="?listItemBackground"
         android:orientation="horizontal" 
         android:focusable="false">
@@ -45,12 +45,12 @@
         android:background="?listItemBackground"
         android:ellipsize="end"
         android:maxLines="2"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
+        android:paddingLeft="@dimen/android_spaces_large"
+        android:paddingRight="@dimen/android_spaces_large"
+        android:paddingTop="@dimen/android_spaces_small"
+        android:paddingBottom="@dimen/android_spaces_small"
         android:textColor="?listItemTextColor"
-        android:textSize="18sp"
+        android:textSize="17sp"
         android:focusable="false"/>
 
     <TextView
@@ -58,23 +58,23 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="3"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
+        android:maxLines="2"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:paddingTop="@dimen/android_spaces_small"
+        android:paddingBottom="@dimen/android_spaces_small"
         android:textColor="?listItemExtraTextColor"       
         android:background="?listItemBackground"
-        android:textSize="16sp"     
+        android:textSize="15sp"     
         android:focusable="false" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:layout_marginTop="@dimen/android_spaces_small"
+        android:layout_marginBottom="@dimen/android_spaces_small"
+        android:paddingLeft="@dimen/android_spaces_large"
+        android:paddingRight="@dimen/android_spaces_large">
 
         <TextView
             android:id="@+id/mate_0_count_tv"
@@ -91,8 +91,8 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/mate_0_count_tv"
             android:layout_toStartOf="@id/mate_0_count_tv"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="@dimen/android_spaces"
+            android:layout_marginRight="@dimen/android_spaces"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_vote_normal"
             android:contentDescription="@null"/>

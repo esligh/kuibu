@@ -1,8 +1,6 @@
 package com.kuibu.custom.widget;
 
 
-import com.kuibu.module.activity.R;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
@@ -12,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
+import com.kuibu.module.activity.R;
 
 
 /**

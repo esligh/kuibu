@@ -8,6 +8,8 @@
 
 package com.kuibu.module.activity;
 
+import java.net.MalformedURLException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,11 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -40,6 +40,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.NetUtils;
+import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -56,43 +57,68 @@ import com.kuibu.module.fragment.FocusPageFragment;
 import com.kuibu.module.fragment.HomePageFragment;
 import com.kuibu.module.service.HeartBeatService;
 
-public class KuibuMainActivity extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnLoginLisener {
+
+public class KuibuMainActivity extends BaseActivity 
+	implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnLoginLisener {
+	
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private Fragment currentFragment;
 	private Fragment lastFragment;
 	private LoginDialog mLoginDlg = null;
-	private static final int NOLOGIN_DEFAULT_POSITION = 2; //未登录状态抽屉选项的默认位置
-	private static final int LOGIN_DEFAULT_POSITINO = 1; //登录状态抽屉选项的默认位置
+	private static final int DEFAULT_POSITINO = 1; //登录状态抽屉选项的默认位置
 	private MenuItem mLogoutMenu,mNotifyMenu;
+	private int mCurposition = 0  ;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_kuibu_main);
-		if (savedInstanceState != null) {
-			
-		}else{
-			getSupportFragmentManager().beginTransaction()
-				.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+
 		mLoginDlg = new LoginDialog(this);
 		mLoginDlg.setOnLoginLisener(this);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-				(DrawerLayout) findViewById(R.id.drawer_layout));
-		mNavigationDrawerFragment.selectItem(NOLOGIN_DEFAULT_POSITION);
-		
+				(DrawerLayout) findViewById(R.id.drawer_layout));	
+		getSupportFragmentManager().beginTransaction()
+			.add(R.id.container, new PlaceholderFragment()).commit();
 		mLoginDlg.autoLogin(); //自动登录
-		boolean bWithDlg = getIntent().getBooleanExtra(StaticValue.MAINWITHDLG, false);
-		if(bWithDlg){
-			mNavigationDrawerFragment.selectItem(0);
+		
+		if (savedInstanceState != null) {		
+			//#bug fragment overlay
+			mCurposition = savedInstanceState.getInt(StaticValue.TAG_VLAUE.DRAWER_POSITION);
+			mNavigationDrawerFragment.selectItem(mCurposition);		
+		}else{//first launch 	
+			mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
+			boolean bWithDlg = getIntent().getBooleanExtra(StaticValue.MAINWITHDLG, false);			
+			if(bWithDlg){
+				mNavigationDrawerFragment.selectItem(0);
+			}
+			if(Session.getSession().isLogin()){
+				try {
+					JSONObject obj = new JSONObject();
+					obj.put("uid", Session.getSession().getuId());
+					obj.put("name", Session.getSession().getuName());
+					
+					KuibuApplication.getSocketIoInstance().SetUp();
+					KuibuApplication.getSocketIoInstance().getSocketIO().
+					emit(StaticValue.EVENT.LOGIN_EVENT, obj);
+					
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			if(!NetUtils.isNetworkAvailable(this)){
+				Toast.makeText(this, getString(R.string.poor_net_state), 
+						Toast.LENGTH_LONG).show();
+			}else{ 			
+				this.startService(new Intent(this,HeartBeatService.class));
+			}		
 		}
-		if(!NetUtils.isNetworkAvailable(this)){
-			Toast.makeText(this, "当前网络状态不好.", Toast.LENGTH_LONG).show();
-		}else{ 			
-			this.startService(new Intent(this,HeartBeatService.class));
-		}		
 	}
 	
 	
@@ -103,8 +129,6 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 		this.startService(new Intent(this,HeartBeatService.class));
 	}
 
-	
-
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
@@ -114,7 +138,7 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 
 
 	@Override
-	public void onNavigationDrawerItemSelected(String title, String tag) {
+	public void onNavigationDrawerItemSelected(int position , String title, String tag) {
 		if (Constants.Tag.LOGIN.equals(tag)) { 
 			if (mLoginDlg == null)
 				return;
@@ -137,13 +161,14 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 		}else if(Constants.Tag.SETTING.equals(tag)){
 			Intent intent = new Intent(this,SettingsActivity.class);
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			//	startActivityForResult(new Intent(this, PrefsActivity.class), REQUESTCODE_SETTING);
+				//startActivityForResult(new Intent(this, PrefsActivity.class), REQUESTCODE_SETTING);
 			} else {
 				startActivityForResult(intent, StaticValue.RequestCode.REQ_CODE_SETTING);
 			}
 			overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			return ;
 		}
+		mCurposition = position ; 
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
 		currentFragment = fragmentManager.findFragmentByTag(tag);
@@ -185,10 +210,7 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			ft.attach(currentFragment);
 		}		
 		ft.show(currentFragment);
-		lastFragment = currentFragment;
-	//	ft.commitAllowingStateLoss(); // 处理IllegalStateException:can't perform
-										// action after onSaveInstanceState.
-										// detail @ http://stackoverflow.com/questions/7469082
+		lastFragment = currentFragment;		
 		ft.commit();
 		setTitle(title);
 	}
@@ -220,7 +242,8 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);		
+	//	super.onSaveInstanceState(outState); ////#bug fragment overlay
+		outState.putInt(StaticValue.TAG_VLAUE.DRAWER_POSITION, mCurposition);
 	}
 	
     @Override
@@ -229,12 +252,6 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
         if(mNavigationDrawerFragment.isDrawerOpen()){
 			mNavigationDrawerFragment.closeDrawer();
 		}
-        if(Session.getSession().isLogin()){
-        	mNavigationDrawerFragment.selectItem(LOGIN_DEFAULT_POSITINO);
-        }else{
-        	mNavigationDrawerFragment.selectItem(NOLOGIN_DEFAULT_POSITION);
-        }
-  
     }
 	
 	@Override
@@ -246,6 +263,7 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			intent = new Intent(this,NotifyMessageActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+			mNotifyMenu.setIcon(getResources().getDrawable(R.drawable.ic_action_notify));
 			return true;
 		case R.id.action_search_for: //search menu 
 			intent = new Intent(this,SearchViewActivity.class);
@@ -306,8 +324,8 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			}
 			params.put("itemData", newData);			
 			mNavigationDrawerFragment.updateDrawerList(params);
-			mNavigationDrawerFragment.selectItem(LOGIN_DEFAULT_POSITINO);			
 		}
+		mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
 	}
 
 	/**
@@ -348,24 +366,37 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 
         Map<String,Object> params = new HashMap<String,Object>();
         params.put("itemData", newData);
-        params.put("uName", "登录");
+        params.put("uName", this.getString(R.string.login));
         mNavigationDrawerFragment.updateDrawerList(params);
-		mNavigationDrawerFragment.selectItem(NOLOGIN_DEFAULT_POSITION);
-		//清理缓存 
-		//ACache aCache = ACache.get(this);
-		//aCache.clear();		
+		mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
 		logout();
 	}
 	
 	private void logout()
 	{
 		if(!Session.getSession().isLogin())
-			return ;		
+			return ;
+		
+		if(KuibuApplication.getSocketIoInstance().
+				getSocketIO()!=null){
+			if(KuibuApplication.getSocketIoInstance().getSocketIO().isConnected()){
+				try {
+					JSONObject obj = new JSONObject();
+					obj.put("uid", Session.getSession().getuId());
+					KuibuApplication.getSocketIoInstance().getSocketIO().
+						emit(StaticValue.EVENT.LOGOUT_EVENT, obj);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} 				
+				KuibuApplication.getSocketIoInstance().getSocketIO().disconnect();
+			}			
+		}
+				
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION
-				+ "/user_logout";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/user_logout").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -412,37 +443,40 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 			mNavigationDrawerFragment.closeDrawer();
 		} else {			
             this.doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.press_again_exit),Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     doubleBackToExitPressedOnce = false;
                 }
-            }, 2000);
+            }, Constants.LEAVE_PRESS_DELAY);
 		}
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-			case StaticValue.RequestCode.REQ_CODE_SETTING:
-				SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(this);
-				if (isDarkTheme != mPerferences.getBoolean("dark_theme", false)) {
+			case StaticValue.RequestCode.REQ_CODE_SETTING:				
+				if (isDarkTheme != PreferencesUtils.getBooleanByDefault(this,
+						StaticValue.PrefKey.DARK_THEME_KEY, false)) {
 					recreateActivity();
 				}
 				break;
 		}
 	}
-		
+	
 	@Override
 	public void eventResponse(JSONObject entity)
 	{
 		try {			
 		    String type = entity.getString("event_type");
-			if(StaticValue.EVENT.TYPE_NEWLETTERS.equals(type)){ //private letter come.
-				Toast.makeText(this, "收到新私信", Toast.LENGTH_LONG).show();
+			if(StaticValue.EVENT.TYPE_NEWLETTERS.equals(type)){ 
+				Toast.makeText(this,getString(R.string.received_letter) , 
+						Toast.LENGTH_LONG).show();
+				mNotifyMenu.setIcon(getResources().getDrawable(R.drawable.ic_action_notify_active));
 			}else if(StaticValue.EVENT.TYPE_NEWCOMMETN.equals(type)){
-				Toast.makeText(this, "收到新评论", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, getString(R.string.received_comment), 
+						Toast.LENGTH_LONG).show();
 			}else if(StaticValue.EVENT.TYPE_KEEPALIVE.equals(type)){
 				Toast.makeText(this, "HELLO", Toast.LENGTH_SHORT).show();
 			}				
@@ -453,11 +487,16 @@ public class KuibuMainActivity extends BaseActivity implements NavigationDrawerF
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
-		if(KuibuApplication.getSocketIoInstance().
-				getSocketIO()!=null){
-			KuibuApplication.getSocketIoInstance().getSocketIO().disconnect();
-		}		  
+		super.onDestroy();					  
 	}
-		
+
+	@Override  
+	public void onTrimMemory(int level) {  
+	    super.onTrimMemory(level);  
+	    switch (level) {  
+	    case TRIM_MEMORY_UI_HIDDEN:  
+	        // 进行资源释放操作  
+	        break;  
+	    }  
+	} 
 }

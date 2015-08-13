@@ -81,11 +81,7 @@ public class HotListViewItemAdapter extends BaseAdapter {
 		holderView.collect_count_tv.setText(datas.get(position).get("box_count"));
 		String url = datas.get(position).get("user_pic");
 		if(TextUtils.isEmpty(url) || url.equals("null")){
-			if(datas.get(position).get("user_sex").equals("M")){
-				holderView.owner_pic_iv.setImageResource(R.drawable.default_pic_avatar_male);
-			}else{
-				holderView.owner_pic_iv.setImageResource(R.drawable.default_pic_avatar_female);
-			}
+			holderView.owner_pic_iv.setImageResource(R.drawable.default_pic_avata);
 		}else{
 			ImageLoader.getInstance().displayImage(url, holderView.owner_pic_iv);
 		}

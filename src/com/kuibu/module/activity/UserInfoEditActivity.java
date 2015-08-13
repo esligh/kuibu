@@ -247,8 +247,9 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
-			final String URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/upload_userpic";
+			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+									.append(Constants.Config.REST_API_VERSION)
+									.append("/upload_userpic").toString();
 			finalHttp.post(URL, params, new AjaxCallBack<String>() {
 				@Override
 				public void onSuccess(String t) {
@@ -276,8 +277,9 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", Session.getSession().getuId());
-		final String URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/get_userinfo";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_userinfo").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -359,8 +361,9 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			params.put("profession", mInfo.getProfession());
 			params.put("residence", mInfo.getResidence());
 			params.put("education", mInfo.getEducation());
-			final String URL = Constants.Config.SERVER_URI
-						+ Constants.Config.REST_API_VERSION + "/update_userinfo";
+			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/update_userinfo").toString();
 			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 					params), new Response.Listener<JSONObject>() {
 				@Override
@@ -481,28 +484,6 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 	        }
 	    }
 	    
-//		private void startImageAction(Uri uri, int outputX, int outputY,
-//				int requestCode, boolean isCrop) {
-//			Intent intent = null;
-//			if (isCrop) {
-//				intent = new Intent("com.android.camera.action.CROP");
-//			} else {
-//				intent = new Intent(Intent.ACTION_GET_CONTENT, null);
-//			}
-//			intent.setDataAndType(uri, "image/*");
-//			intent.putExtra("crop", "true");
-//			intent.putExtra("aspectX", 1);
-//			intent.putExtra("aspectY", 1);
-//			intent.putExtra("outputX", outputX);
-//			intent.putExtra("outputY", outputY);
-//			intent.putExtra("scale", true);
-//			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-//			intent.putExtra("return-data", true);
-//			intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-//			intent.putExtra("noFaceDetection", true); // no face detection
-//			startActivityForResult(intent, requestCode);
-//		}
-		
 		@Override
 		public void onBackPressed() {
 			// TODO Auto-generated method stub

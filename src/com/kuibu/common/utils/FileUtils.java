@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 /**
  * @class 文件工具类
@@ -60,5 +61,14 @@ public class FileUtils
 		}
 		return true;
 	}
+	
+    public static long getFileSize(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return -1;
+        }
+
+        File file = new File(path);
+        return (file.exists() && file.isFile() ? file.length() : -1);
+    }
 	
 }

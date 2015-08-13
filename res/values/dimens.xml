@@ -1,28 +1,33 @@
 <resources>
 
-    <dimen name="android_spaces">8dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+	
+	<dimen name="android_spaces">8dp</dimen>
     <dimen name="android_spaces_large">16dp</dimen>
-    <dimen name="android_spaces_small">4dp</dimen>
-    
+    <dimen name="android_spaces_small">4dp</dimen>  
+         
+	<dimen name="navigation_drawer_width">180dp</dimen>
+	<dimen name="login_pic_width">40dp</dimen>
+
     <dimen name="icon_medium_width">30dp</dimen>
     <dimen name="icon_medium_height">30dp</dimen>
     
+    <dimen name="icon_super_small_width">18dp</dimen>
+    <dimen name="icon_super_small_height">18dp</dimen>
+    
     <dimen name="icon_small_width">20dp</dimen>
     <dimen name="icon_small_height">20dp</dimen>
-    
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-	<dimen name="navigation_drawer_width">180dp</dimen>
-	<dimen name="login_pic_width">40dp</dimen>
-	
+   
 	<!-- list item size-->
 	<dimen name="topic_pic_width">25dp</dimen>
 	<dimen name="topic_pic_height">25dp</dimen>
+	
 	<dimen name="topic_pic_width_big">60dp</dimen>
 	<dimen name="topic_pic_height_big">60dp</dimen>
-	<dimen name="item_pic_width">120dp</dimen>
-	<dimen name="item_pic_height">100dp</dimen>
+	
+	<dimen name="item_pic_width">98dp</dimen>
+	<dimen name="item_pic_height">65dp</dimen>
+	
 	<dimen name="user_pic_width">40dp</dimen>
 	<dimen name="user_pic_height">40dp</dimen>	
 	<dimen name="user_pic_width_big">80dp</dimen>
@@ -43,8 +48,10 @@
     <dimen name="fbutton_default_padding_top">5dp</dimen>
     <dimen name="fbutton_default_padding_bottom">5dp</dimen>
     <dimen name="fbutton_default_shadow_height">4dp</dimen>
+    
     <!-- CircleProgress -->
     <dimen name="default_circle_view_size">200dp</dimen>
+    
     <!-- WelcomPage -->
     <dimen name="margin_xlarge">16dp</dimen>
     <dimen name="margin_xxxlarge">40dp</dimen>

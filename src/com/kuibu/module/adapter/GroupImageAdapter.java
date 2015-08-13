@@ -12,12 +12,13 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.kuibu.module.activity.R;
+
 import com.kuibu.common.utils.NativeImageLoader;
 import com.kuibu.common.utils.NativeImageLoader.NativeImageCallBack;
 import com.kuibu.custom.widget.MyImageView;
 import com.kuibu.custom.widget.MyImageView.OnMeasureListener;
 import com.kuibu.model.bean.ImageBean;
+import com.kuibu.module.activity.R;
 
 public class GroupImageAdapter extends BaseAdapter {
 	

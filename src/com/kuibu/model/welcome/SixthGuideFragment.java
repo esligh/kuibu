@@ -14,13 +14,6 @@ import android.widget.LinearLayout;
 import com.kuibu.module.activity.KuibuMainActivity;
 import com.kuibu.module.activity.R;
 
-/**
- * Created with Android Studio.
- * User: ryan@xisue.com
- * Date: 7/14/14
- * Time: 11:10 PM
- * Desc: ThirdGuideFragment
- */
 public class SixthGuideFragment extends BaseGuideFragment {
 
     private View mLayoutLogo;

@@ -1,7 +1,7 @@
 package com.kuibu.common.utils;
   
-import android.content.Context;  
-import android.util.TypedValue;  
+import android.content.Context;
+import android.util.TypedValue;
     
 /**
  * @class 

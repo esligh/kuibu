@@ -9,10 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.model.bean.FocusColumnItemBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.FocusColumnItemAdapter;
 
 public class FocusColumnFragment extends Fragment implements OnLoadListener {

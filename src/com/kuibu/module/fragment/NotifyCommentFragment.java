@@ -29,8 +29,8 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.CollectionDetailActivity;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.NotifyCommentAdapter;
 
 public class NotifyCommentFragment extends Fragment implements OnLoadListener{
@@ -86,8 +86,9 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("off", String.valueOf(datas.size()));
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_actionlist";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/get_actionlist").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

@@ -72,13 +72,14 @@ public class StaticValue {
 	public static class TAG_VLAUE
 	{
 		public static final String ARG_SECTION_TAG = "section_tag";
+		public static final String DRAWER_POSITION = "drawer_position";
+		
+		public static final String DETAIL_PAGE_VOLLEY = "detail_page_volley";
+		public static final String HOME_PAGE_VOLLEY= "home_page_volley";
 	}
 	
 	public static class CONTENT_ACTIVITY_INFO{
 		public static final String ARG_CONTENT_TYPE="CONTENT_TYPE";
-		public enum CONTENT_TYPE{
-			TEXT,TEXT_WITH_PIC,PICS
-		}	
 	}	
 		
 	public static class EDITOR_VALUE
@@ -229,6 +230,7 @@ public class StaticValue {
 	
 	public static class EVENT{
 		public static final String LOGIN_EVENT = "login";
+		public static final String LOGOUT_EVENT = "logout";
 		public static final String MSG_EVENT = "message";
 		public static final String TYPE_NEWLETTERS= "NEW_LETTER";
 		public static final String TYPE_NEWCOMMETN="NEW_COMMENT";
@@ -239,4 +241,5 @@ public class StaticValue {
 	{
 		public static final int SHOW_TOOLS = 1000; 
 	}
+		
 }

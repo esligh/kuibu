@@ -39,7 +39,9 @@ import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class NavigationDrawerFragment extends Fragment {
-    private static final String STATE_SELECTED_POSITION = "selected_navigation_drawer_position";
+    private static final String STATE_SELECTED_CUR_POSITION = "drawer_cur_position";
+    private static final String STATE_SELECTED_LAST_POSITION = "drawer_last_position";
+
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private NavigationDrawerCallbacks mCallbacks;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -55,6 +57,7 @@ public class NavigationDrawerFragment extends Fragment {
     private TextView headerText ; 
     private ImageView headerIcon ; 
     private List<DrawerListItem> mData = new ArrayList<DrawerListItem>();
+    
 	private BroadcastReceiver userUpdateReceiver = new BroadcastReceiver(){
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -64,6 +67,7 @@ public class NavigationDrawerFragment extends Fragment {
 			ImageLoader.getInstance().displayImage(info.getPhoto(), headerIcon);
 		}		
 	};
+	
     public NavigationDrawerFragment() {
     }
     
@@ -79,21 +83,17 @@ public class NavigationDrawerFragment extends Fragment {
 	@SuppressWarnings("unchecked")
 	public void updateDrawerList(Map<String,Object> params) {
 		this.mData = (List<DrawerListItem>)params.get("itemData");
-		headerText.setText((String)params.get("uName"));
-		String url = Session.getSession().getuPic();
-		if(TextUtils.isEmpty(url) || url.equals("null")){
-			if(Session.getSession().isLogin()){
-				if(Session.getSession().getuSex().equals("M")){
-					headerIcon.setImageResource(R.drawable.default_pic_avatar_male);
-				}else{
-					headerIcon.setImageResource(R.drawable.default_pic_avatar_female);
-				}
+		headerText.setText((String)params.get("uName"));		
+		if(Session.getSession().isLogin()){
+			String url = Session.getSession().getuPic();
+			if(TextUtils.isEmpty(url) || url.equals("null")){
+					headerIcon.setImageResource(R.drawable.default_pic_avata);
 			}else{
-				headerIcon.setImageResource(R.drawable.ic_drawer_login);
-			}			
+				ImageLoader.getInstance().displayImage(url, headerIcon);					
+			}				
 		}else{
-			ImageLoader.getInstance().displayImage(url, headerIcon);
-		}		
+			headerIcon.setImageResource(R.drawable.ic_drawer_login);
+		}			
 		drawerListAdapter.updateView(mData);
 	}
 	
@@ -104,7 +104,7 @@ public class NavigationDrawerFragment extends Fragment {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());        
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
+            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_CUR_POSITION);
             mFromSavedInstanceState = true;
         }
 		IntentFilter ifilterPickpic = new IntentFilter();
@@ -167,7 +167,6 @@ public class NavigationDrawerFragment extends Fragment {
 				mData.add(item);
 			}
         }
-        selectItem(mCurrentSelectedPosition);
         drawerListAdapter = new DrawerListAdapter(this.getActivity(), mData);
         mDrawerListView.setAdapter(drawerListAdapter);
         return mDrawerListView;
@@ -252,13 +251,18 @@ public class NavigationDrawerFragment extends Fragment {
         }
         if (mCallbacks != null) {
         	if(mCurrentSelectedPosition == 0) {
-        		mCallbacks.onNavigationDrawerItemSelected(getString(R.string.app_name),"login");
+        		mCallbacks.onNavigationDrawerItemSelected(0,getString(R.string.app_name),"login");
         		return;
         	}
-            mCallbacks.onNavigationDrawerItemSelected(mData.get(position - 1).getTitle(),mData.get(position - 1).getTag());
+            mCallbacks.onNavigationDrawerItemSelected(position,mData.get(position - 1).getTitle(),mData.get(position - 1).getTag());
         }
     }
 
+    public int getCurrentPosition()
+    {
+    	return mCurrentSelectedPosition;
+    }
+   
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -278,7 +282,7 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
+        outState.putInt(STATE_SELECTED_CUR_POSITION, mCurrentSelectedPosition);
         outState.putBoolean("isLogin", Session.getSession().isLogin());
     }
 
@@ -313,7 +317,7 @@ public class NavigationDrawerFragment extends Fragment {
     }
 
     public static interface NavigationDrawerCallbacks {    	
-        void onNavigationDrawerItemSelected(String title,String tag);
+        void onNavigationDrawerItemSelected(int position , String title,String tag);
     }
 
 	@Override

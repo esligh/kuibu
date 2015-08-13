@@ -10,8 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.model.bean.MessageItemBean;
+import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MessageListAdapter extends BaseAdapter

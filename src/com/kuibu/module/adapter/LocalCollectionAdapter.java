@@ -10,9 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.custom.widget.LabelView;
 import com.kuibu.model.bean.CollectionBean;
+import com.kuibu.module.activity.R;
 
 public class LocalCollectionAdapter extends BaseAdapter{
 	//private final int ITEM_DESC_MAX_LENGTH = 100 ;  

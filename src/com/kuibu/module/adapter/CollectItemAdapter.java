@@ -12,8 +12,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.model.bean.CollectItemBean;
+import com.kuibu.module.activity.R;
 
 public class CollectItemAdapter extends BaseAdapter {
 	private List<CollectItemBean> datas; 

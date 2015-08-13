@@ -1,8 +1,8 @@
 package com.kuibu.module.markdown;
 
-import android.text.ParcelableSpan;
-
 import java.util.regex.Matcher;
+
+import android.text.ParcelableSpan;
 
 public interface SpanCreator {
     ParcelableSpan create(Matcher m);

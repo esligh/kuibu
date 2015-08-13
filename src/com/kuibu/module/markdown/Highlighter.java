@@ -1,5 +1,8 @@
 package com.kuibu.module.markdown;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.ParcelableSpan;
@@ -11,9 +14,6 @@ import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TextAppearanceSpan;
 import android.text.style.TypefaceSpan;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 class Highlighter {
     final HighlighterColors colors;

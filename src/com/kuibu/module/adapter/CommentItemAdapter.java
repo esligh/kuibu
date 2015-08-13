@@ -11,8 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.model.bean.CommentItemBean;
+import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CommentItemAdapter extends BaseAdapter {
@@ -78,11 +78,7 @@ public class CommentItemAdapter extends BaseAdapter {
 		
 		String url = datas.get(position).getUserPicUrl();
 		if(TextUtils.isEmpty(url) || url.equals("null")){
-			if(datas.get(position).getUserSex().equals("M")){
-				holderView.user_photo_iv.setImageResource(R.drawable.default_pic_avatar_male);
-			}else{
-				holderView.user_photo_iv.setImageResource(R.drawable.default_pic_avatar_female);
-			}				
+			holderView.user_photo_iv.setImageResource(R.drawable.default_pic_avata);						
 		}else{
 			ImageLoader.getInstance().displayImage(url, holderView.user_photo_iv);
 		}		

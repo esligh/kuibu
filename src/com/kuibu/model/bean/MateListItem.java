@@ -11,7 +11,8 @@ import java.io.Serializable;
  * @author ThinkPad
  *
  */
-public class MateListItem implements Serializable{
+public class MateListItem  implements Serializable{
+	
 	private static final long serialVersionUID = 1L;
 	public static final int ITEM_TYPE_COUNT = 3; 
 	public static class ItemType{

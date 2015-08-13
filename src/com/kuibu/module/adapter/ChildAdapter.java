@@ -20,11 +20,12 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.GridView;
 import android.widget.ImageView;
-import com.kuibu.module.activity.R;
+
 import com.kuibu.common.utils.NativeImageLoader;
 import com.kuibu.common.utils.NativeImageLoader.NativeImageCallBack;
 import com.kuibu.custom.widget.MyImageView;
 import com.kuibu.custom.widget.MyImageView.OnMeasureListener;
+import com.kuibu.module.activity.R;
    
   
 public class ChildAdapter extends BaseAdapter {  

@@ -47,7 +47,6 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.MDHandBookActivity;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.activity.ReportActivity;
 
 public class SettingsFragment extends PreferenceFragment implements
 		OnPreferenceChangeListener ,OnPreferenceClickListener{
@@ -59,6 +58,7 @@ public class SettingsFragment extends PreferenceFragment implements
     private PreferenceScreen mVersion ; 
     private final int MAX_PROGRESS = 100  ; 
     private String mUpdateUrl; 
+    
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -75,7 +75,9 @@ public class SettingsFragment extends PreferenceFragment implements
 		// TODO Auto-generated method stub
 		SharedPreferences mPerferences = PreferenceManager
 				.getDefaultSharedPreferences(getActivity());
-		boolean isDarkTheme = mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);
+		
+		boolean isDarkTheme = mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY,
+				false);
 
 		if (isDarkTheme) {
 			getActivity().setTheme(R.style.Theme_Kuibu_AppTheme_Dark);
@@ -91,7 +93,6 @@ public class SettingsFragment extends PreferenceFragment implements
 				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					@Override
 					public boolean onPreferenceClick(Preference arg0) {
-						// TODO Auto-generated method stub
 						BufferManager.clearAllCache(getActivity());
 						clearBuffer.setSummary("当前缓存大小"
 								+ BufferManager
@@ -160,8 +161,7 @@ public class SettingsFragment extends PreferenceFragment implements
 			Intent intent = new Intent(getActivity(),MDHandBookActivity.class);
 			getActivity().startActivity(intent);
 		}else if(pref.getKey().equals(StaticValue.PrefKey.FLOW_STATISTICS)){
-			Intent intent = new Intent(getActivity(),ReportActivity.class);
-			getActivity().startActivity(intent);
+			Toast.makeText(getActivity(), "开发中...", Toast.LENGTH_SHORT).show();
 		}
 		return true;
 	}

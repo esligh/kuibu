@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.model.bean.CollectorInfoItemBean;
+import com.kuibu.module.activity.R;
 
 public class CollectorInfoItemAdapter extends BaseAdapter {
 

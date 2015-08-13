@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.GridView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.common.utils.Bimp;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.adapter.ChildAdapter;

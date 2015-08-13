@@ -9,14 +9,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
-	
 
-	import org.apache.http.client.CookieStore;
+import org.apache.http.client.CookieStore;
 import org.apache.http.cookie.Cookie;
-	
 import org.apache.http.impl.cookie.BasicClientCookie2;
 
-	import android.content.Context;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;

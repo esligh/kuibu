@@ -103,8 +103,9 @@ public class LoginDialog {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("email", email);
 		params.put("pwd", pwd);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/user_login";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/user_login").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(params),
 				new Response.Listener<JSONObject>() {
 			@SuppressLint("SimpleDateFormat")
@@ -280,22 +281,7 @@ public class LoginDialog {
 					.getValue();
 			Session.getSession().setuPic(photoUrl);
 			params.put("isAuto", "true");
-			loginListener.onLoginComplete(params); //回调接口
-			
-			try {
-				JSONObject obj = new JSONObject();
-				obj.put("uid", uId);
-				obj.put("name", uName);
-				KuibuApplication.getSocketIoInstance().SetUp();
-				KuibuApplication.getSocketIoInstance().getSocketIO().
-				emit(StaticValue.EVENT.LOGIN_EVENT, obj);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			loginListener.onLoginComplete(params); //回调接口			
 			return true;
 		}
 	}

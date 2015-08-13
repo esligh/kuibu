@@ -50,6 +50,7 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 	private ActionProcessButton progressBtn;
 	private ImageView user_photo_iv;
 	private EditText user_name_et;
+	private EditText user_signature_et ; 
 	private EditText user_pwd_et;
 	private EditText user_pwd_confirm_et;
 	private EditText user_email_et;
@@ -60,7 +61,6 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.user_register);
 		progressBtn = (ActionProcessButton) findViewById(R.id.finishi_reg);
@@ -73,6 +73,8 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 			}
 		});
 		user_name_et = (EditText) findViewById(R.id.user_name);
+		user_signature_et =(EditText) findViewById(R.id.user_signature);
+		
 		user_pwd_et = (EditText) findViewById(R.id.user_pwd);
 		user_email_et = (EditText) findViewById(R.id.user_email);
 		user_pwd_confirm_et = (EditText) findViewById(R.id.user_pwd_confirm);
@@ -99,42 +101,50 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 		String user_name = user_name_et.getText().toString();
 		String user_pwd = user_pwd_et.getText().toString();
 		String user_email = user_email_et.getText().toString();
+		String user_signature= user_signature_et.getText().toString();
 		String user_pwd_confirm = user_pwd_confirm_et.getText().toString();
 		if (TextUtils.isEmpty(user_name)) {
-			Toast.makeText(RegisterActivity.this, "请输入姓名", Toast.LENGTH_SHORT)
-					.show();
-			progressBtn.setProgress(0);
-			return;
-		}
-		if (TextUtils.isEmpty(user_pwd) || TextUtils.isEmpty(user_pwd_confirm)) {
-			Toast.makeText(RegisterActivity.this, "请输入密码", Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(RegisterActivity.this, getString(R.string.input_name), 
+					Toast.LENGTH_SHORT).show();
 			progressBtn.setProgress(0);
 			return;
 		}
 		if (TextUtils.isEmpty(user_email)) {
-			Toast.makeText(RegisterActivity.this, "请输入邮箱", Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(RegisterActivity.this, getString(R.string.input_email), 
+					Toast.LENGTH_LONG).show();
 			progressBtn.setProgress(0);
 			return;
 		}
-
+		if(TextUtils.isEmpty(user_signature)){
+			Toast.makeText(RegisterActivity.this, getString(R.string.input_signature), 
+					Toast.LENGTH_LONG).show();
+			progressBtn.setProgress(0);
+		}
+		if (TextUtils.isEmpty(user_pwd) || TextUtils.isEmpty(user_pwd_confirm)) {
+			Toast.makeText(RegisterActivity.this, getString(R.string.input_password), 
+					Toast.LENGTH_LONG).show();
+			progressBtn.setProgress(0);
+			return;
+		}
+		
 		if (!user_pwd.equals(user_pwd_confirm)) {
-			Toast.makeText(RegisterActivity.this, "两次输入的密码不一样",Toast.LENGTH_LONG).show();
+			Toast.makeText(RegisterActivity.this, getString(R.string.password_not_equal),
+					Toast.LENGTH_LONG).show();
 			progressBtn.setProgress(0);
 			return;
 		}
 		params.put("name", user_name);
 		params.put("pwd", user_pwd);
 		params.put("email", user_email);
+		params.put("signature", user_signature);
 		params.put("dev_id", PhoneUtils.getDeviceId(this));
-		int sex_id = sex_rg.getCheckedRadioButtonId();
-		String sex = sex_id == R.id.male_rb ? 
+		String sex = sex_rg.getCheckedRadioButtonId() == R.id.male_rb ? 
 				StaticValue.SERMODLE.USER_SEX_MALE:StaticValue.SERMODLE.USER_SEX_FEMALE;
 		params.put("sex", sex);		
 		
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/user_register";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/user_register").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -148,7 +158,8 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 							progressBtn.setProgress(PROGRESS_MAX);
 						}						
 					}else{						
-						Toast.makeText(RegisterActivity.this, "注册失败", Toast.LENGTH_LONG).show();
+						Toast.makeText(RegisterActivity.this, getString(R.string.register_fail),
+								Toast.LENGTH_LONG).show();
 						progressBtn.setProgress(0);
 					}
 				} catch (JSONException e) {
@@ -178,7 +189,6 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 			params.put("uid", uid);
 			params.put("email", user_email_et.getText().toString().trim());
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		final String URL = Constants.Config.SERVER_URI
@@ -195,10 +205,10 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 							progressBtn.setProgress(PROGRESS_MAX);
 						}else if(StaticValue.RESPONSE_STATUS.UPLOAD_FAILD.equals(state)){
 							progressBtn.setProgress(0);
-							Toast.makeText(RegisterActivity.this, "头像上传失败", Toast.LENGTH_LONG).show();
+							Toast.makeText(RegisterActivity.this, getString(R.string.upload_pic_fail),
+									Toast.LENGTH_LONG).show();
 						}						
 					} catch (JSONException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						progressBtn.setProgress(0);
 					}
@@ -211,7 +221,7 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 		Context context = v.getContext();
 		AlertDialog.Builder builder = new Builder(context);
 		
-		builder.setTitle("添加头像")
+		builder.setTitle(getString(R.string.add_user_pic))
 			   .setItems(context.getResources().getStringArray(R.array.popup_menu_item),
 				new android.content.DialogInterface.OnClickListener() {
 					@Override

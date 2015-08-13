@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.common.utils.Bimp;
+import com.kuibu.module.activity.R;
 
 public class ImageScanGridAdapter extends BaseAdapter
 {

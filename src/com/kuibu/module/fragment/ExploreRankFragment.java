@@ -114,8 +114,9 @@ public class ExploreRankFragment extends BaseFragment implements
 		else if(action.equals("REQ_NEWDATA") && n >0){
 			params.put("threshold",String.valueOf(mdatas.get(0).getVoteCount()));
 		}
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_collections";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_collections").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -136,8 +137,8 @@ public class ExploreRankFragment extends BaseFragment implements
 							}
 							loadFromArray(arr,action);
 						}else{
-							Toast.makeText(getActivity(), 
-									"没有数据啦！",Toast.LENGTH_SHORT).show();
+						//	Toast.makeText(getActivity(), 
+						//			"没有数据啦！",Toast.LENGTH_SHORT).show();
 						}			
 					}
 					rankList.loadComplete();
@@ -151,7 +152,8 @@ public class ExploreRankFragment extends BaseFragment implements
 				if(mdatas!=null && mdatas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 				else
-					Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), 
+							getActivity().getString(R.string.load_fail), Toast.LENGTH_SHORT).show();
 				
 				rankList.loadComplete();
 				VolleyLog.e("Error: ", error.getMessage());

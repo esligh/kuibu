@@ -9,8 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kuibu.module.activity.R;
 import com.kuibu.model.bean.DrawerListItem;
+import com.kuibu.module.activity.R;
 
 public class DrawerListAdapter extends BaseAdapter {
 

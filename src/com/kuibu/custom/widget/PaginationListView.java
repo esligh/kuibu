@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
+
 import com.kuibu.module.activity.R;
 
 public class PaginationListView extends ListView implements OnScrollListener {

@@ -1,5 +1,7 @@
 package com.kuibu.module.markdown;
 
+import java.util.regex.Matcher;
+
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -8,8 +10,6 @@ import android.text.ParcelableSpan;
 import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-
-import java.util.regex.Matcher;
 
 class HeaderSpanCreator implements SpanCreator {
 

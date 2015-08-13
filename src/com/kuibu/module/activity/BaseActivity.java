@@ -16,6 +16,7 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.iterf.IEventHandler;
 
 public abstract class BaseActivity extends ActionBarActivity implements IEventHandler{
+	
 	protected Activity mInstance = null;
 	protected boolean isDarkTheme = false;
 	
@@ -33,7 +34,7 @@ public abstract class BaseActivity extends ActionBarActivity implements IEventHa
 	}
 
 	@Override
-	protected void onResume() {
+	protected void onResume() {				
 		super.onResume();
 	}
 

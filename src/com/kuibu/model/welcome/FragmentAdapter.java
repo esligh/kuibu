@@ -1,19 +1,12 @@
 package com.kuibu.model.welcome;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created with Android Studio.
- * User: ryan@xisue.com
- * Date: 7/14/14
- * Time: 10:40 PM
- * Desc: FragmentAdapter
- */
 public class FragmentAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> fragments = new ArrayList<Fragment>();

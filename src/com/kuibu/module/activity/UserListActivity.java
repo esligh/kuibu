@@ -3,11 +3,10 @@ package com.kuibu.module.activity;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kuibu.module.activity.R;
+import android.support.v4.app.Fragment;
+
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.fragment.UserListFragment;
-
-import android.support.v4.app.Fragment;
  
 public class UserListActivity extends UserInfoListFragmentActivity {
 	@Override

@@ -1,7 +1,5 @@
 package com.kuibu.custom.widget;
 
-import com.kuibu.module.activity.R;
-
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,6 +9,8 @@ import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+
+import com.kuibu.module.activity.R;
 
 public class CircleProgress extends View {
 

@@ -22,14 +22,14 @@
     </string-array>
       
     <string-array name="drawer_item_title_nolgoin">
-        <item>注册账号</item>
-        <item>发现</item>        
+        <item>发现</item>
+        <item>注册账号</item>                
         <item>设置</item>    
     </string-array>
     
     <string-array name="drawer_item_tag_nologin">
-        <item>register</item>
         <item>explore</item>
+        <item>register</item>        
         <item>setting</item>
     </string-array>
         
@@ -114,16 +114,6 @@
   	    <item>举报</item>
   	</string-array>
   	
-  	<string-array name="report_item">
-  	    <item>色情</item>
-  	    <item>广告骚扰</item>
-  	    <item>口头谩骂</item>
-  	    <item>欺诈</item>  	    
-  	    <item>政治</item>
-  	    <item>其他</item>
-  	</string-array>
-  	
-  	
   	<string-array name="comment_menu_item1">
   	    <item>删除</item>
   	</string-array>
@@ -138,4 +128,23 @@
   	<string-array name="favorite_box_item_opt">
   		<item>删除</item>
   	</string-array>	
+  	
+  	<string-array name="report_content">
+  	     <item>色情</item>
+  	     <item>广告</item>
+  	     <item>虚假信息</item>
+  	     <item>谣言煽动</item>
+  	     <item>政治</item>  
+  	     <item>其他</item>  	     
+  	</string-array>
+  	
+  	
+  	<string-array name="report_comment">
+  	     <item>色情</item>
+  	     <item>广告</item>
+  	     <item>口头谩骂</item>
+  	     <item>欺诈</item>
+  	     <item>政治</item>
+  	     <item>其他</item> 	    
+  	</string-array>
 </resources>

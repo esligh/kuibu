@@ -156,8 +156,9 @@ public class TopicInfoActivity extends BaseActivity {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", topic_id);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_topicinfo";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/get_topicinfo").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -174,7 +175,7 @@ public class TopicInfoActivity extends BaseActivity {
 							if(bIsFocus){
 								int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
 								focusBtn.setButtonColor(btnColor);						
-								focusBtn.setText("取消关注");								
+								focusBtn.setText(getString(R.string.btn_cancel_focus));								
 							}
 						}
 					}
@@ -198,8 +199,9 @@ public class TopicInfoActivity extends BaseActivity {
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("tid", topic_id);	
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_bestauthor";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/get_bestauthor").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -266,11 +268,11 @@ public class TopicInfoActivity extends BaseActivity {
 						if(bfocus){
 							int btnColor= getResources().getColor(R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText("关注");						
+							focusBtn.setText(getString(R.string.btn_focus));						
 						}else{
 							int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText("取消关注");
+							focusBtn.setText(getString(R.string.btn_cancel_focus));
 						}
 					}
 				} catch (JSONException e) {

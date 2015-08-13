@@ -24,8 +24,8 @@ import com.kuibu.common.utils.DataUtils;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.CollectInfoListActivity;
-import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.CollectionDetailActivity;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.UserInfoActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -315,13 +315,19 @@ public class MateListViewItemAdapter extends BaseAdapter {
 					LayoutInflater.from(context).getContext().startActivity(intent);
 				}
 			});
-			holderfortextPic.content_tv.setOnClickListener(new OnClickListener() {				
+			holderfortextPic.item_pic_iv.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
 					startAction(position);
 				}
 			});
+			holderfortextPic.content_tv.setOnClickListener(new OnClickListener() {				
+				@Override
+				public void onClick(View arg0) {
+					startAction(position);
+				}
+			});
+			
 			holderfortextPic.user_tv.setText(datas.get(position)
 					.getTopText());
 			holderfortextPic.content_tv.setText(datas.get(position)
@@ -359,13 +365,13 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		case MateListItem.ItemType.TEXT_PICS_MODE:
 			intent = new Intent(LayoutInflater.from(context).getContext(),CollectionDetailActivity.class);
 			intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
-			intent.putExtra("title", datas.get(position).getTitle());
-			intent.putExtra("type", datas.get(position).getType());
-			intent.putExtra("create_by", datas.get(position).getCreateBy());
-			intent.putExtra("name", datas.get(position).getTopText());
-			intent.putExtra("photo", datas.get(position).getTopUrl());
-			intent.putExtra("signature", datas.get(position).getUserSignature());
-			intent.putExtra("sex", datas.get(position).getUserSex());
+//			intent.putExtra("title", datas.get(position).getTitle());
+//			intent.putExtra("type", datas.get(position).getType());
+//			intent.putExtra("create_by", datas.get(position).getCreateBy());
+//			intent.putExtra("name", datas.get(position).getTopText());
+//			intent.putExtra("photo", datas.get(position).getTopUrl());
+//			intent.putExtra("signature", datas.get(position).getUserSignature());
+//			intent.putExtra("sex", datas.get(position).getUserSex());
 			break;
 		default:
 			break;

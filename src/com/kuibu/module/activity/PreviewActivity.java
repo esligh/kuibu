@@ -23,17 +23,24 @@ import org.jsoup.nodes.Document;
 
 import us.feras.mdv.MarkdownView;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.JsResult;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -42,6 +49,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.BitmapHelper;
+import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -51,7 +59,6 @@ import com.kuibu.model.bean.CollectionBean;
 import com.kuibu.model.vo.CollectionVo;
 import com.kuibu.model.vo.ImageLibVo;
 import com.kuibu.model.webview.InJavaScriptObject;
-import com.kuibu.model.webview.WebViewClientExt;
 import com.kuibu.module.iterf.OnPageLoadFinished;
 
 public class PreviewActivity extends ActionBarActivity implements OnPageLoadFinished{
@@ -70,9 +77,8 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		SharedPreferences mPerferences = PreferenceManager
-				.getDefaultSharedPreferences(this);		
-		boolean isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);
+		boolean isDarkTheme=PreferencesUtils.getBooleanByDefault(this, 
+				StaticValue.PrefKey.DARK_THEME_KEY, false); 
 		if (isDarkTheme) {
 			setTheme(R.style.AppTheme_Dark);
 			cssFile = Constants.WEBVIEW_DARK_CSSFILE;
@@ -84,20 +90,16 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.collection_preview);
 
-        
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		if (toolbar != null) {
 			setSupportActionBar(toolbar);
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}
-		initData();
+		}		
 		previewWebView = (MarkdownView) findViewById(R.id.preview_webview);
-		setUpWebViewDefaults();
-		progressDialog = new ProgressDialog(this);
-		progressDialog.setCanceledOnTouchOutside(false);
+		setUpWebViewDefaults();		
+		initData();
 		if (collection != null && !TextUtils.isEmpty(collection.getContent()))
 			previewWebView.loadMarkdown(collection.getContent(),cssFile);
-
 		finalHttp = new FinalHttp();
 	}
 	
@@ -110,29 +112,54 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		InJavaScriptObject jsObj = new InJavaScriptObject(this);
 		jsObj.setOnPageLoadFinishedListener(this);
 		previewWebView.addJavascriptInterface(jsObj, "injectedObject");
-		previewWebView.setWebViewClient(new WebViewClientExt(this));
-		previewWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+		
+		previewWebView.setWebViewClient(new WebViewClient(){
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {   
+				 Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+				 startActivity(i);
+		         return true;
+		    }  
+			
+			@SuppressLint({ "NewApi", "SetJavaScriptEnabled" })
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				Log.d("WebView", "onPageFinished ");
+				super.onPageFinished(view, url);
+				//get html source  
+				String javascript = "javascript:window.injectedObject.getHtml('<html>'+" +
+		                    "document.getElementsByTagName('html')[0].innerHTML+'</html>');";
+				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+					view.evaluateJavascript(javascript, new ValueCallback<String>() {
+			                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+			                @Override
+			                public void onReceiveValue(String s) {
+			            		Toast.makeText(PreviewActivity.this, s, Toast.LENGTH_SHORT).show();
+			                }
+					});
+				}else{
+					view.loadUrl(javascript);
+				}
+				
+			}	
+		});
+		previewWebView.setWebChromeClient(new WebChromeClient() {			 
+		    @Override
+		    public boolean onJsAlert(WebView view, String url, String message,
+		            final JsResult result) {  
+	            result.cancel();  
+	            return true; 
+		    }		 
+		    @Override
+		    public boolean onJsConfirm(WebView view, String url,
+		            String message, final JsResult result) {
+		    	
+		        return true;
+		    }
+		});
+		previewWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ONLY);
 	}
 	
-	private void initData() {
-		imageVo = new ImageLibVo(this);
-		collectionVo = new CollectionVo(this);
-		String id = getIntent().getStringExtra(
-				StaticValue.EDITOR_VALUE.COLLECTION_ID);
-		if (TextUtils.isEmpty(id)) {
-			collection = (CollectionBean) getIntent().getSerializableExtra(
-					StaticValue.EDITOR_VALUE.COLLECTION_ENTITY);
-		} else {
-			collection = collectionVo.querywithkey(id);
-		}
-
-		if (collection != null) {
-			setTitle(collection.getTitle());
-		} else {
-			setTitle("预览");
-		}
-	}
-
 	@Override
 	protected void onPause() {
 		if (isEditIncoming) {
@@ -192,6 +219,24 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		}
 	}
 
+	private void initData() {
+		
+		imageVo = new ImageLibVo(this);
+		collectionVo = new CollectionVo(this);
+		String id = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECTION_ID);
+		if (TextUtils.isEmpty(id)) {
+			collection = (CollectionBean) getIntent().getSerializableExtra(
+					StaticValue.EDITOR_VALUE.COLLECTION_ENTITY);
+		} else {
+			collection = collectionVo.querywithkey(id);
+		}
+		if (collection != null) {
+			setTitle(collection.getTitle());
+		} else {
+			setTitle(getString(R.string.preview));
+		}
+	}
+	
 	private void editNote() {
 		isEditIncoming = true;
 		Intent intent = new Intent(this, CollectionEditorActivity.class);
@@ -203,8 +248,12 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 
 	@SuppressLint("SimpleDateFormat")
 	private void publishCollection() {
+		
+		progressDialog = new ProgressDialog(this);
+		progressDialog.setCanceledOnTouchOutside(false);
 		progressDialog.setMessage("发布中...");
 		progressDialog.show();
+		
 		final List<String> images = imageVo.getImgList(collection._id);
 		if (imgurl_map == null) {
 			imgurl_map = new HashMap<String,String>();
@@ -466,7 +515,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						Toast.makeText(PreviewActivity.this, "修改成功",
+						Toast.makeText(PreviewActivity.this, getString(R.string.modify_success),
 								Toast.LENGTH_SHORT).show();
 						collectionVo.update(
 								" is_pub = ?,is_sync = ? ",
@@ -476,7 +525,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 										String.valueOf(collection._id)});
 						pubMenu.setVisible(false);						
 					}else{
-						Toast.makeText(PreviewActivity.this, "修改失败",
+						Toast.makeText(PreviewActivity.this, getString(R.string.modify_fail),
 								Toast.LENGTH_SHORT).show();
 					}
 					progressDialog.dismiss();
@@ -524,7 +573,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						Toast.makeText(PreviewActivity.this, "修改成功",
+						Toast.makeText(PreviewActivity.this, getString(R.string.modify_success),
 								Toast.LENGTH_SHORT).show();					
 					}
 				} catch (JSONException e) {

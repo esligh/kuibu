@@ -26,11 +26,13 @@ public final class Constants {
 		public static final String USER_PIC_SMALL = "40_40";
 		public static final String USER_PIC_BIG ="100_100";
 		public static final String IMG_COMPRESS_PATH="/compress/"; 
+		public static final String WEBVIEW_IMG_CACHE_DIR = "webview_tmp";
 	}
 	
 	public static final int COMPRESS_WIDTH = 640 ; 
 	public static final int COMPRESS_HEIGHT = 480 ; 
-	
+	public static final String THRESHOLD_INVALID = "1";
+	public static final long LEAVE_PRESS_DELAY = 2000 ; 
 	
 	public static class Tag{
 		public static final String LOGIN = "login";

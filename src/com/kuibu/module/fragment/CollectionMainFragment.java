@@ -32,7 +32,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.module.activity.R;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.data.global.Constants;
@@ -46,6 +45,7 @@ import com.kuibu.model.vo.CollectionVo;
 import com.kuibu.model.vo.ImageLibVo;
 import com.kuibu.module.activity.LocalCollectionListActivity;
 import com.kuibu.module.activity.OperCollectPackActivity;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.CollectPackItemAdapter;
 
 public class CollectionMainFragment extends Fragment {

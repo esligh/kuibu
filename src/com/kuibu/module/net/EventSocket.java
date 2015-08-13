@@ -23,9 +23,12 @@ public class EventSocket{
 	
 	public void SetUp() throws MalformedURLException, NoSuchAlgorithmException
 	{
-		SocketIO.setDefaultSSLSocketFactory(SSLContext.getDefault());
-		mSocket = new SocketIO(Constants.Config.SOCKETIO_SERVER);
-        mSocket.connect(callback);
+		if(mSocket == null) {
+			SocketIO.setDefaultSSLSocketFactory(SSLContext.getDefault());
+			mSocket = new SocketIO(Constants.Config.SOCKETIO_SERVER);
+	        mSocket.connect(callback);
+		}
+	
 	}
 	
 	public SocketIO getSocketIO()

@@ -38,12 +38,14 @@ import com.kuibu.module.adapter.HomeListViewItemAdapter;
  * kuibu 主页
  * @author ThinkPad
  */
+
 public class HomePageFragment extends Fragment implements OnLoadListener{
 	private HomeListViewItemAdapter homeListViewAdapter = null;
 	private List <MateListItem> mHomeDatas = new ArrayList <MateListItem>();
 	private PaginationListView mListView;  
     private PullRefreshLayout pullFreshlayout;
     private MultiStateView mMultiStateView;
+    
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -78,6 +80,16 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 		return rootView;
 	}
 
+	
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		KuibuApplication.getInstance().cancelPendingRequests(
+				StaticValue.TAG_VLAUE.HOME_PAGE_VOLLEY);
+	}
+
+
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onHiddenChanged(boolean) 
 	 */
@@ -109,18 +121,19 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 	public void loadData(final String action,final boolean bcache)
 	{
 		Map<String, String> params = new HashMap<String, String>();
-		int n = mHomeDatas.size(); 
+		int size = mHomeDatas.size(); 
 		params.put("data_type", "HOME_LIST");
 		params.put("uid", Session.getSession().getuId());
 		params.put("action", action);
-		if(action.equals("UP"))
-			params.put("threshold",mHomeDatas.get(n-1).getId());
-		else if(action.equals("DOWN"))
+		if(action.equals("UP") && size>0)
+			params.put("threshold",mHomeDatas.get(size-1).getId());
+		else if(action.equals("DOWN") && size>0)
 			params.put("threshold",mHomeDatas.get(0).getId());
 		else 
-			params.put("threshold","-1");
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_collections";
+			params.put("threshold",Constants.THRESHOLD_INVALID);
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+						.append(Constants.Config.REST_API_VERSION)
+						.append("/get_collections").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -167,7 +180,8 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
 				Constants.Config.RETRY_TIMES, 1.0f));
-		KuibuApplication.getInstance().addToRequestQueue(req);	
+		KuibuApplication.getInstance().addToRequestQueue(req,
+				StaticValue.TAG_VLAUE.HOME_PAGE_VOLLEY);	
 	}
 	
 	private void parseFromJson(JSONArray arr,String action)

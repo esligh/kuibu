@@ -50,6 +50,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CollectInfoListActivity extends BaseActivity implements
 		OnBorderListener {
+	
 	private ListView cardListView;
 	private RelativeLayout focusLayout;
 	private View footerView;
@@ -67,6 +68,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 	private RelativeLayout tagLayout;
 	private String topic_id;
 	private MultiStateView mMultiStateView;
+	
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -126,18 +128,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 				Intent intent = new Intent(CollectInfoListActivity.this,
 						CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item_datas
-						.get(position).getId());
-				intent.putExtra("title", item_datas.get(position).getTitle());
-				intent.putExtra("content", item_datas.get(position)
-						.getContent());
-				intent.putExtra("create_by", item_datas.get(position)
-						.getCreateBy());
-				intent.putExtra("name", item_datas.get(position).getCreatorName());
-				intent.putExtra("photo",item_datas.get(position).getCreatorPic() );
-				intent.putExtra("signature", item_datas.get(position).getCreatorSignature());
-				intent.putExtra("sex", item_datas.get(position).getCreatorSex());				
-				intent.putExtra("vote_count", item_datas.get(position).getVoteCount());
-				intent.putExtra("comment_count", item_datas.get(position).getCommentCount());								
+						.get(position).getId());						
 				startActivity(intent);
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}
@@ -158,7 +149,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 				if (Session.getSession().isLogin()) {
 					doFocus(isfocus);
 				} else {
-					Toast.makeText(CollectInfoListActivity.this, "请先登录或注册用户.",
+					Toast.makeText(CollectInfoListActivity.this, getString(R.string.need_login),
 							Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -181,7 +172,53 @@ public class CollectInfoListActivity extends BaseActivity implements
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		// packVo.closeDB();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.onBackPressed();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+	}	
 
+	private void showView() {
+		if (infoAdapter == null) {
+			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
+			cardListView.setAdapter(infoAdapter);
+		} else {
+			infoAdapter.updateView(item_datas);
+		}
+	}
+
+	@Override
+	public void onBottom() {
+		// TODO Auto-generated method stub
+		footerView.setVisibility(View.VISIBLE);
+		loadList();
+	}
+
+	@Override
+	public void onTop() {
+		// TODO Auto-generated method stub
+		borderScrollView.loadComplete();
+	}
+	
 	private void showUserview() {
 		Intent intent = new Intent(CollectInfoListActivity.this,
 				UserInfoActivity.class);
@@ -205,8 +242,9 @@ public class CollectInfoListActivity extends BaseActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("pack_id", pack_id);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_collectpack";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_collectpack").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -225,12 +263,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 							creatorSignature.setText(obj.getString("signature"));
 							String url  = obj.getString("photo");
 							if (TextUtils.isEmpty(url)) {
-								String sex = obj.getString("sex");
-								if (StaticValue.SERMODLE.USER_SEX_MALE.equals(sex)) {
-									creatorPicView.setImageResource(R.drawable.default_pic_avatar_male);
-								} else {
-									creatorPicView.setImageResource(R.drawable.default_pic_avatar_female);
-								}
+								creatorPicView.setImageResource(R.drawable.default_pic_avata);	
 							} else {
 								ImageLoader.getInstance().displayImage(url,creatorPicView);
 							}
@@ -245,7 +278,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 								int btnColor = getResources().getColor(
 										R.color.fbutton_color_concrete);
 								focusBtn.setButtonColor(btnColor);
-								focusBtn.setText("取消关注");
+								focusBtn.setText(getString(R.string.btn_cancel_focus));
 							}
 							loadList();
 						}
@@ -273,13 +306,16 @@ public class CollectInfoListActivity extends BaseActivity implements
 		params.put("type", StaticValue.SERMODLE.COLLECTION_TYPE);
 		params.put("obj_id", pack_id);
 		final String URL;
-		if (bfocus) {
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/del_follows";
-		} else {
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/add_follows";
+		if(bfocus){ 
+			URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/del_follows").toString();
+		}else{
+			URL = new StringBuilder(Constants.Config.SERVER_URI)
+				  .append(Constants.Config.REST_API_VERSION)
+				  .append("/add_follows").toString();
 		}
+		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -292,12 +328,12 @@ public class CollectInfoListActivity extends BaseActivity implements
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);
-							focusBtn.setText("关注");
+							focusBtn.setText(getString(R.string.btn_focus));
 						} else {
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);
-							focusBtn.setText("取消关注");
+							focusBtn.setText(getString(R.string.btn_cancel_focus));
 						}
 					}
 				} catch (JSONException e) {
@@ -346,6 +382,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 								for (int i = 0; i < arr.length(); i++) {
 									JSONObject temp = (JSONObject) arr.get(i);
 									CollectionItemBean bean = new CollectionItemBean();
+									bean.setId(temp.getString("cid"));
 									bean.setTitle(temp.getString("title"));
 									bean.setContent(temp.getString("content"));
 									bean.setCreateBy(temp.getString("create_by"));
@@ -379,51 +416,5 @@ public class CollectInfoListActivity extends BaseActivity implements
 					}
 				});
 		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
-	
-	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		// packVo.closeDB();
-	}
-	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			this.onBackPressed();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-	
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
-	}	
-
-	private void showView() {
-		if (infoAdapter == null) {
-			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
-			cardListView.setAdapter(infoAdapter);
-		} else {
-			infoAdapter.updateView(item_datas);
-		}
-	}
-
-	@Override
-	public void onBottom() {
-		// TODO Auto-generated method stub
-		footerView.setVisibility(View.VISIBLE);
-		loadList();
-	}
-
-	@Override
-	public void onTop() {
-		// TODO Auto-generated method stub
-		borderScrollView.loadComplete();
 	}
 }

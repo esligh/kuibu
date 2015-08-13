@@ -8,10 +8,10 @@
         android:id="@+id/mate_1_rela_layout1_rl"       
         android:layout_width="match_parent"
         android:layout_height="wrap_content"         
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:layout_marginTop="@dimen/android_spaces_small"
+        android:layout_marginBottom="@dimen/android_spaces_small"
         android:clickable="true"       
         android:descendantFocusability="blocksDescendants"
         android:background="?listItemBackground">
@@ -28,7 +28,7 @@
             android:textSize="14sp" />
         <ImageView
             android:id="@+id/mate_1_user_pic_iv"
-            android:scaleType="fitCenter"
+            android:scaleType="centerInside"
             android:layout_width="@dimen/topic_pic_width"
             android:layout_height="@dimen/topic_pic_height"
             android:layout_alignParentEnd="true"
@@ -41,10 +41,10 @@
         android:id="@+id/mate_1_item_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"       
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
+        android:paddingLeft="@dimen/android_spaces_large"
+        android:paddingRight="@dimen/android_spaces_large"
+        android:paddingTop="@dimen/android_spaces_small"
+        android:paddingBottom="@dimen/android_spaces_small"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="?listItemTextColor"
@@ -56,10 +56,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp">
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:layout_marginTop="@dimen/android_spaces_small"
+        android:layout_marginBottom="@dimen/android_spaces_small">
 
         <ImageView
             android:id="@+id/mate_1_item_pic_iv"
@@ -75,9 +75,9 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/mate_1_item_pic_iv"
             android:layout_toEndOf="@id/mate_1_item_pic_iv"
-            android:layout_marginLeft="8dp"
+            android:layout_marginLeft="@dimen/android_spaces"
             android:ellipsize="end"
-            android:maxLines="3"
+            android:maxLines="2"
             android:textColor="?listItemExtraTextColor"
             android:textSize="16sp"                      
         	android:clickable="true"       
@@ -88,10 +88,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp">
+        android:layout_marginTop="@dimen/android_spaces_small"
+        android:layout_marginBottom="@dimen/android_spaces_small"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large">
 
         <TextView
             android:id="@+id/mate_1_count_tv"
@@ -108,8 +108,8 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/mate_1_count_tv"
             android:layout_toStartOf="@id/mate_1_count_tv"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginLeft="@dimen/android_spaces"
+            android:layout_marginRight="@dimen/android_spaces"
             android:src="@drawable/ic_vote_normal"            
             android:contentDescription="@null" />
     </RelativeLayout>

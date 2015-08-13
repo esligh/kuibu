@@ -74,7 +74,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 				thingList.setAdapter(contentAdapter);
 				String query = searchView.getQuery().toString();
 				if(!TextUtils.isEmpty(query)){
-					request_content(query);
+					requestContent(query);
 				}				
 			}
 		});
@@ -91,7 +91,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 				thingList.setAdapter(userAdapter);
 				String query = searchView.getQuery().toString();
 				if(!TextUtils.isEmpty(query)){
-					request_users(query);
+					requestUsers(query);
 				}
 				
 			}
@@ -109,7 +109,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 				thingList.setAdapter(topicAdapter);
 				String query = searchView.getQuery().toString();
 				if(!TextUtils.isEmpty(query)){
-					request_topics(query);
+					requestTopics(query);
 				}
 			}
 		});
@@ -129,6 +129,8 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 							item.getTopic());
 					intent.putExtra(StaticValue.TOPICINFO.TOPIC_PIC, 
 							item.getTopicPicUrl());
+					intent.putExtra(StaticValue.TOPICINFO.TOPIC_EXTRA, 
+							item.getIntroduce());
 					startActivity(intent);		
 					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}else if(target.equals("COLLECTOR")){
@@ -158,7 +160,6 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 					}else if(tag.equals("collection")){
 						Intent intent = new Intent(SearchViewActivity.this,CollectionDetailActivity.class);
 						intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,item.get("item_id"));
-						intent.putExtra("title", item.get("item_title"));
 						startActivity(intent);
 						overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 					}
@@ -234,21 +235,21 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 								if(topicDatas!=null)
 									topicDatas.clear();
 								if(flag)
-									request_topics(newText);
+									requestTopics(newText);
 								else
 									showTopicView();
 							}else if(target.equals("COLLECTOR")){
 								if(userDatas!=null)
 									userDatas.clear();
 								if(flag)
-									request_users(newText);
+									requestUsers(newText);
 								else
 									showUserView();
 							}else if(target.equals("CONTENT")){
 								if(contentDatas != null)
 									contentDatas.clear();
 								if(flag)
-									request_content(newText);
+									requestContent(newText);
 								else
 									showContentView();
 							}
@@ -290,14 +291,14 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 		}
 	}
 	
-	void request_topics(String query)
+	void requestTopics(String query)
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("off",topicDatas==null ? "0":String.valueOf(topicDatas.size()));
 		params.put("slice", query);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION
-				+ "/get_topiclist";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/get_topiclist").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -340,13 +341,14 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	void request_users(String query)
+	void requestUsers(String query)
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("off",userDatas==null ? "0":String.valueOf(userDatas.size()));
 		params.put("slice", query);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_userlist";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/get_userlist").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -391,13 +393,14 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 	}
 	
 	
-	void request_content(String query)
+	void requestContent(String query)
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("off",contentDatas==null ? "0":String.valueOf(contentDatas.size()));
 		params.put("slice", query);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_contentlist";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/get_contentlist").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -462,7 +465,6 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
 		super.onBackPressed();
 		finish();
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);	
@@ -470,16 +472,15 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 
 	@Override
 	public void onLoad(String tag) {
-		// TODO Auto-generated method stub
 		String query  = searchView.getQuery().toString();
 		if(TextUtils.isEmpty(query))
 			return  ;
 		if(target.equals("TOPIC")){
-			request_topics(query);
+			requestTopics(query);
 		}else if(target.equals("COLLECTOR")){
-			request_users(query);
+			requestUsers(query);
 		}else if(target.equals("CONTENT")){
-			request_content(query);
+			requestContent(query);
 		}
 	}	
 }

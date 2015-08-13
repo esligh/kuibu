@@ -1,12 +1,19 @@
+
 package com.kuibu.data.global;
+
+import java.io.Serializable;
 
 /**
  * @class :伪会话类，保存登录后用户信息
  * @author ThinkPad
  */
 
-public class Session {
+public class Session implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String uId;
 	private String uName;
 	private String uSex ; 
@@ -25,6 +32,22 @@ public class Session {
 		return session;
 	}
 
+	public static void setSession(Session s)
+	{
+		if (session == null) {
+			session = new Session();
+		}
+		session.uId = s.uId;
+		session.uName=s.uName;
+		session.uSex=s.uSex;
+		session.uSignature=s.uSignature;
+		session.uEmail = s.uEmail;
+		session.token = s.token ; 
+		session.uPic = s.uPic  ;
+		session.regState = s.regState ; 
+		session.login = s.login ;
+	}
+	
 	public String getuId() {
 		return uId;
 	}

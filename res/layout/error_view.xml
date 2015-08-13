@@ -9,7 +9,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="16sp"
+        android:textColor="@color/list_item_intro_light"
         android:text="@string/error_view_desc" />
 
     <Button
@@ -17,7 +18,7 @@
         style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="@color/list_item_intro_light"
         android:text="@string/error_view_retry" />
 
 </LinearLayout>

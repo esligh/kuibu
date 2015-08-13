@@ -43,6 +43,7 @@ import com.kuibu.module.adapter.FavoriteDetailsAdapter;
 
 public class FavoriteBoxDetailActivity extends BaseActivity 
 	implements OnBorderListener{
+	
 	private TextView box_name_tv ,box_desc_tv ;
 	private TextView focus_count_tv,box_count_tv;
 	private ListView box_list ; 
@@ -51,6 +52,7 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 	private FavoriteDetailsAdapter adapter ; 
 	private List<CollectionItemBean> datas = new ArrayList<CollectionItemBean>();
 	private String mboxId ; 
+	
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -71,13 +73,7 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 			public void onItemClick(AdapterView<?> viewAdapter, View view, int position,
 					long id) {
 				Intent intent = new Intent(FavoriteBoxDetailActivity.this,CollectionDetailActivity.class);
-				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
-				intent.putExtra("title", datas.get(position).getTitle());
-				intent.putExtra("create_by", datas.get(position).getCreateBy());
-				intent.putExtra("name", datas.get(position).getCreatorName());
-				intent.putExtra("photo",datas.get(position).getCreatorPic() );
-				intent.putExtra("signature", datas.get(position).getCreatorSignature());
-				intent.putExtra("sex", datas.get(position).getCreatorSex());		
+				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());	
 				startActivity(intent);
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}
@@ -87,7 +83,7 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 			public boolean onItemLongClick(AdapterView<?> adpterView, View view,
 					final int position, long id) {
 				AlertDialog.Builder builder = new Builder(FavoriteBoxDetailActivity.this);
-				builder.setTitle("操作");
+				builder.setTitle(getString(R.string.operator));
 				builder.setItems(getResources().getStringArray(R.array.favorite_box_item_opt),
 						new DialogInterface.OnClickListener() {
 						@Override
@@ -121,7 +117,8 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 	public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);	
 		MenuItem clear=menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
-        		StaticValue.MENU_ITEM.CLEAR_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,"清空");	        
+        		StaticValue.MENU_ITEM.CLEAR_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,
+        		getString(R.string.clear_all));	        
 		clear.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
 	}
@@ -135,7 +132,7 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 		 	case StaticValue.MENU_ITEM.CLEAR_ID:
 		 		new  AlertDialog.Builder(this)  
             	.setTitle("删除")    
-            	.setMessage("确定要清空该收藏夹?" )  
+            	.setMessage(getString(R.string.sure_clear_favorite))  
             	.setPositiveButton("确定" , new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface arg0, int arg1) {
@@ -200,6 +197,7 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 								for(int i=0;i<arr.length();i++){
 									CollectionItemBean item = new CollectionItemBean();
 								    JSONObject obj = (JSONObject) arr.get(i);  
+								    item.setId(obj.getString("id"));
 								    item.setTitle(obj.getString("title"));
 								    item.setContent(obj.getString("content"));
 								    item.setVoteCount(obj.getString("vote_count"));

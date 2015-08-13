@@ -11,9 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import com.kuibu.data.global.Constants;
-import com.nostra13.universalimageloader.utils.StorageUtils;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -23,6 +20,9 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.util.Log;
+
+import com.kuibu.data.global.Constants;
+import com.nostra13.universalimageloader.utils.StorageUtils;
  
 /**
  * A class for helping deal the bitmap,

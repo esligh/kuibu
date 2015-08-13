@@ -51,6 +51,7 @@ public class KuibuApplication extends Application {
 	private static SqLiteHelper mSqlHelper;
 	private File extStorageCachePath;
 	private static DisplayImageOptions defaultOptions ; 
+	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCreate() {
@@ -162,6 +163,7 @@ public class KuibuApplication extends Application {
 
 		return mRequestQueue;
 	}
+	
 
 	/**
 	 * Adds the specified request to the global queue, if tag is specified then
