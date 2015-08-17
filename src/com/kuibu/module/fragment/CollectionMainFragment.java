@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,7 +53,6 @@ public class CollectionMainFragment extends Fragment {
 	private ListView packList;
 	private CollectPackItemAdapter packAdapter;
 	private List<CollectPackBean> mData = new ArrayList<CollectPackBean>(); 
-	private Context context =null; 
 	private CollectPackVo packVo= null ; 
 	private CollectionVo collectionVo = null ;
 	private ImageLibVo imageVo = null ;
@@ -63,7 +61,6 @@ public class CollectionMainFragment extends Fragment {
 	public View onCreateView(final LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context = this.getActivity() ; 
 		packVo = new CollectPackVo(this.getActivity());
 		collectionVo = new CollectionVo(this.getActivity());
 		imageVo = new ImageLibVo(this.getActivity());
@@ -79,9 +76,9 @@ public class CollectionMainFragment extends Fragment {
 		createPackBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View view) {
-				Intent intent = new Intent(context,OperCollectPackActivity.class);
+				Intent intent = new Intent(getActivity(),OperCollectPackActivity.class);
 				intent.putExtra("OPER", "CREATE");
-				context.startActivity(intent);
+				getActivity().startActivity(intent);
 				getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}	
 		});
@@ -95,7 +92,7 @@ public class CollectionMainFragment extends Fragment {
 				Intent intent = new Intent(getActivity(),LocalCollectionListActivity.class);
 				intent.putExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_ID,item.getPack_id());
 				intent.putExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_NAME, item.getPack_name());
-				intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT,item.collect_count);
+				intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT,item.getCollect_count());
 				startActivity(intent);
 				getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}			
@@ -111,7 +108,7 @@ public class CollectionMainFragment extends Fragment {
 				final CollectPackBean item = (CollectPackBean)adpterView.getAdapter()
 												.getItem(position);
 				final String pid = item.getPack_id();
-				AlertDialog.Builder builder = new Builder(context);
+				AlertDialog.Builder builder = new Builder(getActivity());
 				builder.setTitle("操作");
 				builder.setItems(getResources().getStringArray(R.array.collectpack_operator),
 						new DialogInterface.OnClickListener() {
@@ -144,21 +141,22 @@ public class CollectionMainFragment extends Fragment {
 				            		requestDelpack(old);
 									break;
 								case 2:
-									final EditText input = new EditText(context);
-									AlertDialog.Builder builder = new AlertDialog.Builder(context);
+									final EditText input = new EditText(getActivity());
+									AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 									builder.setTitle("请输入")
 					        		.setView(input)
-					                .setNegativeButton("取消", null)
-									.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-					        			public void onClick(DialogInterface dialog, int which) {
-					        				String new_name = input.getText().toString().trim();
-					        				if(TextUtils.isEmpty(new_name)){
-					        					Toast.makeText(context, "名称不能为空",Toast.LENGTH_SHORT).show();
-					        					return ; 
-					        				}					        				
-					        				packVo.update(" pack_name = ? "," _id = ? ", new String[]{new_name,String.valueOf(pid)});
-					        				mData.get(position).setPack_name(new_name);
-					        				packAdapter.updateView(mData);
+					                .setNegativeButton(getActivity().getString(R.string.btn_cancel), null)
+									.setPositiveButton(getActivity().getString(R.string.btn_confirm), 
+										new DialogInterface.OnClickListener() {
+					        				public void onClick(DialogInterface dialog, int which) {
+					        					String new_name = input.getText().toString().trim();
+						        				if(TextUtils.isEmpty(new_name)){
+						        					Toast.makeText(getActivity(),getActivity().getString(R.string.email) 
+						        							,Toast.LENGTH_SHORT).show();
+						        				}					        				
+						        				packVo.update(" pack_name = ? "," _id = ? ", new String[]{new_name,String.valueOf(pid)});
+						        				mData.get(position).setPack_name(new_name);
+						        				packAdapter.updateView(mData);
 					        			}
 					        		}).show();
 									break;
@@ -187,9 +185,10 @@ public class CollectionMainFragment extends Fragment {
 				try {
 					String state = response.getString("state");
 					if(StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){
-						Toast.makeText(context, "删除成功!", Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(getActivity(), getString(R.string.act), Toast.LENGTH_SHORT).show();
 					}else{
-						Toast.makeText(context, "删除失败", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(), getActivity().getString(R.string.delete_fail),
+								Toast.LENGTH_SHORT).show();
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();

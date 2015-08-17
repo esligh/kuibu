@@ -24,23 +24,31 @@ import org.jsoup.nodes.Document;
 import us.feras.mdv.MarkdownView;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
+import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -49,8 +57,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.BitmapHelper;
-import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.StorageUtils;
+import com.kuibu.custom.widget.NotifyingScrollView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
@@ -60,8 +69,10 @@ import com.kuibu.model.vo.CollectionVo;
 import com.kuibu.model.vo.ImageLibVo;
 import com.kuibu.model.webview.InJavaScriptObject;
 import com.kuibu.module.iterf.OnPageLoadFinished;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.soundcloud.android.crop.Crop;
 
-public class PreviewActivity extends ActionBarActivity implements OnPageLoadFinished{
+public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 	public static final int ABSTRACT_MAX = 150 ; 
 	private MarkdownView previewWebView;
 	private boolean isEditIncoming = false;
@@ -74,33 +85,57 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	private MenuItem pubMenu;
 	private String cssFile ; 
 	private String htmlSource ; 
-	
+	private ImageView imageHeader ; 
+	private TextView titleTv ;  
+	private String mCoverPath = "";
+	private LinearLayout webViewcontainer;
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		boolean isDarkTheme=PreferencesUtils.getBooleanByDefault(this, 
-				StaticValue.PrefKey.DARK_THEME_KEY, false); 
-		if (isDarkTheme) {
-			setTheme(R.style.AppTheme_Dark);
-			cssFile = Constants.WEBVIEW_DARK_CSSFILE;
-		}else{
-			setTheme(R.style.AppTheme_Light);
-			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
-		}	
-		
+	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.collection_preview);
-
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-		if (toolbar != null) {
-			setSupportActionBar(toolbar);
-			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		}		
-		previewWebView = (MarkdownView) findViewById(R.id.preview_webview);
-		setUpWebViewDefaults();		
-		initData();
-		if (collection != null && !TextUtils.isEmpty(collection.getContent()))
-			previewWebView.loadMarkdown(collection.getContent(),cssFile);
-		finalHttp = new FinalHttp();
+        NotifyingScrollView scrollView = (NotifyingScrollView)findViewById(R.id.scroll_view);
+		if (isDarkTheme) {
+			scrollView.setBackgroundColor(getResources().getColor(R.color.webview_dark));
+			cssFile = Constants.WEBVIEW_DARK_CSSFILE;
+		}else{
+			scrollView.setBackgroundColor(getResources().getColor(R.color.webview_light));
+			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
+		}
+		webViewcontainer = (LinearLayout) findViewById(R.id.content_ll);
+		previewWebView = new MarkdownView(getApplicationContext());
+		webViewcontainer.addView(previewWebView);
+		setUpWebViewDefaults();	
+		imageHeader =(ImageView)findViewById(R.id.image_header);
+		imageHeader.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View arg0) {
+				//修改封面
+				AlertDialog.Builder builder = new Builder(PreviewActivity.this);
+				builder.setTitle(getString(R.string.setting_cover));
+				builder.setItems(getResources().getStringArray(R.array.popup_menu_item), 
+						new android.content.DialogInterface.OnClickListener(){
+							@Override
+							public void onClick(
+									DialogInterface dialog,
+									int position) {
+								switch(position){
+									case 0:
+										mCoverPath = takePhotoByCamera();
+										break;
+									case 1:
+										Crop.pickImage(PreviewActivity.this);
+										break;
+								}
+						}
+				});
+				builder.show();
+			}
+		});			    
+		titleTv = (TextView)findViewById(R.id.title);
+		initData();		
+		finalHttp = new FinalHttp();		
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 	
 	@SuppressLint("SetJavaScriptEnabled")
@@ -112,7 +147,11 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		InJavaScriptObject jsObj = new InJavaScriptObject(this);
 		jsObj.setOnPageLoadFinishedListener(this);
 		previewWebView.addJavascriptInterface(jsObj, "injectedObject");
-		
+		if(Build.VERSION.SDK_INT >= 19) {
+			previewWebView.getSettings().setLoadsImagesAutomatically(true);
+	    } else {
+	    	previewWebView.getSettings().setLoadsImagesAutomatically(false);
+	    }
 		previewWebView.setWebViewClient(new WebViewClient(){
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {   
@@ -125,6 +164,9 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				Log.d("WebView", "onPageFinished ");
+				if(!previewWebView.getSettings().getLoadsImagesAutomatically()) {
+					previewWebView.getSettings().setLoadsImagesAutomatically(true);
+			    }
 				super.onPageFinished(view, url);
 				//get html source  
 				String javascript = "javascript:window.injectedObject.getHtml('<html>'+" +
@@ -174,7 +216,14 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		super.onDestroy();
 		imageVo.closeDB();
 		collectionVo.closeDB();
-		previewWebView.clearCache(true);
+		webViewcontainer.removeView(previewWebView);
+		previewWebView.destroyDrawingCache();
+		previewWebView.removeAllViews();
+		previewWebView.destroy();
+		if(imgurl_map!=null){
+			imgurl_map.clear();
+			imgurl_map = null ;
+		}		 
 	}
 
 	@Override
@@ -196,7 +245,6 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		} else {
 			pubMenu.setVisible(true);
 		}
-
 		return true;
 	}
 
@@ -204,12 +252,18 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			super.onBackPressed();
+			this.onBackPressed();
 			overridePendingTransition(R.anim.anim_slide_out_right,
 					R.anim.anim_slide_in_right);
 			return true;
 		case R.id.action_publish:
-			publishCollection();
+			if(collection ==null || TextUtils.isEmpty(collection.content)){
+				Toast.makeText(this, getString(R.string.content_empty), 
+						Toast.LENGTH_SHORT).show();
+			}else{
+				publishCollection();
+			}
+			
 			return true;
 		case R.id.action_edit:
 			editNote();
@@ -219,8 +273,57 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		}
 	}
 
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		if(resultCode == RESULT_OK){
+			switch (requestCode){
+			case StaticValue.TAKE_PHOTO_OK:
+            	ImageLoader.getInstance().displayImage(Constants.URI_PREFIX+mCoverPath, imageHeader);
+            	collectionVo.update(" cover = ? ", " _id = ? ", new String[]{mCoverPath,collection._id});
+				break;
+			case Crop.REQUEST_PICK:
+				Uri uri = data.getData();
+				imageHeader.setImageURI(uri);
+				mCoverPath = StorageUtils.getImageAbsolutePath(this, uri);
+				collectionVo.update(" cover = ? ", " _id = ? ", new String[]{mCoverPath,collection._id});
+				break;
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+		outState.putString("TAKE_PHOTO_URL", mCoverPath);
+	}
+
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onRestoreInstanceState(savedInstanceState);
+		mCoverPath = savedInstanceState.getString("TAKE_PHOTO_URL");
+	}
+
+	public String takePhotoByCamera() {
+		File dir = new File(StorageUtils.getFileDirectory(getApplicationContext())
+				.getAbsolutePath()+Constants.Config.CAMERA_IMG_DIR);		
+		if(!dir.exists())
+			dir.mkdirs();
+		File file = new File(dir, String.valueOf(System.currentTimeMillis())
+				+".jpg");
+		Uri imageUri = Uri.fromFile(file);
+		Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+		startActivityForResult(openCameraIntent, StaticValue.TAKE_PHOTO_OK);
+		return file.getPath();  
+	}
+
 	private void initData() {
-		
 		imageVo = new ImageLibVo(this);
 		collectionVo = new CollectionVo(this);
 		String id = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECTION_ID);
@@ -229,12 +332,17 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 					StaticValue.EDITOR_VALUE.COLLECTION_ENTITY);
 		} else {
 			collection = collectionVo.querywithkey(id);
+		}		
+		if(!TextUtils.isEmpty(collection.cover)){
+			mCoverPath = collection.cover ; 
+			ImageLoader.getInstance().displayImage(Constants.URI_PREFIX+collection.cover, 
+					imageHeader);
 		}
-		if (collection != null) {
-			setTitle(collection.getTitle());
-		} else {
-			setTitle(getString(R.string.preview));
-		}
+		if (collection != null && !TextUtils.isEmpty(collection.getContent())){
+			titleTv.setText(collection.title);
+			previewWebView.loadMarkdown(collection.getContent(),cssFile);
+		}		
+		setTitle(getString(R.string.preview));
 	}
 	
 	private void editNote() {
@@ -251,10 +359,11 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		
 		progressDialog = new ProgressDialog(this);
 		progressDialog.setCanceledOnTouchOutside(false);
-		progressDialog.setMessage("发布中...");
+		progressDialog.setMessage(getString(R.string.publishing));
 		progressDialog.show();
 		
 		final List<String> images = imageVo.getImgList(collection._id);
+		
 		if (imgurl_map == null) {
 			imgurl_map = new HashMap<String,String>();
 		}
@@ -264,6 +373,7 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 		java.util.Date date = new java.util.Date();
 		String today = sdf.format(date);
 		url_root.append(today).append("/");
+		
 		for (int i = 0; i < images.size(); i++) {
 			String uuid = UUID.randomUUID().toString();
 			String ext = getExtensionName(images.get(i));
@@ -289,40 +399,42 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 					.append(collection.content)
 					.toString(); 
 			params.put("csn",SafeEDcoderUtil.MD5(descript));
-			String pid = getIntent().getStringExtra(
-					StaticValue.EDITOR_VALUE.COLLECT_PACK_ID);
-			params.put("pack_id", pid);			
-			final String URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION
-					+ "/add_collection";
+			params.put("pack_id", collection.pid);			
+			
+			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/add_collection").toString();
 			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 					params), new Response.Listener<JSONObject>() {
 				@Override
 				public void onResponse(JSONObject response) {
-					// TODO Auto-generated method stub
 					try {
 						String state = response.getString("state");
 						if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS
 								.equals(state)) {
 							collection.cid = response.getString("cid");
-							if (images != null && images.size() > 0) {
+							if (images != null && images.size() > 0) {  //text-pic 
 								uploadImgs(images);
-							}							
-							collectionVo.update(
-									" cid = ? ,is_pub = ?,is_sync = ? ",
-									" _id = ? ",
-									new String[] { collection.cid,
-											String.valueOf(1),
-											String.valueOf(1),
-											String.valueOf(collection._id) });
-							pubMenu.setVisible(false);
-							Toast.makeText(PreviewActivity.this, "发布成功",
-									Toast.LENGTH_SHORT).show();
-						} else {
-							Toast.makeText(PreviewActivity.this, "发布失败",
+							}else{  //just text 								
+								collectionVo.update(
+										" cid = ? ,is_pub = ?,is_sync = ? ",
+										" _id = ? ",
+										new String[] { collection.cid,
+												String.valueOf(1),
+												String.valueOf(1),
+												String.valueOf(collection._id) });
+								pubMenu.setVisible(false);
+								progressDialog.dismiss();
+								
+								Toast.makeText(PreviewActivity.this, getString(R.string.publish_success),
+										Toast.LENGTH_SHORT).show();
+								
+							}					
+						}else{
+							progressDialog.dismiss();
+							Toast.makeText(PreviewActivity.this, getString(R.string.publish_fail),
 									Toast.LENGTH_SHORT).show();
 						}
-						progressDialog.dismiss();
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -333,17 +445,16 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 					VolleyLog.e("Error: ", error.getMessage());
 					VolleyLog.e("Error:", error.getCause());
 					error.printStackTrace();
+					progressDialog.dismiss();
 				}
 			}) {
 				@Override
 				public Map<String, String> getHeaders() throws AuthFailureError {
 					HashMap<String, String> headers = new HashMap<String, String>();
-					String credentials = Session.getSession().getToken()
-							+ ":unused";
+					String credentials = Session.getSession().getToken() + ":unused";
 					headers.put(
 							"Authorization",
-							"Basic "
-									+ SafeEDcoderUtil.encryptBASE64(
+							"Basic " + SafeEDcoderUtil.encryptBASE64(
 											credentials.getBytes()).replaceAll(
 											"\\s+", ""));
 					return headers;
@@ -357,8 +468,9 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	private void requestImginfo() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("cid", collection.cid);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_imageinfo";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/get_imageinfo").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -459,8 +571,23 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	
 	private void uploadImgs(List<String> imgs) {
 		AjaxParams params = new AjaxParams();
-		params.put("cid", String.valueOf(collection.cid));
-		try {
+		params.put("cid", String.valueOf(collection.cid));				
+		try {			
+			if(!TextUtils.isEmpty(mCoverPath)){
+				StringBuffer buffer = new StringBuffer();
+				buffer.append(UUID.randomUUID().toString()).append(".").append(getExtensionName(mCoverPath));
+				params.put("cover_name", mCoverPath);
+				params.put("cover_url", buffer.toString());
+				String dest = BitmapHelper.hasCompressFile(this, mCoverPath);
+				if(dest == null){ 
+					dest = BitmapHelper.compressBitmap(this, mCoverPath, 
+							Constants.COMPRESS_WIDTH,Constants.COMPRESS_HEIGHT , false);
+				}				
+				params.put("cover_data", new File(dest));
+			}else{
+				params.put("cover_url", "");		
+				params.put("cover_name", "");
+			}
 			params.put("size", imgs.size() + "");
 			for (int i = 0; i < imgs.size(); i++) {
 				String uri = imgs.get(i);
@@ -479,9 +606,19 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 			e.printStackTrace();
 		}
 
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/simple_upload";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+			.append(Constants.Config.REST_API_VERSION)
+			.append("/simple_upload").toString();
+		
 		finalHttp.post(URL, params, new AjaxCallBack<String>() {
+			@Override
+			public void onFailure(Throwable t, int errorNo, String strMsg) {
+				super.onFailure(t, errorNo, strMsg);
+				Toast.makeText(PreviewActivity.this, getString(R.string.publish_fail),
+						Toast.LENGTH_SHORT).show();
+				progressDialog.dismiss();				
+			}
+
 			@Override
 			public void onSuccess(String t) {
 				super.onSuccess(t);
@@ -490,28 +627,40 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 						JSONObject obj = new JSONObject(t);
 						String state = obj.getString("state");
 						if (StaticValue.RESPONSE_STATUS.UPLOAD_SUCCESS
-								.equals(state)) {
+								.equals(state)) { //上传成功
+							collectionVo.update(" cid = ? ,is_pub = ?,is_sync = ? "," _id = ? ",
+									new String[] { collection.cid,
+											String.valueOf(1),
+											String.valueOf(1),
+											String.valueOf(collection._id) });
+							pubMenu.setVisible(false);
+							
+							Toast.makeText(PreviewActivity.this, getString(R.string.publish_success),
+									Toast.LENGTH_SHORT).show();
+							
 						} else if (StaticValue.RESPONSE_STATUS.UPLOAD_FAILD
-								.equals(state)) {
+								.equals(state)) { //上传失败
+							Toast.makeText(PreviewActivity.this, getString(R.string.publish_fail),
+									Toast.LENGTH_SHORT).show();
 						}
-						progressDialog.dismiss();
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+				progressDialog.dismiss();
 			}
 		});
 	}
 
 	private void requestUpdate(Map<String, String> params) {
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/update_collection";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION) 
+							.append("/update_collection").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -528,7 +677,6 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 						Toast.makeText(PreviewActivity.this, getString(R.string.modify_fail),
 								Toast.LENGTH_SHORT).show();
 					}
-					progressDialog.dismiss();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -563,8 +711,9 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("ids", ids);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/update_collection";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/update_collection").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -609,6 +758,9 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
+		Intent intent = new Intent();
+		intent.putExtra("cover_path", mCoverPath);
+		setResult(RESULT_OK, intent);
 		overridePendingTransition(R.anim.anim_slide_out_right,
 				R.anim.anim_slide_in_right);
 	}
@@ -648,27 +800,27 @@ public class PreviewActivity extends ActionBarActivity implements OnPageLoadFini
 	 */
 	private String getAbstract()
 	{
-		String result = "";
-		StringBuffer buffer = new StringBuffer();
+		String result = null;
 		Document doc = Jsoup.parse(htmlSource);
 		String ptext = doc.getElementsByTag("p").text();
 		if(TextUtils.isEmpty(ptext)){
+			StringBuffer buffer = new StringBuffer();
 			String s = doc.getElementsByTag("h1").remove().text();
-			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			if(!TextUtils.isEmpty(s)) buffer.append(s).append("\n");
 			s= doc.getElementsByTag("h2").remove().text();
-			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			if(!TextUtils.isEmpty(s)) buffer.append(s).append("\n");
 			s= doc.getElementsByTag("h3").remove().text();
-			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			if(!TextUtils.isEmpty(s)) buffer.append(s).append("\n");
 			s=doc.getElementsByTag("h4").remove().text();
-			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			if(!TextUtils.isEmpty(s)) buffer.append(s).append("\n");
 			s=doc.getElementsByTag("h5").remove().text();
-			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			if(!TextUtils.isEmpty(s)) buffer.append(s).append("\n");
 			s=doc.getElementsByTag("h6").remove().text();
-			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			if(!TextUtils.isEmpty(s)) buffer.append(s).append("\n");
 			s=doc.getElementsByTag("ol").remove().text();
-			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			if(!TextUtils.isEmpty(s)) buffer.append(s).append("\n");
 			s=doc.getElementsByTag("ul").remove().text();
-			if(TextUtils.isEmpty(s)) buffer.append(s).append("\n");
+			if(!TextUtils.isEmpty(s)) buffer.append(s).append("\n");
 			String body = doc.body().text();
 			if(TextUtils.isEmpty(body)){
 				result = buffer.substring(0, 

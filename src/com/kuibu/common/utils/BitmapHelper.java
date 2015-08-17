@@ -138,7 +138,11 @@ public class BitmapHelper {
             if (isDelSrc) srcFile.deleteOnExit();
         } catch (Exception e) {
             Log.e("BitmapHelper-->compressBitmap", e.getMessage()+"");
-        }
+        }finally {
+        	if(bitmap != null && !bitmap.isRecycled()){
+            	bitmap.recycle();
+            }
+        }        
         return desPath;
     }
      

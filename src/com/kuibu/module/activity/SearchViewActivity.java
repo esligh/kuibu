@@ -119,6 +119,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 					long id) {
 				// TODO Auto-generated method stub				
 				Object obj = viewAdapter.getAdapter().getItem(position);
+				if(obj == null)  return ; 
 				if(target.equals("TOPIC")){
 					TopicItemBean item = (TopicItemBean)obj;
 					Intent intent = new Intent(SearchViewActivity.this,
@@ -471,7 +472,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		String query  = searchView.getQuery().toString();
 		if(TextUtils.isEmpty(query))
 			return  ;

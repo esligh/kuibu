@@ -3,6 +3,7 @@ package com.kuibu.module.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,8 +62,14 @@ public class CollectPackInfoAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.title.setText(mData.get(position).getTitle());
-		holder.content.setText(mData.get(position).getContent());
 		holder.count.setText(mData.get(position).getVoteCount());
+
+		String summary = mData.get(position).getSummary().trim().replace("\n", "");
+		if(TextUtils.isEmpty(summary) || summary.equals("null")){
+			holder.content.setText("(多图)");
+		}else{
+			holder.content.setText(summary);
+		}
 		return convertView;
 	}
 

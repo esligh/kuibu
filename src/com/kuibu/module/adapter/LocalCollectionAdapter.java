@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kuibu.custom.widget.LabelView;
 import com.kuibu.model.bean.CollectionBean;
 import com.kuibu.module.activity.R;
 
@@ -60,18 +60,20 @@ public class LocalCollectionAdapter extends BaseAdapter{
 			holderView.collectionDesc = (TextView)convertView.findViewById(R.id.collection_desc_tv);
 			holderView.collectionDate =(TextView)convertView.findViewById(R.id.collection_date_tv);
 			holderView.check = (CheckBox)convertView.findViewById(R.id.collection_check);
-			holderView.label  = new LabelView(convertView.getContext());
+			holderView.label = (ImageView)convertView.findViewById(R.id.published_icon);
 			convertView.setTag(holderView);
 		}else{
 			holderView = (HolderView)convertView.getTag();
 		}		
-		holderView.collecitonTitle.setText(mData.get(position).getTitle());
+		StringBuilder buffer = new StringBuilder(String.valueOf(1+position)).append(". ")
+				.append(mData.get(position).getTitle());
+		holderView.collecitonTitle.setText(buffer.toString());
 		holderView.collectionDesc.setText(do_parse(mData.get(position).getContent()));
 		holderView.collectionDate.setText("创建于 "+mData.get(position).getCreateDate());
 		if(mData.get(position).getIsPublish() == 1){
-			holderView.label.setBackgroundColor(0xff03a9f4);//0xff03a9f4  0xffE91E63
-			holderView.label.setTargetView(holderView.collecitonTitle,4, LabelView.Gravity.RIGHT_TOP);
-			holderView.label.setText("PUB");
+			holderView.label.setVisibility(View.GONE);
+		}else{
+			holderView.label.setVisibility(View.VISIBLE);
 		}		
 		if(isMulChoice){
 			holderView.check.setVisibility(View.VISIBLE);
@@ -90,6 +92,6 @@ public class LocalCollectionAdapter extends BaseAdapter{
 		public TextView collectionDesc ; 
 		public TextView collectionDate ;
 		public CheckBox check ;  
-		public LabelView label ;
+		public ImageView label ;
 	}
 }

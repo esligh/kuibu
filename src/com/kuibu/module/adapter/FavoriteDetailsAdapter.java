@@ -53,7 +53,7 @@ public class FavoriteDetailsAdapter extends BaseAdapter {
 
 		if (convertView == null) {
 			convertView = LayoutInflater.from(context).inflate(
-					R.layout.detail_list_item_card, null);
+					R.layout.detail_list_item_card, parent,false);
 			holder = new ViewHolder();
 			holder.favorite_title_tv = (TextView) convertView
 					.findViewById(R.id.list_item_favorite_title);
@@ -67,7 +67,7 @@ public class FavoriteDetailsAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.favorite_title_tv.setText(datas.get(position).getTitle());
-		holder.favorite_content_tv.setText(datas.get(position).getContent());
+		holder.favorite_content_tv.setText(datas.get(position).getSummary());
 		holder.favorite_follow_count_tv.setText(datas.get(position).getVoteCount());
 		return convertView;
 	}

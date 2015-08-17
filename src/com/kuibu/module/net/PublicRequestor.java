@@ -24,8 +24,10 @@ public class PublicRequestor {
 
 	public static void sendReport(Map<String,String> params)
 	{
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/add_report";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/add_report").toString();
+		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@SuppressLint("SimpleDateFormat")
@@ -34,7 +36,7 @@ public class PublicRequestor {
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						Toast.makeText(KuibuApplication.getContext(), "感谢您的举报,我们会尽快处理",Toast.LENGTH_SHORT).show();
+						Toast.makeText(KuibuApplication.getContext(),"感谢您的举报,我们会尽快处理",Toast.LENGTH_SHORT).show();
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();

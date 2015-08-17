@@ -12,7 +12,6 @@ public class NotifyMessageActivity extends BaseActivity{
 		
 	@Override
 	protected void onCreate(Bundle arg0) {
-		// TODO Auto-generated method stub
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_fragment);
 		FragmentManager fm = getSupportFragmentManager();
@@ -37,7 +36,6 @@ public class NotifyMessageActivity extends BaseActivity{
 	 
 	@Override
 	public void onBackPressed() {
-			// TODO Auto-generated method stub
 		super.onBackPressed();
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}	

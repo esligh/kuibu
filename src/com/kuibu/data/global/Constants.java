@@ -51,9 +51,9 @@ public final class Constants {
 	}
 	
 	/*markdown 的快捷键盘*/
-    public static final String[] KEYBOARD_SHORTCUTS = {"*", "-", "_", "#", "!", ":"};
+    public static final String[] KEYBOARD_SHORTCUTS = {"#","*", ">", "!", ":"};
     public static final String[] KEYBOARD_SHORTCUTS_BRACKETS = { "(", ")", "[", "]"};
-    public static final String[] KEYBOARD_SMART_SHORTCUTS = {"()", "[]"};
+    public static final String[] KEYBOARD_SMART_SHORTCUTS = {"( )", "[ ]"};
     public static final int KEYBOARD_DEFAULT_SIZE = 18 ; 
     public static final int MAX_TITLE_LENGTH = 20;
     public static final String URI_PREFIX = "file://";

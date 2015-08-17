@@ -36,7 +36,9 @@ import com.kuibu.module.activity.SendMessageActivity;
 import com.kuibu.module.adapter.UserListAdapter;
 import com.kuibu.module.adapter.UserListAdapter.ViewHolder;
 //private letter  
+
 public class NotifyMessageFragment extends Fragment implements OnLoadListener {
+	
 	private PaginationListView userList = null;
 	private UserListAdapter listAdapter;
 	private List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
@@ -66,21 +68,23 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
-					int position, long id) {
-				ViewHolder  holder = (ViewHolder)view.getTag();
-				holder.badge.hide();				
+					int position, long id) {								
 				Map<String, Object> item = (Map<String, Object>) viewAdapter
 						.getAdapter().getItem(position);
+				
 				Intent intent = new Intent(getActivity(),
 						SendMessageActivity.class);
 				intent.putExtra("sender_id", (String) item.get("sender_id"));
 				startActivity(intent);
 				getActivity().overridePendingTransition(
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
+				
+				ViewHolder  holder = (ViewHolder)view.getTag();
+				holder.badge.hide();
+				readMsg((String)item.get("sender_id"));
 			}
 		});
 		loadData();
-		showView();
 		return rootView;
 	}
 
@@ -160,8 +164,59 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		loadData();
 	}
 
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		datas.clear();
+		datas = null ;
+	}
+	
+	
+	private void readMsg(String senderId)
+	{
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("receiver_id", Session.getSession().getuId());
+		params.put("sender_id", senderId);
+		final String URL = Constants.Config.SERVER_URI
+				+ Constants.Config.REST_API_VERSION + "/update_message";
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+			}
+		}) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				HashMap<String, String> headers = new HashMap<String, String>();
+				String credentials = Session.getSession().getToken()
+						+ ":unused";
+				headers.put("Authorization", "Basic "
+						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
+								.replaceAll("\\s+", ""));
+				return headers;
+			}
+		};
+		KuibuApplication.getInstance().addToRequestQueue(req);
+	}
 }

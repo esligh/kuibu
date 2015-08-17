@@ -113,8 +113,10 @@ public class CommentActivity extends BaseActivity implements
 		params.put("uid", Session.getSession().getuId());
 		params.put("off", String.valueOf(datas.size()));
 		params.put("cid", cid);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_comments";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/get_comments").toString();
+		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -214,7 +216,7 @@ public class CommentActivity extends BaseActivity implements
 								break;
 							case 1: // reply
 								if (Session.getSession().isLogin()) {
-									editContent.setHint(new StringBuffer("回复")
+									editContent.setHint(new StringBuffer(getString(R.string.reply))
 											.append(item.getUserName()).append(
 													"的评论"));
 									cancelReply.setVisible(true);
@@ -224,7 +226,7 @@ public class CommentActivity extends BaseActivity implements
 									editContent.setTag(tag);
 								} else {
 									Toast.makeText(CommentActivity.this,
-											"登录后才能评论哦", Toast.LENGTH_SHORT)
+											getString(R.string.need_login), Toast.LENGTH_SHORT)
 											.show();
 								}
 								break;
@@ -428,7 +430,7 @@ public class CommentActivity extends BaseActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		loadData();
 	}
 	

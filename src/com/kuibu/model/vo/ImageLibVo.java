@@ -64,6 +64,20 @@ public class ImageLibVo extends BaseDbVo{
     	}
     }
     
+    public void deleteBycids(String cids[])
+    {
+    	if(cids==null || cids.length<=0)
+    		return ;
+		StringBuffer cons = new StringBuffer(" cid " ); 
+		StringBuffer buffer = new StringBuffer( " in ( ");
+		for(int i =0;i<cids.length;i++){
+			buffer.append("?,");			            			
+		}          		
+		buffer = new StringBuffer(buffer.subSequence(0, buffer.length()-1));
+		buffer.append(" ) ");
+		delete(cons.append(buffer).toString(),cids);
+    }
+    
     public List<LImageLib> queryAll() {  
         ArrayList<LImageLib> imgs = new ArrayList<LImageLib>();  
         Cursor c = getDB().rawQuery("SELECT * FROM imglib", null);  

@@ -62,7 +62,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.user_info_edit_activity);
-		setTitle("修改");
+		setTitle(getString(R.string.action_modify));
 		userPhoto = (ImageView)findViewById(R.id.user_pic_iv);
 		userPhoto.setOnClickListener(new OnClickListener() {			
 			@Override
@@ -78,10 +78,10 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 				// TODO Auto-generated method stub		
 				final EditText input = new EditText(UserInfoEditActivity.this);
 				AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoEditActivity.this);
-				builder.setTitle("请输入")
+				builder.setTitle(getString(R.string.input_text))
         		.setView(input)
-                .setNegativeButton("取消", null)
-				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+				.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
         			public void onClick(DialogInterface dialog, int which) {
         				String new_name = input.getText().toString().trim();
         				mInfo.setName(new_name);
@@ -96,6 +96,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub		
 				mInfo.setSex(StaticValue.SERMODLE.USER_SEX_MALE);
+				switchSexBack(StaticValue.SERMODLE.USER_SEX_MALE);				
 			}
 		});
 		userSexF = (TextView)findViewById(R.id.user_sex_f_tv);
@@ -104,6 +105,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				mInfo.setSex(StaticValue.SERMODLE.USER_SEX_FEMALE);
+				switchSexBack(StaticValue.SERMODLE.USER_SEX_FEMALE);
 			}
 		});
 		userSignature = (TextView)findViewById(R.id.user_signature_tv);
@@ -113,10 +115,10 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 				// TODO Auto-generated method stub
 				final EditText input = new EditText(UserInfoEditActivity.this);
 				AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoEditActivity.this);
-				builder.setTitle("请输入")
+				builder.setTitle(getString(R.string.input_text))
         		.setView(input)
-                .setNegativeButton("取消", null)
-				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+				.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
         			public void onClick(DialogInterface dialog, int which) {
         				String signature = input.getText().toString().trim();
         				userSignature.setText(signature);
@@ -132,10 +134,10 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 				// TODO Auto-generated method stub
 				final EditText input = new EditText(UserInfoEditActivity.this);
 				AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoEditActivity.this);
-				builder.setTitle("请输入")
+				builder.setTitle(getString(R.string.input_text))
         		.setView(input)
-                .setNegativeButton("取消", null)
-				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+				.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
         			public void onClick(DialogInterface dialog, int which) {
         				String profession = input.getText().toString().trim();
         				userProfession.setText(profession);
@@ -151,10 +153,10 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 				// TODO Auto-generated method stub	
 				final EditText input = new EditText(UserInfoEditActivity.this);
 				AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoEditActivity.this);
-				builder.setTitle("请输入")
+				builder.setTitle(getString(R.string.input_text))
         		.setView(input)
-                .setNegativeButton("取消", null)
-				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+				.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
         			public void onClick(DialogInterface dialog, int which) {
         				String residence = input.getText().toString().trim();
         				userResidence.setText(residence);
@@ -170,10 +172,10 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 				// TODO Auto-generated method stub		
 				final EditText input = new EditText(UserInfoEditActivity.this);
 				AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoEditActivity.this);
-				builder.setTitle("请输入")
+				builder.setTitle(getString(R.string.input_text))
         		.setView(input)
-                .setNegativeButton("取消", null)
-				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+				.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
         			public void onClick(DialogInterface dialog, int which) {
         				String education = input.getText().toString().trim();
         				userEducation.setText(education);
@@ -381,7 +383,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 		        			Session.getSession().setuName(mInfo.getName());
 		        			Session.getSession().setuSex(mInfo.getSex());
 		        			Session.getSession().setuSignature(mInfo.getSignature());
-		    
+	    
 		        			//reset cookie 							
 		        			Date date = KuibuApplication.getInstance()
 		        					.getPersistentCookieStore().getCookie("token").getExpiryDate();
@@ -392,7 +394,11 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 		        			KuibuApplication.getInstance().getPersistentCookieStore()
 								.addCookie("user_signature", mInfo.getSignature(), date);	
 		        			
-		        			Toast.makeText(UserInfoEditActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
+		        			Toast.makeText(UserInfoEditActivity.this, getString(R.string.modify_success),
+		        					Toast.LENGTH_SHORT).show();
+						}else{
+							Toast.makeText(UserInfoEditActivity.this, getString(R.string.modify_fail),
+		        					Toast.LENGTH_SHORT).show();
 						}
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
@@ -423,16 +429,16 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			Context context = v.getContext();
 			AlertDialog.Builder builder = new Builder(context);
 			
-			builder.setTitle("修改头像")
+			builder.setTitle(getString(R.string.mod_user_pic))
 				   .setItems(context.getResources().getStringArray(R.array.popup_menu_item),
 					new android.content.DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int position) {
 							switch (position) {
-							case 0: // take photo
+							case 0:
 								takePhotoByCamera();
 								break;
-							case 1: // choose from library
+							case 1:
 								userPhoto.setImageResource(R.drawable.icon_addpic_focused);
 								Crop.pickImage(UserInfoEditActivity.this);
 								break;
@@ -480,7 +486,8 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 	        	userPhoto.setImageURI(Crop.getOutput(result));
 	        	bModifyPhoto = true ; 
 	        } else if (resultCode == Crop.RESULT_ERROR) {
-	            Toast.makeText(this, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
+	            Toast.makeText(this, Crop.getError(result).getMessage(),
+	            		Toast.LENGTH_SHORT).show();
 	        }
 	    }
 	    

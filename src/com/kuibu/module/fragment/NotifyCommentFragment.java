@@ -37,7 +37,7 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 	private PaginationListView listView = null;
 	private NotifyCommentAdapter adapter = null; 
 	private List<Map<String,String>> datas = new ArrayList<Map<String,String>>();
-	private MultiStateView mMultiStateView;
+	private MultiStateView mMultiStateView;	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -107,13 +107,13 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 								String action_type = obj.getString("action_type");
 								if(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION.
 										equals(action_type)){
-									item.put("desc", " 赞了这条收集");
+									item.put("desc", getActivity().getString(R.string.vote_prompt));
 								}else if(StaticValue.USER_ACTION.ACTION_COMMENT_COLLECTION.
 										equals(action_type)){
-									item.put("desc", " 评论了这条收集");
+									item.put("desc", getActivity().getString(R.string.comment_prompt));
 								}else if(StaticValue.USER_ACTION.ACTION_COLLECT_COLLECTION.
 										equals(action_type)){
-									item.put("desc", " 收藏了这条收集");
+									item.put("desc", getActivity().getString(R.string.collect_prompt));
 								}
 								item.put("title", obj.getString("title"));
 								item.put("content", obj.getString("content"));
@@ -122,7 +122,12 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 							showView();
 						}						
 					}
-					mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+					if(datas.size()>0){
+						mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+					}else{
+						mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
+					}
+					
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -142,7 +147,17 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 
 	
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		loadData();
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		datas.clear();
+		datas = null ;
 	}	
+	
+	
 }

@@ -16,12 +16,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.CollectInfoListActivity;
@@ -58,13 +56,13 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 		TextView time_tv;
 	}
 
-	public class HolderViewForPics {
-		RelativeLayout layout2_rl;
-		TextView topic_tv;
-		ImageView topic_icon_iv;
-		TextView title_tv;
-		GridView item_pics_gv;
-	}
+//	public class HolderViewForPics {
+//		RelativeLayout layout2_rl;
+//		TextView topic_tv;
+//		ImageView topic_icon_iv;
+//		TextView title_tv;
+//		GridView item_pics_gv;
+//	}
 
 	public HomeListViewItemAdapter(Context context, List<MateListItem> datas) {
 		this.datas = datas;
@@ -145,7 +143,6 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		HolderViewForText holderforText = null;
 		HolderViewForTextPics holderfortextPic = null;
-		HolderViewForPics holderforpics = null;
 
 		int item_type = getItemViewType(position);
 		if (convertView == null) {
@@ -187,20 +184,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 				convertView.setTag(holderfortextPic);
 				break;
 			case MateListItem.ItemType.PICS_MODE:
-				convertView = LayoutInflater.from(context).inflate(
-						R.layout.home_list_view_item_type2, parent, false);
-				holderforpics = new HolderViewForPics();
-				holderforpics.layout2_rl = (RelativeLayout) convertView
-						.findViewById(R.id.home_2_rela_layout0_rl);
-				holderforpics.topic_tv = (TextView) convertView
-						.findViewById(R.id.home_2_topic_tv);
-				holderforpics.topic_icon_iv = (ImageView) convertView
-						.findViewById(R.id.home_2_topic_pic_iv);
-				holderforpics.title_tv = (TextView) convertView
-						.findViewById(R.id.home_2_item_title_tv);
-				holderforpics.item_pics_gv = (GridView) convertView
-						.findViewById(R.id.home_2_pics_grid_gv);
-				convertView.setTag(holderforpics);
+				
 				break;
 			}
 		} else {
@@ -213,7 +197,6 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 				holderfortextPic.item_pic_iv.setImageDrawable(null);
 				break;
 			case MateListItem.ItemType.PICS_MODE:
-				holderforpics = (HolderViewForPics) convertView.getTag();
 				break;
 			}
 		}
@@ -342,8 +325,13 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 						holderfortextPic.topic_icon_iv,options,null);
 			}
 			
-			holderfortextPic.content_tv.setText(datas.get(position)
-					.getSummary());
+			String summary = datas.get(position).getSummary().replace("\n", "");
+			if(TextUtils.isEmpty(summary) || summary.equals("null")){
+				holderfortextPic.content_tv.setText("(多图)");
+			}else{
+				holderfortextPic.content_tv.setText(summary);
+			}
+			
 			
 			String date2 = datas.get(position).getLastModify().trim();
 			if(!date2.equals("null")){
@@ -366,26 +354,6 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			
 			break;
 		case MateListItem.ItemType.PICS_MODE:
-			holderforpics.layout2_rl.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
-
-				}
-			});
-			holderforpics.title_tv.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
-					Intent intent = new Intent(context,
-							CollectInfoListActivity.class);
-					context.startActivity(intent);
-				}
-			});
-
-			holderforpics.topic_tv
-					.setText(datas.get(position).getTopText());
-			holderforpics.title_tv.setText(datas.get(position).getTitle());
 			break;
 		}
 		return convertView;

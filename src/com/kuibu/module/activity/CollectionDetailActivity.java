@@ -23,7 +23,6 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,6 +64,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.AssetsUtils;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.NetUtils;
 import com.kuibu.common.utils.PreferencesUtils;
@@ -81,10 +81,12 @@ import com.kuibu.module.iterf.OnPageLoadFinished;
 import com.kuibu.module.iterf.ResponseListener;
 import com.kuibu.module.net.PublicRequestor;
 import com.kuibu.module.task.DownloadWebImgTask;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petebevin.markdown.MarkdownProcessor;
 
 
-public class CollectionDetailActivity extends ActionBarActivity implements OnPageLoadFinished {
+public class CollectionDetailActivity extends ActionBarActivity 
+		implements OnPageLoadFinished {
 
 	//手指在屏幕滑动，X轴最小变化值
 	private static final int FLING_MIN_DISTANCE_X = 200;
@@ -110,25 +112,36 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 	private ImageView mHeaderImage ; 
 	private int curAlpha;
 	private ArrayList<String> mDetailImageList = new ArrayList<String>();
-	private Context mContext ;  
 	private boolean isDarkTheme ; 
+	private LinearLayout webViewContainer ; 
+	private int messageCode ; 
 	
     @SuppressLint("HandlerLeak")
 	@Override
     public void onCreate(Bundle savedInstanceState) {				
         super.onCreate(savedInstanceState);
-        mContext = this; 
 		mGestureDetector = new GestureDetector(this, mOnGestureListener);
         setContentView(R.layout.collection_detail_activity);
+        webViewContainer = (LinearLayout)findViewById(R.id.content_ll);
+        contentView = new MarkdownView(getApplicationContext());
+        webViewContainer.addView(contentView);
+        
         mHeaderImage = (ImageView)findViewById(R.id.image_header);
         mHandler = new Handler() {  
             @Override  
             public void handleMessage(Message msg) { //no leak,I know .   
                 super.handleMessage(msg);  
                 switch (msg.what) {  
-                case StaticValue.MSG_CODE.SHOW_TOOLS:                
-						layoutTools.setVisibility(View.VISIBLE);                      
-                    break;  
+                	case StaticValue.MSG_CODE.SHOW_TOOLS:                
+						layoutTools.setVisibility(View.VISIBLE);  
+						mFavActionItem.setVisible(true);
+						reportBtn.setVisibility(View.VISIBLE);
+						break; 	 
+                	case StaticValue.MSG_CODE.HIDE_TOOLS:
+                		layoutTools.setVisibility(View.GONE);
+                		mFavActionItem.setVisible(false);
+                		reportBtn.setVisibility(View.GONE);
+                		break;
                 }  
             }  
         };  
@@ -188,12 +201,13 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 			cssFile = Constants.WEBVIEW_LIGHT_CSSFILE;
 			mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.actionbar_background_light);			
 		}
+		
         getSupportActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
         scrollView.setOnScrollChangedListener(mOnScrollChangedListener);      
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        contentView = (MarkdownView)findViewById(R.id.content);
         setUpWebViewDefaults();
         cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
+                
         loadContent();        
         loadActions();
     }
@@ -223,7 +237,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 						StaticValue.PrefKey.NO_PICTRUE_KEY, false)){//无图
 					
 				}else{
-					new DownloadWebImgTask(mContext,new ResponseListener(){
+					new DownloadWebImgTask(getApplicationContext(),new ResponseListener(){
 
 						@Override
 						public void onPreExecute() {
@@ -274,7 +288,6 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 						@Override
 						public void onProgressUpdate(String value) {
 							String javascript = "img_replace_by_url('" + value + "')";
-							
 							if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 								contentView.evaluateJavascript(javascript, new ValueCallback<String>(){
 									@Override
@@ -353,8 +366,13 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
     @Override
     protected void onDestroy()
     {
-      super.onDestroy();
-      contentView.clearCache(true);             
+    	super.onDestroy();    	
+    	mHandler.removeCallbacksAndMessages(null);
+      	webViewContainer.removeView(contentView);
+      	contentView.removeAllViews();
+      	contentView.destroy();
+      	mDetailImageList.clear();
+      	mDetailImageList = null ; 
     }
      
     @Override
@@ -374,6 +392,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 			mFavActionItem.setIcon(R.drawable.ab_fav_normal);
 			mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
 		}
+		mFavActionItem.setVisible(false);
 		return true;
 	}
 	
@@ -386,6 +405,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 				break;
 			case R.id.menu_item_fav_action_bar:
 				if(Session.getSession().isLogin()){
+					mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
 					cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
 					Intent intent = new Intent(CollectionDetailActivity.this,CollectFavoriteBoxActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
@@ -470,7 +490,8 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 						mFavActionItem.setIcon(R.drawable.ab_fav_normal);
 						mFavActionItem.setTitle(R.string.actionbar_item_fav_add);				
 					}				
-				}				
+				}
+				mActionBarBackgroundDrawable.setAlpha(curAlpha);
 			break;
 			case StaticValue.RequestCode.REPORT_COMPLETE:
 				mActionBarBackgroundDrawable.setAlpha(curAlpha);
@@ -502,7 +523,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				mHandler.sendEmptyMessage(StaticValue.MSG_CODE.SHOW_TOOLS);
+				mHandler.sendEmptyMessage(messageCode);
 			}
 		}, 200);
 	}
@@ -593,8 +614,7 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 	private String replaceImgTagFromHTML(String html) {
 		Document doc = Jsoup.parse(html);
 		Elements es = doc.getElementsByTag("img");
-		for (Element e : es) {			
-			
+		for (Element e : es) {						
 			String imgUrl = e.attr("src");			
 			mDetailImageList.add(imgUrl);
 			String localImgPath = KuibuUtils.getCacheImgFilePath(this, imgUrl);			
@@ -627,7 +647,25 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 						
 						JSONObject obj = new JSONObject(response.getString("result"));
 						if(obj!=null){
-					        createBy = getIntent().getStringExtra("create_by");
+					        createBy = obj.getString("create_by");
+					        
+					        if(Session.getSession().getuId().equals(createBy)){
+					        	messageCode = StaticValue.MSG_CODE.HIDE_TOOLS;
+					        }else{
+					        	messageCode = StaticValue.MSG_CODE.SHOW_TOOLS;
+					        }
+					        
+					        String coverUrl = obj.getString("cover_url");	
+					        if(!TextUtils.isEmpty(coverUrl) && !coverUrl.equals("null")){
+					        	ImageLoader.getInstance().displayImage(coverUrl,mHeaderImage);
+					        }
+					     
+					        int comment_count = obj.getInt("comment_count");
+					        if(comment_count>0){
+					        	StringBuilder buff = new StringBuilder(getString(R.string.comment_text))
+					        	.append(" ").append(DataUtils.formatNumber(comment_count));
+					        	commentBtn.setText(buff.toString());
+					        }
 							final String template = prepareHeader(obj);
 							String type = obj.getString("type");
 							String content = obj.getString("content");
@@ -779,5 +817,4 @@ public class CollectionDetailActivity extends ActionBarActivity implements OnPag
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
-	
 }

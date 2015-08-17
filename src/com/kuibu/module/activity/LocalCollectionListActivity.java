@@ -1,8 +1,8 @@
 package com.kuibu.module.activity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +45,7 @@ import com.kuibu.module.adapter.LocalCollectionAdapter;
 import com.kuibu.module.adapter.LocalCollectionAdapter.HolderView;
 
 public class LocalCollectionListActivity extends BaseActivity {
+	
 	private FloatingActionsMenu fabMenu;
 	private FloatingActionButton fabCreateNote;
 	private FloatingActionButton fabCreateFolder;
@@ -53,7 +54,7 @@ public class LocalCollectionListActivity extends BaseActivity {
 	private LocalCollectionAdapter collectionAdapter= null;
 	private boolean showContextMenu = false;      
 	private boolean isMulChoice = false; 
-	private List<String> selIds = null; 
+	private List<CollectionBean> selItems = null; 
 	private Context context = null; 
 	private CollectionVo collectionVo = null ;
 	private CollectPackVo packVo = null ; 
@@ -78,7 +79,6 @@ public class LocalCollectionListActivity extends BaseActivity {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				CollectionBean item = (CollectionBean) adapterView
 						.getAdapter().getItem(position); 
 				if(!isMulChoice){
@@ -91,20 +91,20 @@ public class LocalCollectionListActivity extends BaseActivity {
 					startActivity(intent);					
 					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}else{					
-						if(selIds == null)
-							selIds = new ArrayList<String>();
+						if(selItems == null)
+							selItems = new LinkedList<CollectionBean>();
 						HolderView  holderView = (HolderView)view.getTag();
 						if(holderView ==null)
 							return ;
 						if(holderView.check.isChecked()){
 							holderView.check.setChecked(false);
-							selIds.remove(position+"");
+							selItems.remove(item);
 						}else{
 							holderView.check.setChecked(true);
-							selIds.add(position+"");
+							selItems.add(item);
 						}
-						int n = selIds.size() ; 
-						setTitle("已选"+n+"项");
+						StringBuilder buffer =  new StringBuilder("已选").append(selItems.size()).append("项");
+						setTitle(buffer.toString());
 					}
 				}
 		});
@@ -195,61 +195,48 @@ public class LocalCollectionListActivity extends BaseActivity {
 	            	this.onBackPressed();
 	            	overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	            	return true;
-	            case R.id.context_menu_move:       		
+	            case R.id.context_menu_move:       
+	            	Toast.makeText(this, "开发中...", Toast.LENGTH_SHORT).show();
 	            	return true ; 
 	            case R.id.context_menu_delete:
-	            	if(selIds.size()<=0){
-	            		Toast.makeText(this, "请至少选择一项!", Toast.LENGTH_SHORT).show();
+	            	if(selItems.size()<=0){
+	            		Toast.makeText(this, getString(R.string.choose_one), Toast.LENGTH_SHORT).show();
 	            		return false; 
 	            	}
 	            	new  AlertDialog.Builder(this)  
-	            	.setTitle("删除")    
-	            	.setMessage("确定要删除"+selIds.size()+"条收集?" )  
-	            	.setPositiveButton("确定" , new DialogInterface.OnClickListener() {
+	            	.setTitle(getString(R.string.action_delete))    
+	            	.setMessage("确定要删除"+selItems.size()+"条收集?" )  
+	            	.setPositiveButton(getString(R.string.btn_confirm) , new DialogInterface.OnClickListener() {
 						@Override
-						public void onClick(DialogInterface arg0, int arg1) {
-							// TODO Auto-generated method stub	
+						public void onClick(DialogInterface arg0, int arg1) {	
 			            	//添加提示框
-			            	if(selIds != null){
-			            		Collections.sort(selIds,Collections.reverseOrder());
-			            		String [] cids= new String[selIds.size()];
-			            		List<String> scids = new ArrayList<String>();
-			            		for(int i=0;i<selIds.size();i++){
-			            			String id = selIds.get(i);
-			            			CollectionBean item =  mData.remove(Integer.parseInt(id));
-			            			cids[i] = String.valueOf(item._id); 
-			            			if(item.isPublish == 1){
-			            				scids.add(String.valueOf(item.cid));
-			            			}
+			            	if(selItems != null){         		
+			            		String [] cids= new String[selItems.size()];
+			            		for(int i =0 ;i<selItems.size();i++){
+			            			CollectionBean item = selItems.get(i);
+			            			if(item.isPublish == 0){//未发布的
+			            				cids[i] = String.valueOf(item._id);
+			            				selItems.remove(item);
+			            			}			            			
 			            		}
-			            		collectionAdapter.notifyDataSetChanged();     		
-			            		StringBuffer cons = new StringBuffer(" _id " ); 
-			            		StringBuffer ids = new StringBuffer( " in ( ");
-			            		for(int i =0;i<selIds.size();i++){
-			            			ids.append("?,");			            			
-			            		}          		
-			            		ids = new StringBuffer(ids.subSequence(0, ids.length()-1));
-			            		ids.append(" ) ");
-			            		collectionVo.delete(cons.append(ids).toString(),cids);
-			            		int count = getIntent().getIntExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT,0);
-			            		if(count >= selIds.size()){
-			            			packVo.update("count = count - " + selIds.size(), " pack_id = ? ", 
-			            					new String[]{String.valueOf(pid)});
+			            		
+			            		collectionVo.delete(cids);
+			            		imageVo.deleteBycids(cids);		
+			            		String count = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT);
+			            		if(Integer.parseInt(count) >= selItems.size()){
+			            			packVo.update("collect_count = collect_count - " + selItems.size(), 
+			            					" pack_id = ? ", new String[]{String.valueOf(pid)});
 			            		}
-			            		imageVo.delete(" cid " + ids.toString(), cids);
-			            		RestoreToolBar();
-			            		selIds.clear();
-			            		requestDel(scids);
-			            	}
+			            		RestoreToolBar();			            		
+			            		if(selItems.size()>0)
+			            			requestDel(selItems);
+			            		}
 						}						
 
 					})  
-	            	.setNegativeButton("取消" , new DialogInterface.OnClickListener() {
+	            	.setNegativeButton(getString(R.string.btn_cancel) , new DialogInterface.OnClickListener() {
 						@Override
-						public void onClick(DialogInterface arg0, int arg1) {
-							// TODO Auto-generated method stub
-							
-						}						
+						public void onClick(DialogInterface arg0, int arg1) {}						
 					})  
 	            	.show();  
 	            	return true ; 
@@ -281,32 +268,32 @@ public class LocalCollectionListActivity extends BaseActivity {
 		setTitle(getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_NAME));
 	}	
 	
-	private void requestDel(List<String> ids)
+	private void requestDel(List<CollectionBean> items)
 	{
 		Map<String, String> params = new HashMap<String, String>();		
 		params.put("uid", Session.getSession().getuId());
+		params.put("size", String.valueOf(items.size()));
 		params.put("pack_id", String.valueOf(pid));
 		StringBuffer buffer= new StringBuffer();
-		for(int i=0;i<ids.size();i++){
-			buffer.append(ids.get(i)).append(",");
+		for(int i=0;i<items.size();i++){
+			buffer.append(items.get(i).cid).append(",");
 		}
 		params.put("collection_ids", buffer.toString());
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/del_collection";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/del_collection").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {						
 					}else{
 						Toast.makeText(LocalCollectionListActivity.this, 
-								"删除失败",Toast.LENGTH_SHORT).show();
+								getString(R.string.delete_fail),Toast.LENGTH_SHORT).show();
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

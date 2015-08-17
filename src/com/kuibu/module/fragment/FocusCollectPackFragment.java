@@ -45,7 +45,7 @@ public class FocusCollectPackFragment extends Fragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_focus_listview,
+		View rootView = inflater.inflate(R.layout.activity_pagination_listview,
 				container, false);
 		mMultiStateView = (MultiStateView) rootView
 				.findViewById(R.id.multiStateView);
@@ -60,7 +60,7 @@ public class FocusCollectPackFragment extends Fragment implements
 					}
 				});
 		packList = (PaginationListView) rootView
-				.findViewById(R.id.focous_listview);
+				.findViewById(R.id.pagination_lv);
 		packList.setOnLoadListener(this);
 		packList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -75,10 +75,16 @@ public class FocusCollectPackFragment extends Fragment implements
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
 			}
 		});
-		loadData();
-		showView();
-		packList.setTag("focus_collect");
 		return rootView;
+	}
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		//refresh
+		datas.clear();
+		loadData();
 	}
 
 	private void loadData() {
@@ -97,21 +103,22 @@ public class FocusCollectPackFragment extends Fragment implements
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
-
-						for (int i = 0; i < arr.length(); i++) {
-							JSONObject temp = (JSONObject) arr.get(i);
-							CollectPackItemBean bean = new CollectPackItemBean();
-							bean.setId(temp.getString("pid"));
-							bean.setPackName(temp.getString("pack_name"));
-							bean.setPackDesc(temp.getString("pack_desc"));
-							bean.setFollowCount(temp.getString("follow_count"));
-							bean.setCollectCount(temp
-									.getString("collect_count"));
-							bean.setCreateBy(temp.getString("create_by"));
-							datas.add(bean);
+						if(arr.length()>0){
+							for (int i = 0; i < arr.length(); i++) {
+								JSONObject temp = (JSONObject) arr.get(i);
+								CollectPackItemBean bean = new CollectPackItemBean();
+								bean.setId(temp.getString("pid"));
+								bean.setPackName(temp.getString("pack_name"));
+								bean.setPackDesc(temp.getString("pack_desc"));
+								bean.setFollowCount(temp.getString("follow_count"));
+								bean.setCollectCount(temp
+										.getString("collect_count"));
+								bean.setCreateBy(temp.getString("create_by"));
+								datas.add(bean);
+							}
+							showView();
 						}
-						showView();
-
+						
 						if (datas.size() > 0) {
 							mMultiStateView
 									.setViewState(MultiStateView.ViewState.CONTENT);
@@ -147,7 +154,7 @@ public class FocusCollectPackFragment extends Fragment implements
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		loadData();
 	}
 }

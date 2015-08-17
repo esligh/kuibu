@@ -57,7 +57,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 	private BorderScrollView borderScrollView;
 	private CollectPackInfoAdapter infoAdapter;
 	private List<CollectionItemBean> item_datas = new ArrayList<CollectionItemBean>();
-	private String pack_id;
+	private String packId;
 	private TextView titleView;
 	private TextView descView;
 	private ImageView creatorPicView;
@@ -141,13 +141,13 @@ public class CollectInfoListActivity extends BaseActivity implements
 		creatorSignature = (TextView) findViewById(R.id.pack_creator_signature_tv);
 		focusBtn = (FButton) findViewById(R.id.focus_collectpack_bt);
 		followCount = (TextView) findViewById(R.id.follow_count_tv);
-		pack_id = getIntent().getStringExtra("pack_id");
+		packId = getIntent().getStringExtra("pack_id");
 		focusBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				// TODO Auto-generated method stub
 				if (Session.getSession().isLogin()) {
-					doFocus(isfocus);
+					doFocus();
 				} else {
 					Toast.makeText(CollectInfoListActivity.this, getString(R.string.need_login),
 							Toast.LENGTH_SHORT).show();
@@ -241,7 +241,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 	private void loadPack() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
-		params.put("pack_id", pack_id);
+		params.put("pack_id", packId);
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 							.append(Constants.Config.REST_API_VERSION)
 							.append("/get_collectpack").toString();
@@ -255,9 +255,26 @@ public class CollectInfoListActivity extends BaseActivity implements
 						JSONObject obj = new JSONObject(response.getString("result"));
 						if (obj != null) {
 							titleView.setText(obj.getString("pack_name"));
-							descView.setText(obj.getString("pack_desc"));
-							isfocus = obj.getBoolean("is_focus");
-							followCount.setText(DataUtils.formatNumber(obj.getInt("focus_count")));
+							String desc = obj.getString("pack_desc"); 
+							if(TextUtils.isEmpty(desc)){
+								descView.setText(getString(R.string.no_desc));
+							}else{
+								descView.setText(desc);
+							}
+							String creatBy = obj.getString("create_by");
+							if(Session.getSession().getuId().equals(creatBy)){
+								focusLayout.setVisibility(View.GONE);
+							}else{
+								focusLayout.setVisibility(View.VISIBLE);
+								isfocus = obj.getBoolean("is_focus");
+								if (isfocus) {
+									int btnColor = getResources().getColor(
+											R.color.fbutton_color_concrete);
+									focusBtn.setButtonColor(btnColor);
+									focusBtn.setText(getString(R.string.btn_cancel_focus));
+								}
+								followCount.setText(DataUtils.formatNumber(obj.getInt("focus_count")));
+							}
 							topic_id = obj.getString("topic_id");
 							creatorName.setText(obj.getString("name"));
 							creatorSignature.setText(obj.getString("signature"));
@@ -266,20 +283,14 @@ public class CollectInfoListActivity extends BaseActivity implements
 								creatorPicView.setImageResource(R.drawable.default_pic_avata);	
 							} else {
 								ImageLoader.getInstance().displayImage(url,creatorPicView);
-							}
-							
+							}						
 							String topic_names = obj.getString("topic_names");
 							if(!topic_names.equals("null")){
 								tagGroup.setTags(topic_names.split(","));
 							}else{
 								tagGroup.setVisibility(View.GONE); //not likely 
 							}														
-							if (isfocus) {
-								int btnColor = getResources().getColor(
-										R.color.fbutton_color_concrete);
-								focusBtn.setButtonColor(btnColor);
-								focusBtn.setText(getString(R.string.btn_cancel_focus));
-							}
+							
 							loadList();
 						}
 					}
@@ -300,13 +311,13 @@ public class CollectInfoListActivity extends BaseActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
-	private void doFocus(final boolean bfocus) {
+	private void doFocus() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("follower_id", Session.getSession().getuId());
 		params.put("type", StaticValue.SERMODLE.COLLECTION_TYPE);
-		params.put("obj_id", pack_id);
+		params.put("obj_id", packId);
 		final String URL;
-		if(bfocus){ 
+		if(isfocus){ 
 			URL = new StringBuilder(Constants.Config.SERVER_URI)
 					.append(Constants.Config.REST_API_VERSION)
 					.append("/del_follows").toString();
@@ -324,16 +335,22 @@ public class CollectInfoListActivity extends BaseActivity implements
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						if (bfocus) {
+						int count = Integer.parseInt(followCount.getText().toString().trim());
+						if (isfocus) {
+							followCount.setText(DataUtils.formatNumber(count-1));
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);
 							focusBtn.setText(getString(R.string.btn_focus));
+							isfocus = false; 
 						} else {
+							
+							followCount.setText(DataUtils.formatNumber(count+1));
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);
 							focusBtn.setText(getString(R.string.btn_cancel_focus));
+							isfocus = true ; 
 						}
 					}
 				} catch (JSONException e) {
@@ -363,7 +380,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 
 	private void loadList() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("pack_id", pack_id);
+		params.put("pack_id", packId);
 		params.put("off", String.valueOf(item_datas.size()));
 		params.put("uid", Session.getSession().getuId());
 		final String URL = Constants.Config.SERVER_URI
@@ -384,14 +401,9 @@ public class CollectInfoListActivity extends BaseActivity implements
 									CollectionItemBean bean = new CollectionItemBean();
 									bean.setId(temp.getString("cid"));
 									bean.setTitle(temp.getString("title"));
-									bean.setContent(temp.getString("content"));
+									bean.setSummary(temp.getString("abstract"));
 									bean.setCreateBy(temp.getString("create_by"));
 									bean.setVoteCount(temp.getString("vote_count"));
-									bean.setCreatorName(temp.getString("name"));
-									bean.setCreatorPic(temp.getString("photo"));
-									bean.setCreatorSex(temp.getString("sex"));
-									bean.setCreatorSignature(temp.getString("signature"));
-									bean.setCommentCount(temp.getString("comment_count"));
 									item_datas.add(bean);
 								}
 								CollectInfoListActivity.this.setTitle("共有"

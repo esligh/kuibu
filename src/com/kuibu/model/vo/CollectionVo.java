@@ -13,9 +13,9 @@ import com.kuibu.model.bean.CollectionBean;
  * @author ThinkPad
  * 
  */
-public class CollectionVo extends BaseDbVo{
+public class CollectionVo extends BaseDbVo {
 	public static final String table_name = "collection" ; 
-	private final String BASE_QUERY_STR = " SELECT _id,cid ,pid,tid,type,title,content,is_pub,is_sync,last_modify FROM collection " ;
+	private final String BASE_QUERY_STR = " SELECT _id,cid ,pid,tid,type,title,content,cover,is_pub,is_sync,last_modify FROM collection " ;
 	
     public CollectionVo(Context context) {
 		super(context);
@@ -25,8 +25,8 @@ public class CollectionVo extends BaseDbVo{
         getDB().beginTransaction();   
         try {  
             for (CollectionBean c : collections) {  
-            	getDB().execSQL("INSERT INTO collection(pid,tid,type,title,content,create_by,cid,is_sync) VALUES( ?, ?, ?, ?, ?, ?, ?,?)", 
-                		new Object[]{c.pid, c.tid,c.type,c.title,c.content,c.createBy,c.cid,c.isSync});
+            	getDB().execSQL("INSERT INTO collection(pid,tid,type,title,content,cover,create_by,cid,is_sync) VALUES( ?, ?, ?, ?, ?, ?, ?, ?,?)", 
+                		new Object[]{c.pid, c.tid,c.type,c.title,c.content,c.cover,c.createBy,c.cid,c.isSync});
             }  
             getDB().setTransactionSuccessful();  
         } finally {  
@@ -38,8 +38,8 @@ public class CollectionVo extends BaseDbVo{
     {
     	getDB().beginTransaction();
     	try{
-    		getDB().execSQL("INSERT INTO collection(pid,tid,type,title,content,create_by,cid,is_sync) VALUES(?, ?, ?, ?, ?, ?, ?,?)",
-    				new Object[]{c.pid, c.tid,c.type,c.title,c.content,c.createBy,c.cid,c.isSync});
+    		getDB().execSQL("INSERT INTO collection(pid,tid,type,title,content,cover,create_by,cid,is_sync) VALUES(?, ?, ?, ?, ?, ?, ?, ?,?)",
+    				new Object[]{c.pid, c.tid,c.type,c.title,c.content,c.cover,c.createBy,c.cid,c.isSync});
     		getDB().setTransactionSuccessful();
     	}finally{
     		getDB().endTransaction();
@@ -102,9 +102,23 @@ public class CollectionVo extends BaseDbVo{
     	} 	
     }
     
+    public void delete(String[] ids)
+    {
+    	if(ids==null || ids.length<=0)
+    		return ;
+		StringBuffer cons = new StringBuffer(" _id " ); 
+		StringBuffer buffer = new StringBuffer( " in ( ");
+		for(int i =0;i<ids.length;i++){
+			buffer.append("?,");			            			
+		}          		
+		buffer = new StringBuffer(buffer.subSequence(0, buffer.length()-1));
+		buffer.append(" ) ");
+		delete(cons.append(buffer).toString(),ids);
+    }
+    
     public List<CollectionBean> queryAll() {  
         ArrayList<CollectionBean> collections = new ArrayList<CollectionBean>();  
-        Cursor c = getDB().rawQuery("SELECT _id,cid,pid,tid,type,title,content,is_pub,is_sync,last_modify FROM collection ", null);  
+        Cursor c = getDB().rawQuery("SELECT _id,cid,pid,tid,type,title,content,cover,is_pub,is_sync,last_modify FROM collection ", null);  
         while (c.moveToNext()) {  
         	CollectionBean collection = new CollectionBean();  
         	collection._id = c.getString(c.getColumnIndex("_id")); 
@@ -114,6 +128,7 @@ public class CollectionVo extends BaseDbVo{
             collection.type= c.getString(c.getColumnIndex("type"));
             collection.title = c.getString(c.getColumnIndex("title"));
             collection.content = c.getString(c.getColumnIndex("content"));
+            collection.cover = c.getString(c.getColumnIndex("cover"));
             collection.isPublish = c.getInt(c.getColumnIndex("is_pub"));
             collection.isSync = c.getInt(c.getColumnIndex("is_sync"));
             collection.createDate = c.getString(c.getColumnIndex("last_modify"));
@@ -126,7 +141,7 @@ public class CollectionVo extends BaseDbVo{
     public CollectionBean querywithkey(String id)
     {
     	CollectionBean collection = new CollectionBean();
-    	Cursor c = getDB().rawQuery("SELECT _id,cid,pid,tid,type,title,content,is_pub,is_sync,last_modify FROM collection where _id = ? ",
+    	Cursor c = getDB().rawQuery("SELECT _id,cid,pid,tid,type,title,content,cover,is_pub,is_sync,last_modify FROM collection where _id = ? ",
     			new String[]{id});
         while (c.moveToNext()) {    
         	collection._id = c.getString(c.getColumnIndex("_id"));  
@@ -135,6 +150,7 @@ public class CollectionVo extends BaseDbVo{
             collection.tid = c.getString(c.getColumnIndex("tid"));
             collection.type= c.getString(c.getColumnIndex("type"));
             collection.title = c.getString(c.getColumnIndex("title"));
+            collection.cover = c.getString(c.getColumnIndex("cover"));
             collection.isPublish = c.getInt(c.getColumnIndex("is_pub"));
             collection.isSync = c.getInt(c.getColumnIndex("is_sync"));
             collection.content = c.getString(c.getColumnIndex("content"));
@@ -163,6 +179,7 @@ public class CollectionVo extends BaseDbVo{
             collection.isSync = c.getInt(c.getColumnIndex("is_sync"));
             collection.title = c.getString(c.getColumnIndex("title"));
             collection.content = c.getString(c.getColumnIndex("content"));
+            collection.cover = c.getString(c.getColumnIndex("cover"));
             collection.createDate = c.getString(c.getColumnIndex("last_modify"));
             collections.add(collection);  
         }  

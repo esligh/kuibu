@@ -46,6 +46,8 @@ import com.kuibu.model.vo.CollectPackVo;
 import com.kuibu.module.adapter.TopicListAdapter;
 
 public class OperCollectPackActivity extends BaseActivity {
+	
+	private static final int MAX_TOPICS  = 5 ; 
 	private EditText box_name;
 	private EditText box_desc;
 	private AutoCompleteTextView box_topic;
@@ -60,6 +62,7 @@ public class OperCollectPackActivity extends BaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.create_collect_pack_activity);
@@ -84,7 +87,7 @@ public class OperCollectPackActivity extends BaseActivity {
 					s[i]=tags.get(i).getTopic();
 				}
 				new AlertDialog.Builder(OperCollectPackActivity.this)
-						.setTitle("删除话题")
+						.setTitle(getString(R.string.action_delete))
 						.setMultiChoiceItems(
 								s,
 								arrSelected,
@@ -95,7 +98,7 @@ public class OperCollectPackActivity extends BaseActivity {
 										arrSelected[which] = isChecked;
 									}
 								})
-						.setPositiveButton("确认",
+						.setPositiveButton(getString(R.string.btn_confirm),
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -112,7 +115,7 @@ public class OperCollectPackActivity extends BaseActivity {
 										tagGroup.setTags(s);
 									}
 								})
-						.setNegativeButton("取消",
+						.setNegativeButton(getString(R.string.btn_cancel),
 								new DialogInterface.OnClickListener() {
 
 									@Override
@@ -133,15 +136,20 @@ public class OperCollectPackActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				TopicItemBean bean = datas.get(position);	
 				if(tags.contains(bean)){
-					Toast.makeText(OperCollectPackActivity.this,"已经有这个话题啦", 
+					Toast.makeText(OperCollectPackActivity.this,getString(R.string.have_topic), 
 								Toast.LENGTH_SHORT).show();
 				}else{
-					tags.add(bean);
-					String [] s = new String[tags.size()];
-					for(int i=0;i<tags.size();i++){
-						s[i] = tags.get(i).getTopic();
+					if(tags.size()>=MAX_TOPICS){
+						Toast.makeText(OperCollectPackActivity.this,getString(R.string.max_topic), 
+									Toast.LENGTH_SHORT).show();
+					}else{
+						tags.add(bean);
+						String [] s = new String[tags.size()];
+						for(int i=0;i<tags.size();i++){
+							s[i] = tags.get(i).getTopic();
+						}
+						tagGroup.setTags(s);
 					}
-					tagGroup.setTags(s);
 				}
 				box_topic.setText("");
 			}
@@ -156,16 +164,16 @@ public class OperCollectPackActivity extends BaseActivity {
 	{
 		oper = getIntent().getStringExtra("OPER");
 		if(oper.equals("CREATE")){
-			setTitle("创建");
+			setTitle(getString(R.string.action_create));
 		}else if(oper.equals("MODIFY")){
-			setTitle("修改");
+			setTitle(getString(R.string.action_modify));
 			pack_id = getIntent().getStringExtra(StaticValue.COLLECTPACK.PACK_ID);			
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("pack_id", pack_id);
 			params.put("uid", Session.getSession().getuId());
-			final String URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION
-					+ "/get_collectpack";
+			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/get_collectpack").toString();
 			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 					params), new Response.Listener<JSONObject>() {
 				@Override
@@ -221,7 +229,7 @@ public class OperCollectPackActivity extends BaseActivity {
 		super.onCreateOptionsMenu(menu);
 		MenuItem add = menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
 				StaticValue.MENU_ITEM.SAVE_ID,
-				StaticValue.MENU_ORDER.SAVE_ORDER_ID, "保存");
+				StaticValue.MENU_ORDER.SAVE_ORDER_ID, getString(R.string.action_save));
 
 		add.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
@@ -236,12 +244,12 @@ public class OperCollectPackActivity extends BaseActivity {
 			break;
 		case StaticValue.MENU_ITEM.SAVE_ID:
 			if(tags.size()<=0){
-				Toast.makeText(this, "还没添加话题呢", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getString(R.string.need_topic), Toast.LENGTH_SHORT).show();
 				return true; 
 			}
 			String pack_name = box_name.getText().toString().trim();
 			if(TextUtils.isEmpty(pack_name)){
-				Toast.makeText(this, "还没输入名称呢", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, getString(R.string.need_name), Toast.LENGTH_SHORT).show();
 				return true; 
 			}	
 			CollectPackBean bean = new CollectPackBean();
@@ -267,6 +275,22 @@ public class OperCollectPackActivity extends BaseActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		packVo.closeDB();
+		datas.clear();datas= null; 
+		tags.clear();tags = null; 
+	}
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+	}	
+	
 	class TextChangedListener implements TextWatcher {
 		@Override
 		public void afterTextChanged(Editable s) {
@@ -276,9 +300,9 @@ public class OperCollectPackActivity extends BaseActivity {
 				return;
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("slice", query);
-			final String URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION
-					+ "/get_topiclist";
+			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/get_topiclist").toString();
 			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 					params), new Response.Listener<JSONObject>() {
 				@Override
@@ -343,8 +367,10 @@ public class OperCollectPackActivity extends BaseActivity {
 		String descript = new StringBuffer(Session.getSession().getuId()).append(":") 
 				.append(newOne.getPack_name()).toString(); //csn 生成规则		
 		params.put("csn", SafeEDcoderUtil.MD5(descript));
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/add_collectpack";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+		.append(Constants.Config.REST_API_VERSION)
+		.append("/add_collectpack").toString();
+		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -361,9 +387,11 @@ public class OperCollectPackActivity extends BaseActivity {
 						bean.set_private(newOne.get_private());
 						bean.set_sync(1);
 						packVo.add(bean);
-						Toast.makeText(OperCollectPackActivity.this, "创建成功", Toast.LENGTH_SHORT).show();			
+						Toast.makeText(OperCollectPackActivity.this, getString(R.string.create_success),
+								Toast.LENGTH_SHORT).show();			
 					}else{
-						Toast.makeText(OperCollectPackActivity.this, "创建失败", Toast.LENGTH_SHORT).show();
+						Toast.makeText(OperCollectPackActivity.this, getString(R.string.create_fail),
+								Toast.LENGTH_SHORT).show();
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -400,8 +428,9 @@ public class OperCollectPackActivity extends BaseActivity {
 		params.put("topic_id", bean.getTopic_id());
 		params.put("is_private", bean.get_private()==1 ? "1":"");
 		params.put("create_by", Session.getSession().getuId());
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/update_collectpack";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION )
+				.append("/update_collectpack").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -410,9 +439,10 @@ public class OperCollectPackActivity extends BaseActivity {
 				try {
 					String state = response.getString("state");
 					if(StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){
-						Toast.makeText(OperCollectPackActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
+						Toast.makeText(OperCollectPackActivity.this, getString(R.string.modify_success), Toast.LENGTH_SHORT).show();
 					}else{
-						Toast.makeText(OperCollectPackActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
+						Toast.makeText(OperCollectPackActivity.this, getString(R.string.modify_fail),
+								Toast.LENGTH_SHORT).show();
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -439,17 +469,5 @@ public class OperCollectPackActivity extends BaseActivity {
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		packVo.closeDB();
-		super.onDestroy();
-	}
 
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
-	}	
 }

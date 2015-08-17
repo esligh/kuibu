@@ -68,30 +68,32 @@ public class ExploreRankFragment extends BaseFragment implements
 	private void loadFromArray(JSONArray arr,String action)
 	{
 			try{
-				for (int i = 0; i < arr.length(); i++) {
-				    JSONObject temp = (JSONObject) arr.get(i);
-				    MateListItem bean = new MateListItem();
-				    bean.setId(temp.getString("cid"));
-				    bean.setType(Integer.parseInt(temp.getString("type")));
-				    bean.setTitle(temp.getString("title"));
-				    bean.setSummary(temp.getString("content"));
-				    bean.setItemPic(temp.getString("image_url"));
-				    bean.setCreateBy(temp.getString("create_by"));
-				    bean.setTopText(temp.getString("name"));
-				    bean.setTopUrl(temp.getString("photo"));
-				    bean.setUserSex(temp.getString("sex"));
-				    bean.setUserSignature(temp.getString("signature"));
-				    bean.setPackId(temp.getString("pid"));
-				    bean.setCreateBy(temp.getString("create_by"));
-				    bean.setVoteCount(temp.getInt("vote_count"));
-				    bean.setCommentCount(temp.getInt("comment_count"));		
-				    if(action.equals("REQ_NEWDATA")){
-				    	mdatas.add(0,bean);
-				    }else{
-				    	mdatas.add(bean);
-				    }				    
+				if(arr.length()>0){
+					for (int i = 0; i < arr.length(); i++) {
+					    JSONObject temp = (JSONObject) arr.get(i);
+					    MateListItem bean = new MateListItem();
+					    bean.setId(temp.getString("cid"));
+					    bean.setType(Integer.parseInt(temp.getString("type")));
+					    bean.setTitle(temp.getString("title"));
+					    bean.setSummary(temp.getString("abstract"));
+					    bean.setItemPic(temp.getString("image_url"));
+					    bean.setCreateBy(temp.getString("create_by"));
+					    bean.setTopText(temp.getString("name"));
+					    bean.setTopUrl(temp.getString("photo"));
+					    bean.setUserSex(temp.getString("sex"));
+					    bean.setUserSignature(temp.getString("signature"));
+					    bean.setPackId(temp.getString("pid"));
+					    bean.setCreateBy(temp.getString("create_by"));
+					    bean.setVoteCount(temp.getInt("vote_count"));
+					    bean.setCommentCount(temp.getInt("comment_count"));		
+					    if(action.equals("REQ_NEWDATA")){
+					    	mdatas.add(0,bean);
+					    }else{
+					    	mdatas.add(bean);
+					    }				    
+					}
+					showView();
 				}
-				showView();
 			}catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -125,7 +127,9 @@ public class ExploreRankFragment extends BaseFragment implements
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
-						JSONArray arr = new JSONArray(data); 						
+						JSONArray arr = new JSONArray(data);
+						loadFromArray(arr,action);
+						rankList.loadComplete();
 						if(arr.length()>0){
 							if(action.equals("REQ_NEWDATA")){
 								JSONArray oldarr = KuibuApplication.getCacheInstance()
@@ -134,14 +138,9 @@ public class ExploreRankFragment extends BaseFragment implements
 						    			StaticValue.LOCALCACHE.DEFAULT_CACHE_SIZE);
 						    	KuibuApplication.getCacheInstance()
 						    	.put(StaticValue.LOCALCACHE.HOME_RANK_CACHE, newarr);
-							}
-							loadFromArray(arr,action);
-						}else{
-						//	Toast.makeText(getActivity(), 
-						//			"没有数据啦！",Toast.LENGTH_SHORT).show();
+							}							
 						}			
-					}
-					rankList.loadComplete();
+					}					
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -168,8 +167,7 @@ public class ExploreRankFragment extends BaseFragment implements
 	
 	private void showView() {
 		if (rankAdapter == null) {
-			rankAdapter = new MateListViewItemAdapter(getActivity(),
-					mdatas);
+			rankAdapter = new MateListViewItemAdapter(getActivity(),mdatas,true);
 			rankList.setAdapter(rankAdapter);
 		} else {
 			rankAdapter.updateView(mdatas);
@@ -177,7 +175,15 @@ public class ExploreRankFragment extends BaseFragment implements
 	}
 	
 	@Override
-	public void onLoad(String tag) {	
+	public void onLoadMore() {	
 		loadData("REQ_HISTORY");
+	}
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		mdatas.clear();
+		mdatas = null ;
 	}
 }

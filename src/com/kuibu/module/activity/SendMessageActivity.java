@@ -98,7 +98,7 @@ public class SendMessageActivity extends BaseActivity
 	}
 	
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		// TODO Auto-generated method stub
 		loadData();
 	}
@@ -186,7 +186,7 @@ public class SendMessageActivity extends BaseActivity
 		}else{
 			Map<String,String> params =new HashMap<String,String>();
 			params.put("sender_id", Session.getSession().getuId());
-			params.put("receiver_id", getIntent().getStringExtra("uid"));
+			params.put("receiver_id", getIntent().getStringExtra("sender_id"));
 			params.put("message", msg);			
 			final String URL = Constants.Config.SERVER_URI
 					+ Constants.Config.REST_API_VERSION + "/send_message";
@@ -233,47 +233,4 @@ public class SendMessageActivity extends BaseActivity
 			KuibuApplication.getInstance().addToRequestQueue(req);		
 		}
 	}
-
-	private void readMsg(String senderId)
-	{
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("receiver_id", Session.getSession().getuId());
-		params.put("sender_id", senderId);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/update_message";
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-			}
-		}) {
-			@Override
-			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put("Authorization", "Basic "
-						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
-								.replaceAll("\\s+", ""));
-				return headers;
-			}
-		};
-		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
-
 }

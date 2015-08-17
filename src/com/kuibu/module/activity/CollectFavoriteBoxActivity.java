@@ -12,12 +12,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,22 +47,21 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.adapter.FavoriteBoxAdapter;
 import com.kuibu.module.adapter.FavoriteBoxAdapter.HolderView;
-/**
- * 收藏夹页面 */
 
 public class CollectFavoriteBoxActivity extends BaseActivity{
+
 	private ListView boxList;
 	private List<Map<String, String>> mDatas = new ArrayList<Map<String, String>>();
 	private FavoriteBoxAdapter boxAdatper;
-	private FButton createboxBtn,cancelBtn ,confirmBtn ;
+	private FButton cancelBtn ,confirmBtn ;
 	private List<String> selIds = new LinkedList<String>();;
 	private List<String> selectedIds = null ;
 	private MultiStateView mMultiStateView;
 	private String cid ; 
 	private boolean hasSelected =false;  
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.favorite_box_activity);
 		mMultiStateView = (MultiStateView)findViewById(R.id.multiStateView);
@@ -74,6 +75,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
         });
 		boxList = (ListView) findViewById(R.id.favorite_box_list_view);
 		boxList.setOnTouchListener(new OnTouchListener() {				
+			@SuppressLint("ClickableViewAccessibility")
 			@Override
 			public boolean onTouch(View view, MotionEvent event) {
 				switch(event.getAction()){
@@ -88,7 +90,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view, int position,
 					long id) {
-				// TODO Auto-generated method stub
 				HolderView  holderView = (HolderView)view.getTag();
 				if(holderView ==null)
 					return ;
@@ -106,7 +107,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		cancelBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				finish();
 				overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 			}
@@ -116,52 +116,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		confirmBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				operFavorite();
-			}
-		});
-		
-		createboxBtn = (FButton) findViewById(R.id.create_favoritebox_bt);
-		createboxBtn.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				// TODO Auto-generated method stub
-				LinearLayout favoriteboxLayout = (LinearLayout) getLayoutInflater()
-						.inflate(R.layout.create_favorite_box_dlg, null);
-				final EditText box_name = (EditText) favoriteboxLayout
-						.findViewById(R.id.favorite_box_name_et);
-				final EditText box_desc = (EditText) favoriteboxLayout
-						.findViewById(R.id.favorite_box_desc_et);
-				final CheckBox box_cb = (CheckBox) favoriteboxLayout
-						.findViewById(R.id.favorte_box_dialog_cb);
-				
-				new AlertDialog.Builder(CollectFavoriteBoxActivity.this)
-						.setTitle("添加收藏夹")
-						.setView(favoriteboxLayout)
-						.setPositiveButton("确定",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface arg0,
-											int arg1) { 
-										boolean bcheck = box_cb.isChecked();
-										Map<String,String> params = new HashMap<String,String>();
-										params.put("box_name", box_name.getText().toString().trim());
-										params.put("box_desc", box_desc.getText().toString().trim());
-										params.put("is_private",bcheck ? "1":"");//python bool("") is False
-										params.put("create_by", Session.getSession().getuId());
-										mDatas.add(params);
-										requestAddbox(params);
-										showView();
-									}
-								})
-						.setNegativeButton("取消",
-								new DialogInterface.OnClickListener() {
-									@Override
-									public void onClick(DialogInterface arg0,
-											int arg1) {
-										// TODO Auto-generated method stub
-									}
-								}).show();
 			}
 		});
 		ActionBar actionBar = getSupportActionBar();
@@ -173,6 +128,81 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			getCollctedbox();
 		}
 		showView();
+	}
+
+	
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {		
+		super.onCreateOptionsMenu(menu);
+		MenuItem edit=menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
+        		StaticValue.MENU_ITEM.CREATE_ID,StaticValue.MENU_ORDER.FIRST_ID,
+        		getString(R.string.create_new_cbox));
+        edit.setIcon(getResources().getDrawable(R.drawable.ic_create_favbox));  
+        edit.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);         
+		return true; 
+	}
+
+	@SuppressLint("InflateParams")
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.onBackPressed();
+			break;
+		case StaticValue.MENU_ITEM.CREATE_ID:
+			LinearLayout favoriteboxLayout = (LinearLayout) getLayoutInflater()
+			.inflate(R.layout.create_favorite_box_dlg, null);
+			final EditText box_name = (EditText) favoriteboxLayout
+					.findViewById(R.id.favorite_box_name_et);
+			final EditText box_desc = (EditText) favoriteboxLayout
+					.findViewById(R.id.favorite_box_desc_et);
+			final CheckBox box_cb = (CheckBox) favoriteboxLayout
+					.findViewById(R.id.favorte_box_dialog_cb);
+			
+			new AlertDialog.Builder(CollectFavoriteBoxActivity.this)
+					.setTitle(getString(R.string.create_new_cbox))
+					.setView(favoriteboxLayout)
+					.setPositiveButton(getString(R.string.btn_confirm),
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) { 
+									boolean bcheck = box_cb.isChecked();
+									Map<String,String> params = new HashMap<String,String>();
+									params.put("box_name", box_name.getText().toString().trim());
+									params.put("box_desc", box_desc.getText().toString().trim());
+									params.put("is_private",bcheck ? "1":"");//python bool("") is False
+									params.put("create_by", Session.getSession().getuId());
+									requestAddbox(params);
+								}
+							})
+					.setNegativeButton(getString(R.string.btn_cancel),
+							new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface arg0,
+										int arg1) {
+								}
+							}).show();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+	}
+
+	
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDatas.clear();mDatas = null; 
+		selIds.clear();selIds = null;
 	}
 
 	private void showView() {
@@ -212,6 +242,8 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 									mDatas.add(item);
 								}
 								showView();
+							}
+							if(mDatas.size()>0){
 								mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 							}else{
 								mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
@@ -220,7 +252,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -249,7 +280,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -261,7 +291,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 						}						
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -278,20 +307,28 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 	}
 	
 	private void requestAddbox(Map<String,String> params) {
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/add_favoritebox";
-
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI) 
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/add_favoritebox").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
+
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){
+						
+						mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+						
+						Map<String,String> item = new HashMap<String,String>();
+					    item.put("box_id",response.getString("box_id"));
+						item.put("box_name", response.getString("box_name"));
+						item.put("item_desc", response.getString("box_desc"));
+						mDatas.add(item);
+						showView();
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -338,7 +375,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 	private void addFavorite(List<String> ids)
 	{
 		if(ids.size()<=0){
-			Toast.makeText(this, "请选择至少一个收藏夹", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, getString(R.string.choose_one), Toast.LENGTH_SHORT).show();
 		}
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("create_by", Session.getSession().getuId());
@@ -401,7 +438,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -412,7 +448,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 						overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -435,20 +470,5 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			this.onBackPressed();
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-	
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
-	}
+
 }

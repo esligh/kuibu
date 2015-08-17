@@ -44,18 +44,18 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 			@Override
 			public void onClick(View arg0) {
 				mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
-				loadData(true);
+				loadData();
 			}   	
         });
 		listView = (PaginationListView)findViewById(R.id.pagination_lv);
 		listView.setOnLoadListener(this);
-		loadData(true);
+		loadData();
 		showView();
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 	
-	private void loadData(final boolean firstLoad)
+	private void loadData()
 	{
 		mPackId = getIntent().getStringExtra("pack_id");
 		setTitle(getIntent().getStringExtra("pack_name"));
@@ -63,8 +63,9 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 		params.put("off", String.valueOf(datas.size()));
 		params.put("pid", mPackId);
 		params.put("data_type", "PACK_LIST");
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_collections";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/get_collections").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -82,7 +83,7 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 							    bean.setId(temp.getString("cid"));
 							    bean.setType(Integer.parseInt(temp.getString("type")));
 							    bean.setTitle(temp.getString("title"));
-							    bean.setSummary(temp.getString("content"));
+							    bean.setSummary(temp.getString("abstract"));
 							    bean.setItemPic(temp.getString("image_url"));
 							    bean.setCreateBy(temp.getString("create_by"));
 							    bean.setPackId(temp.getString("pid"));
@@ -94,13 +95,14 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 							    bean.setTopUrl(temp.getString("photo"));
 							    datas.add(bean);
 							}
-							showView();	
+						}
+						if(datas.size()>0){
 							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 						}else{
-							if(firstLoad)
-								mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
+							mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 						}
-					}
+						showView();
+					}	
 					listView.loadComplete();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -122,7 +124,7 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 	private void showView()
 	{
 		if(mAdapter == null){
-			mAdapter = new MateListViewItemAdapter(this, datas);
+			mAdapter = new MateListViewItemAdapter(this, datas,false);
 			listView.setAdapter(mAdapter);
 		}else{
 			mAdapter.updateView(datas);
@@ -130,8 +132,8 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 	}
 
 	@Override
-	public void onLoad(String tag) {
-		loadData(false);
+	public void onLoadMore() {
+		loadData();
 	}
 	
 	@Override

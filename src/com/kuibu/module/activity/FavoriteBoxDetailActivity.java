@@ -131,14 +131,14 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 				break;
 		 	case StaticValue.MENU_ITEM.CLEAR_ID:
 		 		new  AlertDialog.Builder(this)  
-            	.setTitle("删除")    
+            	.setTitle(getString(R.string.action_delete))    
             	.setMessage(getString(R.string.sure_clear_favorite))  
-            	.setPositiveButton("确定" , new DialogInterface.OnClickListener() {
+            	.setPositiveButton(getString(R.string.btn_confirm) , new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface arg0, int arg1) {
 						clearBox();
 					}				
-				}).setNegativeButton("取消" , new DialogInterface.OnClickListener() {
+				}).setNegativeButton(getString(R.string.btn_cancel) , new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface arg0, int arg1){}						
 				}).show();		 		
@@ -180,8 +180,9 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 		params.put("uid",Session.getSession().getuId());
 		params.put("box_id", mboxId);
 		params.put("off", String.valueOf(datas.size()));
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_favorite";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/get_favorite").toString();
 
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -199,14 +200,9 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 								    JSONObject obj = (JSONObject) arr.get(i);  
 								    item.setId(obj.getString("id"));
 								    item.setTitle(obj.getString("title"));
-								    item.setContent(obj.getString("content"));
+								    item.setSummary(obj.getString("abstract"));
 								    item.setVoteCount(obj.getString("vote_count"));
 								    item.setCreateBy(obj.getString("create_by"));
-								    item.setCreatorName(obj.getString("name"));
-									item.setCreatorPic(obj.getString("photo"));
-									item.setCreatorSex(obj.getString("sex"));
-									item.setCreatorSignature(obj.getString("signature"));
-									item.setCommentCount(obj.getString("comment_count"));
 								    datas.add(item);
 								}
 								showView();								
@@ -235,8 +231,9 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("uid",Session.getSession().getuId());
 		params.put("box_id", mboxId);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/clear_favoritebox";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+								.append(Constants.Config.REST_API_VERSION)
+								.append("/clear_favoritebox").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -277,8 +274,8 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 		params.put("uid",Session.getSession().getuId());
 		params.put("cid", datas.get(position).getId());
 		params.put("box_id", mboxId);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/del_favorite";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+		.append(Constants.Config.REST_API_VERSION).append("/del_favorite").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

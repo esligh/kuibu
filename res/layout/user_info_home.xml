@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/android_spaces_large"
         android:background="?homeHeaderBackground" >
 
         <ImageView
@@ -22,25 +22,26 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/android_spaces_small"
+            android:layout_marginBottom="@dimen/android_spaces_small"
+            android:layout_marginLeft="@dimen/android_spaces"
             android:layout_toRightOf="@id/user_photo" >
 
             <TextView
                 android:id="@+id/user_nick_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="4dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="4dp"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textStyle="bold">
             </TextView>
 
             <ImageView
                 android:id="@+id/user_sex_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/icon_super_small_width"
+                android:layout_height="@dimen/icon_super_small_height"
+                android:scaleType="centerCrop"
+                android:layout_marginLeft="@dimen/android_spaces_small"
                 android:layout_toRightOf="@id/user_nick_name"
                 android:contentDescription="@null" />
 
@@ -49,10 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/user_nick_name"
-                android:paddingBottom="4dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="4dp"
+                android:layout_marginTop="@dimen/android_spaces"
                 android:text="@string/profession_default"
                 android:textColor="@color/white"
                 android:textSize="15sp" >
@@ -64,8 +62,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/user_photo"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="@dimen/android_spaces"
+            android:layout_marginTop="@dimen/android_spaces"
             android:textColor="@color/white"
             android:textSize="14sp" >
         </TextView>
@@ -75,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/android_spaces_large"
         android:background="?homeHeaderBackground"
         android:orientation="horizontal" >
 
@@ -83,8 +81,8 @@
             android:id="@+id/follow_me_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="@dimen/android_spaces_medium"
+            android:layout_marginRight="@dimen/android_spaces_medium"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical" >
@@ -119,8 +117,8 @@
             android:id="@+id/my_follow_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="@dimen/android_spaces_medium"
+            android:layout_marginRight="@dimen/android_spaces_medium"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical" >
@@ -155,8 +153,8 @@
             android:id="@+id/pack_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="@dimen/android_spaces_medium"
+            android:layout_marginRight="@dimen/android_spaces_medium"
             android:clickable="true"
             android:focusable="true"
             android:orientation="vertical" >
@@ -195,8 +193,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
             android:src="@drawable/ic_followers" />
 
         <TextView
@@ -237,7 +235,7 @@
             android:id="@+id/user_favoritebox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/android_spaces_medium"
             android:padding="6dp"           
             android:background="?listItemBackground"             
             android:focusable="true"
@@ -248,16 +246,16 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
             android:background="?android:attr/listDivider" />
 
         <TextView
             android:id="@+id/user_topic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:padding="6dp"                  
+            android:layout_margin="@dimen/android_spaces_medium"
+            android:padding="@dimen/android_spaces_small"                  
             android:background="?listItemBackground"  
             android:focusable="true"
             android:clickable="true"           
@@ -281,7 +279,7 @@
 		<LinearLayout
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:layout_margin="16dp"
+		    android:layout_margin="@dimen/android_spaces_large"
 		    android:orientation="horizontal">
 	        <TextView
 	            android:layout_width="80dp"
@@ -292,21 +290,21 @@
 	            android:id="@+id/user_residence_tv"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_marginLeft="8dp"
+	            android:layout_marginLeft="@dimen/android_spaces"
 	            android:textSize="16sp" />	        
 		</LinearLayout>
 		
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
             android:background="?android:attr/listDivider" />
 		
         <LinearLayout
 		    android:layout_width="match_parent"
 		    android:layout_height="wrap_content"
-		    android:layout_margin="16dp"
+		    android:layout_margin="@dimen/android_spaces_large"
 		    android:orientation="horizontal">
 	        
 	        <TextView
@@ -318,7 +316,7 @@
 	            android:id="@+id/user_email_tv"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_marginLeft="8dp"
+	            android:layout_marginLeft="@dimen/android_spaces"
 	            android:textSize="16sp" />	        
         </LinearLayout>    
     </LinearLayout>
@@ -326,7 +324,7 @@
     <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
             android:background="?android:attr/listDivider" />     
 </LinearLayout>

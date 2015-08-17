@@ -26,7 +26,7 @@ public class UserInfoActivity extends BaseActivity {
 			fragment = new UserInfoContentFragment();
 			fm.beginTransaction().add(R.id.fragmentContainer,fragment).commit();
 		}
-		setTitle("主页");
+		setTitle(getString(R.string.home_page));
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
@@ -38,18 +38,21 @@ public class UserInfoActivity extends BaseActivity {
 	        if(Session.getSession().isLogin()){
 	        	if(Session.getSession().getuId().equals(uid)){
 	        		MenuItem edit=menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
-			        		StaticValue.MENU_ITEM.EDIT_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,"修改");	        
-			        edit.setIcon(getResources().getDrawable(R.drawable.ic_action_edit));  
+			        		StaticValue.MENU_ITEM.EDIT_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,
+			        		getString(R.string.action_modify));	        
+			        edit.setIcon(getResources().getDrawable(R.drawable.ic_edit_light));  
 			        edit.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	        	}else {
 	        		MenuItem sendMsg = menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
-	        				StaticValue.MENU_ITEM.SEND_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,"私信");
+	        				StaticValue.MENU_ITEM.SEND_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,
+	        				getString(R.string.private_letter));
 	        		sendMsg.setIcon(getResources().getDrawable(R.drawable.ic_action_message));
 	        		sendMsg.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	        	}     	
 	        }   
 	        MenuItem share=menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
-	        		StaticValue.MENU_ITEM.SHARE_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID+1,"分享");
+	        		StaticValue.MENU_ITEM.SHARE_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID+1,
+	        		getString(R.string.share));
 	        share.setIcon(getResources().getDrawable(R.drawable.ic_action_share));
 	        share.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	        return true;
@@ -68,17 +71,18 @@ public class UserInfoActivity extends BaseActivity {
 	        		overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 	        		break;
 	        	case StaticValue.MENU_ITEM.SHARE_ID:
-	        		Toast.makeText(getApplicationContext(), "share", Toast.LENGTH_SHORT).show();
+	        		Toast.makeText(getApplicationContext(), "开发中...", Toast.LENGTH_SHORT).show();
 	        		break;
 	        	case StaticValue.MENU_ITEM.SEND_ID:
 	        		if(Session.getSession().isLogin()){
 		        		String uid = getIntent().getStringExtra(StaticValue.USERINFO.USER_ID);
 		        		intent = new Intent(UserInfoActivity.this,SendMessageActivity.class);
-		        		intent.putExtra("uid", uid);
+		        		intent.putExtra("sender_id", uid);
 		        		startActivity(intent);
 		        		overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 	        		}else{
-	        			Toast.makeText(this,"请先登录或者注册", Toast.LENGTH_SHORT).show();
+	        			Toast.makeText(this,getString(R.string.need_login), 
+	        					Toast.LENGTH_SHORT).show();
 	        		}
 	        		break;
 	        }

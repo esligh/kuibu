@@ -64,7 +64,7 @@ public class DataUtils {
 				len = oldArr.length();				
 				buffer.append(",");
 				for (int i = 0; i < len && i<limit; i++) {
-					JSONObject obj = (JSONObject) oldArr.get(i);
+					JSONObject obj = (JSONObject) oldArr.get(i);					
 					if (i == len - 1 || i == limit-1)
 						buffer.append(obj.toString());
 					else
@@ -76,6 +76,5 @@ public class DataUtils {
 		} catch (Exception e) {
 		}
 		return null;
-
 	}
 }

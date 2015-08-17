@@ -12,6 +12,7 @@ public class CollectionBean implements Serializable{
 	public String type ;
 	public String title ; 
 	public String content ; 
+	public String cover ; 
 	public String createDate ; 
 	public String createBy ; 
 	public int isPublish ;
@@ -61,6 +62,15 @@ public class CollectionBean implements Serializable{
 	}
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	
+	public String getCover() {
+		return cover;
+	}
+
+	public void setCover(String cover) {
+		this.cover = cover;
 	}
 
 	public String getCreateDate() {

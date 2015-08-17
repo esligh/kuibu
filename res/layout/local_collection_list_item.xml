@@ -2,29 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="?listItemBackground"
     android:descendantFocusability="blocksDescendants" >
 
-    <TextView
-        android:id="@+id/collection_title_tv"
+    <RelativeLayout
+        android:id="@+id/top_ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:textColor="?listItemTextColor"
-        android:textSize = "18sp"/>
-
+        android:layout_height="wrap_content"      
+        android:layout_marginTop="@dimen/android_spaces"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large">   
+             
+        	<ImageView
+			    android:id="@+id/published_icon"
+			    android:layout_width="@dimen/icon_super_small_width"
+			    android:layout_height="@dimen/icon_super_small_height"
+			    android:layout_alignParentRight="true"
+			    android:layout_marginLeft="@dimen/android_spaces"
+			    android:scaleType="centerCrop"
+			    android:src="@drawable/ic_wait_publish"
+			    android:contentDescription="@null"/>
+        			
+		    <TextView
+		        android:id="@+id/collection_title_tv"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+            	android:layout_toLeftOf="@id/published_icon"
+		        android:textColor="?listItemTextColor"
+		        android:textSize = "18sp"/>		    
+		       
+	</RelativeLayout>
+	    
     <TextView
         android:id="@+id/collection_desc_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/collection_title_tv"
-        android:layout_marginTop = "5dp"
-        android:layout_marginLeft="16dp"
+        android:layout_below="@id/top_ll"
+        android:layout_marginTop = "@dimen/android_spaces_small"
+        android:layout_marginLeft="@dimen/android_spaces_large"
         android:layout_marginRight="30dp"
-        android:layout_marginBottom="5dp"        
+        android:layout_marginBottom="@dimen/android_spaces_small"        
         android:textColor="?listItemExtraTextColor"
         android:textSize="16sp"         
         android:ellipsize="end"
@@ -35,9 +53,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/collection_desc_tv"
-       	android:layout_marginRight="16dp"
-       	android:layout_marginLeft="16dp"
-       	android:layout_marginBottom="5dp"
+       	android:layout_marginRight="@dimen/android_spaces_large"
+       	android:layout_marginLeft="@dimen/android_spaces_large"
+       	android:layout_marginBottom="@dimen/android_spaces"
        	android:textColor="?listItemExtraTextColor"
         android:layout_alignParentRight="true"        
         android:layout_alignParentBottom="true"

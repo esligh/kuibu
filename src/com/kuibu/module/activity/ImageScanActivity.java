@@ -80,6 +80,16 @@ public class ImageScanActivity extends ActionBarActivity {
 		});
 	}
 
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		mGroupMap.clear();mGroupMap = null ; 
+		list.clear();list = null ;
+	}
+
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub

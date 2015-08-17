@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kuibu.custom.widget.BadgeView;
-import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

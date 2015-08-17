@@ -26,7 +26,6 @@ import com.viewpagerindicator.SlidingTabIndicator;
  */
 public  class ExplorePageFragment extends Fragment 
 {
-	private final int DEFAULT_BACKUP_TABPAGE_NUM = 3;	
 	private List<TabTitleObject> exportpageTabTitle = null; 
 	private TabPageViewAdapter adapter= null;
 	private ViewPager pager ; 
@@ -55,7 +54,6 @@ public  class ExplorePageFragment extends Fragment
 			else{
 				adapter.updateView(exportpageTabTitle);
 			}		    
-			pager.setOffscreenPageLimit(DEFAULT_BACKUP_TABPAGE_NUM); 
 			SlidingTabIndicator indicator = (SlidingTabIndicator)rootView.findViewById(R.id.indicator);
 		    indicator.setViewPager(pager);
 		   	indicator.setOnPageChangeListener(new SimpleOnPageChangeListener() {

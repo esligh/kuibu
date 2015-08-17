@@ -14,7 +14,9 @@ import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.model.bean.FocusColumnItemBean;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.FocusColumnItemAdapter;
-
+/**
+ * unused:)
+ * */
 public class FocusColumnFragment extends Fragment implements OnLoadListener {
 	private PaginationListView paginationLv = null;
 	private FocusColumnItemAdapter fuAdapter = null;
@@ -23,10 +25,10 @@ public class FocusColumnFragment extends Fragment implements OnLoadListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_focus_listview,
+		View rootView = inflater.inflate(R.layout.activity_pagination_listview,
 				container, false);
 		paginationLv = (PaginationListView) rootView
-				.findViewById(R.id.focous_listview);
+				.findViewById(R.id.pagination_lv);
 		paginationLv.setOnLoadListener(this);
 		initFocusUData();
 		showFoucsUView();
@@ -48,7 +50,7 @@ public class FocusColumnFragment extends Fragment implements OnLoadListener {
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		// TODO Auto-generated method stub
 
 	}

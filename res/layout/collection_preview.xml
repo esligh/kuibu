@@ -1,16 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.kuibu.custom.widget.NotifyingScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?listViewBackground">
+    android:scrollbars="none" >
 
-    <include android:id="@+id/toolbar" layout="@layout/toolbar" />
-
-    <us.feras.mdv.MarkdownView
-        android:id="@+id/preview_webview"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?listViewBackground" />
-</LinearLayout>
+        android:orientation="vertical" >
+
+       <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/image_header"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/header_bg"/>
+                   
+        </FrameLayout>
+        
+		<TextView
+		    android:id="@+id/title"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="@dimen/android_spaces_large"
+		    android:layout_marginLeft="@dimen/android_spaces_large"
+		    android:layout_marginRight="@dimen/android_spaces_large"
+		    android:textSize="20sp"
+		    android:textStyle="bold"
+		    android:textColor="?listItemTextColor"/>
+		
+		<LinearLayout 
+		    android:id="@+id/content_ll"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:orientation="vertical">
+            		    
+		</LinearLayout>       
+    </LinearLayout>
+
+</com.kuibu.custom.widget.NotifyingScrollView>

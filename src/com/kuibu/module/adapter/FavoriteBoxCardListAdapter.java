@@ -53,9 +53,7 @@ public class FavoriteBoxCardListAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.collect_list_item_card, parent,false);            
             holder = new ViewHolder();
             holder.box_name_tv = (TextView) convertView.findViewById(R.id.listitem_card_box_name);
-            holder.item_title_tv_0= (TextView) convertView.findViewById(R.id.list_item_card_title_0);
-            holder.item_title_tv_1= (TextView) convertView.findViewById(R.id.list_item_card_title_1);
-            holder.item_title_tv_2= (TextView) convertView.findViewById(R.id.list_item_card_title_2);           
+            holder.item_title_tv= (TextView) convertView.findViewById(R.id.list_item_card_title);          
             holder.box_count = (TextView) convertView.findViewById(R.id.box_listitem_card_count);           
             holder.dividerLine = convertView.findViewById(R.id.list_item_seperator);
             convertView.setTag(holder);
@@ -68,24 +66,15 @@ public class FavoriteBoxCardListAdapter extends BaseAdapter {
         holder.box_count.setText(count+"个收藏");
         if(Integer.parseInt(count) > 0){        	      
         	String[] titles = items.get(position).get("titles").split(",");
-        	
-        	if(titles.length >= 1){
-        		holder.item_title_tv_0.setVisibility(View.VISIBLE);
-        		holder.item_title_tv_0.setText("1."+titles[0]);
-        	}
-        	if(titles.length >= 2){
-        		holder.item_title_tv_1.setVisibility(View.VISIBLE);
-        		holder.item_title_tv_1.setText("2."+titles[1]);
-        	}
-        	if(titles.length >= 3){
-        		holder.item_title_tv_2.setVisibility(View.VISIBLE);
-        		holder.item_title_tv_2.setText("3."+titles[2]);
+        	StringBuilder builder = new StringBuilder();
+        	for(int i=0;i<titles.length;i++){
+        		builder.append(i+1).append(". ").append(titles[i]).append("\n");
         	}        	
+        	holder.item_title_tv.setVisibility(View.VISIBLE);
+        	holder.item_title_tv.setText(builder.toString());
         	holder.dividerLine.setVisibility(View.VISIBLE);        	
         }else{        	
-        	holder.item_title_tv_0.setVisibility(View.GONE);
-        	holder.item_title_tv_1.setVisibility(View.GONE);
-        	holder.item_title_tv_2.setVisibility(View.GONE);        	
+        	holder.item_title_tv.setVisibility(View.GONE);     	
         	holder.dividerLine.setVisibility(View.GONE);        	
         }
         return convertView;
@@ -93,9 +82,7 @@ public class FavoriteBoxCardListAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         private TextView box_name_tv;
-        private TextView item_title_tv_0;
-        private TextView item_title_tv_1;
-        private TextView item_title_tv_2;
+        private TextView item_title_tv;
         private TextView box_count;
         private View dividerLine ; 
     }

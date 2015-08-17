@@ -16,7 +16,7 @@
     <string name="insert_img">插入图片</string>
     <string name="edit">编辑</string>
     <string name="create_new_cbox">新建收藏夹</string>
-    <string name="create_new_cpack">新建收集册</string>
+    <string name="create_new_cpack">新建集册</string>
     <string name="user_name">姓名</string>
     <string name="user_pwd">密码</string>
     <string name="user_pwdconfirm">确认密码</string>
@@ -78,19 +78,40 @@
     <string name="look_at">查看</string>    
     <string name="report">举报</string>
     <string name="like">喜欢</string>
+    <string name="setting_cover">设置封面</string>
     
-    <!-- title -->
-    <string name="add_user_pic">添加头像</string>
-    
-    <!-- menu text -->
-    <string name="action_search_for">搜索</string>
+    <!-- action -->
+    <string name="action_create">创建</string>
+    <string name="action_modify">修改</string>
+    <string name="action_save">保存</string>
+  	<string name="create_success">创建成功</string>
+  	<string name="create_fail">创建失败</string>
+  	<string name="modify_success">修改成功</string>
+  	<string name="modify_fail">修改失败</string>  
+  	<string name="publish_success">发布成功</string>
+  	<string name="publish_fail">发布失败</string>
+  	<string name="publishing">发布中&#8230;</string>
+  	<string name="update_fail">更新失败</string>  
+  	<string name="action_search_for">搜索</string>
     <string name="action_notify">通知</string>
     <string name="action_move">移动</string>
     <string name="action_delete">删除</string>
+  	<string name="delete_fail">删除失败</string>
+  	
+    <!-- title -->
+    <string name="add_user_pic">添加头像</string>
+    <string name="mod_user_pic">修改头像</string>
     
+    <string name="home_page">主页</string>
+    
+    <!-- menu text -->
     <string name="navigation_drawer_open">open</string>
     <string name="navigation_drawer_close">close</string>
-    <!--  -->
+  
+    
+    <!-- pref-->
+    <string name="account_protect">已保护 (邮箱已验证)</string>
+    <string name="account_no_protect">未保护 (邮箱待验证)</string>
     
     <!-- welcome activity text-->    
     <string name="drawer_login_by_qq_sort">QQ登录</string>
@@ -122,8 +143,6 @@
 	<string name="comment_no_empty">评论内容不能为空</string>
 	<string name="write_down_comment">写下你的评论&#8230;</string>
 	<string name ="sure_clear_favorite">确定要清空该收藏夹?</string>
-	<string name ="modify_success">修改成功</string>
-	<string name ="modify_fail">修改失败</string>
 	<string name ="load_fail">加载失败</string>
 	<string name = "poor_net_state">当前网络状态不好</string>
 	<string name="press_again_exit">再按一次退出</string>
@@ -133,11 +152,30 @@
 	
 	<string name="register_fail">注册失败</string>	
 	<string name="upload_pic_fail">头像上传失败</string>
+	<string name="input_text">请输入</string>
 	<string name="input_name">请输入姓名</string>
 	<string name="input_email">请输入邮箱</string>
 	<string name="input_signature">请输入签名</string>
 	<string name="input_password">请输入密码</string>
 	<string name="password_not_equal">两次输入的密码不一样</string>
+	<string name="have_topic">已经有这个话题啦</string>
+	<string name="max_topic">最多添加5个话题哦</string>
+	<string name="need_topic">还没添加话题呢</string>
+	<string name="need_name">还没输入名称呢</string>
+	<string name="thanks_for_report">感谢您的举报,我们会尽快处理</string>
+	<string name="no_new_version">暂无新版本</string>
+	<string name="quest_update">是否更新?</string>
+	<string name="update_version">版本更新</string>
+	<string name="updating">正在更新</string>
+	<string name="choose_one">请至少选择一项</string>
+	
+	<string name="vote_prompt">赞了这条收集</string>
+	<string name="comment_prompt">评论了这条收集</string>
+	<string name="collect_prompt">收藏了这条收集</string>
+	<string name="content_empty">发布内容不能为空</string>
+	<string name="empty_name">名称不能为空</string>
+	<string name="no_desc">暂无描述</string>
+	
 		
 	<!-- menu text -->
 	<string name ="operator">操作</string>

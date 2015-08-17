@@ -67,7 +67,7 @@
     
     
     <string-array name="notify_message_name">
-        <item>评论</item>
+        <item>与我有关</item>
         <item>私信</item>
     </string-array>
     
@@ -146,5 +146,9 @@
   	     <item>欺诈</item>
   	     <item>政治</item>
   	     <item>其他</item> 	    
+  	</string-array>
+  	
+  	<string-array name="cover_item">
+  	     <item>设置封面</item> 
   	</string-array>
 </resources>

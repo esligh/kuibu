@@ -43,7 +43,7 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_focus_listview,
+		View rootView = inflater.inflate(R.layout.activity_pagination_listview,
 				container, false);
 		mMultiStateView = (MultiStateView) rootView
 				.findViewById(R.id.multiStateView);
@@ -58,7 +58,7 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 					}
 				});
 		topicList = (PaginationListView) rootView
-				.findViewById(R.id.focous_listview);
+				.findViewById(R.id.pagination_lv);
 		topicList.setOnLoadListener(this);
 		topicList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -79,13 +79,19 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 				getActivity().overridePendingTransition(
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
 			}
-		});
-		topicList.setTag("focus_topic");
-		loadData();
-		showView();
+		});	
 		return rootView;
 	}
-
+	
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		//refresh
+		mdatas.clear();
+		loadData();
+	}
+	
 	private void loadData() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", getArguments().getString("uid"));
@@ -103,19 +109,20 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
+						if(arr.length()>0){
+							for (int i = 0; i < arr.length(); i++) {
+								JSONObject temp = (JSONObject) arr.get(i);
+								TopicItemBean item = new TopicItemBean();
+								item.setId(temp.getString("tid"));
+								item.setTopic(temp.getString("topic_name"));
+								item.setIntroduce(temp.getString("topic_desc"));
+								item.setFocusCount(temp.getString("focus_count"));
 
-						for (int i = 0; i < arr.length(); i++) {
-							JSONObject temp = (JSONObject) arr.get(i);
-							TopicItemBean item = new TopicItemBean();
-							item.setId(temp.getString("tid"));
-							item.setTopic(temp.getString("topic_name"));
-							item.setIntroduce(temp.getString("topic_desc"));
-							item.setFocusCount(temp.getString("focus_count"));
-
-							item.setTopicPicUrl(temp.getString("topic_pic"));
-							mdatas.add(item);
+								item.setTopicPicUrl(temp.getString("topic_pic"));
+								mdatas.add(item);
+							}
+							showView();
 						}
-						showView();
 						if (mdatas.size() > 0) {
 							mMultiStateView
 									.setViewState(MultiStateView.ViewState.CONTENT);
@@ -152,7 +159,7 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		// TODO Auto-generated method stub
 		loadData();
 	}

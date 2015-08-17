@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.ContextThemeWrapper;
@@ -14,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kuibu.common.utils.PreferencesUtils;
+import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.TabTitleObject;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.TabPageViewAdapter;
@@ -23,16 +23,15 @@ import com.viewpagerindicator.SlidingTabIndicator;
  * @author ThinkPad
  * explore page fragment 
  */
-public class FocusPageFragment extends Fragment {
-	private final int DEFAULT_BACKUP_TABPAGE_NUM = 3;	
+public class FocusPageFragment extends Fragment {	
 	private List<TabTitleObject> focuspageTabTitle = null; 
 	private TabPageViewAdapter adapter= null;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		boolean isDarkTheme = mPerferences.getBoolean("dark_theme", false); 
+			Bundle savedInstanceState) { 
+		boolean isDarkTheme = PreferencesUtils.getBooleanByDefault(getActivity(), 
+				StaticValue.PrefKey.DARK_THEME_KEY, false);
 		Context contextTheme = null ; 
 		if(isDarkTheme){
 			 contextTheme = new ContextThemeWrapper(getActivity(),
@@ -53,7 +52,6 @@ public class FocusPageFragment extends Fragment {
 		else{
 			adapter.updateView(focuspageTabTitle);
 		}
-		pager.setOffscreenPageLimit(DEFAULT_BACKUP_TABPAGE_NUM);
 		SlidingTabIndicator indicator= (SlidingTabIndicator)rootView.findViewById(R.id.focus_indicator);
 	    indicator.setViewPager(pager);
 	    if(isDarkTheme){

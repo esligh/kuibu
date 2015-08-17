@@ -25,6 +25,16 @@ public class MDHandBookActivity extends BaseActivity{
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 		
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		bookView.destroyDrawingCache();
+		bookView.removeAllViews();
+		bookView.destroy();
+	}
+
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

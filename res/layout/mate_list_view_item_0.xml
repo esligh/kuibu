@@ -12,7 +12,7 @@
         android:layout_marginLeft="@dimen/android_spaces_large"
         android:layout_marginRight="@dimen/android_spaces_large"
         android:layout_marginTop="@dimen/android_spaces_small"
-        android:layout_marginBottom="@dimen/android_spaces_small"
+        android:layout_marginBottom="@dimen/android_spaces_super_small"
         android:background="?listItemBackground"
         android:orientation="horizontal" 
         android:focusable="false">
@@ -45,10 +45,10 @@
         android:background="?listItemBackground"
         android:ellipsize="end"
         android:maxLines="2"
-        android:paddingLeft="@dimen/android_spaces_large"
-        android:paddingRight="@dimen/android_spaces_large"
-        android:paddingTop="@dimen/android_spaces_small"
-        android:paddingBottom="@dimen/android_spaces_small"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:paddingTop="@dimen/android_spaces_super_small"
+        android:paddingBottom="@dimen/android_spaces_super_small"
         android:textColor="?listItemTextColor"
         android:textSize="17sp"
         android:focusable="false"/>
@@ -58,11 +58,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="3"
         android:layout_marginLeft="@dimen/android_spaces_large"
         android:layout_marginRight="@dimen/android_spaces_large"
-        android:paddingTop="@dimen/android_spaces_small"
-        android:paddingBottom="@dimen/android_spaces_small"
+        android:paddingTop="@dimen/android_spaces_super_small"
+        android:paddingBottom="@dimen/android_spaces_super_small"        
         android:textColor="?listItemExtraTextColor"       
         android:background="?listItemBackground"
         android:textSize="15sp"     
@@ -73,8 +73,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/android_spaces_small"
         android:layout_marginBottom="@dimen/android_spaces_small"
-        android:paddingLeft="@dimen/android_spaces_large"
-        android:paddingRight="@dimen/android_spaces_large">
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:layout_marginLeft="@dimen/android_spaces_large">
 
         <TextView
             android:id="@+id/mate_0_count_tv"
@@ -91,8 +91,8 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/mate_0_count_tv"
             android:layout_toStartOf="@id/mate_0_count_tv"
-            android:layout_marginLeft="@dimen/android_spaces"
-            android:layout_marginRight="@dimen/android_spaces"
+            android:layout_marginLeft="@dimen/android_spaces_small"
+            android:layout_marginRight="@dimen/android_spaces_small"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_vote_normal"
             android:contentDescription="@null"/>

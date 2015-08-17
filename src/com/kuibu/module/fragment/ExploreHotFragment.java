@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -87,25 +86,28 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 
 	private void loadFromArray(JSONArray arr,String action) {
 		try {
-			for (int i = 0; i < arr.length(); i++) {
-				JSONObject temp = (JSONObject) arr.get(i);
-				Map<String, String> item = new HashMap<String, String>();
-				item.put("box_id", temp.getString("box_id"));
-				item.put("box_name", temp.getString("box_name"));
-				item.put("focus_count", temp.getString("focus_count"));
-				item.put("box_desc", temp.getString("box_desc"));
-				item.put("box_count", temp.getString("box_count"));
-				item.put("uid", temp.getString("uid"));
-				item.put("user_name", temp.getString("name"));
-				item.put("user_sex", temp.getString("sex"));
-				item.put("user_pic", temp.getString("photo"));
-			    if(action.equals("REQ_NEWDATA")){
-			    	mdatas.add(0,item);
-			    }else{
-			    	mdatas.add(item);
-			    }
+			if(arr.length()>0){
+
+				for (int i = 0; i < arr.length(); i++) {
+					JSONObject temp = (JSONObject) arr.get(i);
+					Map<String, String> item = new HashMap<String, String>();
+					item.put("box_id", temp.getString("box_id"));
+					item.put("box_name", temp.getString("box_name"));
+					item.put("focus_count", temp.getString("focus_count"));
+					item.put("box_desc", temp.getString("box_desc"));
+					item.put("box_count", temp.getString("box_count"));
+					item.put("uid", temp.getString("uid"));
+					item.put("user_name", temp.getString("name"));
+					item.put("user_sex", temp.getString("sex"));
+					item.put("user_pic", temp.getString("photo"));
+				    if(action.equals("REQ_NEWDATA")){
+				    	mdatas.add(0,item);
+				    }else{
+				    	mdatas.add(item);
+				    }
+				}
+				showView();
 			}
-			showView();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -141,6 +143,9 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
+						loadFromArray(arr,action);
+						hotList.loadComplete();
+						
 						if(arr.length()>0){
 							if(action.equals("REQ_NEWDATA")){
 								JSONArray oldarr = KuibuApplication.getCacheInstance()
@@ -149,10 +154,8 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 						    			StaticValue.LOCALCACHE.DEFAULT_CACHE_SIZE);
 						    	KuibuApplication.getCacheInstance()
 						    	.put(StaticValue.LOCALCACHE.HOME_HOT_CACHE, newarr);
-							}
-							loadFromArray(arr,action);
-						}						
-						hotList.loadComplete();
+							}							
+						}													
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();					
@@ -161,10 +164,8 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
-				if(mdatas!=null && mdatas.isEmpty())
+				if(mdatas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				else
-					Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
 				hotList.loadComplete();
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
@@ -186,8 +187,17 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		// TODO Auto-generated method stub
 		loadData("REQ_HISTORY");
 	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		mdatas.clear();
+		mdatas = null ;
+	}
+		
 }

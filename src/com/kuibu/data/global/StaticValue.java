@@ -43,6 +43,7 @@ public class StaticValue {
 		public static final int REQ_CODE_SETTING = 2001; 
 		public static final int FAVORITE_BOX_REQCODE = 8001;
 		public static final int REPORT_COMPLETE = 3001 ; 
+		public static final int PREVIEW_OVER = 3002 ; 
 	}
 	public static class MENU_GROUP{
 		public static final int SAVE_ACTIONBAR_GROUP = 100;
@@ -56,12 +57,14 @@ public class StaticValue {
 		public static final int EDIT_ID = 202 ; 		
 		public static final int SHARE_ID = 203 ;
 		public static final int SEND_ID = 204 ; 
-		public static final int CLEAR_ID = 205 ; 
+		public static final int CLEAR_ID = 205 ;
+		public static final int CREATE_ID = 205; 
 	}
 	
 	public static class MENU_ORDER{
 		public static final int SAVE_ORDER_ID = 1; 
-		public static final int CANCEL_ORDER_ID = 2; 
+		public static final int CANCEL_ORDER_ID = 2;
+		public static final int FIRST_ID = 1; 
 	}
 	
 	public static class IMAGE_SCAN{
@@ -240,6 +243,8 @@ public class StaticValue {
 	public static class MSG_CODE
 	{
 		public static final int SHOW_TOOLS = 1000; 
+		public static final int HIDE_TOOLS = 1001 ; 
+		
 	}
 		
 }

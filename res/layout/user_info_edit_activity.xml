@@ -1,216 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?listCardViewBackground"
-    android:orientation="vertical" >
-
-    <ImageView
-        android:id="@+id/user_pic_iv"
-        android:layout_width="@dimen/user_pic_width_big"
-        android:layout_height="@dimen/user_pic_height_big"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/icon_addpic_unfocused" />
-    
+    android:background="?listCardViewBackground">
+	
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/layout_border_line_up_light"
         android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/user_name_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/user_pic_iv"
+            android:layout_width="@dimen/user_pic_width_big"
+            android:layout_height="@dimen/user_pic_height_big"
             android:layout_gravity="center"
-            android:background="?listItemBackground"
-            android:paddingBottom="10dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:textSize="16sp"
-            android:textColor="?listItemTextColor" />
-		
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="?android:attr/listDivider" />
-        
+            android:layout_marginBottom="@dimen/android_spaces_large"
+            android:layout_marginTop="@dimen/android_spaces_large"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_addpic_unfocused" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
-            android:layout_gravity="center"
-            android:orientation="horizontal" >
+            android:layout_marginBottom="@dimen/android_spaces_medium"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:layout_marginTop="@dimen/android_spaces_medium"
+            android:background="@drawable/layout_border_line_up_light"
+            android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/user_sex_m_tv"
-                android:layout_width="0dp"
+                android:id="@+id/user_name_tv"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_gravity="center"
                 android:background="?listItemBackground"
-                android:gravity="center"
                 android:clickable="true"
-            	android:focusable="true"
-                android:padding="10dp"
-                android:text="@string/sex_male"
-                android:textSize="16sp"
-                android:textColor="?listItemTextColor" />
-            
-             <View
-            	android:layout_width="1px"
-            	android:layout_height="match_parent"
-            	android:background="?android:attr/listDivider" />
-             
+                android:focusable="true"
+                android:paddingBottom="@dimen/android_spaces_medium"
+                android:paddingLeft="@dimen/android_spaces_large"
+                android:paddingRight="@dimen/android_spaces_large"
+                android:paddingTop="@dimen/android_spaces_medium"
+                android:textColor="?listItemTextColor"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?android:attr/listDivider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="1dp"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/user_sex_m_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="?listItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:padding="@dimen/android_spaces_medium"
+                    android:text="@string/sex_male"
+                    android:textColor="?listItemTextColor"
+                    android:textSize="16sp" />
+
+                <View
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:background="?android:attr/listDivider" />
+
+                <TextView
+                    android:id="@+id/user_sex_f_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="1"
+                    android:background="?listItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:padding="@dimen/android_spaces_medium"
+                    android:text="@string/sex_female"
+                    android:textColor="?listItemTextColor"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:orientation="vertical" >
+
             <TextView
-                android:id="@+id/user_sex_f_tv"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="1dp"
+                android:text="@string/hint_extra" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?listItemTextColor" />
+
+            <TextView
+                android:id="@+id/user_signature_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/android_spaces_medium"
+                android:layout_marginTop="@dimen/android_spaces_medium"
                 android:background="?listItemBackground"
                 android:clickable="true"
-            	android:focusable="true"
+                android:focusable="true"
                 android:padding="10dp"
-                android:gravity="center"
-                android:text="@string/sex_female"
-                android:textSize="16sp" 
-                android:textColor="?listItemTextColor"/>
+                android:textColor="?listItemTextColor"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profession" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?listItemTextColor" />
+
+            <TextView
+                android:id="@+id/user_profession_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/android_spaces_medium"
+                android:layout_marginTop="@dimen/android_spaces_medium"
+                android:background="?listItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/android_spaces_medium"
+                android:textColor="?listItemTextColor"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/residence" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?listItemTextColor" />
+
+            <TextView
+                android:id="@+id/user_residence_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/android_spaces_medium"
+                android:layout_marginTop="@dimen/android_spaces_medium"
+                android:background="?listItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/android_spaces_medium"
+                android:textColor="?listItemTextColor"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/android_spaces"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/education" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?listItemTextColor" />
+
+            <TextView
+                android:id="@+id/user_education_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/android_spaces_medium"
+                android:layout_marginTop="@dimen/android_spaces_medium"
+                android:background="?listItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="@dimen/android_spaces_medium"
+                android:textColor="?listItemTextColor"
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="vertical" >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/hint_extra" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="?listItemTextColor" />
-
-        <TextView
-            android:id="@+id/user_signature_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="?listItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="10dp"
-            android:textSize="16sp"
-            android:textColor="?listItemTextColor" />
-    </LinearLayout>
-
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/profession" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="?listItemTextColor" />
-
-        <TextView
-            android:id="@+id/user_profession_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"
-            android:background="?listItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="10dp"
-            android:textSize="16sp"
-            android:textColor="?listItemTextColor" />
-    </LinearLayout>
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/residence" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="?listItemTextColor" />
-
-        <TextView
-            android:id="@+id/user_residence_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"
-            android:background="?listItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="10dp"
-            android:textSize="16sp"
-            android:textColor="?listItemTextColor" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:orientation="vertical" >
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/education" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="?listItemTextColor" />
-
-        <TextView
-            android:id="@+id/user_education_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="?listItemBackground"
-            android:padding="10dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:textSize="16sp"
-            android:textColor="?listItemTextColor" />
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

@@ -1,5 +1,6 @@
 package com.kuibu.custom.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -7,7 +8,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
-
 import com.kuibu.module.activity.R;
 
 public class PaginationListView extends ListView implements OnScrollListener {
@@ -33,6 +33,7 @@ public class PaginationListView extends ListView implements OnScrollListener {
 		initView(context);
 	}
 
+	@SuppressLint("InflateParams")
 	private void initView(Context context) {
 		LayoutInflater mInflater = LayoutInflater.from(context);
 		footerView = mInflater.inflate(R.layout.footer,null);
@@ -45,10 +46,10 @@ public class PaginationListView extends ListView implements OnScrollListener {
 	public void onScrollStateChanged(AbsListView view, int scrollState) {
 		if (lastVisibleItem == totalItemCount
 				&& scrollState == SCROLL_STATE_IDLE) {
-			if (!isLoading) {
+			if (!isLoading && onLoadListener!=null) {
 				isLoading = true;
 				footerView.setVisibility(View.VISIBLE);				
-				onLoadListener.onLoad((String) view.getTag());
+				onLoadListener.onLoadMore();
 			}
 		}
 	}
@@ -67,7 +68,7 @@ public class PaginationListView extends ListView implements OnScrollListener {
 	}
 
 	public interface OnLoadListener {
-		void onLoad(String tag);
+		void onLoadMore();
 	}
 
 	public void loadComplete() {

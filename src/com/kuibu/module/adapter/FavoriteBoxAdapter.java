@@ -14,14 +14,15 @@ import android.widget.TextView;
 import com.kuibu.module.activity.R;
 
 public class FavoriteBoxAdapter extends BaseAdapter{
+	
 	private  List<Map<String,String>> datas ; 
-	private  LayoutInflater mInflater;  
+	private  Context context ;  
 	private  List<String> selIds ; 
 	
 	public FavoriteBoxAdapter(Context context, List<Map<String,String>> datas,List<String> selIds)
 	{
+		this.context = context ; 
 		this.datas = datas ; 
-		this.mInflater = LayoutInflater.from(context);
 		this.selIds = selIds;
 	}
 	
@@ -31,6 +32,7 @@ public class FavoriteBoxAdapter extends BaseAdapter{
 		this.selIds = selIds; 
 		this.notifyDataSetChanged();
 	}
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
@@ -57,7 +59,7 @@ public class FavoriteBoxAdapter extends BaseAdapter{
 		HolderView holder ; 
 		if(convertView == null){
 			holder = new HolderView();
-			convertView  = mInflater.inflate(R.layout.favorite_box_list_item, parent,false);
+			convertView  = LayoutInflater.from(context).inflate(R.layout.favorite_box_list_item, parent,false);
 			holder.box_name_tv = (TextView) convertView.findViewById(R.id.favorite_box_name_tv);
 			holder.box_cb = (CheckBox)convertView.findViewById(R.id.favorite_box_cb);
 			convertView.setTag(holder);

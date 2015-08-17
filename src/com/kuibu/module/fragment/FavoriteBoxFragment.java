@@ -116,6 +116,7 @@ public class FavoriteBoxFragment extends Fragment {
 		if(hidden){ //hiding now 
 			
 		}else{//showing now 
+			datas.clear();
 			loadData();
 		}
 	}

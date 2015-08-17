@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.data.global.Constants;
@@ -52,7 +53,6 @@ public class TopicInfoActivity extends BaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.topic_info);
 		topic_pic_iv = (ImageView) findViewById(R.id.topic_pic_iv);
@@ -81,7 +81,6 @@ public class TopicInfoActivity extends BaseActivity {
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view, int position,
 					long id) {
-				// TODO Auto-generated method stub
 				@SuppressWarnings("unchecked")
 				Map<String,Object> uInfo = (Map<String,Object>)viewAdapter.getAdapter().getItem(position);
 				Intent intent = new Intent(TopicInfoActivity.this,UserInfoActivity.class);
@@ -99,11 +98,10 @@ public class TopicInfoActivity extends BaseActivity {
 		focusBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				if(Session.getSession().isLogin()){
-					doFocus(bIsFocus);
+					doFocus();
 				}else{
-					Toast.makeText(TopicInfoActivity.this, "请先登录或注册用户.", 
+					Toast.makeText(TopicInfoActivity.this, getString(R.string.need_login), 
 							Toast.LENGTH_SHORT).show();
 				}		
 			}
@@ -139,7 +137,6 @@ public class TopicInfoActivity extends BaseActivity {
 	
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
 		super.onBackPressed();
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}	
@@ -163,14 +160,14 @@ public class TopicInfoActivity extends BaseActivity {
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
+	
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						JSONObject obj = new JSONObject(response
 								.getString("result"));
 						if (obj != null) {
-							follow_count_tv.setText(obj.getString("focus_count"));
+							follow_count_tv.setText(DataUtils.formatNumber(obj.getInt("focus_count")));
 							bIsFocus = obj.getBoolean("is_focus");
 							if(bIsFocus){
 								int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
@@ -180,7 +177,7 @@ public class TopicInfoActivity extends BaseActivity {
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
+				
 					e.printStackTrace();
 				}
 			}
@@ -206,7 +203,7 @@ public class TopicInfoActivity extends BaseActivity {
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
+				
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -227,7 +224,6 @@ public class TopicInfoActivity extends BaseActivity {
 						showView();
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -243,14 +239,14 @@ public class TopicInfoActivity extends BaseActivity {
 		
 	}
 	
-	private void doFocus(final boolean bfocus)
+	private void doFocus()
 	{		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("follower_id", Session.getSession().getuId());
 		params.put("type", StaticValue.SERMODLE.TOPIC_TYPE);
 		params.put("obj_id", topic_id);
 		final String URL;
-		if(bfocus){ 
+		if(bIsFocus){ 
 			URL = Constants.Config.SERVER_URI
 					+ Constants.Config.REST_API_VERSION + "/del_follows";
 		}else{
@@ -261,22 +257,26 @@ public class TopicInfoActivity extends BaseActivity {
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						if(bfocus){
+						int count = Integer.parseInt(follow_count_tv.getText().toString().trim());
+						if(bIsFocus){
+							follow_count_tv.setText(DataUtils.formatNumber(count-1));
 							int btnColor= getResources().getColor(R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText(getString(R.string.btn_focus));						
-						}else{
+							focusBtn.setText(getString(R.string.btn_focus));	
+							bIsFocus = false; 
+						}else{							
+							follow_count_tv.setText(DataUtils.formatNumber(count+1));
 							int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);						
 							focusBtn.setText(getString(R.string.btn_cancel_focus));
+							bIsFocus = true; 
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 			}

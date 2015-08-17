@@ -4,7 +4,9 @@
 	
 	<dimen name="android_spaces">8dp</dimen>
     <dimen name="android_spaces_large">16dp</dimen>
+    <dimen name="android_spaces_medium">10dp</dimen>
     <dimen name="android_spaces_small">4dp</dimen>  
+    <dimen name="android_spaces_super_small">2dp</dimen>
          
 	<dimen name="navigation_drawer_width">180dp</dimen>
 	<dimen name="login_pic_width">40dp</dimen>

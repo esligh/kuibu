@@ -17,7 +17,7 @@ public class SqLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){  
         db.execSQL(" CREATE TABLE IF NOT EXISTS collection " +  
                 " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, pid INTEGER ,tid INTEGER, type INTEGER, title VARCHAR ,"
-                + " content TEXT, is_pub INTEGER DEFAULT 0 ,is_sync INTEGER DEFAULT 0 , create_by BIGINT, cid VARCHAR UNIQUE ,last_modify DATETIME DEFAULT CURRENT_TIMESTAMP)");
+                + " content TEXT, cover VARCHAR,is_pub INTEGER DEFAULT 0 ,is_sync INTEGER DEFAULT 0 , create_by BIGINT, cid VARCHAR UNIQUE ,last_modify DATETIME DEFAULT CURRENT_TIMESTAMP)");
         db.execSQL( "CREATE TABLE IF NOT EXISTS imglib " +
                 " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, cid INTEGER, img_url VARCHAR, "
                 + " last_modify  DATETIME DEFAULT CURRENT_TIMESTAMP)");

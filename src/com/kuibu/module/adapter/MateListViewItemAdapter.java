@@ -10,12 +10,12 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,7 +35,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 	private Context context;
 	private DisplayImageOptions options;
 	private int listItemDefaultImageId;
-	
+	private boolean bwithTop ; 
 	public class HolderViewForText{
 		RelativeLayout layout0_rl;
 		TextView user_tv;
@@ -56,18 +56,19 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		TextView count_tv; 
 	}
 	
-	public class HolderViewForPics{
-		TextView user_tv;
-		ImageView user_icon_iv;
-		TextView title_tv;
-		GridView item_pics_gv;
-		ImageView count_pic_iv; 
-		TextView count_tv; 
-	}
+//	public class HolderViewForPics{
+//		TextView user_tv;
+//		ImageView user_icon_iv;
+//		TextView title_tv;
+//		GridView item_pics_gv;
+//		ImageView count_pic_iv; 
+//		TextView count_tv; 
+//	}
 
-	public MateListViewItemAdapter(Context context, List<MateListItem> datas) {
+	public MateListViewItemAdapter(Context context, List<MateListItem> datas,boolean bwithtop) {
 		this.datas = datas;
-		this.context = context ; 
+		this.context = context ;
+		this.bwithTop = bwithtop;
 		initStyle();
 	}
 	
@@ -147,7 +148,6 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		HolderViewForText holderforText = null;
 		HolderViewForTextPics holderfortextPic = null;
-		HolderViewForPics holderforpics = null;
 		int item_type = getItemViewType(position);
 		if (convertView == null) {
 			switch (item_type) {
@@ -193,23 +193,6 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				convertView.setTag(holderfortextPic);
 				break;
 			case MateListItem.ItemType.PICS_MODE:
-				convertView = LayoutInflater.from(context).inflate(R.layout.mate_list_view_item_2,
-						parent,false);
-				holderforpics = new HolderViewForPics();
-				holderforpics.user_tv = (TextView) convertView
-						.findViewById(R.id.mate_2_user_tv);
-				holderforpics.user_icon_iv = (ImageView) convertView
-						.findViewById(R.id.mate_2_user_pic_iv);
-				holderforpics.title_tv = (TextView) convertView
-						.findViewById(R.id.mate_2_item_title_tv);
-				holderforpics.item_pics_gv = (GridView) convertView
-						.findViewById(R.id.mate_2_pics_grid_gv);
-
-				holderforpics.count_tv = (TextView) convertView
-						.findViewById(R.id.mate_2_count_tv);
-				holderforpics.count_pic_iv= (ImageView) convertView
-						.findViewById(R.id.mate_2_count_pic_iv);
-				convertView.setTag(holderforpics);
 				break;
 			}
 		} else {
@@ -221,32 +204,39 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				holderfortextPic = (HolderViewForTextPics) convertView.getTag();
 				break;
 			case MateListItem.ItemType.PICS_MODE:
-				holderforpics = (HolderViewForPics) convertView.getTag();
 				break;
 			}
 		}
 		switch(item_type){
 		case MateListItem.ItemType.TEXT_MODE:
-			holderforText.layout0_rl.setOnClickListener(new OnClickListener(){
-				@Override
-				public void onClick(View view) {
-					Intent intent = new Intent(context, UserInfoActivity.class);
-					intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
-					intent.putExtra(StaticValue.USERINFO.USER_ID,
-							datas.get(position).getCreateBy());
-					intent.putExtra(StaticValue.USERINFO.USER_SEX,
-							datas.get(position).getUserSex());
-					intent.putExtra(StaticValue.USERINFO.USER_NAME,
-							datas.get(position).getTopText());
-					intent.putExtra(StaticValue.USERINFO.USER_SIGNATURE, datas
-							.get(position).getUserSignature());
-					
-					intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
-							datas.get(position).getTopUrl());
-					context.startActivity(intent);
-					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
-				}				
-			});
+			if(!bwithTop){
+				holderforText.layout0_rl.setVisibility(View.GONE);				
+			}else{
+				holderforText.layout0_rl.setVisibility(View.VISIBLE);
+				holderforText.layout0_rl.setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent(context, UserInfoActivity.class);
+						intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
+						intent.putExtra(StaticValue.USERINFO.USER_ID,
+								datas.get(position).getCreateBy());
+						intent.putExtra(StaticValue.USERINFO.USER_SEX,
+								datas.get(position).getUserSex());
+						intent.putExtra(StaticValue.USERINFO.USER_NAME,
+								datas.get(position).getTopText());
+						intent.putExtra(StaticValue.USERINFO.USER_SIGNATURE, datas
+								.get(position).getUserSignature());
+						
+						intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
+								datas.get(position).getTopUrl());
+						context.startActivity(intent);
+						((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+					}				
+				});
+				holderforText.user_tv.setText(datas.get(position).getTopText());			
+				ImageLoader.getInstance().displayImage(datas.get(position).getTopUrl(),
+						holderforText.user_icon_iv,options,null);				
+			}
 			
 			holderforText.title_tv.setOnClickListener(new OnClickListener(){
 				@Override
@@ -266,12 +256,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 					// TODO Auto-generated method stub
 					startAction(position);
 				}
-			});
-			holderforText.user_tv.setText(datas.get(position).getTopText());
-			
-			ImageLoader.getInstance().displayImage(datas.get(position).getTopUrl(),
-					holderforText.user_icon_iv,options,null);
-			
+			});			
 			holderforText.title_tv.setText(datas.get(position)
 					.getTitle());
 			holderforText.content_tv.setText(datas.get(position)
@@ -280,29 +265,40 @@ public class MateListViewItemAdapter extends BaseAdapter {
 					DataUtils.formatNumber(datas.get(position).getVoteCount()));
 			break;
 		case MateListItem.ItemType.TEXT_PICS_MODE:
-			holderfortextPic.layout1_rl.setOnClickListener(new OnClickListener() {				
-				@Override
-				public void onClick(View arg0) {
-					Intent intent = new Intent(context,
-							UserInfoActivity.class);
-					intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT,
-							true);
-					intent.putExtra(StaticValue.USERINFO.USER_ID, datas
-							.get(position).getCreateBy());
-					intent.putExtra(StaticValue.USERINFO.USER_SEX,
-							datas.get(position).getUserSex());
-					intent.putExtra(StaticValue.USERINFO.USER_NAME,
-							datas.get(position).getTopText());
-					intent.putExtra(
-							StaticValue.USERINFO.USER_SIGNATURE, datas
-									.get(position)
-									.getUserSignature());
-					intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
-							datas.get(position).getTopUrl());
-					context.startActivity(intent);
-					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
-				}
-			});
+			if(!bwithTop){
+				holderfortextPic.layout1_rl.setVisibility(View.GONE);
+			}else{
+				holderfortextPic.layout1_rl.setVisibility(View.VISIBLE);
+				holderfortextPic.layout1_rl.setOnClickListener(new OnClickListener() {				
+					@Override
+					public void onClick(View arg0) {
+						Intent intent = new Intent(context,
+								UserInfoActivity.class);
+						intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT,
+								true);
+						intent.putExtra(StaticValue.USERINFO.USER_ID, datas
+								.get(position).getCreateBy());
+						intent.putExtra(StaticValue.USERINFO.USER_SEX,
+								datas.get(position).getUserSex());
+						intent.putExtra(StaticValue.USERINFO.USER_NAME,
+								datas.get(position).getTopText());
+						intent.putExtra(
+								StaticValue.USERINFO.USER_SIGNATURE, datas
+										.get(position)
+										.getUserSignature());
+						intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
+								datas.get(position).getTopUrl());
+						context.startActivity(intent);
+						((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+					}
+				});
+				holderfortextPic.user_tv.setText(datas.get(position)
+						.getTopText());
+
+				ImageLoader.getInstance().displayImage(datas.get(position).getTopUrl(),
+						holderfortextPic.user_icon_iv,options,null);
+			}
+			
 			holderfortextPic.title_tv.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View arg0) {
@@ -328,15 +324,15 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				}
 			});
 			
-			holderfortextPic.user_tv.setText(datas.get(position)
-					.getTopText());
-			holderfortextPic.content_tv.setText(datas.get(position)
-					.getSummary());
+			String summary = datas.get(position).getSummary();
+			if(TextUtils.isEmpty(summary) || summary.equals("null")){
+				holderfortextPic.content_tv.setText("(多图)");
+			}else{
+				holderfortextPic.content_tv.setText(summary);
+			}			
 			holderfortextPic.count_tv.setText(
 					DataUtils.formatNumber(datas.get(position).getVoteCount()));	
 			
-			ImageLoader.getInstance().displayImage(datas.get(position).getTopUrl(),
-					holderfortextPic.user_icon_iv,options,null);
 			
 			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 			boolean noPic = pref.getBoolean(StaticValue.PrefKey.NO_PICTRUE_KEY, false);
@@ -365,13 +361,6 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		case MateListItem.ItemType.TEXT_PICS_MODE:
 			intent = new Intent(LayoutInflater.from(context).getContext(),CollectionDetailActivity.class);
 			intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
-//			intent.putExtra("title", datas.get(position).getTitle());
-//			intent.putExtra("type", datas.get(position).getType());
-//			intent.putExtra("create_by", datas.get(position).getCreateBy());
-//			intent.putExtra("name", datas.get(position).getTopText());
-//			intent.putExtra("photo", datas.get(position).getTopUrl());
-//			intent.putExtra("signature", datas.get(position).getUserSignature());
-//			intent.putExtra("sex", datas.get(position).getUserSex());
 			break;
 		default:
 			break;

@@ -84,8 +84,10 @@ public class CollectPackListActivity extends BaseActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", uid);
 		params.put("off", String.valueOf(datas.size()));
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_userpacks";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/get_userpacks").toString();
+		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -103,8 +105,7 @@ public class CollectPackListActivity extends BaseActivity implements
 							item.setPack_name(obj.getString("pack_name"));
 							item.setPack_desc(obj.getString("pack_desc"));
 							item.setTopic_id(obj.getString("topic_ids"));
-							item.setCollect_count(obj
-									.getString("collect_count"));
+							item.setCollect_count(obj.getString("collect_count"));
 							datas.add(item);
 						}
 						showView();
@@ -144,7 +145,7 @@ public class CollectPackListActivity extends BaseActivity implements
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		// TODO Auto-generated method stub
 		loadData();
 	}

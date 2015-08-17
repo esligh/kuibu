@@ -15,7 +15,7 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none" >
+        android:scrollbars="none">
 
         <LinearLayout
             android:id="@+id/container_ll"
@@ -52,15 +52,13 @@
                     android:background="@drawable/header_ab_shadow" />
             </FrameLayout>
             
-            <us.feras.mdv.MarkdownView
-                android:id="@+id/content"
+            <LinearLayout
+                android:id = "@+id/content_ll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingEnd="@dimen/android_spaces_large"
-                android:paddingLeft="@dimen/android_spaces_large"
-                android:paddingRight="@dimen/android_spaces_large"
-                android:paddingStart="@dimen/android_spaces_large" />
-
+	            android:orientation="vertical">
+			</LinearLayout>
+			
             <LinearLayout
                 android:id="@+id/layout_tools"
                 android:layout_width="match_parent"
@@ -103,5 +101,4 @@
             </LinearLayout>
         </LinearLayout>
     </com.kuibu.custom.widget.NotifyingScrollView>
-
 </com.kuibu.custom.widget.MultiStateView>

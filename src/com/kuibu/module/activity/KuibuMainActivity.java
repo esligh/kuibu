@@ -487,7 +487,8 @@ public class KuibuMainActivity extends BaseActivity
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();					  
+		super.onDestroy();	
+				
 	}
 
 	@Override  
@@ -495,7 +496,7 @@ public class KuibuMainActivity extends BaseActivity
 	    super.onTrimMemory(level);  
 	    switch (level) {  
 	    case TRIM_MEMORY_UI_HIDDEN:  
-	        // 进行资源释放操作  
+	        
 	        break;  
 	    }  
 	} 

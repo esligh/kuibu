@@ -104,16 +104,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				Intent intent = new Intent(FavoriteBoxInfoActivity.this,
 						CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item_datas
-						.get(position).getId());
-				intent.putExtra("title", item_datas.get(position).getTitle());
-				intent.putExtra("content", item_datas.get(position).getContent());
-				intent.putExtra("create_by", item_datas.get(position).getCreateBy());
-				intent.putExtra("vote_count", item_datas.get(position).getVoteCount());
-				intent.putExtra("comment_count", item_datas.get(position).getCommentCount());
-				intent.putExtra("name", item_datas.get(position).getCreatorName());
-				intent.putExtra("photo",item_datas.get(position).getCreatorPic() );
-				intent.putExtra("signature", item_datas.get(position).getCreatorSignature());
-				intent.putExtra("sex", item_datas.get(position).getCreatorSex());		
+						.get(position).getId());	
 				startActivity(intent);
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}
@@ -229,8 +220,9 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", getIntent().getStringExtra("create_by"));
 		params.put("box_id", box_id);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_boxinfo";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+		.append(Constants.Config.REST_API_VERSION)
+		.append("/get_boxinfo").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -287,11 +279,13 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		params.put("obj_id", box_id);
 		final String URL;
 		if (bfocus) {
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/del_follows";
+			URL = new StringBuilder(Constants.Config.SERVER_URI)
+			.append(Constants.Config.REST_API_VERSION)
+			.append("/del_follows").toString();
 		} else {
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/add_follows";
+			URL = new StringBuilder(Constants.Config.SERVER_URI)
+			.append(Constants.Config.REST_API_VERSION)
+			.append("/add_follows").toString();
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
@@ -341,8 +335,9 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		params.put("box_id", box_id);
 		params.put("off", item_datas.size() + "");
 
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_boxlist";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_boxlist").toString();
 
 		JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, URL,
 				new JSONObject(params), new Response.Listener<JSONObject>() {
@@ -360,7 +355,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 									CollectionItemBean bean = new CollectionItemBean();
 									bean.setId(temp.getString("id"));
 									bean.setTitle(temp.getString("title"));
-									bean.setContent(temp.getString("content"));
+									bean.setSummary(temp.getString("abstract"));
 									bean.setCreateBy(temp.getString("create_by"));
 									bean.setVoteCount(temp.getString("vote_count"));
 								    bean.setCreatorSex(temp.getString("sex"));
@@ -405,8 +400,9 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		String create_by = getIntent().getStringExtra("create_by");
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", create_by);
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_userinfo";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_userinfo").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override

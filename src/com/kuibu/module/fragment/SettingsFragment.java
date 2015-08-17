@@ -50,6 +50,7 @@ import com.kuibu.module.activity.R;
 
 public class SettingsFragment extends PreferenceFragment implements
 		OnPreferenceChangeListener ,OnPreferenceClickListener{
+	
 	private OnPreChangeListener mListener = null;
 	private FinalHttp finalHttp = null;
 	private int mNewVersionCode ; 
@@ -95,8 +96,7 @@ public class SettingsFragment extends PreferenceFragment implements
 					public boolean onPreferenceClick(Preference arg0) {
 						BufferManager.clearAllCache(getActivity());
 						clearBuffer.setSummary("当前缓存大小"
-								+ BufferManager
-										.getTotalCacheSize(getActivity()));
+								+ BufferManager.getTotalCacheSize(getActivity()));
 						return true;
 					}
 				});
@@ -116,9 +116,9 @@ public class SettingsFragment extends PreferenceFragment implements
 					StaticValue.PrefKey.ACCOUNT_PROTECT);
 		if (StaticValue.REGSTATE.ACCOUNT_ACTIVATED.equals(Session.getSession()
 				.getRegState())) {
-			account.setSummary("已保护 (邮箱已验证)");
+			account.setSummary(getString(R.string.account_protect));
 		} else {
-			account.setSummary("未保护 (邮箱待验证)");
+			account.setSummary(getString(R.string.account_no_protect));
 		}
 
 		findPreference(StaticValue.PrefKey.NO_PICTRUE_KEY).setOnPreferenceChangeListener(this);
@@ -198,8 +198,9 @@ public class SettingsFragment extends PreferenceFragment implements
     
 	private void reqAppVersion()
 	{		
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_appinfo";
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+							.append(Constants.Config.REST_API_VERSION)
+							.append("/get_appinfo").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, null, 
 				new Response.Listener<JSONObject>() {
 			@Override
@@ -225,7 +226,7 @@ public class SettingsFragment extends PreferenceFragment implements
 						if(mNewVersionCode > curVersionCode){
 							doUpdate();
 						}else{
-							Toast.makeText(getActivity(), "暂无新版本", Toast.LENGTH_SHORT).show();
+							Toast.makeText(getActivity(), getString(R.string.no_new_version), Toast.LENGTH_SHORT).show();
 						}		
 					}
 				} catch (JSONException e) {
@@ -244,20 +245,20 @@ public class SettingsFragment extends PreferenceFragment implements
 	}
 	
 	private void doUpdate()
-	{          
-         String str= "是否更新?";    
-         Dialog dialog = new AlertDialog.Builder(getActivity()).setTitle("版本更新").setMessage(str)
-                 .setPositiveButton("确定",    
+	{              
+         Dialog dialog = new AlertDialog.Builder(getActivity()).setTitle(getString(R.string.update_version))
+        		 .setMessage(getString(R.string.quest_update))
+                 .setPositiveButton(getString(R.string.btn_confirm),    
                          new DialogInterface.OnClickListener() {    
                              @Override    
                              public void onClick(DialogInterface dialog,    
                                      int witch) {    
-                            	 mProDlg.setTitle("正在更新");   
+                            	 mProDlg.setTitle(getString(R.string.updating));   
                                  mProDlg.show();
                                  downLoadApp();    
                              }    
                          })    
-                 .setNegativeButton("取消",    
+                 .setNegativeButton(getString(R.string.btn_cancel),    
                          new DialogInterface.OnClickListener() {    
                              public void onClick(DialogInterface dialog,    
                                      int witch) {                                
@@ -267,8 +268,9 @@ public class SettingsFragment extends PreferenceFragment implements
 	}
 	
 	private void downLoadApp() {
-		String apkPath = Environment.getExternalStorageDirectory()
-				.getAbsolutePath() + '/'+ mAppVersionName;
+		String apkPath = new StringBuilder(
+				Environment.getExternalStorageDirectory().getAbsolutePath()) 
+				.append('/').append(mAppVersionName).toString();
 		File file = new File(apkPath);
 		if (file.exists()) {
 			file.delete();
@@ -302,7 +304,7 @@ public class SettingsFragment extends PreferenceFragment implements
 			@Override
 			public void onFailure(Throwable t, int errorNo, String strMsg) {
 				super.onFailure(t, errorNo, strMsg);
-				Toast.makeText(getActivity(), "下载失败", Toast.LENGTH_SHORT)
+				Toast.makeText(getActivity(), getString(R.string.update_fail), Toast.LENGTH_SHORT)
 						.show();
 				mProDlg.cancel();
 			}

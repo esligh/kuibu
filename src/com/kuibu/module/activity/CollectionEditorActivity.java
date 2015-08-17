@@ -132,15 +132,13 @@ public class CollectionEditorActivity extends ActionBarActivity {
 			return true;
 		case R.id.action_insert_img:
 			Bimp.clear();
-			
 			AlertDialog.Builder builder = new Builder(mContext,ALERTDLG_THEME);
-			builder.setTitle("插入图片");
+			builder.setTitle(getString(R.string.insert_img));
 			builder.setItems(
 					getResources().getStringArray(R.array.popup_menu_item),
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int pos) {
-							// TODO Auto-generated method stub
 							switch (pos) {
 							case 0:
 								mPhotoPath = takePhotoByCamera();
@@ -157,7 +155,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 			builder.show();
 			return true;
 		case R.id.action_preview:
-			previewNote();
+			previewCollection();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -188,18 +186,23 @@ public class CollectionEditorActivity extends ActionBarActivity {
 				mContent.getText().insert(mContent.getSelectionStart(),
 						markText);
 				break;
+			case StaticValue.RequestCode.PREVIEW_OVER:
+				if(collection!=null){
+					collection.cover = data.getStringExtra("cover_path");
+				}
+				break;
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	private void previewNote() {
+	private void previewCollection() {
 		saveNote();
 		Intent intent = new Intent(this, PreviewActivity.class);
 		intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ENTITY, collection);
 		intent.putExtra(StaticValue.EDITOR_VALUE.FROM_WHO,
 				StaticValue.EDITOR_VALUE.EDITOR_TO_PREVIEW);
-		startActivity(intent);
+		startActivityForResult(intent, StaticValue.RequestCode.PREVIEW_OVER);
 		overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 	}
 	
@@ -404,7 +407,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 
 	private boolean isSmartShortcutsActivated() {
 		return PreferenceManager.getDefaultSharedPreferences(mContext)
-				.getBoolean("", false);
+				.getBoolean("smartShortcuts", true);
 	}
 
 }

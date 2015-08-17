@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -40,6 +39,7 @@ import com.kuibu.module.adapter.HomeListViewItemAdapter;
  */
 
 public class HomePageFragment extends Fragment implements OnLoadListener{
+	
 	private HomeListViewItemAdapter homeListViewAdapter = null;
 	private List <MateListItem> mHomeDatas = new ArrayList <MateListItem>();
 	private PaginationListView mListView;  
@@ -49,7 +49,7 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_main, container,false);
+		View rootView = inflater.inflate(R.layout.fragment_homepage, container,false);
 		mMultiStateView = (MultiStateView) rootView.findViewById(R.id.multiStateView);
         mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
         .setOnClickListener(new View.OnClickListener() {
@@ -57,8 +57,8 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 			public void onClick(View arg0) {
 				mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
 				loadData("INIT",true);				
-			}   	
-        });          
+			}
+        });
 		mListView = (PaginationListView) rootView.findViewById(R.id.pagination_lv);
 		pullFreshlayout = (PullRefreshLayout)rootView.findViewById(R.id.swipeRefreshLayout);
 		pullFreshlayout.setRefreshStyle(PullRefreshLayout.STYLE_RING);
@@ -114,7 +114,7 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		loadData("UP",false);
 	}
 		
@@ -143,8 +143,11 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data); 
+						parseFromJson(arr,action);
+						pullFreshlayout.setRefreshing(false);
+						mListView.loadComplete();
+						
 						if(arr.length()>0){
-							parseFromJson(arr,action);
 							if(action.equals("INIT")&& bcache){
 							    	KuibuApplication.getCacheInstance()
 							    	.put(StaticValue.LOCALCACHE.HOME_LIST_CACHE, arr);
@@ -156,10 +159,8 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 							    	KuibuApplication.getCacheInstance()
 							    	.put(StaticValue.LOCALCACHE.HOME_LIST_CACHE, newarr);
 							}
-						}
-					}
-					pullFreshlayout.setRefreshing(false);
-					mListView.loadComplete();
+						}						
+					}					
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -172,8 +173,6 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				error.printStackTrace();
 				if(mHomeDatas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				else
-					Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
 				pullFreshlayout.setRefreshing(false);
 				mListView.loadComplete();
 			}
@@ -186,15 +185,15 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 	
 	private void parseFromJson(JSONArray arr,String action)
 	{
-		if(arr.length()>0){
-			try{
+		try{
+			if(arr.length()>0){ 
 				for (int i = 0; i < arr.length(); i++) {
 				    JSONObject temp = (JSONObject) arr.get(i);
 				    MateListItem bean = new MateListItem();
 				    bean.setId(temp.getString("cid"));
 				    bean.setType(Integer.parseInt(temp.getString("type")));
 				    bean.setTitle(temp.getString("title"));
-				    bean.setSummary(temp.getString("content"));
+				    bean.setSummary(temp.getString("abstract"));
 				    bean.setItemPic(temp.getString("image_url"));			    
 				    bean.setPackId(temp.getString("pid"));
 				    bean.setCreateBy(temp.getString("create_by"));
@@ -211,12 +210,11 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				    	mHomeDatas.add(bean);
 				    }						
 				}
-				showHomeView();	
-			}catch (JSONException e) {
-				e.printStackTrace();
-			}		
-			
-		}
+				showHomeView();	//有数据 刷新
+			}
+		}catch (JSONException e) {
+			e.printStackTrace();
+		}		
 		if(mHomeDatas.size()>0){
 			mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 		}else{

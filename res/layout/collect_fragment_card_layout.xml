@@ -28,7 +28,7 @@
                 android:clipToPadding="false"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="10dp"
-                android:padding="10dp"
+                android:padding="@dimen/android_spaces_medium"
                 android:scrollbarStyle="outsideOverlay"
                 tools:listitem="@layout/collect_list_item_card" />
         </LinearLayout>

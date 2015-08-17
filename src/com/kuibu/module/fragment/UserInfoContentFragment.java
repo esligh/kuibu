@@ -152,7 +152,7 @@ public final class UserInfoContentFragment extends Fragment implements
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					if(Session.getSession().isLogin()){
-						doFocus(bUserIsFollow);
+						doFocus();
 					}else{
 						Toast.makeText(getActivity(), getActivity().getString(R.string.need_login), 
 								Toast.LENGTH_SHORT).show();
@@ -189,7 +189,7 @@ public final class UserInfoContentFragment extends Fragment implements
 	{
 		boolean flag = this.getActivity().getIntent().getBooleanExtra(
 				StaticValue.USERINFO.SHOWLAYOUT, false);
-		String sex = "";
+		String sex = null;
 		if(!flag){
 			uInfo.put("uid", Session.getSession().getuId());
 			user_name_tv.setText(Session.getSession().getuName());
@@ -247,7 +247,7 @@ public final class UserInfoContentFragment extends Fragment implements
 				ImageLoader.getInstance().displayImage(url, user_photo_iv);
 			}				
 		}		
-		if(sex.equals("M")){
+		if(StaticValue.SERMODLE.USER_SEX_MALE.equals(sex)){
 			user_sex_iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_gender_m_w));
 		}else{
 			user_sex_iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_gender_f_w));
@@ -311,14 +311,14 @@ public final class UserInfoContentFragment extends Fragment implements
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
 	
-	private void doFocus(final boolean bfocus)
+	private void doFocus()
 	{		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("follower_id", Session.getSession().getuId());
 		params.put("type", StaticValue.SERMODLE.COLLECTOR_TYPE);
 		params.put("obj_id", (String)uInfo.get("uid"));
 		final String URL;
-		if(bfocus){ 
+		if(bUserIsFollow){ 
 			URL = new StringBuilder(Constants.Config.SERVER_URI)
 					.append(Constants.Config.REST_API_VERSION)
 					.append("/del_follows").toString();
@@ -335,14 +335,19 @@ public final class UserInfoContentFragment extends Fragment implements
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						if(bfocus){
+						int count = Integer.parseInt(follow_me_count_tv.getText().toString().trim());						
+						if(bUserIsFollow){
+							follow_me_count_tv.setText(DataUtils.formatNumber(count-1));
 							int btnColor= getResources().getColor(R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText(getActivity().getString(R.string.btn_focus));						
+							focusBtn.setText(getActivity().getString(R.string.btn_focus));
+							bUserIsFollow = false; 
 						}else{
+							follow_me_count_tv.setText(DataUtils.formatNumber(count+1));
 							int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);						
 							focusBtn.setText(getActivity().getString(R.string.btn_cancel_focus));
+							bUserIsFollow = true; 
 						}
 					}
 				} catch (JSONException e) {

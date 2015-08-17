@@ -18,12 +18,12 @@
 
         <com.kuibu.custom.widget.PaginationListView
             android:id="@+id/pagination_lv"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:clipToPadding="false"
             android:divider="@android:color/transparent"
-            android:dividerHeight="10dp"
-            android:padding="10dp"
+            android:dividerHeight="@dimen/android_spaces_medium"
+            android:padding="@dimen/android_spaces_medium"
             android:scrollbarStyle="outsideOverlay"
             tools:listitem="@layout/hot_collect_list_item" />
     </LinearLayout>

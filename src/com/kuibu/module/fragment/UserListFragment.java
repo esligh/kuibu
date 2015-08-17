@@ -166,7 +166,7 @@ public class UserListFragment extends Fragment implements OnLoadListener{
 	}
 
 	@Override
-	public void onLoad(String tag) {
+	public void onLoadMore() {
 		// TODO Auto-generated method stub
 		loadData();
 	}
