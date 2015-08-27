@@ -10,7 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:padding="10dp"
+        android:padding="@dimen/android_spaces"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="16sp" />
 
     <View
@@ -27,9 +28,9 @@
             android:id="@+id/pack_info_collection_vote_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
+            android:layout_margin="@dimen/android_spaces"
+            android:paddingLeft="@dimen/android_spaces"
+            android:paddingRight="@dimen/android_spaces"
             android:layout_centerVertical="true"
             android:textSize="14sp"
             android:textColor="@color/white"
@@ -45,7 +46,7 @@
         	android:gravity="start"
         	android:maxLines="3"
             android:textSize="14sp"
-            android:textColor="?listItemExtraTextColor" />
+            android:textColor="?android:attr/textColorSecondary" />
     </RelativeLayout>
 
 </LinearLayout>

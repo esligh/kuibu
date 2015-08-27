@@ -102,23 +102,23 @@ public class CollectionVo extends BaseDbVo {
     	} 	
     }
     
-    public void delete(String[] ids)
+    public void delete(ArrayList<String> ids)
     {
-    	if(ids==null || ids.length<=0)
+    	if(ids==null || ids.size()<=0)
     		return ;
 		StringBuffer cons = new StringBuffer(" _id " ); 
 		StringBuffer buffer = new StringBuffer( " in ( ");
-		for(int i =0;i<ids.length;i++){
+		for(int i =0;i<ids.size();i++){
 			buffer.append("?,");			            			
 		}          		
 		buffer = new StringBuffer(buffer.subSequence(0, buffer.length()-1));
 		buffer.append(" ) ");
-		delete(cons.append(buffer).toString(),ids);
+		delete(cons.append(buffer).toString(),(String[])ids.toArray(new String[ids.size()]));
     }
     
     public List<CollectionBean> queryAll() {  
         ArrayList<CollectionBean> collections = new ArrayList<CollectionBean>();  
-        Cursor c = getDB().rawQuery("SELECT _id,cid,pid,tid,type,title,content,cover,is_pub,is_sync,last_modify FROM collection ", null);  
+        Cursor c = getDB().rawQuery("SELECT _id,cid,pid,tid,type,title,content,cover,is_pub,is_sync,last_modify FROM collection order by last_modify desc ", null);  
         while (c.moveToNext()) {  
         	CollectionBean collection = new CollectionBean();  
         	collection._id = c.getString(c.getColumnIndex("_id")); 
@@ -166,6 +166,7 @@ public class CollectionVo extends BaseDbVo {
     	ArrayList<CollectionBean> collections = new ArrayList<CollectionBean>();
     	StringBuffer SQL = new StringBuffer(BASE_QUERY_STR);
     	SQL.append(" where ").append(cons);
+    	SQL.append(" order by last_modify desc");
         Cursor c = getDB().rawQuery(SQL.toString(),args);
         
         while (c.moveToNext()) {  

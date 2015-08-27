@@ -77,7 +77,6 @@ public class ImageScanGridAdapter extends BaseAdapter
 		ViewHolder holder = null;
 		if (convertView == null)
 		{
-
 			convertView = inflater.inflate(R.layout.item_published_grida,
 					parent, false);
 			holder = new ViewHolder();

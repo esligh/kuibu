@@ -52,6 +52,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -59,6 +60,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.StorageUtils;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.NotifyingScrollView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -73,6 +75,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
 
 public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
+	
 	public static final int ABSTRACT_MAX = 150 ; 
 	private MarkdownView previewWebView;
 	private boolean isEditIncoming = false;
@@ -89,6 +92,9 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 	private TextView titleTv ;  
 	private String mCoverPath = "";
 	private LinearLayout webViewcontainer;
+	private boolean bLockFlag1 = false; 
+	private boolean bLockFlag2 = false ;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);		
@@ -147,7 +153,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 		InJavaScriptObject jsObj = new InJavaScriptObject(this);
 		jsObj.setOnPageLoadFinishedListener(this);
 		previewWebView.addJavascriptInterface(jsObj, "injectedObject");
-		if(Build.VERSION.SDK_INT >= 19) {
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			previewWebView.getSettings().setLoadsImagesAutomatically(true);
 	    } else {
 	    	previewWebView.getSettings().setLoadsImagesAutomatically(false);
@@ -239,8 +245,8 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 			edit.setVisible(true);
 		}
 
-		if (collection == null
-				|| (collection.isPublish == 1 && collection.isSync == 1)) {
+		if (collection == null || (collection.isPublish == 1 && collection.isSync == 1)
+				|| collection.content.equals("")) {
 			pubMenu.setVisible(false);
 		} else {
 			pubMenu.setVisible(true);
@@ -383,16 +389,20 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 		}
 		
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("title", collection.getTitle());
-		params.put("type",images.size() > 0 ? String
-					.valueOf(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE)
-					: String.valueOf(StaticValue.EDITOR_VALUE.COLLECTION_TEXT));
+		collection.title = collection.getTitle();
+		params.put("title", collection.title);
+		
+		collection.type = images.size() > 0 ? String
+				.valueOf(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE)
+				: String.valueOf(StaticValue.EDITOR_VALUE.COLLECTION_TEXT);
+		params.put("type",collection.type);
 		if (collection.isPublish == 1 && collection.isSync == 0) { // 已经发布，未同步  update collection
 			params.put("cid", collection.cid);
+			bLockFlag1 = bLockFlag2 = false ; 
 			requestImginfo();			
 		} else {
 			collection.content = adjustMarkDownText(collection.getContent());
-			params.put("content", collection.content);	
+			params.put("content", collection.content);
 			params.put("abstract", getAbstract());
 			params.put("create_by", Session.getSession().getuId());
 			String descript = new StringBuffer(Session.getSession().getuId()).append(":")
@@ -414,7 +424,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 								.equals(state)) {
 							collection.cid = response.getString("cid");
 							if (images != null && images.size() > 0) {  //text-pic 
-								uploadImgs(images);
+								uploadImgs(images,true);
 							}else{  //just text 								
 								collectionVo.update(
 										" cid = ? ,is_pub = ?,is_sync = ? ",
@@ -446,6 +456,9 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 					VolleyLog.e("Error:", error.getCause());
 					error.printStackTrace();
 					progressDialog.dismiss();
+					Toast.makeText(getApplicationContext(), 
+							VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+							Toast.LENGTH_SHORT).show();
 				}
 			}) {
 				@Override
@@ -460,6 +473,8 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 					return headers;
 				}
 			};
+			req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,
+					Constants.Config.RETRY_TIMES, 1.0f));
 			KuibuApplication.getInstance().addToRequestQueue(req);
 		}
 	}
@@ -482,6 +497,8 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
 						dealModify(arr);						
+					}else{
+						progressDialog.dismiss();
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -517,7 +534,8 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 	private void dealModify(JSONArray arr) throws JSONException
 	{
 		List<String> localImgs = imageVo.getImgList(collection._id);
-		List<Map<String,String>>  farImgInfo = new ArrayList<Map<String, String>>();														
+		List<Map<String,String>>  farImgInfo = new ArrayList<Map<String, String>>();
+		
 		for (int i = 0; i < arr.length(); i++) {
 			JSONObject obj = arr.getJSONObject(i);
 			Map<String, String> item = new HashMap<String, String>();
@@ -525,7 +543,8 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 			item.put("imgUri", obj.getString("img_uri"));
 			item.put("imageUrl", obj.getString("img_url"));
 			farImgInfo.add(item);
-		}						
+		}
+		
 		Iterator<Map<String,String>> it = farImgInfo.iterator();
 		while(it.hasNext()){
 			Map<String,String> m = it.next();
@@ -535,7 +554,8 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 				it.remove();
 				localImgs.remove(uri);
 			}
-		}						
+		}
+		
 		if(localImgs.size()>0){ //需要添加							
 			StringBuffer url_root = new StringBuffer('/');
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -550,26 +570,27 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 				buffer.append(uuid).append(".").append(ext);
 				imgurl_map.put(localImgs.get(i), buffer.toString());
 			}
-			uploadImgs(localImgs);
 		}
+		
+		StringBuffer ids = new StringBuffer();
 		if(farImgInfo.size()>0){ //需要删除
-			StringBuffer ids = new StringBuffer();
 			for(Map<String,String> m:farImgInfo){
 				String uri = m.get("imgUri");
 				imgurl_map.put(uri, "");			
 				ids.append(m.get("id")).append(",");
 			}
-			requestDelImgs(ids.toString());
-		}												
+		}	
+		
 		collection.content = adjustMarkDownText(collection.getContent());
-		Map<String,String> params = new HashMap<String,String>();
+		HashMap<String,String> params = new HashMap<String,String>();
 		params.put("cid", collection.cid);
 		params.put("title",collection.title);
 		params.put("content", collection.content);
-		requestUpdate(params);
+		params.put("type", collection.type);
+		requestUpdate(params,localImgs,ids.toString());
 	}
 	
-	private void uploadImgs(List<String> imgs) {
+	private void uploadImgs(List<String> imgs,final boolean flag) {
 		AjaxParams params = new AjaxParams();
 		params.put("cid", String.valueOf(collection.cid));				
 		try {			
@@ -635,28 +656,50 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 											String.valueOf(collection._id) });
 							pubMenu.setVisible(false);
 							
-							Toast.makeText(PreviewActivity.this, getString(R.string.publish_success),
-									Toast.LENGTH_SHORT).show();
+							bLockFlag2 = true; 
+							if(bLockFlag1 && bLockFlag2){
+								progressDialog.dismiss();
+								Toast.makeText(PreviewActivity.this, getString(R.string.modify_success),
+										Toast.LENGTH_SHORT).show();
+							}
 							
+							if(flag){
+								progressDialog.dismiss();
+								Toast.makeText(PreviewActivity.this, getString(R.string.publish_success),
+										Toast.LENGTH_SHORT).show();
+							}							
 						} else if (StaticValue.RESPONSE_STATUS.UPLOAD_FAILD
 								.equals(state)) { //上传失败
-							Toast.makeText(PreviewActivity.this, getString(R.string.publish_fail),
-									Toast.LENGTH_SHORT).show();
+							progressDialog.dismiss();
+							
+							if(flag){
+								
+								Toast.makeText(PreviewActivity.this, getString(R.string.publish_fail),
+										Toast.LENGTH_SHORT).show();
+							}else{
+								Toast.makeText(PreviewActivity.this, getString(R.string.modify_fail),
+										Toast.LENGTH_SHORT).show();
+							}
+							
 						}
+						
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
-				progressDialog.dismiss();
+				
 			}
 		});
 	}
 
-	private void requestUpdate(Map<String, String> params) {
+	private void requestUpdate(final HashMap<String, String> params,final List<String> addImgInfo,
+			final String delImgIds) {
+		
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 							.append(Constants.Config.REST_API_VERSION) 
 							.append("/update_collection").toString();
+		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -664,21 +707,34 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						Toast.makeText(PreviewActivity.this, getString(R.string.modify_success),
-								Toast.LENGTH_SHORT).show();
+						if(!TextUtils.isEmpty(delImgIds)){
+							requestDelImgs(params.get("cid"),delImgIds);
+						}else{
+							bLockFlag1 = true; 
+						}
+						
+						if(addImgInfo != null && addImgInfo.size()>0){
+							uploadImgs(addImgInfo,false);
+						}else{
+							bLockFlag2 = true;  
+						}
+						
 						collectionVo.update(
 								" is_pub = ?,is_sync = ? ",
 								" _id = ? ",
 								new String[] {String.valueOf(1),
 										String.valueOf(1),
 										String.valueOf(collection._id)});
-						pubMenu.setVisible(false);						
+						pubMenu.setVisible(false);		
+						if(bLockFlag1 && bLockFlag2 ){
+							progressDialog.dismiss();
+						}
 					}else{
+						progressDialog.dismiss();
 						Toast.makeText(PreviewActivity.this, getString(R.string.modify_fail),
 								Toast.LENGTH_SHORT).show();
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -688,6 +744,9 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override
@@ -707,13 +766,14 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 		
-	private void requestDelImgs(String ids)
+	private void requestDelImgs(String cid , String ids)
 	{
 		Map<String,String> params = new HashMap<String,String>();
+		params.put("cid", cid);
 		params.put("ids", ids);
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 				.append(Constants.Config.REST_API_VERSION)
-				.append("/update_collection").toString();
+				.append("/del_imgs").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -722,8 +782,16 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						Toast.makeText(PreviewActivity.this, getString(R.string.modify_success),
-								Toast.LENGTH_SHORT).show();					
+						bLockFlag1 = true; 
+						if(bLockFlag1 && bLockFlag2){
+							progressDialog.dismiss();
+							Toast.makeText(PreviewActivity.this, getString(R.string.modify_success),
+									Toast.LENGTH_SHORT).show();
+						}						
+					}else{
+						progressDialog.dismiss();
+						Toast.makeText(PreviewActivity.this, getString(R.string.modify_fail),
+								Toast.LENGTH_SHORT).show();	
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -735,6 +803,9 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override

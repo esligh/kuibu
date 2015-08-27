@@ -1,9 +1,11 @@
 package com.kuibu.module.fragment;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,11 +42,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.BufferManager;
+import com.kuibu.common.utils.FileUtils;
 import com.kuibu.common.utils.PhoneUtils;
+import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.StorageUtils;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.activity.AdviceFeedBackActivity;
 import com.kuibu.module.activity.MDHandBookActivity;
 import com.kuibu.module.activity.R;
 
@@ -73,7 +80,6 @@ public class SettingsFragment extends PreferenceFragment implements
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		SharedPreferences mPerferences = PreferenceManager
 				.getDefaultSharedPreferences(getActivity());
 		
@@ -126,9 +132,12 @@ public class SettingsFragment extends PreferenceFragment implements
 		findPreference(StaticValue.PrefKey.ABOUT_ME).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.HAND_BOOK).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.FLOW_STATISTICS).setOnPreferenceClickListener(this);
+		findPreference(StaticValue.PrefKey.ADVICE_FEEDBACK).setOnPreferenceClickListener(this);
+		findPreference(StaticValue.PrefKey.EXCEPTION_REPORT).setOnPreferenceClickListener(this);
 		mProDlg =  new ProgressDialog(getActivity());  
 		mProDlg.setMax(MAX_PROGRESS);
 		mProDlg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 		
+		finalHttp = new FinalHttp() ; 
 	}
 
 	@Override
@@ -160,8 +169,74 @@ public class SettingsFragment extends PreferenceFragment implements
 		}else if(pref.getKey().equals(StaticValue.PrefKey.HAND_BOOK)){
 			Intent intent = new Intent(getActivity(),MDHandBookActivity.class);
 			getActivity().startActivity(intent);
+			getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+
 		}else if(pref.getKey().equals(StaticValue.PrefKey.FLOW_STATISTICS)){
 			Toast.makeText(getActivity(), "开发中...", Toast.LENGTH_SHORT).show();
+		}else if(pref.getKey().equals(StaticValue.PrefKey.ADVICE_FEEDBACK)){
+			Intent intent = new Intent(getActivity(),AdviceFeedBackActivity.class);
+			getActivity().startActivity(intent);
+			getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+		}else if(pref.getKey().equals(StaticValue.PrefKey.EXCEPTION_REPORT)){ 
+			final String fileName = new StringBuilder("crash-")
+				.append(SafeEDcoderUtil.MD5(PhoneUtils.getDeviceId(getActivity())))
+				.append(".log").toString();
+			final String path = new StringBuilder(StorageUtils.getFileDirectory(getActivity())
+						.getAbsolutePath()).append(Constants.Config.CRASH_DIR)
+						.append(fileName).toString(); 
+			if(!FileUtils.isFileExist(path)){
+					Toast.makeText(getActivity(), "暂无异常日志", Toast.LENGTH_SHORT).show();
+					return true; 
+			}
+              new AlertDialog.Builder(getActivity()).setTitle("异常")
+              .setMessage("上传异常日志?")
+              .setPositiveButton("确定", new  DialogInterface.OnClickListener(){
+      			@Override
+      			public void onClick(DialogInterface arg0, int arg1) {
+      				
+      				String URL = new StringBuilder(Constants.Config.SERVER_URI)
+      				.append(Constants.Config.REST_API_VERSION)
+      				.append("/crash_collector").toString();
+      				try {
+      		    			mProDlg.setTitle(getString(R.string.preference_exception));   
+                            mProDlg.show();
+      		    			AjaxParams params = new AjaxParams();
+      		    			params.put("file_name", fileName);
+      						params.put("data", new File(path));
+      						finalHttp.post(URL, params, new AjaxCallBack<String>() {
+
+      							@Override
+      							public void onFailure(Throwable t, int errorNo,
+      									String strMsg) {
+      								super.onFailure(t, errorNo, strMsg);
+      								mProDlg.cancel();
+      							}
+      							
+      							@Override
+      							public void onLoading(long count, long current) {
+      								super.onLoading(count, current);
+      								int progress = 0;
+      								if (current != count && current != 0) {
+      									progress = (int) (current / (float) count * 100);
+      								} else {
+      									progress = 100;
+      								}
+      								mProDlg.setProgress(progress);
+      							}
+      							
+								@Override
+      							public void onSuccess(String t) {
+									mProDlg.dismiss();
+      								super.onSuccess(t);
+      								FileUtils.delFile(path);
+      							}						
+      						});  
+      					} catch (FileNotFoundException e) {
+      						//do nothing 
+      						e.printStackTrace();
+      					}		   	 			
+      	    	}
+              }).setNegativeButton("取消", null).show();	
 		}
 		return true;
 	}
@@ -239,6 +314,9 @@ public class SettingsFragment extends PreferenceFragment implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -276,7 +354,6 @@ public class SettingsFragment extends PreferenceFragment implements
 			file.delete();
 		}
 		final String URL = mUpdateUrl;
-		finalHttp = new FinalHttp();
 		finalHttp.download(URL, apkPath, new AjaxCallBack<File>() {
 			@Override
 			public void onLoading(long count, long current) {

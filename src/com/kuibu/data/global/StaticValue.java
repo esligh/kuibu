@@ -26,6 +26,8 @@ public class StaticValue {
 		public static final String MESSAGE_PUSH = "message_push";
 		public static final String HAND_BOOK = "hand_book";
 		public static final String FLOW_STATISTICS = "flow_statistics";
+		public static final String ADVICE_FEEDBACK  = "advice_feedback";
+		public static final String EXCEPTION_REPORT = "exception_report";
 	}
 	
 	public static class USER_ACTION{
@@ -44,6 +46,7 @@ public class StaticValue {
 		public static final int FAVORITE_BOX_REQCODE = 8001;
 		public static final int REPORT_COMPLETE = 3001 ; 
 		public static final int PREVIEW_OVER = 3002 ; 
+		public static final int COMMENT_OVER = 3003 ; 
 	}
 	public static class MENU_GROUP{
 		public static final int SAVE_ACTIONBAR_GROUP = 100;
@@ -115,6 +118,8 @@ public class StaticValue {
 		public static final String REG_WAITACTIVITY = "1102";
 		public static final String REG_INVALIDEMAIL = "1110";
 		public static final String REG_SENDEMAIL = "1103";
+		public static final String REG_SAMENAME = "1104";
+		public static final String REG_SAMEEMAIL = "1105";
 		
 		//login status 
 		public static final String LOGIN_SUCCESS  = "610";

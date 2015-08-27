@@ -12,16 +12,19 @@ public final class Constants {
 	public static final String TEMPLATE_DEF_URL = "html/template.html";
 
 	public static class Config {
-		public static final String SERVER_URI = "http://192.168.1.104:5000/";
-		public static final String SOCKETIO_SERVER = "http://192.168.1.104:5000/";
+		public static final String SERVER_URI = "http://115.28.200.109:80/";
+		public static final String SOCKETIO_SERVER = "http://115.28.200.109:80/socket.io";
+		//public static final String SERVER_URI = "http://192.168.1.104:5000/";
+		//public static final String SOCKETIO_SERVER = "http://192.168.1.104:5000/";
 		public static final String REST_API_VERSION = "/caddy/api/v1.0";	
 		public static final boolean DEBUG_MODE = true ; 
 		public static final String USER_PHOTO_TMP  = "pictmp";//用户头像裁剪的缓存文件
 		public static final String CAMERA_TMP="userphoto.jpg";
 		public static final String CAMERA_IMG_DIR = "/camera/";
+		public static final String CRASH_DIR = "/crash/" ;
 		public static final String SAVE_IMG_DIR = "/image/";
-		public static final int 	TIME_OUT_LONG = 10*1000;
-		public static final int 	TIME_OUT_SHORT= 8*1000; 
+		public static final int 	TIME_OUT_LONG = 15*1000; //15s
+		public static final int 	TIME_OUT_SHORT = 8*1000; 
 		public static final int 	RETRY_TIMES =   1; 
 		public static final String USER_PIC_SMALL = "40_40";
 		public static final String USER_PIC_BIG ="100_100";

@@ -26,12 +26,14 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:paddingTop="@dimen/android_spaces"
-		        android:paddingBottom="@dimen/android_spaces_small"		        
+		        android:paddingBottom="@dimen/android_spaces_small"
+		        android:textColor="?android:attr/textColorPrimary"		        
 		        android:textSize="16sp" />		
 	    <TextView
 	        android:id="@+id/message_tv"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"	        
+	        android:textColor="?android:attr/textColorSecondary"
 	        android:textSize="14sp" />
     </LinearLayout>
            
@@ -43,6 +45,7 @@
         android:layout_below="@id/layout_content_ll"
         android:paddingRight="@dimen/android_spaces_large"
 	    android:paddingBottom="@dimen/android_spaces_small"
+	    android:textColor="?android:attr/textColorSecondary"
         android:textSize="14sp" />
     
 </RelativeLayout>

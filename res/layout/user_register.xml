@@ -57,44 +57,46 @@
         android:layout_below="@id/sex_layout"
         android:layout_margin="16dp"
         android:orientation="vertical" >
+		
+	        <EditText
+	            android:id="@+id/user_name"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:hint="@string/user_name" >
+	        </EditText>
 
-        <EditText
-            android:id="@+id/user_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/user_name" >
-        </EditText>
+       
+	        <EditText
+	            android:id="@+id/user_email"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:ems="10"
+	            android:hint="@string/email"
+	            android:inputType="textEmailAddress" />
+	
+	        <EditText
+	            android:id="@+id/user_signature"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:hint="@string/hint_signature"
+	            android:inputType="text" />
 
-        <EditText
-            android:id="@+id/user_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress" />
+	        <EditText
+	            android:id="@+id/user_pwd"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:ems="10"
+	            android:hint="@string/user_pwd"
+	            android:inputType="textPassword" />
+		
 
-        <EditText
-            android:id="@+id/user_signature"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_signature"
-            android:inputType="text" />
-        
-        <EditText
-            android:id="@+id/user_pwd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/user_pwd"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/user_pwd_confirm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/user_pwdconfirm"
-            android:inputType="textPassword" />
+	        <EditText
+	            android:id="@+id/user_pwd_confirm"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:ems="10"
+	            android:hint="@string/user_pwdconfirm"
+	            android:inputType="textPassword" />
     </LinearLayout>
 
     <com.dd.processbutton.iml.ActionProcessButton

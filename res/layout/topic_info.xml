@@ -21,7 +21,7 @@
                 android:id="@+id/topic_pic_iv"
                 android:layout_width="@dimen/topic_pic_width_big"
                 android:layout_height="@dimen/topic_pic_height_big"
-                android:layout_margin="10dp"
+                android:layout_margin="@dimen/android_spaces"
                 android:clickable="true"
                 android:contentDescription="@null"
                 android:focusable="true"
@@ -35,7 +35,9 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/topic_pic_iv"
                 android:layout_toRightOf="@id/topic_pic_iv"
-                android:padding="10dp"
+                android:textColor="?android:attr/textColorPrimary"
+                android:paddingTop="@dimen/android_spaces"
+                android:paddingBottom="@dimen/android_spaces"
                 android:textSize="18sp" />
 
             <TextView
@@ -44,9 +46,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/topic_pic_iv"
                 android:background="?listViewBackground"
-                android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:paddingBottom="@dimen/android_spaces"
+                android:paddingLeft="@dimen/android_spaces"
+                android:paddingRight="@dimen/android_spaces"
+                android:textColor="?android:attr/textColorSecondary"                
                 android:textSize="16sp" />
         </RelativeLayout>
 
@@ -58,6 +61,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/android_spaces_small"
+            android:layout_marginBottom="@dimen/android_spaces_small"
             android:background="?listCardViewBackground" >
 
             <ImageView
@@ -66,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="@dimen/android_spaces"
                 android:src="@drawable/ic_followers" />
 
             <TextView
@@ -74,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="@dimen/android_spaces"
                 android:layout_toRightOf="@id/abc_visit_icon_iv"
                 android:gravity="center" />
 
@@ -84,7 +89,7 @@
                 android:layout_height="@dimen/btn_height"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_margin="10dp"
+                android:layout_marginRight="@dimen/android_spaces"
                 android:text="@string/btn_focus"
                 android:textColor="@android:color/white"
                 fbutton:buttonColor="@color/fbutton_color_green_sea"
@@ -100,8 +105,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"
+            android:paddingLeft="@dimen/android_spaces"
+            android:paddingTop="@dimen/android_spaces"
             android:text="@string/best_collector_text" >
         </TextView>
 
@@ -109,7 +114,7 @@
             android:id="@+id/best_author_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/android_spaces"
             android:background="?listViewBackground" />
     </LinearLayout>
 

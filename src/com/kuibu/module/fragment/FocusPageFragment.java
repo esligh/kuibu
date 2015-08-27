@@ -24,6 +24,8 @@ import com.viewpagerindicator.SlidingTabIndicator;
  * explore page fragment 
  */
 public class FocusPageFragment extends Fragment {	
+	
+	private final int DEFAULT_BACKUP_TABPAGE_NUM = 2;	
 	private List<TabTitleObject> focuspageTabTitle = null; 
 	private TabPageViewAdapter adapter= null;
 	
@@ -52,6 +54,7 @@ public class FocusPageFragment extends Fragment {
 		else{
 			adapter.updateView(focuspageTabTitle);
 		}
+		pager.setOffscreenPageLimit(DEFAULT_BACKUP_TABPAGE_NUM);
 		SlidingTabIndicator indicator= (SlidingTabIndicator)rootView.findViewById(R.id.focus_indicator);
 	    indicator.setViewPager(pager);
 	    if(isDarkTheme){

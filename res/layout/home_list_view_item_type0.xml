@@ -51,7 +51,7 @@
         android:maxLines="2"
         android:paddingBottom="2dp"
         android:paddingTop="2dp"
-        android:textColor="?listItemTextColor"
+        android:textColor="?android:attr/textColorPrimary"
         android:typeface="sans"
         android:textSize="17sp" />
 
@@ -67,7 +67,7 @@
         android:paddingTop="@dimen/android_spaces_small"
         android:layout_marginLeft="@dimen/android_spaces_large"
         android:layout_marginRight="@dimen/android_spaces_large"
-        android:textColor="?listItemExtraTextColor"
+        android:textColor="?android:attr/textColorSecondary"
         android:textSize="15sp" />
 
     <RelativeLayout

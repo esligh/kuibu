@@ -25,6 +25,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -32,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.BorderScrollView;
 import com.kuibu.custom.widget.BorderScrollView.OnBorderListener;
 import com.kuibu.data.global.Constants;
@@ -221,6 +223,9 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);		
@@ -296,6 +301,9 @@ public class FavoriteBoxDetailActivity extends BaseActivity
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  

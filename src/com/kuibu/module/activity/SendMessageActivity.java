@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -164,6 +165,9 @@ public class SendMessageActivity extends BaseActivity
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
@@ -219,6 +223,9 @@ public class SendMessageActivity extends BaseActivity
 					VolleyLog.e("Error: ", error.getMessage());
 					VolleyLog.e("Error:", error.getCause());
 					error.printStackTrace();
+					Toast.makeText(getApplicationContext(), 
+							VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+							Toast.LENGTH_SHORT).show();
 				}
 			}){
 				@Override  

@@ -3,6 +3,7 @@ package com.kuibu.module.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,12 @@ public class MessageListAdapter extends BaseAdapter
 		}else{
 			holder = (HolderView)convertView.getTag();
 		}
-		ImageLoader.getInstance().displayImage(datas.get(position).getCreatorPic(), holder.userImg);
+		String photo = datas.get(position).getCreatorPic();
+		if(TextUtils.isEmpty(photo) || photo.equals("null")){
+			holder.userImg.setImageResource(R.drawable.default_pic_avata);
+		}else{
+			ImageLoader.getInstance().displayImage(photo, holder.userImg);
+		}		
 		holder.userNameIv.setText(datas.get(position).getCreatorName());
 		holder.msgIv.setText(datas.get(position).getMessage());
 		holder.dateIv.setText(datas.get(position).getCreateTime());

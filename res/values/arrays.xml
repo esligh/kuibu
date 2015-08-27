@@ -108,9 +108,7 @@
   	</string-array>
   	
   	<string-array name="comment_menu_item0">
-  	    <item>赞</item>
   	    <item>回复</item>
-  	    <item>复制</item>
   	    <item>举报</item>
   	</string-array>
   	

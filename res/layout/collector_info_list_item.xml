@@ -10,7 +10,7 @@
         android:layout_height="40dp"
         android:scaleType="centerInside"
         android:src="@drawable/img_ooops"
-        android:layout_margin="8dp"/>
+        android:layout_margin="@dimen/android_spaces"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -21,16 +21,17 @@
             android:id="@+id/collector_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingLeft="5dp"/>
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingTop="@dimen/android_spaces"
+            android:paddingLeft="@dimen/android_spaces_small"/>
 
         <TextView
             android:id="@+id/collector_introduce_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingBottom="8dp"
-            android:textColor="@color/secondary_text_disabled_material_light"/>
+            android:paddingLeft="@dimen/android_spaces_small"
+            android:paddingBottom="@dimen/android_spaces"
+            android:textColor="?android:attr/textColorSecondary"/>
     </LinearLayout>
 	
 </LinearLayout>

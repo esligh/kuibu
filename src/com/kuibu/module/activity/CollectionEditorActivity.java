@@ -21,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -197,13 +198,16 @@ public class CollectionEditorActivity extends ActionBarActivity {
 	}
 
 	private void previewCollection() {
-		saveNote();
-		Intent intent = new Intent(this, PreviewActivity.class);
-		intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ENTITY, collection);
-		intent.putExtra(StaticValue.EDITOR_VALUE.FROM_WHO,
-				StaticValue.EDITOR_VALUE.EDITOR_TO_PREVIEW);
-		startActivityForResult(intent, StaticValue.RequestCode.PREVIEW_OVER);
-		overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+		String content = mContent.getText().toString();
+		if(!TextUtils.isEmpty(content)){
+			saveNote();
+			Intent intent = new Intent(this, PreviewActivity.class);
+			intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ENTITY, collection);
+			intent.putExtra(StaticValue.EDITOR_VALUE.FROM_WHO,
+					StaticValue.EDITOR_VALUE.EDITOR_TO_PREVIEW);
+			startActivityForResult(intent, StaticValue.RequestCode.PREVIEW_OVER);
+			overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+		}
 	}
 	
 	private void saveNote() {
@@ -233,7 +237,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 			collection.type = isHasImage(collection.content) ? StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE
 					: StaticValue.EDITOR_VALUE.COLLECTION_IMAGE;
 			collection.createBy = Session.getSession().getuId();
-			collection.isSync=0 ; 
+			collection.isSync= 0 ; 
 			collectionVo.add(collection);
 			int key = collectionVo.getlastkey() ;
 			collection._id = String.valueOf(key);			
@@ -244,24 +248,26 @@ public class CollectionEditorActivity extends ActionBarActivity {
 			}
 		}else{ //update some field 
 			String title = mTitle.getText().toString();
+			
 			if (!(title).equals(collection.getTitle())) {
-				// update title 
+				// update title
 				collection.setTitle(mTitle.getText().toString());
 				collectionVo.update(" title = ?,is_sync= ? ", " _id = ? ", 
-						new String[]{title,String.valueOf(0),String.valueOf(collection._id)});				
+						new String[]{title,String.valueOf(0),String.valueOf(collection._id)});
+				collection.isSync = 0 ;
 			}
+			
 			if(!(mContent.getText().toString().equals(collection.getContent()))){
 				String text = mContent.getText().toString().replace("\n-", "\n\n-");
 				collection.setContent(text);
-				//update content				
-				if(collection.type.equals("1")){					
-					imageVo.delete(collection._id); //先删除
-					List<String> imgUris = parserImage(collection.getContent());
-					imageVo.add(collection._id,imgUris);					
-				}				
+				//update content									
+				imageVo.delete(collection._id); //if have
+				List<String> imgUris = parserImage(collection.getContent());
+				imageVo.add(collection._id,imgUris);								
 				collectionVo.update(" content = ?,is_sync = ? ", " _id = ? ", 
 						new String[]{text,String.valueOf(0),String.valueOf(collection._id)});
-			}			
+				collection.isSync = 0 ;
+			}	
 		}		
 	}
 	

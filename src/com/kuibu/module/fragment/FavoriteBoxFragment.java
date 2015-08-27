@@ -32,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -195,8 +196,9 @@ public class FavoriteBoxFragment extends Fragment {
 				error.printStackTrace();
 				if(datas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				else
-					Toast.makeText(getActivity(), "加载失败", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -229,6 +231,9 @@ public class FavoriteBoxFragment extends Fragment {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  

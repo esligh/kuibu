@@ -18,8 +18,7 @@
 	    <com.baoyz.widget.PullRefreshLayout
 	        android:id="@+id/swipeRefreshLayout"
 	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:background="?listViewBackground" >
+	        android:layout_height="match_parent">
 	        	        	
 		            <com.kuibu.custom.widget.PaginationListView
 		                android:id="@+id/pagination_lv"

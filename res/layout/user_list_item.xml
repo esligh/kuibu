@@ -11,16 +11,17 @@
         android:layout_height="@dimen/user_pic_height"
         android:scaleType="fitCenter"
         android:contentDescription="@null" 
-        android:layout_margin="10dp"/>
+        android:layout_margin="@dimen/android_spaces"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_margin="@dimen/android_spaces">
         <TextView
             android:id="@+id/user_name_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorPrimary"
             android:singleLine="true"
             android:ellipsize="end"/>
 
@@ -28,6 +29,7 @@
             android:id="@+id/user_desc_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorSecondary"
             android:ellipsize="end"
             android:singleLine="true"
             android:layout_below="@id/user_name_tv" />

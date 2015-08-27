@@ -62,7 +62,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="?listItemBackground"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
@@ -82,7 +81,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="1dp"
                     android:layout_weight="1"
-                    android:background="?listItemBackground"
                     android:clickable="true"
                     android:focusable="true"
                     android:gravity="center"
@@ -104,11 +102,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/hint_extra" />
-
+            
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="?listItemTextColor" />
+                android:layout_height="1px" 
+                android:background="?android:attr/listDivider" />
 
             <TextView
                 android:id="@+id/user_signature_tv"
@@ -139,7 +137,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:background="?listItemTextColor" />
+                android:background="?android:attr/listDivider"  />
 
             <TextView
                 android:id="@+id/user_profession_tv"
@@ -170,8 +168,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="?listItemTextColor" />
+                android:layout_height="1px" 
+                android:background="?android:attr/listDivider" />
 
             <TextView
                 android:id="@+id/user_residence_tv"
@@ -203,8 +201,8 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="?listItemTextColor" />
+                android:layout_height="1px" 
+                android:background="?android:attr/listDivider" />
 
             <TextView
                 android:id="@+id/user_education_tv"

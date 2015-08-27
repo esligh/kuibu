@@ -233,9 +233,14 @@ public class MateListViewItemAdapter extends BaseAdapter {
 						((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 					}				
 				});
-				holderforText.user_tv.setText(datas.get(position).getTopText());			
-				ImageLoader.getInstance().displayImage(datas.get(position).getTopUrl(),
-						holderforText.user_icon_iv,options,null);				
+				holderforText.user_tv.setText(datas.get(position).getTopText());		
+				String url = datas.get(position).getTopUrl();
+				if(TextUtils.isEmpty(url) || url.equals("null")){
+					holderforText.user_icon_iv.setImageResource(R.drawable.default_pic_avata);
+				}else{
+					ImageLoader.getInstance().displayImage(url,
+							holderforText.user_icon_iv,options,null);
+				}
 			}
 			
 			holderforText.title_tv.setOnClickListener(new OnClickListener(){
@@ -294,9 +299,14 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				});
 				holderfortextPic.user_tv.setText(datas.get(position)
 						.getTopText());
-
-				ImageLoader.getInstance().displayImage(datas.get(position).getTopUrl(),
-						holderfortextPic.user_icon_iv,options,null);
+				
+				String url = datas.get(position).getTopUrl();
+				if(TextUtils.isEmpty(url) || url.equals("null")){
+					holderfortextPic.user_icon_iv.setImageResource(R.drawable.default_pic_avata);
+				}else{
+					ImageLoader.getInstance().displayImage(url,
+							holderfortextPic.user_icon_iv,options,null);
+				}				
 			}
 			
 			holderfortextPic.title_tv.setOnClickListener(new OnClickListener() {				

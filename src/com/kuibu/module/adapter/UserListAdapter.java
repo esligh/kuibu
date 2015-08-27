@@ -67,8 +67,14 @@ public class UserListAdapter extends BaseAdapter{
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.user_name_tv.setText(datas.get(position).get("name").toString());
-		holder.user_desc_tv.setText(datas.get(position).get("signature").toString());
+		holder.user_name_tv.setText(datas.get(position).get("name").toString());		
+		String signature = (String)datas.get(position).get("signature"); 
+		if(TextUtils.isEmpty(signature)){
+			holder.user_desc_tv.setText("");
+		}else{
+			holder.user_desc_tv.setText(signature);
+		}
+		
 		String url = datas.get(position).get("photo").toString();
 		if(TextUtils.isEmpty(url) || url.equals("null")){
 				holder.user_pic_iv.setImageResource(R.drawable.default_pic_avata);	

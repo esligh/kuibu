@@ -55,7 +55,7 @@ import com.kuibu.module.fragment.ExplorePageFragment;
 import com.kuibu.module.fragment.FavoriteBoxFragment;
 import com.kuibu.module.fragment.FocusPageFragment;
 import com.kuibu.module.fragment.HomePageFragment;
-import com.kuibu.module.service.HeartBeatService;
+
 
 
 public class KuibuMainActivity extends BaseActivity 
@@ -116,9 +116,14 @@ public class KuibuMainActivity extends BaseActivity
 				Toast.makeText(this, getString(R.string.poor_net_state), 
 						Toast.LENGTH_LONG).show();
 			}else{ 			
-				this.startService(new Intent(this,HeartBeatService.class));
+		//		this.startService(new Intent(this,HeartBeatService.class));
 			}		
 		}
+		
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			getSupportActionBar().setElevation(0); //remove actionbar shadow 
+		}
+		
 	}
 	
 	
@@ -126,14 +131,14 @@ public class KuibuMainActivity extends BaseActivity
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		this.startService(new Intent(this,HeartBeatService.class));
+	//	this.startService(new Intent(this,HeartBeatService.class));
 	}
 
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-		this.stopService(new Intent(this,HeartBeatService.class));
+	//	this.stopService(new Intent(this,HeartBeatService.class));
 	}
 
 
@@ -272,7 +277,6 @@ public class KuibuMainActivity extends BaseActivity
 			return true;
 		case R.id.action_logout:
 			doLogout();
-			this.stopService(new Intent(this,HeartBeatService.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -326,17 +330,20 @@ public class KuibuMainActivity extends BaseActivity
 			mNavigationDrawerFragment.updateDrawerList(params);
 		}
 		mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
+		//login success 
+		login();
 	}
 
+	
 	/**
 	 * 注销当前用户  
 	 */
+	
 	private void doLogout()
 	{
 		mLogoutMenu.setVisible(false);	
 		mNotifyMenu.setVisible(false);
 		Session.getSession().setLogin(false);
-		
 		//移除涉及到缓存的Framgent
 		String[] tags = getResources().getStringArray(R.array.drawer_item_logout_tag);
 		FragmentManager fragmentManager = getSupportFragmentManager();
@@ -344,7 +351,7 @@ public class KuibuMainActivity extends BaseActivity
 		for(int i =0 ;i<tags.length;i++){
 			Fragment fragment = fragmentManager.findFragmentByTag(tags[i]);
 			if(fragment !=null ){
-				ft.remove(fragment);				
+				ft.remove(fragment);
 			}
 		}		
 		ft.commit();		
@@ -372,11 +379,55 @@ public class KuibuMainActivity extends BaseActivity
 		logout();
 	}
 	
+	private void login()
+	{
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("uid", Session.getSession().getuId());
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+					.append(Constants.Config.REST_API_VERSION)
+					.append("/login_over").toString();
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						//logout success
+						boolean have_message = response.getBoolean("have_message");
+						if(have_message){
+							mNotifyMenu.setIcon(getResources().getDrawable(R.drawable.ic_action_notify_active));
+						}
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+			}
+		}){
+			@Override  
+	 		public Map<String, String> getHeaders() throws AuthFailureError {  
+	 			HashMap<String, String> headers = new HashMap<String, String>();
+	 			String credentials = Session.getSession().getToken()+":unused";
+	 			headers.put("Authorization","Basic "+
+	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
+	 			return headers;  
+	 		}
+		};
+		KuibuApplication.getInstance().addToRequestQueue(req);
+	}
+	
 	private void logout()
 	{
 		if(!Session.getSession().isLogin())
 			return ;
-		
 		if(KuibuApplication.getSocketIoInstance().
 				getSocketIO()!=null){
 			if(KuibuApplication.getSocketIoInstance().getSocketIO().isConnected()){

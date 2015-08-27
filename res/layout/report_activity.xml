@@ -8,7 +8,7 @@
         android:id="@+id/report"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_margin="@dimen/android_spaces_small"
         android:hint="@string/hint_report"
         android:textSize="17sp"
         android:background="@null"/>

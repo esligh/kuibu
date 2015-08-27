@@ -10,7 +10,7 @@
         android:layout_width="@dimen/topic_pic_width_big"
         android:layout_height="@dimen/topic_pic_height_big"
         android:scaleType="fitCenter"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/android_spaces"
         android:contentDescription="@null"/>
 
     <LinearLayout
@@ -22,21 +22,21 @@
             android:id="@+id/focus_topic_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingTop="@dimen/android_spaces"
+            android:paddingLeft="@dimen/android_spaces"
+            android:paddingRight="@dimen/android_spaces"
             android:textStyle="bold"
-            android:textColor="?listItemTextColor"/>
+            android:textColor="?android:attr/textColorPrimary"/>
 
         <TextView
             android:id="@+id/focus_topic_introduce_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"
+            android:paddingLeft="@dimen/android_spaces"
+            android:paddingRight="@dimen/android_spaces"
+            android:paddingBottom="@dimen/android_spaces"
             android:maxLines="2"
             android:ellipsize="end"
-            android:textColor="?listItemExtraTextColor"/>       
+            android:textColor="?android:attr/textColorSecondary"/>       
     </LinearLayout>	
 </LinearLayout>

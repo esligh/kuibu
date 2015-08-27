@@ -5,7 +5,6 @@
     android:id="@+id/multiStateView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?listViewBackground"
     app:msv_emptyView="@layout/empty_view"
     app:msv_errorView="@layout/error_view"
     app:msv_loadingView="@layout/loading_view"

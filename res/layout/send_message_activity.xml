@@ -13,35 +13,39 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="match_parent" >
 
         <com.kuibu.custom.widget.PaginationListView
             android:id="@+id/message_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <LinearLayout
+       <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/android_spaces"            
+            android:layout_marginRight="@dimen/android_spaces"
+            android:showDividers="beginning"
+            android:background="?listItemBackground"            
             android:layout_alignParentBottom="true"
-            android:orientation="horizontal" >
+            android:orientation="horizontal" >       
 
+                            
             <EditText
                 android:id="@+id/edit_message"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="5dp"
+                android:layout_height="wrap_content"     
                 android:layout_weight="1"
+                android:layout_margin="@dimen/android_spaces_super_small"
+                android:padding="@dimen/android_spaces"                
                 android:hint="@string/send_message" />
 
             <ImageButton
                 android:id="@+id/btn_send"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginRight="5dp"
+                android:layout_width="@dimen/icon_medium_width"
+                android:layout_height="@dimen/icon_medium_height"
+                android:scaleType="centerInside"
+                android:layout_marginBottom="@dimen/android_spaces_super_small"
                 android:background="@color/transparent"
                 android:src="@drawable/bt_send_comment_selector" 
                 android:contentDescription="@null"/>

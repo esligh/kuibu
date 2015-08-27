@@ -33,6 +33,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
@@ -63,18 +64,15 @@ public class LocalCollectionListActivity extends BaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		context = this ;
 		setTitle(getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_NAME));
-		initData();
 		setContentView(R.layout.local_collection_list_activity);	
 		fabMenu = (FloatingActionsMenu) findViewById(R.id.fab);
 		fabCreateNote = (FloatingActionButton) findViewById(R.id.create_note);
 		fabCreateFolder = (FloatingActionButton) findViewById(R.id.create_folder);
 		collectionList = (ListView) findViewById(R.id.colleciton_lv);
-		collectionAdapter = new LocalCollectionAdapter(this, mData,isMulChoice);
-		collectionList.setAdapter(collectionAdapter);		
+
 		collectionList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view,
@@ -146,6 +144,8 @@ public class LocalCollectionListActivity extends BaseActivity {
 		});
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
+		initData();
+		showView();
 	}
 	
 	@Override
@@ -209,25 +209,35 @@ public class LocalCollectionListActivity extends BaseActivity {
 	            	.setPositiveButton(getString(R.string.btn_confirm) , new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface arg0, int arg1) {	
+		            		RestoreToolBar();
 			            	//添加提示框
-			            	if(selItems != null){         		
-			            		String [] cids= new String[selItems.size()];
+			            	if(selItems != null){         					            		
+			            	//	String [] cids= new String[selItems.size()];
+			            		ArrayList<String> cids = new ArrayList<String>();
+			            		int delSize = 0 ; 
 			            		for(int i =0 ;i<selItems.size();i++){
 			            			CollectionBean item = selItems.get(i);
 			            			if(item.isPublish == 0){//未发布的
-			            				cids[i] = String.valueOf(item._id);
+			            				cids.add(String.valueOf(item._id));			            				
 			            				selItems.remove(item);
+			            				mData.remove(item);
+			            				++delSize ; 
 			            			}			            			
 			            		}
 			            		
+			            		//delete local 
 			            		collectionVo.delete(cids);
 			            		imageVo.deleteBycids(cids);		
+			            		
 			            		String count = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT);
-			            		if(Integer.parseInt(count) >= selItems.size()){
-			            			packVo.update("collect_count = collect_count - " + selItems.size(), 
+			            		if(Integer.parseInt(count) >= delSize){
+			            			packVo.update("collect_count = collect_count - " + delSize, 
 			            					" pack_id = ? ", new String[]{String.valueOf(pid)});
+			            		}else{ //not likely 
+			            			return ;
 			            		}
-			            		RestoreToolBar();			            		
+			            		showView();
+			            		
 			            		if(selItems.size()>0)
 			            			requestDel(selItems);
 			            		}
@@ -256,7 +266,15 @@ public class LocalCollectionListActivity extends BaseActivity {
 			overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 		}		
 	}	
-	
+	private void showView()
+	{
+		if(collectionAdapter == null){
+			collectionAdapter = new LocalCollectionAdapter(this, mData,isMulChoice);
+			collectionList.setAdapter(collectionAdapter);
+		}else{
+			collectionAdapter.updateView(mData);
+		}
+	}
 	private void RestoreToolBar()
 	{
 		isMulChoice = false ; 
@@ -268,7 +286,7 @@ public class LocalCollectionListActivity extends BaseActivity {
 		setTitle(getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_NAME));
 	}	
 	
-	private void requestDel(List<CollectionBean> items)
+	private void requestDel(final List<CollectionBean> items)
 	{
 		Map<String, String> params = new HashMap<String, String>();		
 		params.put("uid", Session.getSession().getuId());
@@ -288,7 +306,18 @@ public class LocalCollectionListActivity extends BaseActivity {
 			public void onResponse(JSONObject response) {
 				try {
 					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {						
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {		
+						ArrayList<String> cids = new ArrayList<String>(); 
+	            		for(int i =0 ;i<selItems.size();i++){
+	            			CollectionBean item = selItems.get(i);
+	            			cids.add(String.valueOf(item._id));
+	            			mData.remove(item);
+	            		}
+	            		collectionVo.delete(cids);
+	            		imageVo.deleteBycids(cids);
+						packVo.update("collect_count = collect_count - " + items.size(), 
+            					" pack_id = ? ", new String[]{String.valueOf(pid)});
+						showView();
 					}else{
 						Toast.makeText(LocalCollectionListActivity.this, 
 								getString(R.string.delete_fail),Toast.LENGTH_SHORT).show();
@@ -303,6 +332,9 @@ public class LocalCollectionListActivity extends BaseActivity {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  

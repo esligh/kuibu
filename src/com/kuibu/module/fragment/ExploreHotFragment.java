@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -23,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.DataUtils;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -64,7 +66,6 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(getActivity(),
 						FavoriteBoxInfoActivity.class);
 				intent.putExtra("box_id", mdatas.get(position).get("box_id"));
@@ -83,6 +84,29 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 		showView();
 		return rootView;
 	}
+	
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		super.onHiddenChanged(hidden);
+		if(hidden){			
+			
+		}else{
+			loadData("REQ_NEWDATA");
+		}
+	}
+
+	@Override
+	public void onLoadMore() {
+		loadData("REQ_HISTORY");
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		mdatas.clear();
+		mdatas = null ;
+	}
+		
 
 	private void loadFromArray(JSONArray arr,String action) {
 		try {
@@ -109,7 +133,6 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 				showView();
 			}
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (mdatas.size() > 0) {
@@ -118,6 +141,8 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 			mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 		}
 	}
+	
+	
 	
 	private void loadData(final String action) {
 		Map<String, String> params = new HashMap<String, String>();
@@ -170,6 +195,9 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
@@ -186,18 +214,4 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 		}
 	}
 
-	@Override
-	public void onLoadMore() {
-		// TODO Auto-generated method stub
-		loadData("REQ_HISTORY");
-	}
-
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		mdatas.clear();
-		mdatas = null ;
-	}
-		
 }

@@ -29,6 +29,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -45,6 +46,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public final class UserInfoContentFragment extends Fragment implements
 		IConstructFragment {		
+	
 	private TextView user_name_tv ; 
 	private TextView signature_tv  ;
 	private ImageView user_photo_iv,user_sex_iv; 
@@ -306,6 +308,9 @@ public final class UserInfoContentFragment extends Fragment implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);	
@@ -361,6 +366,9 @@ public final class UserInfoContentFragment extends Fragment implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  

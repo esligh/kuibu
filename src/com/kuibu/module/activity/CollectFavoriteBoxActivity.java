@@ -39,6 +39,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
@@ -170,6 +171,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 										int arg1) { 
 									boolean bcheck = box_cb.isChecked();
 									Map<String,String> params = new HashMap<String,String>();
+									
 									params.put("box_name", box_name.getText().toString().trim());
 									params.put("box_desc", box_desc.getText().toString().trim());
 									params.put("is_private",bcheck ? "1":"");//python bool("") is False
@@ -262,6 +264,9 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		
@@ -312,15 +317,12 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				.append("/add_favoritebox").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
-
 			@Override
 			public void onResponse(JSONObject response) {
 				try {
 					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){
-						
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){						
 						mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
-						
 						Map<String,String> item = new HashMap<String,String>();
 					    item.put("box_id",response.getString("box_id"));
 						item.put("box_name", response.getString("box_name"));
@@ -338,6 +340,9 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
@@ -408,6 +413,9 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
@@ -457,6 +465,9 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  

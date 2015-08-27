@@ -13,18 +13,19 @@
             android:id="@+id/hot_collect_folder_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
+            android:paddingTop="@dimen/android_spaces_small"
+            android:paddingLeft="@dimen/android_spaces"
+            android:paddingRight="@dimen/android_spaces"
+            android:paddingBottom="@dimen/android_spaces_small"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/hot_collect_pic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/icon_small_width"
+            android:layout_height="@dimen/icon_small_height"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp" 
+            android:layout_marginRight="@dimen/android_spaces" 
             android:src="@drawable/ic_drawer_collect_normal">
         </ImageView>
 
@@ -33,9 +34,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/hot_collect_folder_name"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
+            android:textColor="?android:attr/textColorSecondary"
+            
+            android:paddingLeft="@dimen/android_spaces"
+            android:paddingRight="@dimen/android_spaces"
+            android:paddingBottom="@dimen/android_spaces_small"
             android:maxLines="2"
             android:ellipsize="end"
             android:textSize="16sp" />
@@ -45,6 +48,8 @@
         android:id="@+id/list_item_seperator"
         android:layout_width="match_parent"
         android:layout_height="1dip"
+        android:layout_marginLeft="@dimen/android_spaces"
+        android:layout_marginRight="@dimen/android_spaces"
         android:background="@color/light_grey" />
     
     <RelativeLayout
@@ -56,7 +61,7 @@
             android:layout_width="@dimen/user_pic_width"
             android:layout_height="@dimen/user_pic_height"
             android:scaleType="fitCenter"            
-            android:padding="10dp"
+            android:padding="@dimen/android_spaces"
             android:contentDescription="@null">
         </ImageView>
 
@@ -65,9 +70,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/hot_collect_folder_owner_pic"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="10dp"            
+            android:textColor="?android:attr/textColorSecondary"
+            android:paddingTop="@dimen/android_spaces"
+            android:paddingRight="@dimen/android_spaces"
+            android:paddingBottom="@dimen/android_spaces"            
             android:textSize="16sp" />
         
         <TextView
@@ -76,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:padding="10dp"
+            android:padding="@dimen/android_spaces"
             android:textSize="16sp"
             ></TextView>
     </RelativeLayout>

@@ -27,7 +27,7 @@ public class SplashScreenActivity extends Activity {
 		int lastVersion = prefs.getInt(Constants.VERISION_CODE, 0);  
 		if (currentVersion > lastVersion) {
 			bFirstLaunch  = true ; 
-		    prefs.edit().putInt(Constants.VERISION_CODE,0).commit();  
+		    prefs.edit().putInt(Constants.VERISION_CODE,currentVersion).commit();  
 		}
 		  		
 		new Handler().postDelayed(new Runnable(){

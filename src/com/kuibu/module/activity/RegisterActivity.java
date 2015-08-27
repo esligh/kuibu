@@ -83,6 +83,8 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 			@Override
 			public void onClick(View arg0) {	
 				if(progressBtn.getProgress() == PROGRESS_MAX){
+					Toast.makeText(RegisterActivity.this, getString(R.string.note_active), 
+							Toast.LENGTH_SHORT).show();
 					finish();
 				} else{
 					progressBtn.setProgress(PROGRESS_LEN);
@@ -157,7 +159,16 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 						}else{
 							progressBtn.setProgress(PROGRESS_MAX);
 						}						
-					}else{						
+					}else if(StaticValue.RESPONSE_STATUS.REG_SAMENAME.equals(state)){
+						Toast.makeText(RegisterActivity.this, getString(R.string.register_samename),
+								Toast.LENGTH_LONG).show();
+						progressBtn.setProgress(0);
+
+					}else if(StaticValue.RESPONSE_STATUS.REG_SAMEEMAIL.equals(state)){
+						Toast.makeText(RegisterActivity.this, getString(R.string.register_sameemail),
+								Toast.LENGTH_LONG).show();
+						progressBtn.setProgress(0);
+					}else{
 						Toast.makeText(RegisterActivity.this, getString(R.string.register_fail),
 								Toast.LENGTH_LONG).show();
 						progressBtn.setProgress(0);

@@ -36,6 +36,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
@@ -73,10 +74,11 @@ public class OperCollectPackActivity extends BaseActivity {
 		box_topic = (AutoCompleteTextView) findViewById(R.id.collect_pack_topic_tv);
 		tagGroup = (TagGroup) findViewById(R.id.topic_tag_group);
 		if(isDarkTheme){
-			tagGroup.setBackGroudColor(getResources().getColor(R.color.list_view_bg_dark));
+			tagGroup.setTagBackGroundColor(getResources().getColor(R.color.list_view_bg_dark));
 		}else{
-			tagGroup.setBackGroudColor(getResources().getColor(R.color.white));
+			tagGroup.setTagBackGroundColor(getResources().getColor(R.color.white));
 		}
+		
 		tagGroup.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -210,6 +212,9 @@ public class OperCollectPackActivity extends BaseActivity {
 					VolleyLog.e("Error: ", error.getMessage());
 					VolleyLog.e("Error:", error.getCause());
 					error.printStackTrace();
+					Toast.makeText(getApplicationContext(), 
+							VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+							Toast.LENGTH_SHORT).show();
 				}
 			});
 			KuibuApplication.getInstance().addToRequestQueue(req);					
@@ -405,6 +410,9 @@ public class OperCollectPackActivity extends BaseActivity {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
@@ -456,6 +464,9 @@ public class OperCollectPackActivity extends BaseActivity {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  

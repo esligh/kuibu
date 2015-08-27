@@ -13,7 +13,10 @@
   <string name="preference_accountprotect">账号保护</string>
   
   <string name="preference_other">其他</string>
+  <string name="preference_help">帮助</string>  
   <string name="preference_handbook">MD手册</string>
   <string name="preference_latest_version">版本更新</string>
+  <string name="preference_feedback">意见反馈</string>
+  <string name="preference_exception">异常报告</string>
   <string name="preference_about">关于</string>
 </resources>

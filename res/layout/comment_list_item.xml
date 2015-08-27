@@ -41,27 +41,4 @@
         android:paddingTop="5dp"
         android:textSize="14sp" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/content_tv"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp">
-		
-        <ImageView
-            android:id="@+id/vote_iv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"       
-            android:src="@drawable/ic_vote_normal" />
-        
-        <TextView
-            android:id="@+id/vote_count_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/vote_iv"
-            android:paddingLeft="10dp"
-            android:textSize="14sp" />
-    </RelativeLayout>
-
 </RelativeLayout>

@@ -29,7 +29,7 @@
 		        android:layout_height="wrap_content"
 		        android:layout_alignParentLeft="true"
             	android:layout_toLeftOf="@id/published_icon"
-		        android:textColor="?listItemTextColor"
+		        android:textColor="?android:attr/textColorPrimary"
 		        android:textSize = "18sp"/>		    
 		       
 	</RelativeLayout>
@@ -43,7 +43,7 @@
         android:layout_marginLeft="@dimen/android_spaces_large"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="@dimen/android_spaces_small"        
-        android:textColor="?listItemExtraTextColor"
+		android:textColor="?android:attr/textColorSecondary"
         android:textSize="16sp"         
         android:ellipsize="end"
         android:singleLine="true"/>

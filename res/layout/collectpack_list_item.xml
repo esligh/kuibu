@@ -10,8 +10,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"       
-        android:textColor="?listItemExtraTextColor"
+        android:layout_marginRight="@dimen/android_spaces_large"       
+        android:textColor="?android:attr/textColorSecondary"
         android:textSize="14sp"/>
 
         <TextView
@@ -20,24 +20,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/file_count_tv"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" 
-        android:textColor="?listItemTextColor"        
+        android:layout_marginTop="@dimen/android_spaces"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large" 
+        android:textColor="?android:attr/textColorSecondary"        
         android:textSize="18sp"/>
         
     <TextView
         android:id="@+id/pack_extra_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?listItemExtraTextColor"
+        android:textColor="?android:attr/textColorSecondary"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/file_count_tv"
         android:layout_below="@id/pack_name_tv"
         android:textSize="16sp"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp" />
+        android:paddingTop="@dimen/android_spaces_small"
+        android:paddingBottom="@dimen/android_spaces_small"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large" />
     
 </RelativeLayout>

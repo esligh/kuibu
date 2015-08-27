@@ -104,5 +104,18 @@ public class CollectionBean implements Serializable{
 	public void setIsSync(int isSync) {
 		this.isSync = isSync;
 	}
+
+	@Override
+	public boolean equals(Object o) {		
+		if(o instanceof CollectionBean){
+			CollectionBean obj = (CollectionBean)o ;
+			if(obj != null){
+				return this. _id.equals(obj._id) ; 
+			}
+		}
+		return false ; 
+	}
+	
+	
 	
 }

@@ -330,9 +330,13 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 							userEducation.setText(education);
 							mInfo.setSignature(education);
 						}
+						String url = obj.getString("photo") ; 
+						if(TextUtils.isEmpty(url) || url.equals("null")){
+							userPhoto.setImageResource(R.drawable.icon_addpic_focused);
+						}else{
+							ImageLoader.getInstance().displayImage(url,userPhoto);
+						}	
 						
-						ImageLoader.getInstance().displayImage(obj.getString("photo"), 
-								userPhoto);			
 						String sex = obj.getString("sex");
 						mInfo.setSex(sex);
 						switchSexBack(sex);	
@@ -462,7 +466,9 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			super.onActivityResult(requestCode, resultCode, result);
 			switch(requestCode){
 			case Crop.REQUEST_PICK:
-				beginCrop(result.getData());
+				if(result != null){
+					beginCrop(result.getData());
+				}				
 				break;
 			case Crop.REQUEST_CROP:
 				handleCrop(resultCode, result);

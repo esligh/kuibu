@@ -3,6 +3,7 @@
     android:id="@+id/layout_guide_sixth"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
+    
 
     <LinearLayout
         android:orientation="horizontal"
@@ -10,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
-
+<!-- 
         <LinearLayout
             android:gravity="center"
             android:orientation="horizontal"
@@ -56,6 +57,7 @@
                 android:layout_marginLeft="@dimen/margin_large"
                 android:text="@string/drawer_login_by_sina_sort"/>
         </LinearLayout>
+ -->
     </LinearLayout>
 
     <LinearLayout

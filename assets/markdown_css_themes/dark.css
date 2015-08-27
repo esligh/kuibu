@@ -89,19 +89,19 @@ pre, code {
 	word-wrap:break-word; 
 	white-space: pre-wrap;
 	border-radius: 3px;
-    background-color: #F8F8F8;
+    background-color: #414141;
     color: inherit;
   	font-size: 1em;
 }
 
 code {
-    border: 1px solid #EAEAEA;
+    border: 1px solid #777777;
     margin: 0 2px;
     padding: 0 5px;
 }
 
 pre {
-    border: 1px solid #CCCCCC;
+    border: 1px solid #777777;
     line-height: 1.25em;
     overflow: auto;
     padding: 6px 10px;

@@ -8,16 +8,18 @@
         android:id="@+id/search_content_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="18sp"
-        android:padding="10dp"/>
+        android:padding="@dimen/android_spaces"/>
 
     <TextView
         android:id="@+id/search_content_item_sub1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/search_content_item_title"
-        android:paddingLeft="10dp"
-        android:paddingBottom="10dp"
+        android:paddingLeft="@dimen/android_spaces"
+        android:paddingBottom="@dimen/android_spaces"
+        android:textColor="?android:attr/textColorSecondary"
         android:textSize="14sp"/>
     
     <TextView
@@ -26,8 +28,9 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/search_content_item_sub1"
         android:layout_below="@id/search_content_item_title"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingLeft="@dimen/android_spaces"
+        android:paddingRight="@dimen/android_spaces"
+        android:textColor="?android:attr/textColorSecondary"
         android:textSize="14sp"/>
 	
 </RelativeLayout>

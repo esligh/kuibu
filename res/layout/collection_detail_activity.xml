@@ -64,7 +64,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" 
-                android:layout_margin="15dp"
+                android:layout_marginLeft="@dimen/android_spaces_large"
+                android:layout_marginRight="@dimen/android_spaces_large"
+                android:layout_marginBottom="@dimen/android_spaces_large"
                 android:layout_gravity="bottom"
                 android:visibility="gone">
 

@@ -43,7 +43,7 @@ public class DownloadWebImgTask extends AsyncTask<String, String, String>{
 	@Override
 	protected void onPostExecute(String content) {
 		super.onPostExecute(content);
-		// 如果当前任务已经取消了，则直接返回
+		
 		if (isCancelled()) {
 			return;
 		}

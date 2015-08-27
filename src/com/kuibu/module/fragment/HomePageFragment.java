@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -22,6 +23,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.baoyz.widget.PullRefreshLayout;
 import com.kuibu.common.utils.DataUtils;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -61,7 +63,8 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
         });
 		mListView = (PaginationListView) rootView.findViewById(R.id.pagination_lv);
 		pullFreshlayout = (PullRefreshLayout)rootView.findViewById(R.id.swipeRefreshLayout);
-		pullFreshlayout.setRefreshStyle(PullRefreshLayout.STYLE_RING);
+		
+		pullFreshlayout.setRefreshStyle(PullRefreshLayout.STYLE_CIRCLES);
 		mListView.setOnLoadListener(this);
 		pullFreshlayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
@@ -175,6 +178,9 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 				pullFreshlayout.setRefreshing(false);
 				mListView.loadComplete();
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 

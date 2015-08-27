@@ -30,6 +30,9 @@
     <string name="hint_topic_private">私有(私有集册的内容发布只作为备份，其他人看不到)</string>
     <string name="hint_fbox_private">私有(私有集册只对自己可见)</string>
 	<string name="hint_report">举报原因&#8230;</string>
+	<string name="hint_advice">你的宝贵意见是跬步不断进步的动力&#8230;</string>
+	<string name="hint_contact">手机号/Email/QQ</string>
+	
 	<string name="report_reason">举报原因</string>
     <string name="empty_view_desc">暂无数据</string>
     <string name="error_view_desc">加载数据出错</string>
@@ -77,8 +80,9 @@
 	<string name="handbook">帮助手册</string>        
     <string name="look_at">查看</string>    
     <string name="report">举报</string>
-    <string name="like">喜欢</string>
-    <string name="setting_cover">设置封面</string>
+    <string name="like">赞</string>
+    <string name="setting_cover">设置封面</string>    
+    <string name="contact">联系方式</string>
     
     <!-- action -->
     <string name="action_create">创建</string>
@@ -136,9 +140,7 @@
 	<string name="fav_add_fail">添加收藏失败</string>
 	
 	<string name="fav_cancel_success">已取消收藏</string>
-	
 
-	
 	<!-- prompt -->
 	<string name="comment_no_empty">评论内容不能为空</string>
 	<string name="write_down_comment">写下你的评论&#8230;</string>
@@ -151,6 +153,9 @@
 	<string name ="need_login">请先注册登录</string>
 	
 	<string name="register_fail">注册失败</string>	
+	<string name="register_samename">用户名已被使用</string>
+	<string name="register_sameemail">邮箱已被使用</string>
+	
 	<string name="upload_pic_fail">头像上传失败</string>
 	<string name="input_text">请输入</string>
 	<string name="input_name">请输入姓名</string>
@@ -175,7 +180,7 @@
 	<string name="content_empty">发布内容不能为空</string>
 	<string name="empty_name">名称不能为空</string>
 	<string name="no_desc">暂无描述</string>
-	
+	<string name="note_active">为了您的账号安全,请先登录邮箱激活</string>
 		
 	<!-- menu text -->
 	<string name ="operator">操作</string>
@@ -183,6 +188,11 @@
 	<string name ="cancel_reply">取消回复</string>
 	<string name ="clear_all">清空</string>
 	
+	<!-- volley error info -->
+	<string name ="no_internet">当前网络状态不好</string>
+	<string name ="auth_failure">授权过期,请重新登录</string>	
+	<string name ="generic_server_down">请求超时</string>
+	<string name ="generic_error">服务异常</string>
 	
     <array name="array_guide_tips">
         <item>@string/tip_guide_first</item>

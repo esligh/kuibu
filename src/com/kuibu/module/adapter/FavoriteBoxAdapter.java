@@ -69,6 +69,8 @@ public class FavoriteBoxAdapter extends BaseAdapter{
 		holder.box_name_tv.setText((String)datas.get(position).get("box_name"));
 		if(selIds!=null && selIds.contains((String)datas.get(position).get("box_id"))){
 			holder.box_cb.setChecked(true);
+		}else{
+			holder.box_cb.setChecked(false);
 		}
 		return convertView;
 	}

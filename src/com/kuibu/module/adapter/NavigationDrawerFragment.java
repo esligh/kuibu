@@ -96,7 +96,7 @@ public class NavigationDrawerFragment extends Fragment {
 		}			
 		drawerListAdapter.updateView(mData);
 	}
-	
+
 	//end 		
 	@Override
     public void onCreate(Bundle savedInstanceState) {

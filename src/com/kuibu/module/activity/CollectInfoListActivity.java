@@ -36,6 +36,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.BorderScrollView;
 import com.kuibu.custom.widget.BorderScrollView.OnBorderListener;
 import com.kuibu.custom.widget.FButton;
@@ -50,7 +51,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CollectInfoListActivity extends BaseActivity implements
 		OnBorderListener {
-	
+	private static final String VOLLEY_REQUEST_TAG = "collectpack_info";
 	private ListView cardListView;
 	private RelativeLayout focusLayout;
 	private View footerView;
@@ -68,6 +69,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 	private RelativeLayout tagLayout;
 	private String topic_id;
 	private MultiStateView mMultiStateView;
+	private Map<String,String> packInfo = new HashMap<String,String>();
 	
 	@SuppressLint("InflateParams")
 	@Override
@@ -91,22 +93,20 @@ public class CollectInfoListActivity extends BaseActivity implements
 		if (flag)
 			focusLayout.setVisibility(View.GONE);
 		tagGroup = (TagGroup) findViewById(R.id.topic_name_tags);
-				
+		
 		if(isDarkTheme){
 			int color =getResources().getColor(R.color.list_view_bg_dark);
-			tagGroup.setBackGroudColor(color);
-			tagGroup.setPressedColor(color);
+			tagGroup.setTagBackGroundColor(color);
 		}else{
 			int color = getResources().getColor(R.color.white);
-			tagGroup.setBackgroundColor(color);
-			tagGroup.setPressedColor(getResources().getColor(R.color.SkyBlue));
+			tagGroup.setTagBackGroundColor(color);
 		}
 		tagLayout = (RelativeLayout) findViewById(R.id.tags_layout);
 		tagLayout.setOnClickListener(new OnClickListener() {
 			@Override
-			public void onClick(View arg0) {				
+			public void onClick(View arg0) {		
 				Intent intent = new Intent(CollectInfoListActivity.this,
-						TopicListActivity.class);
+					TopicListActivity.class);
 				intent.putExtra("topic_id", topic_id);
 				startActivity(intent);
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
@@ -177,7 +177,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		// packVo.closeDB();
+		KuibuApplication.getInstance().cancelPendingRequests(VOLLEY_REQUEST_TAG);
 	}
 	
 	@Override
@@ -225,22 +225,26 @@ public class CollectInfoListActivity extends BaseActivity implements
 		intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
 		intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
 		intent.putExtra(StaticValue.USERINFO.USER_ID,
-				getIntent().getStringExtra("create_by"));
+				packInfo.get("create_by"));
 		intent.putExtra(StaticValue.USERINFO.USER_NAME,
-				getIntent().getStringExtra("name"));
+				packInfo.get("name"));
 		intent.putExtra(StaticValue.USERINFO.USER_SIGNATURE,
-				getIntent().getStringExtra("signature"));
+				packInfo.get("signature"));
 		intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
-				getIntent().getStringExtra("photo"));
+				packInfo.get("photo"));
 		intent.putExtra(StaticValue.USERINFO.USER_SEX,
-				getIntent().getStringExtra("sex"));
+				packInfo.get("sex"));		
 		startActivity(intent);
 		overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 	}
 
 	private void loadPack() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("uid", Session.getSession().getuId());
+		if(Session.getSession().isLogin()){
+			params.put("uid", Session.getSession().getuId());
+		}else{
+			params.put("uid", "null");
+		}		
 		params.put("pack_id", packId);
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 							.append(Constants.Config.REST_API_VERSION)
@@ -254,15 +258,18 @@ public class CollectInfoListActivity extends BaseActivity implements
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						JSONObject obj = new JSONObject(response.getString("result"));
 						if (obj != null) {
-							titleView.setText(obj.getString("pack_name"));
+							String packName = obj.getString("pack_name");
+							packInfo.put("pack_name", packName);
+							titleView.setText(packName);
 							String desc = obj.getString("pack_desc"); 
 							if(TextUtils.isEmpty(desc)){
 								descView.setText(getString(R.string.no_desc));
 							}else{
 								descView.setText(desc);
 							}
-							String creatBy = obj.getString("create_by");
-							if(Session.getSession().getuId().equals(creatBy)){
+							String createBy = obj.getString("create_by");
+							packInfo.put("create_by", createBy);
+							if(Session.getSession().getuId().equals(createBy)){
 								focusLayout.setVisibility(View.GONE);
 							}else{
 								focusLayout.setVisibility(View.VISIBLE);
@@ -276,9 +283,15 @@ public class CollectInfoListActivity extends BaseActivity implements
 								followCount.setText(DataUtils.formatNumber(obj.getInt("focus_count")));
 							}
 							topic_id = obj.getString("topic_id");
-							creatorName.setText(obj.getString("name"));
-							creatorSignature.setText(obj.getString("signature"));
+							String uName = obj.getString("name");
+							creatorName.setText(uName);
+							packInfo.put("name", uName);
+							packInfo.put("sex", obj.getString("sex"));
+							String signature = obj.getString("signature");
+							creatorSignature.setText(signature);
+							packInfo.put("signature", signature);
 							String url  = obj.getString("photo");
+							packInfo.put("photo",url);
 							if (TextUtils.isEmpty(url)) {
 								creatorPicView.setImageResource(R.drawable.default_pic_avata);	
 							} else {
@@ -306,9 +319,12 @@ public class CollectInfoListActivity extends BaseActivity implements
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,VOLLEY_REQUEST_TAG);
 	}
 
 	private void doFocus() {
@@ -364,6 +380,9 @@ public class CollectInfoListActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
@@ -375,7 +394,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 	 			return headers;  
 	 		} 
 		};
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,VOLLEY_REQUEST_TAG);
 	}
 
 	private void loadList() {
@@ -425,8 +444,13 @@ public class CollectInfoListActivity extends BaseActivity implements
 						VolleyLog.e("Error:", error.getCause());
 						error.printStackTrace();
 						mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+						Toast.makeText(getApplicationContext(), 
+								VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+								Toast.LENGTH_SHORT).show();
 					}
 				});
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,VOLLEY_REQUEST_TAG);
 	}
+	
+	
 }

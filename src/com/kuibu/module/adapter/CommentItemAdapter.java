@@ -24,7 +24,6 @@ public class CommentItemAdapter extends BaseAdapter {
 		TextView user_name_tv;
 		TextView content_tv;
 		TextView date_tv ;
-		TextView voteCount_tv ; 
 	}
 	
 	public CommentItemAdapter(Context context, List<CommentItemBean> datas){
@@ -66,17 +65,15 @@ public class CommentItemAdapter extends BaseAdapter {
 			holderView.user_name_tv  = (TextView)convertView.findViewById(R.id.user_name_tv);
 			holderView.content_tv = (TextView)convertView.findViewById(R.id.content_tv);
 			holderView.date_tv = (TextView)convertView.findViewById(R.id.date_tv);
-			holderView.voteCount_tv = (TextView)convertView.findViewById(R.id.vote_count_tv);
 			convertView.setTag(holderView);
 		} else {
 			holderView = (HolderView) convertView.getTag();
 		}
 		holderView.user_name_tv.setText(datas.get(position).getUserName());
 		holderView.content_tv.setText(datas.get(position).getContent());
-		holderView.date_tv.setText(datas.get(position).getGenDate());
-		holderView.voteCount_tv.setText(datas.get(position).getVoteCount());
-		
+		holderView.date_tv.setText(datas.get(position).getGenDate());		
 		String url = datas.get(position).getUserPicUrl();
+		
 		if(TextUtils.isEmpty(url) || url.equals("null")){
 			holderView.user_photo_iv.setImageResource(R.drawable.default_pic_avata);						
 		}else{

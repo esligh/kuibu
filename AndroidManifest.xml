@@ -13,6 +13,7 @@
 	<uses-permission android:name="android.permission.INTERNET" />  	    
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
 	
 	<uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -169,11 +170,15 @@
 		     android:label="@string/look_at">
 		 </activity>
 	
-		 	 <activity
+		 <activity
 		     android:name=".ReportActivity"
 		     android:label="@string/report">
 		 </activity>
-	
+		<activity 
+		    android:name=".AdviceFeedBackActivity"
+		    android:label="@string/preference_feedback">
+		   
+		</activity>
 		 <service
 		     android:name="com.kuibu.module.service.HeartBeatService">
 			 <intent-filter>

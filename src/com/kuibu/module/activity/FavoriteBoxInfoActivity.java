@@ -33,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.BorderScrollView;
 import com.kuibu.custom.widget.BorderScrollView.OnBorderListener;
 import com.kuibu.custom.widget.FButton;
@@ -69,7 +70,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.collectpack_infolist);
 		mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
@@ -82,10 +82,13 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			}   	
         });
 		focusLayout = (RelativeLayout) findViewById(R.id.collect_pack_info_focus_rl);
-		boolean flag = getIntent().getBooleanExtra(
-				StaticValue.HIDE_FOCUS, false);
-		if (flag)
+		String uid = Session.getSession().getuId();
+		String createBy = getIntent().getStringExtra("create_by");
+		if (!TextUtils.isEmpty(uid) && uid.equals(createBy)){
 			focusLayout.setVisibility(View.GONE);
+		}else{
+			focusLayout.setVisibility(View.VISIBLE);
+		}		
 		tagLayout = (RelativeLayout) findViewById(R.id.tags_layout);
 		tagLayout.setVisibility(View.GONE);
 		cardListView = (ListView) findViewById(R.id.collectpack_cards_list);
@@ -100,7 +103,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				Intent intent = new Intent(FavoriteBoxInfoActivity.this,
 						CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item_datas
@@ -122,7 +124,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		focusBtn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				// TODO Auto-generated method stub
 				if (Session.getSession().isLogin()) {
 					do_focus(isfocus);
 				} else {
@@ -140,7 +141,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		creatorName.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				// TODO Auto-generated method stub
 				showUserview();
 			}
 		});
@@ -174,7 +174,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 	
@@ -189,7 +188,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 	}
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
 		super.onBackPressed();
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}	
@@ -205,14 +203,12 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 
 	@Override
 	public void onBottom() {
-		// TODO Auto-generated method stub
 		footerView.setVisibility(View.VISIBLE);
 		loadList();
 	}
 
 	@Override
 	public void onTop() {
-		// TODO Auto-generated method stub
 		borderScrollView.loadComplete();
 	}
 	
@@ -227,7 +223,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -252,7 +247,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -262,6 +256,9 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -316,6 +313,9 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
@@ -343,7 +343,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				new JSONObject(params), new Response.Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject response) {
-						// TODO Auto-generated method stub
 						try {
 							String state = response.getString("state");
 							if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS
@@ -368,18 +367,12 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 										+ arr.length() + "条收集");
 								showView();
 							} else if (StaticValue.RESPONSE_STATUS.COLLETION_NFRECORD
-									.equals(state)) {
-//								Toast.makeText(FavoriteBoxInfoActivity.this,
-//										"没有数据啦！", Toast.LENGTH_SHORT).show();
-							} else {
-//								Toast.makeText(FavoriteBoxInfoActivity.this,
-//										"加载列表失败！", Toast.LENGTH_SHORT).show();
-							}
+									.equals(state)) {								
+							} else {}
 							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 							borderScrollView.loadComplete();
 							footerView.setVisibility(View.GONE);
 						} catch (JSONException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -390,6 +383,9 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 						VolleyLog.e("Error:", error.getCause());
 						error.printStackTrace();
 						mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+						Toast.makeText(getApplicationContext(), 
+								VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+								Toast.LENGTH_SHORT).show();
 					}
 				});
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -407,7 +403,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -436,7 +431,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -446,6 +440,9 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);

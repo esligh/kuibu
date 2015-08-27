@@ -11,14 +11,14 @@ import java.io.Serializable;
 public class Session implements Serializable{
 
 	private static final long serialVersionUID = 1L;
-	private String uId;
-	private String uName;
-	private String uSex ; 
-	private String uSignature; 
-	private String uEmail;
-	private String token;
-	private String uPic;  
-	private String regState ; 
+	private String uId="-1";
+	private String uName="";
+	private String uSex=""; 
+	private String uSignature=""; 
+	private String uEmail="";
+	private String token="";
+	private String uPic="";  
+	private String regState=""; 
 	private boolean login = false; 	
 	private static Session session;
 
@@ -62,7 +62,7 @@ public class Session implements Serializable{
 	}
 
 	public void clearSession() {
-		uId=uName=uSex=uSignature=uEmail=token=uPic=regState=null;
+		uId=uName=uSex=uSignature=uEmail=token=uPic=regState="";
 		login=false;
 	}
 

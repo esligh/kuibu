@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.DataUtils;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -63,6 +64,29 @@ public class ExploreRankFragment extends BaseFragment implements
 			showView();
 			loadData("REQ_NEWDATA");
 			return rootView;
+	}
+	
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		// TODO Auto-generated method stub
+		super.onHiddenChanged(hidden);
+		if(hidden){			
+			
+		}else{
+			loadData("REQ_NEWDATA");
+		}
+	}
+
+	@Override
+	public void onLoadMore() {	
+		loadData("REQ_HISTORY");
+	}
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		mdatas.clear();
 	}
 	
 	private void loadFromArray(JSONArray arr,String action)
@@ -149,15 +173,14 @@ public class ExploreRankFragment extends BaseFragment implements
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				if(mdatas!=null && mdatas.isEmpty())
-					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				else
-					Toast.makeText(getActivity(), 
-							getActivity().getString(R.string.load_fail), Toast.LENGTH_SHORT).show();
-				
+					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);				
 				rankList.loadComplete();
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
@@ -172,18 +195,5 @@ public class ExploreRankFragment extends BaseFragment implements
 		} else {
 			rankAdapter.updateView(mdatas);
 		}
-	}
-	
-	@Override
-	public void onLoadMore() {	
-		loadData("REQ_HISTORY");
-	}
-	
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		mdatas.clear();
-		mdatas = null ;
 	}
 }

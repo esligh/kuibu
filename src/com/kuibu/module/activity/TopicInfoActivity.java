@@ -41,6 +41,7 @@ import com.kuibu.module.adapter.UserListAdapter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class TopicInfoActivity extends BaseActivity {
+	
 	private ImageView topic_pic_iv;
 	private TextView topic_name_tv, topic_desc_tv;
 	private TextView follow_count_tv;

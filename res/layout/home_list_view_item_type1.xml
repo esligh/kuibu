@@ -51,7 +51,7 @@
         android:maxLines="2"
         android:paddingBottom="2dp"
         android:paddingTop="2dp"
-        android:textColor="?listItemTextColor"
+        android:textColor="?android:attr/textColorPrimary"
         android:textSize="17sp"
         android:typeface="sans" />
 
@@ -83,7 +83,7 @@
             android:ellipsize="end"
             android:focusable="false"
             android:maxLines="2"
-            android:textColor="?listItemExtraTextColor"
+        	android:textColor="?android:attr/textColorSecondary"
             android:textSize="15sp" />z
 
         <LinearLayout

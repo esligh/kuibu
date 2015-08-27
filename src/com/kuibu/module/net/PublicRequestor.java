@@ -63,5 +63,30 @@ public class PublicRequestor {
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);		
 	}
+	
+	
+	public static void loadSocketio(Map<String,String> params)
+	{
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/socket.io").toString();
+		
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@SuppressLint("SimpleDateFormat")
+			@Override
+			public void onResponse(JSONObject response) {
+				
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+			}
+		});
+		KuibuApplication.getInstance().addToRequestQueue(req);		
+	}
 
 }

@@ -33,6 +33,7 @@ import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.PersistentCookieStore;
 import com.kuibu.model.db.SqLiteHelper;
 import com.kuibu.module.activity.R;
+import com.kuibu.module.exception.CrashHandler;
 import com.kuibu.module.net.EventSocket;
 import com.kuibu.module.net.SocketIOCallBack;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -51,12 +52,15 @@ public class KuibuApplication extends Application {
 	private static SqLiteHelper mSqlHelper;
 	private File extStorageCachePath;
 	private static DisplayImageOptions defaultOptions ; 
+	
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		mCache = ACache.get(getApplicationContext());
 		sInstance = this;
+		 CrashHandler crashHandler = CrashHandler.getInstance();  
+	     crashHandler.init(this);   
 		defaultOptions = new DisplayImageOptions.Builder()
 		.showImageOnLoading(R.drawable.image_small_default)
 		.showImageForEmptyUri(R.drawable.image_small_default)

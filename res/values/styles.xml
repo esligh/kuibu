@@ -13,8 +13,8 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="listItemBackground">@drawable/mate_list_item_selector_light</item>
         <item name="listItemDefaultImage">@drawable/image_small_default</item>
-        <item name="listItemTextColor">@color/list_item_title_light</item>
-        <item name="listItemExtraTextColor">@color/list_item_intro_light</item>
+        <item name="listItemTextColor">?android:attr/textColorPrimary</item>
+        <item name="listItemExtraTextColor">?android:attr/textColorSecondary</item>
         <item name="listViewBackground">@color/white</item>
         <item name="listCardViewBackground">@color/list_view_bg_light</item>
         <item name="webViewBackground">@color/webview_light</item>

@@ -36,6 +36,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -49,6 +50,7 @@ import com.kuibu.module.net.PublicRequestor;
 
 public class CommentActivity extends BaseActivity implements
 		OnLoadListener, OnItemClickListener {
+	
 	private CommentItemAdapter commentItemAdapter;
 	private List<CommentItemBean> datas = new ArrayList<CommentItemBean>();
 	private PaginationListView commentList;
@@ -58,6 +60,7 @@ public class CommentActivity extends BaseActivity implements
 	private String collection_creator_id;
 	private MenuItem cancelReply;
 	private MultiStateView mMultiStateView;
+	private int commentCount = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -170,6 +173,9 @@ public class CommentActivity extends BaseActivity implements
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -211,14 +217,10 @@ public class CommentActivity extends BaseActivity implements
 						@Override
 						public void onClick(DialogInterface dialog, int position) {
 							switch (position) {
-							case 0: // vote
-								
-								break;
-							case 1: // reply
+							case 0: // reply
 								if (Session.getSession().isLogin()) {
 									editContent.setHint(new StringBuffer(getString(R.string.reply))
-											.append(item.getUserName()).append(
-													"的评论"));
+											.append(" ").append(item.getUserName()));
 									cancelReply.setVisible(true);
 									Map<String, String> tag = new HashMap<String, String>();
 									tag.put("receiver_id", item.getCreateBy());
@@ -230,9 +232,7 @@ public class CommentActivity extends BaseActivity implements
 											.show();
 								}
 								break;
-							case 2: // copy
-								break;
-							case 3:// report
+							case 1:// report
 								AlertDialog.Builder builder = new Builder(CommentActivity.this);
 								builder.setTitle(getString(R.string.report_reason));
 								builder.setItems(getResources().getStringArray(R.array.report_comment), 
@@ -314,8 +314,8 @@ public class CommentActivity extends BaseActivity implements
 		if (cancelReply.isVisible()) {
 			params.put("type", StaticValue.COMMENT.TYPE_REPLY);
 			@SuppressWarnings("unchecked")
-			Map<String, String> tag = (Map<String, String>) editContent
-					.getTag();
+			Map<String, String> tag = (Map<String, String>) 
+								editContent.getTag();
 			params.put("receiver_id", tag.get("receiver_id"));
 		} else {
 			params.put("type", StaticValue.COMMENT.TYPE_COMMON);
@@ -352,9 +352,11 @@ public class CommentActivity extends BaseActivity implements
 						} else {
 							bean.setContent(content);
 						}
-
 						datas.add(bean);
 						showView();
+						if(!cancelReply.isVisible()){
+							++commentCount;
+						}						
 					}
 					cancelReply.setVisible(false);
 					editContent.setHint(getString(R.string.write_down_comment));
@@ -369,6 +371,9 @@ public class CommentActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}) {
 			@Override
@@ -414,6 +419,9 @@ public class CommentActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		}) {
 			@Override
@@ -436,8 +444,11 @@ public class CommentActivity extends BaseActivity implements
 	
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
+		Intent intent = new Intent();
+		intent.putExtra("comment_count", commentCount);
+		setResult(RESULT_OK, intent);
+		
+		super.onBackPressed(); //afeter setResult 
 		overridePendingTransition(R.anim.anim_slide_out_right,
 				R.anim.anim_slide_in_right);
 	}

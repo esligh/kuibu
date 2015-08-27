@@ -57,8 +57,9 @@
                     android:id="@+id/collect_pack_title_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:layout_below="@id/collect_pack_header_divider"
-                    android:padding="10dp"
+                    android:padding="@dimen/android_spaces"
                     android:textSize="18sp" />
             </RelativeLayout>
 
@@ -72,8 +73,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/collect_pack_title_tv"
+                android:textColor="?android:attr/textColorSecondary"
                 android:background="?listViewBackground"
-                android:padding="10dp"
+                android:padding="@dimen/android_spaces"
                 android:textSize="16sp" />
 
             <View
@@ -102,11 +104,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/android_spaces_small"
-                    android:layout_marginRight="@dimen/android_spaces_medium"
+                    android:layout_marginRight="@dimen/android_spaces"
                     android:layout_marginTop="@dimen/android_spaces"
                     android:layout_toEndOf="@id/pack_creator_pic_iv"
                     android:layout_toRightOf="@id/pack_creator_pic_iv"
                     android:background="?listItemBackground"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
@@ -117,6 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/pack_creator_name_tv"
+                    android:textColor="?android:attr/textColorSecondary"
                     android:layout_toRightOf="@id/pack_creator_pic_iv"
                     android:paddingBottom="@dimen/android_spaces"
                     android:textSize="14sp" />
@@ -139,15 +143,16 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginLeft="@dimen/android_spaces"
                     android:src="@drawable/ic_followers" />
 
                 <TextView
                     android:id="@+id/follow_count_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="?android:attr/textColorSecondary"
                     android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="@dimen/android_spaces"
                     android:layout_toRightOf="@id/abc_visit_icon_iv"
                     android:gravity="center" />
 
@@ -157,7 +162,7 @@
                     android:layout_height="@dimen/btn_height"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_margin="10dp"
+                    android:layout_margin="@dimen/android_spaces"
                     android:text="@string/btn_focus"
                     android:textColor="@android:color/white"
                     fbutton:buttonColor="@color/fbutton_color_green_sea"

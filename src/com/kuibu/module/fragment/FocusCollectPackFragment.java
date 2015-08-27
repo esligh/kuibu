@@ -16,12 +16,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -75,16 +77,20 @@ public class FocusCollectPackFragment extends Fragment implements
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
 			}
 		});
+		loadData();
 		return rootView;
 	}
 	
 	@Override
-	public void onResume() {
+	public void onHiddenChanged(boolean hidden) {
 		// TODO Auto-generated method stub
-		super.onResume();
-		//refresh
-		datas.clear();
-		loadData();
+		super.onHiddenChanged(hidden);
+		if(hidden){			
+			
+		}else{
+			datas.clear();
+			loadData();
+		}
 	}
 
 	private void loadData() {
@@ -139,6 +145,9 @@ public class FocusCollectPackFragment extends Fragment implements
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				Toast.makeText(getActivity().getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);

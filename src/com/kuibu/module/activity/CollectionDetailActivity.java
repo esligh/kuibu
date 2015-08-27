@@ -69,6 +69,7 @@ import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.NetUtils;
 import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.NotifyingScrollView;
@@ -94,7 +95,7 @@ public class CollectionDetailActivity extends ActionBarActivity
 	private static final int FLING_MIN_DISTANCE = 10;	
 	//手指在屏幕滑动，最小速度
 	private static final int FLING_MIN_VELOCITY = 1;
-	
+		
 	private static final short ALPHA_MAX = 255 ; 
 	private GestureDetector mGestureDetector;
     private Drawable mActionBarBackgroundDrawable;
@@ -115,6 +116,9 @@ public class CollectionDetailActivity extends ActionBarActivity
 	private boolean isDarkTheme ; 
 	private LinearLayout webViewContainer ; 
 	private int messageCode ; 
+	private int commentCount ; 
+	private int voteCount ; 
+	private DownloadWebImgTask downLoadTask ; 
 	
     @SuppressLint("HandlerLeak")
 	@Override
@@ -127,6 +131,7 @@ public class CollectionDetailActivity extends ActionBarActivity
         webViewContainer.addView(contentView);
         
         mHeaderImage = (ImageView)findViewById(R.id.image_header);
+        
         mHandler = new Handler() {  
             @Override  
             public void handleMessage(Message msg) { //no leak,I know .   
@@ -173,7 +178,7 @@ public class CollectionDetailActivity extends ActionBarActivity
 				Intent intent = new Intent(CollectionDetailActivity.this,CommentActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
 				intent.putExtra("create_by", createBy);
-				startActivity(intent);
+				startActivityForResult(intent, StaticValue.RequestCode.COMMENT_OVER);
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}			
 			
@@ -208,8 +213,9 @@ public class CollectionDetailActivity extends ActionBarActivity
         setUpWebViewDefaults();
         cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
                 
-        loadContent();        
-        loadActions();
+        loadContent();  
+        if(Session.getSession().isLogin())
+        	loadActions();
     }
 
 	@SuppressLint("SetJavaScriptEnabled")
@@ -237,7 +243,7 @@ public class CollectionDetailActivity extends ActionBarActivity
 						StaticValue.PrefKey.NO_PICTRUE_KEY, false)){//无图
 					
 				}else{
-					new DownloadWebImgTask(getApplicationContext(),new ResponseListener(){
+					downLoadTask = (DownloadWebImgTask) new DownloadWebImgTask(getApplicationContext(),new ResponseListener(){
 
 						@Override
 						public void onPreExecute() {
@@ -300,7 +306,6 @@ public class CollectionDetailActivity extends ActionBarActivity
 					                            if(reader.peek() == JsonToken.STRING) {
 					                                String msg = reader.nextString();
 					                                if(msg != null) {
-					                    //              Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
 					                                }
 					                            }
 					                        }
@@ -366,7 +371,10 @@ public class CollectionDetailActivity extends ActionBarActivity
     @Override
     protected void onDestroy()
     {
-    	super.onDestroy();    	
+    	mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
+    	super.onDestroy();
+    	if(downLoadTask !=null )
+    		downLoadTask.cancel(false);
     	mHandler.removeCallbacksAndMessages(null);
       	webViewContainer.removeView(contentView);
       	contentView.removeAllViews();
@@ -496,6 +504,17 @@ public class CollectionDetailActivity extends ActionBarActivity
 			case StaticValue.RequestCode.REPORT_COMPLETE:
 				mActionBarBackgroundDrawable.setAlpha(curAlpha);
 				break;
+			case StaticValue.RequestCode.COMMENT_OVER:
+				if(data!=null){
+					int count = data.getIntExtra("comment_count", 0);
+					if(count>0){
+						commentCount += count;
+						StringBuilder buff = new StringBuilder(getString(R.string.comment_text))
+			        	.append(" ").append(DataUtils.formatNumber(commentCount));
+			        	commentBtn.setText(buff.toString());		        	
+					}
+				}				
+				break;
 			default:
 				break;
 		}
@@ -549,7 +568,7 @@ public class CollectionDetailActivity extends ActionBarActivity
 		StringBuilder sb = new StringBuilder();
 		String url = obj.getString("photo");
 		if(TextUtils.isEmpty(url) || url.equals("null")){			
-				url = "file:///android_asset/hand_book/default_pic_avata.png";
+				url = "file:///android_asset/img/default_pic_avata.png";
 		}
 		sb.append("<div><h2 class=\"headline-title\">").append(obj.getString("title")).append("</h2></div>")
 				.append("<div class=\"meta\">")
@@ -617,10 +636,13 @@ public class CollectionDetailActivity extends ActionBarActivity
 		for (Element e : es) {						
 			String imgUrl = e.attr("src");			
 			mDetailImageList.add(imgUrl);
-			String localImgPath = KuibuUtils.getCacheImgFilePath(this, imgUrl);			
-            e.attr("src_link","file://" + localImgPath);  
-            e.attr("ori_link",imgUrl);
-            
+			if(imgUrl.startsWith(Constants.URI_PREFIX)){
+				e.attr("src_link",imgUrl);
+			}else{
+				String localImgPath = KuibuUtils.getCacheImgFilePath(this, imgUrl);
+				e.attr("src_link","file://" + localImgPath);				
+			}              
+			e.attr("ori_link",imgUrl); 
             if(!e.attr("class").equals("avatar")){
     			e.attr("src","file:///android_asset/img/default_image_loading.png");
     			e.attr("onclick", "openImage('" + imgUrl + "')");
@@ -647,9 +669,9 @@ public class CollectionDetailActivity extends ActionBarActivity
 						
 						JSONObject obj = new JSONObject(response.getString("result"));
 						if(obj!=null){
-					        createBy = obj.getString("create_by");
-					        
-					        if(Session.getSession().getuId().equals(createBy)){
+					        createBy = obj.getString("create_by");	
+					        String uid = Session.getSession().getuId(); 
+					        if(uid != null && uid.equals(createBy)){
 					        	messageCode = StaticValue.MSG_CODE.HIDE_TOOLS;
 					        }else{
 					        	messageCode = StaticValue.MSG_CODE.SHOW_TOOLS;
@@ -660,11 +682,17 @@ public class CollectionDetailActivity extends ActionBarActivity
 					        	ImageLoader.getInstance().displayImage(coverUrl,mHeaderImage);
 					        }
 					     
-					        int comment_count = obj.getInt("comment_count");
-					        if(comment_count>0){
+					        commentCount = obj.getInt("comment_count");
+					        if(commentCount>0){
 					        	StringBuilder buff = new StringBuilder(getString(R.string.comment_text))
-					        	.append(" ").append(DataUtils.formatNumber(comment_count));
+					        	.append(" ").append(DataUtils.formatNumber(commentCount));
 					        	commentBtn.setText(buff.toString());
+					        }
+					        voteCount = obj.getInt("vote_count");
+					        if(voteCount > 0){
+					        	StringBuilder buff = new StringBuilder(getString(R.string.like))
+					        	.append(" ").append(DataUtils.formatNumber(voteCount));
+					        	likeBtn.setText(buff.toString());
 					        }
 							final String template = prepareHeader(obj);
 							String type = obj.getString("type");
@@ -700,7 +728,11 @@ public class CollectionDetailActivity extends ActionBarActivity
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
+			
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
@@ -731,14 +763,22 @@ public class CollectionDetailActivity extends ActionBarActivity
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						Drawable drawable = null ; 
 						if (isSupport) {
+							voteCount -= 1; 
 							drawable= getResources().getDrawable(R.drawable.ab_support_normal);												
 							isSupport = false;						
 						} else {
+							voteCount += 1; 
 							drawable= getResources().getDrawable(R.drawable.ab_support_active);
 							isSupport = true;				
 						}
 						drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 						likeBtn.setCompoundDrawables(drawable, null, null, null);
+						
+						if(voteCount > 0){
+							StringBuilder buff = new StringBuilder(getString(R.string.like))
+				        	.append(" ").append(DataUtils.formatNumber(voteCount));
+				        	likeBtn.setText(buff.toString());
+						}						
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -813,6 +853,9 @@ public class CollectionDetailActivity extends ActionBarActivity
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), 
+						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
+						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
