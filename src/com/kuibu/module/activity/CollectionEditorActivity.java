@@ -1,25 +1,18 @@
 package com.kuibu.module.activity;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.BroadcastReceiver;
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -30,8 +23,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.kuibu.common.utils.Bimp;
-import com.kuibu.common.utils.StorageUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -46,8 +37,9 @@ import com.kuibu.module.markdown.HighlightingEditor;
  * @author esli
  */
 
-public class CollectionEditorActivity extends ActionBarActivity {
+public class CollectionEditorActivity extends AppCompatActivity {
 	
+	public static final int REQUEST_IMAGE = 2 ; 
 	private Context mContext;
 	private EditText mTitle;
 	private HighlightingEditor mContent;
@@ -57,25 +49,8 @@ public class CollectionEditorActivity extends ActionBarActivity {
 	private CollectPackVo packVo = null ; 
 	private ImageLibVo  imageVo = null ; 
 	private String mPhotoPath = null; 
-	private boolean isDarkTheme ; 
-	private int ALERTDLG_THEME ; 
-
-	//选择图片接收器
-	private BroadcastReceiver pickpicReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (Bimp.drr.size() > 0) {
-				for (int i = 0; i < Bimp.drr.size(); i++) {
-					String path = Bimp.drr.get(i);
-					StringBuffer markText = new StringBuffer("\n![](");
-					markText.append(Constants.URI_PREFIX).append(path).append(")\n");
-					mContent.getText().insert(mContent.getSelectionStart(),
-							markText);
-				}
-			}
-		}
-	};
-
+	private boolean isDarkTheme ;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		SharedPreferences mPerferences = PreferenceManager
@@ -83,10 +58,8 @@ public class CollectionEditorActivity extends ActionBarActivity {
 		isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);
 		if (isDarkTheme) {
 			setTheme(R.style.AppTheme_Dark);
-			ALERTDLG_THEME = AlertDialog.THEME_HOLO_DARK;
 		}else{
 			setTheme(R.style.AppTheme_Light);
-			ALERTDLG_THEME = AlertDialog.THEME_HOLO_LIGHT;
 		}	
 		super.onCreate(savedInstanceState);
 		collectionVo = new CollectionVo(this);
@@ -113,9 +86,6 @@ public class CollectionEditorActivity extends ActionBarActivity {
 			mContent.setText(collection.getContent());
 			mTitle.setText(collection.getTitle());			
 		}
-		IntentFilter ifilterPickpic = new IntentFilter();
-		ifilterPickpic.addAction(StaticValue.CHOOSE_PIC_OVER);
-		registerReceiver(pickpicReceiver, ifilterPickpic);
 	}
 		
 	@Override
@@ -132,28 +102,12 @@ public class CollectionEditorActivity extends ActionBarActivity {
 			overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 			return true;
 		case R.id.action_insert_img:
-			Bimp.clear();
-			AlertDialog.Builder builder = new Builder(mContext,ALERTDLG_THEME);
-			builder.setTitle(getString(R.string.insert_img));
-			builder.setItems(
-					getResources().getStringArray(R.array.popup_menu_item),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int pos) {
-							switch (pos) {
-							case 0:
-								mPhotoPath = takePhotoByCamera();
-								break;
-							case 1:
-								Intent mIntent = new Intent(mContext,
-										ImageScanActivity.class);
-								mIntent.putExtra("max", 10);
-								mContext.startActivity(mIntent);
-								break;
-							}
-						}
-					});
-			builder.show();
+            Intent intent = new Intent(CollectionEditorActivity.this, MultiImageSelectorActivity.class);
+            intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+            intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, Constants.Config.MAX_IMAGE_SELECT);
+            intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
+            startActivityForResult(intent, REQUEST_IMAGE);
+            
 			return true;
 		case R.id.action_preview:
 			previewCollection();
@@ -162,30 +116,23 @@ public class CollectionEditorActivity extends ActionBarActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
-	public String takePhotoByCamera() {
-		File dir = new File(StorageUtils.getFileDirectory(getApplicationContext())
-				.getAbsolutePath()+Constants.Config.CAMERA_IMG_DIR);		
-		if(!dir.exists())
-			dir.mkdirs();
-		File file = new File(dir, String.valueOf(System.currentTimeMillis())
-				+".jpg");
-		Uri imageUri = Uri.fromFile(file);
-		Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		startActivityForResult(openCameraIntent, StaticValue.TAKE_PHOTO_OK);
-		return file.getPath();  
-	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if(resultCode == RESULT_OK){
 			switch (requestCode){
-			case StaticValue.TAKE_PHOTO_OK:
-				String markText = "\n![](file://" + mPhotoPath + ")\n";
-				mContent.getText().insert(mContent.getSelectionStart(),
-						markText);
+			case REQUEST_IMAGE:
+	            List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+	            if(path != null){
+	            	for(String s : path){
+	            		StringBuffer markText = new StringBuffer("\n![](");
+						markText.append(Constants.URI_PREFIX).append(s).append(")\n");
+						mContent.getText().insert(mContent.getSelectionStart(),
+								markText);
+	            	}
+	            }
+	            
 				break;
 			case StaticValue.RequestCode.PREVIEW_OVER:
 				if(collection!=null){
@@ -200,7 +147,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 	private void previewCollection() {
 		String content = mContent.getText().toString();
 		if(!TextUtils.isEmpty(content)){
-			saveNote();
+			saveCollection();
 			Intent intent = new Intent(this, PreviewActivity.class);
 			intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ENTITY, collection);
 			intent.putExtra(StaticValue.EDITOR_VALUE.FROM_WHO,
@@ -210,10 +157,10 @@ public class CollectionEditorActivity extends ActionBarActivity {
 		}
 	}
 	
-	private void saveNote() {
+	private void saveCollection() {
 		if (collection == null) {
-			if (mTitle == null || mTitle.getText().length() == 0) {
-				if (mContent.getText().toString().length() == 0) {
+			if (TextUtils.isEmpty(mTitle.getText().toString())) {
+				if (TextUtils.isEmpty(mContent.getText().toString())) {
 					return;
 				} else {
 					String snippet = "";
@@ -229,6 +176,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 					mTitle.setText(snippet.replaceAll("\\n", " ").trim());
 				}
 			}
+					
 			collection = new CollectionBean();
 			collection.title = mTitle.getText().toString();
 			collection.content = mContent.getText().toString().replace("\n-", "\n\n-");
@@ -239,6 +187,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 			collection.createBy = Session.getSession().getuId();
 			collection.isSync= 0 ; 
 			collectionVo.add(collection);
+			
 			int key = collectionVo.getlastkey() ;
 			collection._id = String.valueOf(key);			
 			packVo.update(" collect_count = collect_count+1 ", " pack_id = ?", new String[]{String.valueOf(collection.pid)});
@@ -325,7 +274,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 	}
 	@Override
 	public void onBackPressed() {
-		saveNote();
+		saveCollection();
 		super.onBackPressed(); // remember to put this after setResult(),or you will get null value of intent in the onActivityResult method.
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}
@@ -349,7 +298,7 @@ public class CollectionEditorActivity extends ActionBarActivity {
 
 	@Override
 	protected void onDestroy() {
-		unregisterReceiver(pickpicReceiver);
+	//	unregisterReceiver(pickpicReceiver);
 		collectionVo.closeDB();
 		packVo.closeDB();
 		imageVo.closeDB();

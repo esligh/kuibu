@@ -19,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
@@ -53,8 +54,6 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 		listView.setOnLoadListener(this);
 		loadData();
 		showView();
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 	
 	private void loadData()
@@ -83,6 +82,7 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 							    JSONObject temp = (JSONObject) arr.get(i);
 							    MateListItem bean = new MateListItem();
 							    bean.setId(temp.getString("cid"));
+							    bean.setCisn(temp.getString("cisn"));
 							    bean.setType(Integer.parseInt(temp.getString("type")));
 							    bean.setTitle(temp.getString("title"));
 							    bean.setSummary(temp.getString("abstract"));

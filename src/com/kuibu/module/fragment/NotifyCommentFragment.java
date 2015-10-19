@@ -16,14 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -36,10 +34,12 @@ import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.NotifyCommentAdapter;
 
 public class NotifyCommentFragment extends Fragment implements OnLoadListener{
+	
 	private PaginationListView listView = null;
 	private NotifyCommentAdapter adapter = null; 
 	private List<Map<String,String>> datas = new ArrayList<Map<String,String>>();
 	private MultiStateView mMultiStateView;	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -118,7 +118,7 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 									item.put("desc", getActivity().getString(R.string.collect_prompt));
 								}
 								item.put("title", obj.getString("title"));
-								item.put("content", obj.getString("content"));
+								item.put("abstract", obj.getString("abstract"));
 								datas.add(item);
 							}
 							showView();
@@ -141,16 +141,11 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
-	
-
-	
+		
 	@Override
 	public void onLoadMore() {
 		loadData();
@@ -163,6 +158,5 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 		datas.clear();
 		datas = null ;
 	}	
-	
 	
 }

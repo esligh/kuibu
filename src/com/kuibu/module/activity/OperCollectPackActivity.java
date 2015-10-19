@@ -28,6 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -35,6 +36,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
@@ -60,6 +62,7 @@ public class OperCollectPackActivity extends BaseActivity {
 	private CollectPackVo packVo= null ; 
 	private String pack_id ; 
 	private String oper ; 
+	private RadioGroup pack_type_rg ;  
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,7 @@ public class OperCollectPackActivity extends BaseActivity {
 		box_desc = (EditText) findViewById(R.id.collect_pack_desc_et);
 		box_cb = (CheckBox) findViewById(R.id.collect_pack_dialog_cb);
 		box_topic = (AutoCompleteTextView) findViewById(R.id.collect_pack_topic_tv);
+		pack_type_rg= (RadioGroup)findViewById(R.id.collect_pack_type);
 		tagGroup = (TagGroup) findViewById(R.id.topic_tag_group);
 		if(isDarkTheme){
 			tagGroup.setTagBackGroundColor(getResources().getColor(R.color.list_view_bg_dark));
@@ -188,6 +192,12 @@ public class OperCollectPackActivity extends BaseActivity {
 							String data = response.getString("result");
 							JSONObject obj = new JSONObject(data);
 							box_name.setText(obj.getString("pack_name"));
+							if(StaticValue.SERMODLE.PACK_TYPE_WORD.equals(obj.getString("pack_type"))){
+								pack_type_rg.check(R.id.collect_pack_type_word);
+							}else{
+								pack_type_rg.check(R.id.collect_pack_type_pic);
+							}
+							
 							box_desc.setText(obj.getString("pack_desc"));
 							box_cb.setChecked(obj.getBoolean("is_private"));
 							String[] tids = obj.getString("topic_id").split(",");
@@ -261,6 +271,8 @@ public class OperCollectPackActivity extends BaseActivity {
 			bean._id = getIntent().getStringExtra("_id");
 			bean.pack_id = pack_id ; 
 			bean.pack_name = pack_name; 
+			bean.pack_type = pack_type_rg.getCheckedRadioButtonId() == R.id.collect_pack_type_word ? 
+					StaticValue.SERMODLE.PACK_TYPE_WORD : StaticValue.SERMODLE.PACK_TYPE_PIC ; 
 			bean.pack_desc = box_desc.getText().toString().trim();
 			bean.create_by = Session.getSession().getuId();
 			bean.is_private = box_cb.isChecked() ? 1 : 0 ;
@@ -365,6 +377,7 @@ public class OperCollectPackActivity extends BaseActivity {
 	{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("pack_name", newOne.getPack_name());
+		params.put("pack_type", newOne.getPack_type());
 		params.put("pack_desc", newOne.getPack_desc());
 		params.put("topic_id", newOne.getTopic_id());
 		params.put("private", newOne.get_private()==1 ? "1":"");
@@ -385,11 +398,12 @@ public class OperCollectPackActivity extends BaseActivity {
 					if(StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){
 						CollectPackBean bean = new CollectPackBean();
 						bean.setPack_id(response.getString("pack_id"));
-						bean.setPack_name(newOne.getPack_name());
-						bean.setPack_desc(newOne.getPack_desc());
-						bean.setTopic_id(newOne.getTopic_id());
-						bean.setCreate_by(newOne.getCreate_by());
-						bean.set_private(newOne.get_private());
+						bean.setPack_name(newOne.pack_name);
+						bean.setPack_type(newOne.pack_type);
+						bean.setPack_desc(newOne.pack_desc);
+						bean.setTopic_id(newOne.topic_id);
+						bean.setCreate_by(newOne.create_by);
+						bean.set_private(newOne.is_private);
 						bean.set_sync(1);
 						packVo.add(bean);
 						Toast.makeText(OperCollectPackActivity.this, getString(R.string.create_success),
@@ -433,6 +447,7 @@ public class OperCollectPackActivity extends BaseActivity {
 		params.put("pack_id",bean.getPack_id());
 		params.put("pack_name", bean.getPack_name());
 		params.put("pack_desc", bean.getPack_desc());
+		params.put("pack_type", bean.getPack_type());
 		params.put("topic_id", bean.getTopic_id());
 		params.put("is_private", bean.get_private()==1 ? "1":"");
 		params.put("create_by", Session.getSession().getuId());

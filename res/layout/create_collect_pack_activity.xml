@@ -11,53 +11,90 @@
         android:id="@+id/collect_pack_topic_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:hint="@string/add_topic"  
-        android:completionThreshold="1"  
+        android:layout_marginLeft="@dimen/android_spaces_medium"
+        android:layout_marginRight="@dimen/android_spaces_medium"
+        android:layout_marginTop="@dimen/android_spaces"
+        android:completionThreshold="1"
+        android:hint="@string/add_topic"
+        android:padding="@dimen/android_spaces_medium"
         android:textColor="@android:color/darker_gray" />
-	
-	<me.gujun.android.taggroup.TagGroup
-        android:id="@+id/topic_tag_group"        
+
+    <me.gujun.android.taggroup.TagGroup
+        android:id="@+id/topic_tag_group"
+        style="@style/TagGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TagGroup"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:focusable="true"
+        android:layout_margin="@dimen/android_spaces_medium"
+        android:background="?listItemBackground"
         android:clickable="true"
-        android:background="?listItemBackground"/>
-	
-    <!-- <View
+        android:focusable="true" />
+
+    <RadioGroup
+        android:id="@+id/collect_pack_type"
         android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:background="?android:attr/listDivider" />
-    -->
-    <EditText
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/collect_pack_type_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/collect_pack_word"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/collect_pack_type_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginLeft="100dp"
+            android:layout_marginStart="100dp"
+            android:text="@string/collect_pack_pic" />
+    </RadioGroup>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/collect_pack_name_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/hint_name" />
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:hint="@string/hint_name"
+        app:met_baseColor="?android:attr/textColorPrimary"
+        app:met_errorColor="#ddaa00"
+        app:met_floatingLabel="highlight"
+        app:met_helperTextColor="#795548"
+        app:met_primaryColor="#16a085"
+        app:met_textColorHint="?hintTextColor"
+        app:met_underlineColor="#16a085" 
+        app:met_clearButton = "true"/>
 
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/collect_pack_desc_et"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:hint="@string/hint_extra"  />
-   
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:hint="@string/hint_extra"
+        app:met_baseColor="?android:attr/textColorPrimary"
+        app:met_errorColor="#ddaa00"
+        app:met_floatingLabel="highlight"
+        app:met_helperTextColor="#795548"
+        app:met_primaryColor="#16a085"
+        app:met_textColorHint="?hintTextColor"
+        app:met_underlineColor="#16a085"
+        app:met_clearButton = "true" />
+
     <CheckBox
         android:id="@+id/collect_pack_dialog_cb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="@dimen/android_spaces_small"
+        android:layout_marginLeft="@dimen/android_spaces_medium"
+        android:layout_marginRight="@dimen/android_spaces_medium"
+        android:layout_marginTop="@dimen/android_spaces_small"
         android:text="@string/hint_topic_private" />
-      
+
 </LinearLayout>

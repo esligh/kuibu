@@ -17,7 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?listCardViewBackground"
-        android:scrollbars="vertical" >
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideOverlay" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -162,7 +163,10 @@
                     android:layout_height="@dimen/btn_height"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_margin="@dimen/android_spaces"
+                    android:layout_marginLeft="@dimen/android_spaces"
+                    android:layout_marginRight="@dimen/android_spaces"
+                    android:layout_marginTop="@dimen/android_spaces_large"
+                    android:layout_marginBottom="@dimen/android_spaces_large"
                     android:text="@string/btn_focus"
                     android:textColor="@android:color/white"
                     fbutton:buttonColor="@color/fbutton_color_green_sea"
@@ -174,12 +178,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:background="?android:attr/listDivider" />
-
+ 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="?listCardViewBackground" >
-
+                android:background="?listCardViewBackground"
+                android:orientation="vertical" >      
+ 				
+                <com.huewu.pla.lib.MultiColumnListView
+			       android:id="@+id/grid_cards_list"
+			       android:scrollbars="vertical"
+			       android:layout_width="match_parent"
+			       android:layout_height="wrap_content"
+			       android:layout_marginTop="@dimen/android_spaces"
+			       android:layout_marginLeft="@dimen/android_spaces_medium"
+			       android:layout_marginRight="@dimen/android_spaces_medium"
+			       android:visibility="gone" />
+                 
                 <com.kuibu.custom.widget.NoScrollListView
                     android:id="@+id/collectpack_cards_list"
                     android:layout_width="match_parent"
@@ -189,8 +204,9 @@
                     android:dividerHeight="10dp"
                     android:padding="10dp"
                     android:scrollbarStyle="outsideOverlay"
-                    tools:listitem="@layout/collectpack_info_list_item" />
-            </LinearLayout>
+                    tools:listitem="@layout/collectpack_info_list_item" 
+                    android:visibility="gone"/>       
+		     </LinearLayout>
         </LinearLayout>
     </com.kuibu.custom.widget.BorderScrollView>
 

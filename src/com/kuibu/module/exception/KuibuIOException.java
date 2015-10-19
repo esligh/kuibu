@@ -3,9 +3,6 @@ package com.kuibu.module.exception;
 
 public class KuibuIOException extends KuibuException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public KuibuIOException(String msg) {

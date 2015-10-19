@@ -1,21 +1,20 @@
 package com.kuibu.model.bean;
 
-import java.io.Serializable;
 /**
  * server bean 
  * base model : collection */
 
-public class CollectionItemBean implements Serializable{
-	/**
-	 * 
-	 */
+public class CollectionItemBean extends BaseEntity{
+
 	private static final long serialVersionUID = 1L;
 	private String id ;
+	private String cisn ; 
 	private String pid ; 
 	private String tid ; 
 	private String type ;
 	private String title; 
-	private String content ; 
+	private String content ;
+	private String cover ; 
 	private String summary ; 
 	private String createDate ;
 	private String createBy ; 
@@ -34,6 +33,14 @@ public class CollectionItemBean implements Serializable{
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	
+	public String getCisn() {
+		return cisn;
+	}
+	public void setCisn(String cisn) {
+		this.cisn = cisn;
+	}
 	public String getPid() {
 		return pid;
 	}
@@ -45,6 +52,13 @@ public class CollectionItemBean implements Serializable{
 	}
 	public void setTid(String tid) {
 		this.tid = tid;
+	}
+		
+	public String getCover() {
+		return cover;
+	}
+	public void setCover(String cover) {
+		this.cover = cover;
 	}
 	public String getType() {
 		return type;

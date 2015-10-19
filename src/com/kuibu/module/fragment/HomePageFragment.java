@@ -192,15 +192,18 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 	private void parseFromJson(JSONArray arr,String action)
 	{
 		try{
-			if(arr.length()>0){ 
-				for (int i = 0; i < arr.length(); i++) {
+			int size = arr.length();
+			if(size > 0 ){ 
+				for (int i = 0; i < size; i++) {
 				    JSONObject temp = (JSONObject) arr.get(i);
 				    MateListItem bean = new MateListItem();
 				    bean.setId(temp.getString("cid"));
+				    bean.setCisn(temp.getString("cisn"));
 				    bean.setType(Integer.parseInt(temp.getString("type")));
 				    bean.setTitle(temp.getString("title"));
 				    bean.setSummary(temp.getString("abstract"));
-				    bean.setItemPic(temp.getString("image_url"));			    
+				    bean.setItemPic(temp.getString("image_url"));
+				    bean.setCover(temp.getString("cover"));
 				    bean.setPackId(temp.getString("pid"));
 				    bean.setCreateBy(temp.getString("create_by"));
 				    bean.setVoteCount(temp.getInt("vote_count"));
@@ -218,13 +221,15 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				}
 				showHomeView();	//有数据 刷新
 			}
+			
+			if(mHomeDatas.size()>0){
+				mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+			}else{
+				mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
+			}	
 		}catch (JSONException e) {
 			e.printStackTrace();
-		}		
-		if(mHomeDatas.size()>0){
-			mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
-		}else{
-			mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
+			mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 		}		
 	}
 }

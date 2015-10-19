@@ -22,7 +22,7 @@ public class SqLiteHelper extends SQLiteOpenHelper {
                 " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, cid INTEGER, img_url VARCHAR, "
                 + " last_modify  DATETIME DEFAULT CURRENT_TIMESTAMP)");
         db.execSQL("CREATE TABLE IF NOT EXISTS collectpack " + 
-                " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, pack_name VARCHAR, pack_desc VARCHAR, collect_count INTEGER DEFAULT 0,"
+                " ( _id INTEGER PRIMARY KEY AUTOINCREMENT, pack_name VARCHAR, pack_desc VARCHAR, pack_type VARCHAR,collect_count INTEGER DEFAULT 0,"
                 + " create_by BIGINT,is_private INTEGER , topic_id VARCHAR , pack_id VARCHAR UNIQUE, is_sync DEFAULT 0, "
                 + " last_modify DATETIME DEFAULT CURRENT_TIMESTAMP) ");
     }  

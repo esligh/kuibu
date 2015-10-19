@@ -1,21 +1,73 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="120dip">
-
-	<ImageView
-		android:id="@+id/image"
-		android:layout_width="match_parent"
-		android:layout_height="120dip"
-		android:adjustViewBounds="true"
-		android:scaleType="centerCrop" />
-
-	<ProgressBar
-		android:id="@+id/progress"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:indeterminate="false"
-		android:max="100"
-		android:layout_gravity="bottom"
-		style="@style/ProgressBarStyle" />
-</FrameLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/news_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/news_item_bg"
+    android:orientation="vertical">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+	    <TextView
+	        android:id="@+id/item_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingTop="2dp"
+	        android:paddingBottom="2dp"
+	        android:textColor="@color/primary_text_color" 
+	        android:textSize="16sp"/>
+	    
+	    <ImageView
+		    android:id="@+id/published_icon"
+		    android:layout_width="@dimen/icon_super_small_width"
+		    android:layout_height="@dimen/icon_super_small_height"
+		    android:layout_alignParentRight="true"
+		    android:layout_marginLeft="@dimen/android_spaces_small"
+		    android:layout_marginRight="@dimen/android_spaces_small"
+		    android:scaleType="centerInside"
+		    android:src="@drawable/ic_wait_publish"
+		    android:contentDescription="@null"/>
+    </RelativeLayout>
+    
+    <FrameLayout
+        android:id = "@+id/img_fl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">    
+	    
+	    <ImageView
+	        android:id="@+id/item_pic"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_below="@id/item_title"
+	        android:src="@null" />
+	    
+		<ImageView
+	        android:id="@+id/checkmark"
+	        android:layout_gravity="top|right"
+	        android:layout_marginTop="5.5dp"
+	        android:layout_marginRight="5.5dp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:visibility="gone"
+	        android:src="@drawable/btn_unselected"/>
+		
+		<ProgressBar
+			android:id="@+id/progress"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:indeterminate="false"
+			android:max="100"
+			android:layout_gravity="bottom"
+			style="@style/ProgressBarStyle" />
+		
+    </FrameLayout>
+    
+	<TextView
+        android:id="@+id/item_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/secondary_text_color" />
+</LinearLayout>

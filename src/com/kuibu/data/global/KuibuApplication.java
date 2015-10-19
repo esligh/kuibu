@@ -14,7 +14,6 @@
  * limitations under the License.
  *******************************************************************************/
 package com.kuibu.data.global;
-
 import java.io.File;
 
 import android.annotation.TargetApi;
@@ -33,13 +32,13 @@ import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.PersistentCookieStore;
 import com.kuibu.model.db.SqLiteHelper;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.exception.CrashHandler;
 import com.kuibu.module.net.EventSocket;
 import com.kuibu.module.net.SocketIOCallBack;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 public class KuibuApplication extends Application {
@@ -59,16 +58,17 @@ public class KuibuApplication extends Application {
 		super.onCreate();
 		mCache = ACache.get(getApplicationContext());
 		sInstance = this;
-		 CrashHandler crashHandler = CrashHandler.getInstance();  
-	     crashHandler.init(this);   
+//		 CrashHandler crashHandler = CrashHandler.getInstance();  
+//	     crashHandler.init(this);   
 		defaultOptions = new DisplayImageOptions.Builder()
-		.showImageOnLoading(R.drawable.image_small_default)
-		.showImageForEmptyUri(R.drawable.image_small_default)
-		.showImageOnFail(R.drawable.image_small_default)
-		.cacheInMemory(false)
+		.showImageOnLoading(R.drawable.pictures_no)//image_small_default
+		.showImageForEmptyUri(R.drawable.pictures_no)
+		.showImageOnFail(R.drawable.pictures_no)
+		.cacheInMemory(true)
 		.cacheOnDisk(true)
 		.considerExifParams(true)
 		.bitmapConfig(Bitmap.Config.RGB_565)
+		.imageScaleType(ImageScaleType.EXACTLY)
 		.build(); 
 		
 		initImageLoader(getApplicationContext());
@@ -130,7 +130,9 @@ public class KuibuApplication extends Application {
 				context).threadPriority(Thread.NORM_PRIORITY - 2)
 				.denyCacheImageMultipleSizesInMemory()
 				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
-				.defaultDisplayImageOptions(defaultOptions)
+				.defaultDisplayImageOptions(defaultOptions)  
+				.memoryCacheSize(6 * 1024 * 1024)  
+        		.memoryCacheSizePercentage(13) // default  
 				.diskCacheSize(50 * 1024 * 1024)
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				.writeDebugLogs().build();

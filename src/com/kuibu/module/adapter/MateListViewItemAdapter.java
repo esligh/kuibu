@@ -21,10 +21,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kuibu.common.utils.DataUtils;
+import com.kuibu.common.utils.PreferencesUtils;
+import com.kuibu.data.global.AppInfo;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.CollectInfoListActivity;
 import com.kuibu.module.activity.CollectionDetailActivity;
+import com.kuibu.module.activity.CollectionImageDetailActivity;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.UserInfoActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -36,6 +39,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 	private DisplayImageOptions options;
 	private int listItemDefaultImageId;
 	private boolean bwithTop ; 
+	
 	public class HolderViewForText{
 		RelativeLayout layout0_rl;
 		TextView user_tv;
@@ -45,6 +49,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		ImageView count_pic_iv; 
 		TextView count_tv; 
 	}
+	
 	public class HolderViewForTextPics{
 		RelativeLayout layout1_rl;
 		TextView user_tv;
@@ -56,14 +61,16 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		TextView count_tv; 
 	}
 	
-//	public class HolderViewForPics{
-//		TextView user_tv;
-//		ImageView user_icon_iv;
-//		TextView title_tv;
-//		GridView item_pics_gv;
-//		ImageView count_pic_iv; 
-//		TextView count_tv; 
-//	}
+	public class HolderViewForPics{
+		RelativeLayout layout2_rl;
+		TextView user_tv;
+		ImageView user_icon_iv;
+		TextView title_tv;
+		ImageView image_iv;
+		TextView desc_tv ; 
+		ImageView count_pic_iv; 
+		TextView count_tv;
+	}
 
 	public MateListViewItemAdapter(Context context, List<MateListItem> datas,boolean bwithtop) {
 		this.datas = datas;
@@ -75,10 +82,9 @@ public class MateListViewItemAdapter extends BaseAdapter {
 	private void initStyle() {
 		Resources.Theme theme = context.getTheme();
 		TypedArray typedArray = null;
-
-		SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-		if (mPerferences.getBoolean("dark_theme", false)) {
+		boolean isDarkTheme = PreferencesUtils.getBooleanByDefault(context,
+				StaticValue.PrefKey.DARK_THEME_KEY , false);
+		if (isDarkTheme) {
 			typedArray = theme.obtainStyledAttributes(R.style.Theme_Kuibu_AppTheme_Dark,
 					new int[] {R.attr.listItemDefaultImage });
 		} else {
@@ -148,6 +154,8 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		HolderViewForText holderforText = null;
 		HolderViewForTextPics holderfortextPic = null;
+		HolderViewForPics holderforPics = null ; 
+		
 		int item_type = getItemViewType(position);
 		if (convertView == null) {
 			switch (item_type) {
@@ -193,6 +201,26 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				convertView.setTag(holderfortextPic);
 				break;
 			case MateListItem.ItemType.PICS_MODE:
+				convertView = LayoutInflater.from(context).inflate(R.layout.mate_list_view_item_2,
+						parent,false);
+				holderforPics = new HolderViewForPics();
+				holderforPics.layout2_rl = (RelativeLayout)convertView.findViewById(R.id.mate_2_rela_layout2_rl);			
+				holderforPics.user_tv = (TextView) convertView
+						.findViewById(R.id.mate_2_user_tv);
+				holderforPics.user_icon_iv = (ImageView) convertView
+						.findViewById(R.id.mate_2_user_pic_iv);
+				holderforPics.title_tv = (TextView) convertView
+						.findViewById(R.id.mate_2_item_title_tv);
+				holderforPics.image_iv = (ImageView) convertView
+						.findViewById(R.id.mate_2_item_image_iv);				
+				holderforPics.image_iv.setAdjustViewBounds(true);
+				holderforPics.image_iv.setMaxHeight(AppInfo.getInstance().screenWidth);
+				holderforPics.desc_tv = (TextView)convertView.findViewById(R.id.mate_2_item_desc_tv);
+				holderforPics.count_tv = (TextView) convertView
+						.findViewById(R.id.mate_2_count_tv);
+				holderforPics.count_pic_iv= (ImageView) convertView
+						.findViewById(R.id.mate_2_count_pic_iv);
+				convertView.setTag(holderforPics);
 				break;
 			}
 		} else {
@@ -204,6 +232,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				holderfortextPic = (HolderViewForTextPics) convertView.getTag();
 				break;
 			case MateListItem.ItemType.PICS_MODE:
+				holderforPics = (HolderViewForPics)convertView.getTag();
 				break;
 			}
 		}
@@ -349,7 +378,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 			StringBuffer title = new StringBuffer(datas.get(position).getTitle());
 			if(noPic){
 				holderfortextPic.item_pic_iv.setVisibility(View.GONE);
-				title  = title.append("  (多图)");
+				title  = title.append("  (图)");
 			}else{
 				ImageLoader.getInstance().displayImage(datas.get(position).getItemPic(),
 						holderfortextPic.item_pic_iv);
@@ -357,6 +386,91 @@ public class MateListViewItemAdapter extends BaseAdapter {
 			holderfortextPic.title_tv.setText(title);
 			break;
 		case MateListItem.ItemType.PICS_MODE:
+			if(!bwithTop){
+				holderforPics.layout2_rl.setVisibility(View.GONE);				
+			}else{
+				holderforPics.layout2_rl.setVisibility(View.VISIBLE);
+				holderforPics.layout2_rl.setOnClickListener(new OnClickListener(){
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent(context, UserInfoActivity.class);
+						intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
+						intent.putExtra(StaticValue.USERINFO.USER_ID,
+								datas.get(position).getCreateBy());
+						intent.putExtra(StaticValue.USERINFO.USER_SEX,
+								datas.get(position).getUserSex());
+						intent.putExtra(StaticValue.USERINFO.USER_NAME,
+								datas.get(position).getTopText());
+						intent.putExtra(StaticValue.USERINFO.USER_SIGNATURE, datas
+								.get(position).getUserSignature());
+						
+						intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
+								datas.get(position).getTopUrl());
+						context.startActivity(intent);
+						((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+					}				
+				});
+				holderforPics.user_tv.setText(datas.get(position).getTopText());		
+				String url = datas.get(position).getTopUrl();
+				if(TextUtils.isEmpty(url) || url.equals("null")){
+					holderforPics.user_icon_iv.setImageResource(R.drawable.default_pic_avata);
+				}else{
+					ImageLoader.getInstance().displayImage(url,
+							holderforPics.user_icon_iv,options,null);
+				}
+			}
+			
+			holderforPics.title_tv.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view) {
+					// TODO Auto-generated method stub
+					Intent intent = new Intent(LayoutInflater.from(context).getContext(),
+							CollectInfoListActivity.class);
+					intent.putExtra("pack_id", datas.get(position).getPackId());
+					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
+					intent.putExtra("create_by", datas.get(position).getCreateBy());
+					LayoutInflater.from(context).getContext().startActivity(intent);	
+				}
+			});
+			
+			holderforPics.image_iv.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View view) {
+					// TODO Auto-generated method stub
+					Intent intent = new Intent(context,CollectionImageDetailActivity.class);
+					intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ENTITY,
+							datas.get(position)) ; 
+					context.startActivity(intent);
+					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,
+							R.anim.anim_slide_out_left);
+				}
+			});
+			boolean bnoPic = PreferencesUtils.getBooleanByDefault(context,
+					StaticValue.PrefKey.NO_PICTRUE_KEY, false);
+			
+			StringBuffer title1 = new StringBuffer(datas.get(position).getTitle());
+			if(bnoPic){
+				holderforPics.image_iv.setVisibility(View.GONE);
+				title1  = title1.append("  (图)");
+			}else{
+				// ImageLoad
+				holderforPics.image_iv.setVisibility(View.VISIBLE);
+				String item_url = datas.get(position).getItemPic();
+				ImageLoader.getInstance().displayImage(item_url,
+						holderforPics.image_iv,options,null);
+			}
+			
+			holderforPics.title_tv.setText(datas.get(position).getTitle().replace("\n", ""));
+			String desc = datas.get(position).getSummary();
+			if(TextUtils.isEmpty(desc)){
+				holderforPics.desc_tv.setVisibility(View.GONE);
+			}else{
+				holderforPics.desc_tv.setVisibility(View.VISIBLE);
+				holderforPics.desc_tv.setText(desc);
+			}
+			
+			holderforPics.count_tv.setText(
+					DataUtils.formatNumber(datas.get(position).getVoteCount()));
 			break;
 		}
 		return convertView;
@@ -371,6 +485,8 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		case MateListItem.ItemType.TEXT_PICS_MODE:
 			intent = new Intent(LayoutInflater.from(context).getContext(),CollectionDetailActivity.class);
 			intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
+			intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN,
+					datas.get(position).getCisn());
 			break;
 		default:
 			break;

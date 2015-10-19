@@ -39,6 +39,7 @@ import android.widget.TextView;
  * @author ThinkPad
  * @see github LabelView
  */
+
 public class LabelView extends TextView {
 
     private float _offsetx;
@@ -125,10 +126,31 @@ public class LabelView extends TextView {
     public void setTargetViewInBaseAdapter(View target, int targetWidth, int distance, Gravity gravity) {
         if (!replaceLayout(target)) {
             return;
-        }
+        }        
         //measure(0, 0);
         //calcOffset(getMeasuredWidth(), distance, gravity, targetWidth, true);
         calcOffset(dip2Px(targetWidth), distance, gravity, targetWidth, true);
+    }
+    
+    public void setTargetViewInBaseAdapter(View target ,int distance,Gravity gravity)
+    {
+    	if (!replaceLayout(target)) {
+            return;
+        }
+    	
+    	final int d = dip2Px(distance);
+        final Gravity g = gravity;
+        final View v = target;
+
+        ViewTreeObserver vto = getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressWarnings("deprecation")
+			public void onGlobalLayout() {
+                getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                calcOffset(dip2Px(v.getMeasuredWidth()), d, g, v.getMeasuredWidth(), true);
+            }
+        });
+
     }
 
     public void remove() {

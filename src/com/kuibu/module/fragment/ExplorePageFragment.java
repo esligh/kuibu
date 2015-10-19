@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.model.bean.TabTitleObject;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.TabPageViewAdapter;

@@ -64,7 +64,7 @@ public class NotifyCommentAdapter extends BaseAdapter {
 		holder.top_left_tv.setText(datas.get(position).get("name"));
 		holder.top_right_tv.setText(datas.get(position).get("desc"));
 		holder.title_tv.setText(datas.get(position).get("title"));
-		holder.content_tv.setText(datas.get(position).get("content"));
+		holder.content_tv.setText(datas.get(position).get("abstract"));
 		return convertView;
 	}
 	

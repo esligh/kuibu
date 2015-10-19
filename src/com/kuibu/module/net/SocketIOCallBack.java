@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-import com.kuibu.module.iterf.EventCallback;
-import com.kuibu.module.iterf.IEventHandler;
+import com.kuibu.module.iterfaces.EventCallback;
+import com.kuibu.module.iterfaces.IEventHandler;
 
 public class SocketIOCallBack extends EventCallback{
 	

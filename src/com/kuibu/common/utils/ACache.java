@@ -54,6 +54,7 @@ import com.nostra13.universalimageloader.utils.StorageUtils;
  * @author Michael Yang（www.yangfuhai.com） update at 2013.08.07
  * @see :github ACache 
  */
+
 public class ACache {
 	public static final int TIME_HOUR = 60 * 60;
 	public static final int TIME_DAY = TIME_HOUR * 24;
@@ -154,6 +155,9 @@ public class ACache {
 	 * @return String 数据
 	 */
 	public String getAsString(String key) {
+		if(key == null)
+			return null; 
+		
 		File file = mCache.get(key);
 		if (!file.exists())
 			return null;

@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 
 public class FavoriteBoxCardListAdapter extends BaseAdapter {
@@ -56,6 +58,7 @@ public class FavoriteBoxCardListAdapter extends BaseAdapter {
             holder.item_title_tv= (TextView) convertView.findViewById(R.id.list_item_card_title);          
             holder.box_count = (TextView) convertView.findViewById(R.id.box_listitem_card_count);           
             holder.dividerLine = convertView.findViewById(R.id.list_item_seperator);
+            holder.type_iv = (ImageView)convertView.findViewById(R.id.type_icon);
             convertView.setTag(holder);
 
         } else {
@@ -77,6 +80,11 @@ public class FavoriteBoxCardListAdapter extends BaseAdapter {
         	holder.item_title_tv.setVisibility(View.GONE);     	
         	holder.dividerLine.setVisibility(View.GONE);        	
         }
+        if(StaticValue.SERMODLE.BOX_TYPE_PIC.equals(items.get(position).get("box_type"))){
+        	holder.type_iv.setImageResource(R.drawable.pack_type_pic);
+        }else{
+        	holder.type_iv.setImageResource(R.drawable.pack_type_word);
+        }
         return convertView;
     }
 
@@ -85,5 +93,6 @@ public class FavoriteBoxCardListAdapter extends BaseAdapter {
         private TextView item_title_tv;
         private TextView box_count;
         private View dividerLine ; 
+        private ImageView type_iv ; 
     }
 }

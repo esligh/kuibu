@@ -2,42 +2,57 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?listItemBackground">
-    
+    android:background="?listItemBackground"
+    android:minHeight="55dp" >
+
+    <ImageView
+        android:id="@+id/type_icon"
+        android:layout_width="@dimen/icon_medium_width"
+        android:layout_height="@dimen/icon_medium_height"
+        android:layout_alignParentRight="true"
+        android:scaleType="centerInside" />
+
     <TextView
         android:id="@+id/file_count_tv"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/android_spaces_large"       
+        android:layout_marginLeft="@dimen/android_spaces_small"
+        android:layout_marginRight="@dimen/android_spaces"
         android:textColor="?android:attr/textColorSecondary"
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/file_count_tv" 
+        android:orientation="vertical">
 
         <TextView
-        android:id="@+id/pack_name_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/file_count_tv"
-        android:layout_marginTop="@dimen/android_spaces"
-        android:layout_marginLeft="@dimen/android_spaces_large"
-        android:layout_marginRight="@dimen/android_spaces_large" 
-        android:textColor="?android:attr/textColorSecondary"        
-        android:textSize="18sp"/>
-        
-    <TextView
-        android:id="@+id/pack_extra_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorSecondary"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/file_count_tv"
-        android:layout_below="@id/pack_name_tv"
-        android:textSize="16sp"
-        android:paddingTop="@dimen/android_spaces_small"
-        android:paddingBottom="@dimen/android_spaces_small"
-        android:layout_marginLeft="@dimen/android_spaces_large"
-        android:layout_marginRight="@dimen/android_spaces_large" />
-    
+            android:id="@+id/pack_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/android_spaces_small"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_small"
+            android:layout_marginTop="@dimen/android_spaces"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/pack_extra_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pack_name_tv"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_small"
+            android:paddingBottom="@dimen/android_spaces"
+            android:paddingTop="@dimen/android_spaces_small"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </RelativeLayout>

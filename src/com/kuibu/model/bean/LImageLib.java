@@ -1,6 +1,7 @@
 package com.kuibu.model.bean;
 
-public class LImageLib {
+@SuppressWarnings("serial")
+public class LImageLib extends BaseEntity{
 	public int _id ; 
 	public int cid ; 
 	public String img_url ; 

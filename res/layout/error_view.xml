@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -13,12 +14,19 @@
         android:textColor="@color/list_item_intro_light"
         android:text="@string/error_view_desc" />
 
-    <Button
+    <com.kuibu.custom.widget.FButton
         android:id="@+id/retry"
-        style="?android:borderlessButtonStyle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/list_item_intro_light"
-        android:text="@string/error_view_retry" />
+        android:layout_height="34dip"
+        android:textColor="@color/white"
+        android:layout_marginTop="@dimen/android_spaces"
+        android:layout_marginBottom="@dimen/android_spaces"
+        android:paddingLeft="@dimen/android_spaces_large"
+        android:paddingRight="@dimen/android_spaces_large"
+        android:text="@string/error_reload"
+        android:textSize="16sp"
+        fbutton:buttonColor="@color/fbutton_color_green_sea"
+        fbutton:cornerRadius="1dp"               
+        fbutton:shadowEnabled="false" />
 
 </LinearLayout>

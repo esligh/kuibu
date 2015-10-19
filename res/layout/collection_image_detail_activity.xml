@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/list_card_view_bg_dark" >
+
+    <RelativeLayout
+        android:id="@+id/top_ll"
+        android:layout_width="match_parent"
+        android:layout_height="50dip" >
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginTop="@dimen/android_spaces_medium"
+            android:src="@drawable/card_complete_back" />
+
+        <ImageView
+            android:id="@+id/share_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:layout_marginTop="@dimen/android_spaces_large"
+            android:src="@drawable/ic_action_share"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/fav_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:layout_marginTop="@dimen/android_spaces_medium"
+            android:layout_toLeftOf="@id/share_btn"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ab_fav_normal" />
+    </RelativeLayout>
+
+    <com.kuibu.custom.widget.MultiStateView
+        android:id="@+id/multiStateView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"      
+        android:layout_below="@id/top_ll"  
+        android:background="@color/list_card_view_bg_dark"
+        app:msv_emptyView="@layout/empty_view"
+        app:msv_errorView="@layout/error_view"
+        app:msv_loadingView="@layout/loading_view"
+        app:msv_viewState="loading" >
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"    
+            android:layout_marginBottom="@dimen/android_spaces"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:layout_marginTop="@dimen/android_spaces"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/desc_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_tv"
+            android:layout_marginBottom="@dimen/android_spaces"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:layout_marginTop="@dimen/android_spaces"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/desc_tv" >
+
+            <uk.co.senab.photoview.PhotoView
+                android:id="@+id/image_iv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="80dp"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/report_btn"
+                android:layout_width="@dimen/icon_small_width"
+                android:layout_height="@dimen/icon_small_height"
+                android:layout_gravity="top|right|end"
+                android:layout_marginRight="@dimen/android_spaces_large"
+                android:layout_marginTop="@dimen/android_spaces_large"
+                android:background="@color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ab_report_active" 
+                android:visibility="gone">
+            </ImageButton>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/android_spaces"
+            android:layout_marginLeft="@dimen/android_spaces_large"
+            android:layout_marginRight="@dimen/android_spaces_large"
+            android:layout_marginTop="@dimen/android_spaces"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <com.kuibu.custom.widget.FButton
+                android:id="@+id/like_bt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/ab_support_normal"
+                android:drawablePadding="0dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="10dp"
+                android:text="@string/like"
+                android:textColor="@android:color/white"
+                fbutton:buttonColor="@color/fbutton_color_green_sea"
+                fbutton:cornerRadius="1dp"
+                fbutton:shadowEnabled="false" />
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="match_parent"
+                android:background="@color/white" />
+
+            <com.kuibu.custom.widget.FButton
+                android:id="@+id/comment_bt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/comment_text"
+                android:textColor="@android:color/white"
+                fbutton:buttonColor="@color/fbutton_color_green_sea"
+                fbutton:cornerRadius="1dp"
+                fbutton:shadowEnabled="false" />
+        </LinearLayout>
+      </RelativeLayout>
+    </com.kuibu.custom.widget.MultiStateView>
+</RelativeLayout>

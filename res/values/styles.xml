@@ -6,6 +6,7 @@
         <item name="android:windowBackground">@drawable/launch_bg</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+    
     <!-- light theme -->
     <style name="Theme.Kuibu.AppTheme.Light" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/Kuibu.Widget.ActionBar.Light</item>
@@ -22,6 +23,9 @@
         <item name="homeHeaderBackground">@color/colorPrimary</item>  
         <item name="navigationBackground">@color/white</item>             
         <item name="navigationDivider">@color/navigation_divider_light</item>
+        <item name="layoutBorderBackGround">@drawable/layout_border_line_up_light</item>
+        <item name="hintTextColor">@color/hint_foreground_material_light</item>
+        
     </style>
 
     <style name="Kuibu.Widget.ActionBar.Light" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
@@ -53,7 +57,9 @@
         <item name="homeHeaderBackground">@color/home_header_dark</item>
         <item name="navigationBackground">@color/navigation_backgroud_dark</item>
         <item name="navigationDivider">@color/navigation_divider_dark</item>
-                     
+        <item name="layoutBorderBackGround">@drawable/layout_border_line_up_dark</item>
+  	    <item name="hintTextColor">@color/hint_foreground_material_dark</item>
+        
     </style>
 
     <style name="Kuibu.Widget.ActionBar.Dark" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
@@ -126,5 +132,9 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
     
+    <style name="anim_popup_dir">
+        <item name="android:windowEnterAnimation">@anim/slide_in</item>
+        <item name="android:windowExitAnimation">@anim/slide_out</item>
+    </style>
     
 </resources>

@@ -327,6 +327,7 @@ public class StringUtils {
 	 * @param inputUrl
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public static String encodeUrl(String inputUrl) {
 
 		if (isBlank(inputUrl))

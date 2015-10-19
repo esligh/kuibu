@@ -1,6 +1,8 @@
 package com.kuibu.model.bean;
 
-public class CollectorInfoItemBean {
+@SuppressWarnings("serial")
+public class CollectorInfoItemBean extends BaseEntity{
+	
 	private String name ;
 	private String introduce ;
 	private String pic;

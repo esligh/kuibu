@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,16 +9,20 @@
     android:minHeight="@dimen/abc_action_bar_default_height_material"
     android:theme="@style/LightTextToolbarOverlay" >
     
-    <EditText
+    <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edit_note_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/android_spaces_small"
+        android:paddingRight="@dimen/android_spaces_small"
         android:textSize="18sp"
         android:inputType="textMultiLine"
         android:hint="@string/hint_title"
-        android:textColor="@color/white" />
+        app:met_baseColor="@color/white"
+        app:met_textColor="@color/white"        
+        app:met_floatingLabel = "none"
+        app:met_clearButton = "true"
+        app:met_underlineColor="@color/white"
+        app:met_primaryColor = "#16a085"  />
+    
 </android.support.v7.widget.Toolbar>

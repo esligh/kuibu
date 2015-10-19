@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,14 +30,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.activity.FavoriteBoxDetailActivity;
+import com.kuibu.module.activity.FavoriteBoxInfoActivity;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.FavoriteBoxCardListAdapter;
 
@@ -46,8 +45,7 @@ public class FavoriteBoxFragment extends Fragment {
 	
 	private List<Map<String,String>> datas= new ArrayList<Map<String,String>>() ; 
     private ListView cardsList;
-    private FavoriteBoxCardListAdapter adapter ; 
-    private Context context ; 
+    private FavoriteBoxCardListAdapter adapter ;  
     private MultiStateView mMultiStateView;
     
     @Override
@@ -62,7 +60,6 @@ public class FavoriteBoxFragment extends Fragment {
 				loadData();
 			}   	
         });
-        context = this.getActivity();
         cardsList = (ListView) rootView.findViewById(R.id.cards_list);
         cardsList.setOnItemClickListener(new OnItemClickListener() {
         	
@@ -72,13 +69,12 @@ public class FavoriteBoxFragment extends Fragment {
 				// TODO Auto-generated method stub
 				String count = datas.get(position).get("box_count");
 				if(Integer.parseInt(count)>0){
-					Intent intent = new Intent(context,FavoriteBoxDetailActivity.class);
-					intent.putExtra(StaticValue.SERMODLE.BOX_ID, datas.get(position).get("box_id"));
-					intent.putExtra(StaticValue.SERMODLE.BOX_NAME,datas.get(position).get("box_name"));
-					intent.putExtra(StaticValue.SERMODLE.BOX_DESC,datas.get(position).get("box_desc"));
-					intent.putExtra(StaticValue.SERMODLE.BOX_COUNT,datas.get(position).get("box_count"));
-					intent.putExtra(StaticValue.SERMODLE.BOX_FOCUS_COUNT, datas.get(position).get("focus_count"));
-					startActivity(intent);
+					Intent intent = new Intent(getActivity(),
+							FavoriteBoxInfoActivity.class);
+					intent.putExtra("box_id", datas.get(position).get("box_id"));
+					intent.putExtra("box_type", datas.get(position).get("box_type"));
+					intent.putExtra("create_by", Session.getSession().getuId());
+					getActivity().startActivity(intent);
 					getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}
 			}       	
@@ -114,10 +110,9 @@ public class FavoriteBoxFragment extends Fragment {
 	public void onHiddenChanged(boolean hidden) {
 		// TODO Auto-generated method stub
 		super.onHiddenChanged(hidden);
-		if(hidden){ //hiding now 
+		if(hidden){ //hiding now 			 
 			
-		}else{//showing now 
-			datas.clear();
+		}else{//showing now
 			loadData();
 		}
 	}
@@ -139,6 +134,7 @@ public class FavoriteBoxFragment extends Fragment {
 				JSONObject obj = arr.getJSONObject(i);
 				Map<String,String> item = new HashMap<String,String>();
 				item.put("box_id", obj.getString("box_id"));
+				item.put("box_type", obj.getString("box_type"));
 				item.put("box_name", obj.getString("box_name"));
 				item.put("box_desc", obj.getString("box_desc"));
 				item.put("box_count", obj.getString("box_count"));
@@ -146,9 +142,7 @@ public class FavoriteBoxFragment extends Fragment {
 				item.put("titles", obj.getString("titles"));
 				datas.add(item);
 			}
-			showView();    	
     	}catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	if(datas.size()>0){
@@ -173,7 +167,6 @@ public class FavoriteBoxFragment extends Fragment {
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -181,10 +174,10 @@ public class FavoriteBoxFragment extends Fragment {
 						if(!TextUtils.isEmpty(data)){
 							JSONArray arr = new JSONArray(data);														
 							loadFromArray(arr);
+							showView();
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -196,9 +189,9 @@ public class FavoriteBoxFragment extends Fragment {
 				error.printStackTrace();
 				if(datas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
+				else{
+					
+				}
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -238,11 +231,7 @@ public class FavoriteBoxFragment extends Fragment {
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader();  
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	

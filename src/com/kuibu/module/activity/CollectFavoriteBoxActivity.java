@@ -17,7 +17,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,14 +30,17 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
@@ -58,8 +60,8 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 	private List<String> selIds = new LinkedList<String>();;
 	private List<String> selectedIds = null ;
 	private MultiStateView mMultiStateView;
-	private String cid ; 
-	private boolean hasSelected =false;  
+	private String cid ,ctype; 
+	private boolean hasSelected = false;    
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				loadData();
 			}   	
         });
+        
 		boxList = (ListView) findViewById(R.id.favorite_box_list_view);
 		boxList.setOnTouchListener(new OnTouchListener() {				
 			@SuppressLint("ClickableViewAccessibility")
@@ -88,9 +91,12 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			}
 		});
 		boxList.setOnItemClickListener(new OnItemClickListener() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view, int position,
-					long id) {
+					long id) {				
+				Map<String,String> item = (Map<String,String>)viewAdapter.getAdapter()
+											.getItem(position);
 				HolderView  holderView = (HolderView)view.getTag();
 				if(holderView ==null)
 					return ;
@@ -98,6 +104,21 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 					holderView.box_cb.setChecked(false);
 					selIds.remove((String)mDatas.get(position).get("box_id"));
 				}else{
+					if(StaticValue.SERMODLE.BOX_TYPE_PIC.
+							equals(item.get("box_type"))){ //收藏类型2只能收藏colletion type为2的收集 
+						if(!StaticValue.SERMODLE.BOX_TYPE_PIC.equals(ctype)){
+							Toast.makeText(CollectFavoriteBoxActivity.this, 
+									getString(R.string.boxtype_not_match), Toast.LENGTH_SHORT).show();
+							return ;
+						}
+					}
+					if(StaticValue.SERMODLE.BOX_TYPE_WORD.equals(item.get("box_type"))){//收藏类型1的不能收藏collection type 为2的收集
+						if(StaticValue.SERMODLE.BOX_TYPE_PIC.equals(ctype)){
+							Toast.makeText(CollectFavoriteBoxActivity.this, 
+									getString(R.string.boxtype_not_match), Toast.LENGTH_SHORT).show();
+							return ;
+						}
+					}
 					holderView.box_cb.setChecked(true);
 					selIds.add((String)mDatas.get(position).get("box_id"));
 				}
@@ -119,10 +140,9 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			public void onClick(View arg0) {
 				operFavorite();
 			}
-		});
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		});		
 		cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
+		ctype = getIntent().getStringExtra("type");
 		loadData();
 		hasSelected = getIntent().getBooleanExtra(StaticValue.COLLECTION.IS_COLLECTED, false);
 		if(hasSelected){
@@ -131,8 +151,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		showView();
 	}
 
-	
-	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {		
 		super.onCreateOptionsMenu(menu);
@@ -144,6 +163,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		return true; 
 	}
 
+	
 	@SuppressLint("InflateParams")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -160,7 +180,8 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 					.findViewById(R.id.favorite_box_desc_et);
 			final CheckBox box_cb = (CheckBox) favoriteboxLayout
 					.findViewById(R.id.favorte_box_dialog_cb);
-			
+	        final RadioGroup box_type_rg = (RadioGroup)favoriteboxLayout.findViewById(R.id.favorite_box_type);
+
 			new AlertDialog.Builder(CollectFavoriteBoxActivity.this)
 					.setTitle(getString(R.string.create_new_cbox))
 					.setView(favoriteboxLayout)
@@ -170,22 +191,17 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 								public void onClick(DialogInterface arg0,
 										int arg1) { 
 									boolean bcheck = box_cb.isChecked();
-									Map<String,String> params = new HashMap<String,String>();
-									
+									Map<String,String> params = new HashMap<String,String>();									
 									params.put("box_name", box_name.getText().toString().trim());
 									params.put("box_desc", box_desc.getText().toString().trim());
 									params.put("is_private",bcheck ? "1":"");//python bool("") is False
 									params.put("create_by", Session.getSession().getuId());
+									params.put("box_type", box_type_rg.getCheckedRadioButtonId() == R.id.favorite_box_type_word ? 
+					                     StaticValue.SERMODLE.BOX_TYPE_WORD : StaticValue.SERMODLE.BOX_TYPE_PIC );
 									requestAddbox(params);
 								}
 							})
-					.setNegativeButton(getString(R.string.btn_cancel),
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface arg0,
-										int arg1) {
-								}
-							}).show();
+					.setNegativeButton(getString(R.string.btn_cancel),null).show();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -198,8 +214,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}
 
-	
-	
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
@@ -241,6 +255,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 								    item.put("box_id",obj.getString("box_id"));
 									item.put("box_name", obj.getString("box_name"));
 									item.put("item_desc", obj.getString("box_desc"));
+									item.put("box_type", obj.getString("box_type"));
 									mDatas.add(item);
 								}
 								showView();
@@ -262,11 +277,10 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			public void onErrorResponse(VolleyError error) {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(), 
+//						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
+//						Toast.LENGTH_SHORT).show();
 			}
 		});
 		
@@ -311,7 +325,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	private void requestAddbox(Map<String,String> params) {
+	private void requestAddbox(final Map<String,String> params) {
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI) 
 				.append(Constants.Config.REST_API_VERSION)
 				.append("/add_favoritebox").toString();
@@ -325,8 +339,9 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 						mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 						Map<String,String> item = new HashMap<String,String>();
 					    item.put("box_id",response.getString("box_id"));
-						item.put("box_name", response.getString("box_name"));
-						item.put("item_desc", response.getString("box_desc"));
+						item.put("box_name", params.get("box_name"));
+						item.put("box_type", params.get("box_type"));
+						item.put("item_desc", params.get("box_desc"));
 						mDatas.add(item);
 						showView();
 					}
@@ -339,21 +354,16 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			public void onErrorResponse(VolleyError error) {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
+				
 			}
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+				return KuibuUtils.prepareReqHeader();
 	 		}
 		};
+		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,
+				Constants.Config.RETRY_TIMES, 1.0f));
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
@@ -381,6 +391,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 	{
 		if(ids.size()<=0){
 			Toast.makeText(this, getString(R.string.choose_one), Toast.LENGTH_SHORT).show();
+			return ; 
 		}
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("create_by", Session.getSession().getuId());
@@ -392,7 +403,6 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -420,13 +430,11 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+				return KuibuUtils.prepareReqHeader(); 
 	 		}
 		};
+		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,
+				Constants.Config.RETRY_TIMES, 1.0f));
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
@@ -465,18 +473,11 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader();  
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);

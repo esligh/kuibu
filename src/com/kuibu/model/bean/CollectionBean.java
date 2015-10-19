@@ -1,10 +1,9 @@
 package com.kuibu.model.bean;
 
-import java.io.Serializable;
 
-public class CollectionBean implements Serializable{
+@SuppressWarnings("serial")
+public class CollectionBean extends BaseEntity{
 	
-	private static final long serialVersionUID = 1L;
 	public String _id ; 
 	public String pid ; 
 	public String tid ;
@@ -13,13 +12,17 @@ public class CollectionBean implements Serializable{
 	public String title ; 
 	public String content ; 
 	public String cover ; 
+	public int height; 
+	public int width ; 
 	public String createDate ; 
 	public String createBy ; 
 	public int isPublish ;
 	public int isSync ; 
+	public boolean isCheck = false ; 
 	
-	public CollectionBean()
-	{}
+	public CollectionBean(){
+		
+	}
 
 	public String get_id() {
 		return _id;
@@ -73,6 +76,23 @@ public class CollectionBean implements Serializable{
 		this.cover = cover;
 	}
 
+	
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
 	public String getCreateDate() {
 		return createDate;
 	}
@@ -103,6 +123,15 @@ public class CollectionBean implements Serializable{
 
 	public void setIsSync(int isSync) {
 		this.isSync = isSync;
+	}
+
+	
+	public boolean isCheck() {
+		return isCheck;
+	}
+
+	public void setCheck(boolean isCheck) {
+		this.isCheck = isCheck;
 	}
 
 	@Override

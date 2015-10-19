@@ -3,7 +3,7 @@ package com.kuibu.module.fragment;
 import android.support.v4.app.Fragment;
 
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.iterf.IConstructFragment;
+import com.kuibu.module.iterfaces.IConstructFragment;
 
 public final class ExploreConstruct 
 	implements IConstructFragment{

@@ -25,10 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginLeft="@dimen/android_spaces"
-            android:layout_marginRight="@dimen/android_spaces"
-            android:background="?listItemBackground"            
-            
+            android:background="?layoutBorderBackGround"            
             android:orientation="horizontal" >
 
             <EditText
@@ -36,8 +33,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_margin="@dimen/android_spaces_super_small"
-                android:padding="@dimen/android_spaces"                
+                android:layout_marginLeft="@dimen/android_spaces_large"            
+            	android:layout_marginRight="@dimen/android_spaces_small"
+            	android:layout_marginTop="@dimen/android_spaces"
+            	android:layout_marginBottom="@dimen/android_spaces_small"                   android:padding="@dimen/android_spaces"                
                 android:hint="@string/write_down_comment" />
 
             <ImageButton
@@ -45,8 +44,10 @@
                 android:layout_width="@dimen/icon_medium_width"
                 android:layout_height="@dimen/icon_medium_height"
                 android:scaleType="centerInside"
-                android:layout_marginBottom="@dimen/android_spaces_super_small"
-                android:background="@color/transparent"
+                android:layout_marginLeft="@dimen/android_spaces_small"            
+            	android:layout_marginRight="@dimen/android_spaces"
+            	android:layout_marginTop="@dimen/android_spaces_large"
+            	android:layout_marginBottom="@dimen/android_spaces_small"                android:background="@color/transparent"
                 android:src="@drawable/bt_send_comment_selector" 
                 android:contentDescription="@null"/>
         </LinearLayout>

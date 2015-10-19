@@ -7,7 +7,6 @@ body{
     background: #343434;
 	font-family: 'Helvetica Neue', Helvetica, Arial, Sans-serif;
     color: #DDD;
-    line-height: 1;
     padding: 1em;
     margin:auto;
     max-width:42em;
@@ -64,6 +63,13 @@ ul, ol
 {
 	font-size: 18px;
 }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  overflow: hidden;
+}
+
 p, blockquote, ul, ol, dl, li, table, pre {
     margin: 15px 0;   
 }
@@ -88,7 +94,7 @@ pre, code {
 	overflow: auto;
 	word-wrap:break-word; 
 	white-space: pre-wrap;
-	border-radius: 3px;
+	border-radius: 2px;
     background-color: #414141;
     color: inherit;
   	font-size: 1em;
@@ -98,6 +104,7 @@ code {
     border: 1px solid #777777;
     margin: 0 2px;
     padding: 0 5px;
+    word-break: break-all;
 }
 
 pre {
@@ -107,6 +114,11 @@ pre {
     padding: 6px 10px;
 }
 
+pre > code {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
 
 blockquote {
 	font-size:16px ;

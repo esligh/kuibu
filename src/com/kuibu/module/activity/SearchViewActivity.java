@@ -9,27 +9,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.SearchManager;
-import android.app.SearchableInfo;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.SearchView;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.view.Menu;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -41,7 +41,8 @@ import com.kuibu.module.adapter.SearchContentAdapter;
 import com.kuibu.module.adapter.TopicListAdapter;
 import com.kuibu.module.adapter.UserListAdapter;
 
-public class SearchViewActivity extends BaseActivity implements OnLoadListener{
+public class SearchViewActivity extends AppCompatActivity implements OnLoadListener{
+	
 	private PaginationListView thingList ;	
 	private TextView collection_tv,collector_tv ,topic_tv; 
 	private String  target ;
@@ -49,15 +50,29 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 	private List<TopicItemBean> topicDatas ;
 	private UserListAdapter userAdapter;
 	private List<Map<String,Object>> userDatas  ;
-	private SearchView searchView;
 	private SearchContentAdapter contentAdapter ; 
 	private List<Map<String,String>> contentDatas ; 
+	private boolean isDarkTheme ; 
+	private EditText searchView ; 
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
+		isDarkTheme= PreferencesUtils.getBooleanByDefault(this,StaticValue.PrefKey.DARK_THEME_KEY, false);
+		if (isDarkTheme) {
+			setTheme(R.style.AppTheme_Dark);			
+		}else{
+			setTheme(R.style.AppTheme_Light);
+		}
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.search_view_activity);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		if(toolbar != null){
+			setSupportActionBar(toolbar);
+			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		}
+		searchView = (EditText)findViewById(R.id.search_content);
 		thingList = (PaginationListView)findViewById(R.id.search_view_list);
 		thingList.setOnLoadListener(this);
 		collection_tv = (TextView)findViewById(R.id.collection_tv);
@@ -74,7 +89,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 				if(contentAdapter==null)
 					contentAdapter = new SearchContentAdapter(SearchViewActivity.this, contentDatas);				
 				thingList.setAdapter(contentAdapter);
-				String query = searchView.getQuery().toString();
+				String query = searchView.getText().toString();
 				if(!TextUtils.isEmpty(query)){
 					requestContent(query);
 				}				
@@ -91,7 +106,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 				if(userAdapter==null)
 					userAdapter = new UserListAdapter(SearchViewActivity.this, userDatas);				
 				thingList.setAdapter(userAdapter);
-				String query = searchView.getQuery().toString();
+				String query = searchView.getText().toString();
 				if(!TextUtils.isEmpty(query)){
 					requestUsers(query);
 				}
@@ -109,7 +124,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 				if(topicAdapter==null)
 					topicAdapter = new TopicListAdapter(SearchViewActivity.this, topicDatas);				
 				thingList.setAdapter(topicAdapter);
-				String query = searchView.getQuery().toString();
+				String query = searchView.getText().toString();
 				if(!TextUtils.isEmpty(query)){
 					requestTopics(query);
 				}
@@ -169,11 +184,55 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 				}
 			}			
 		});
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		searchView.addTextChangedListener(new TextWatcher() {			
+			@Override
+			public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+					int arg3) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				boolean flag = true; 
+				if(TextUtils.isEmpty(s.toString())){
+					flag = false;
+				}								
+				if(target.equals("TOPIC")){
+					if(topicDatas!=null)
+						topicDatas.clear();
+					if(flag)
+						requestTopics(s.toString());
+					else
+						showTopicView();
+				}else if(target.equals("COLLECTOR")){
+					if(userDatas!=null)
+						userDatas.clear();
+					if(flag)
+						requestUsers(s.toString());
+					else
+						showUserView();
+				}else if(target.equals("CONTENT")){
+					if(contentDatas != null)
+						contentDatas.clear();
+					if(flag)
+						requestContent(s.toString());
+					else
+						showContentView();
+				}
+			}
+		});
 		target = "CONTENT";
 		switchBackground(target);
 		showTopicView();
+		
 	}
 	private void switchBackground(String target){
 		if(TextUtils.isEmpty(target)) 
@@ -208,60 +267,6 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 				topic_tv.setBackgroundColor(getResources().getColor(R.color.white));			
 			}
 		}		
-	}
-	@Override     
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.search_view, menu);
-		MenuItem search = menu.findItem(R.id.action_search_for);
-		//search.expandActionView(); api 14
-		MenuItemCompat.expandActionView(search);
-	    searchView = (SearchView) MenuItemCompat.getActionView(search);		
-		if (searchView != null) {
-			SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-			SearchableInfo info = searchManager
-					.getSearchableInfo(getComponentName());
-			searchView.setSearchableInfo(info);
-			searchView.setQueryHint("搜索的话题、收集、人");
-			
-			searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-						@Override
-						public boolean onQueryTextSubmit(String query) {
-							return false;
-						}
-						@Override
-						public boolean onQueryTextChange(String newText) {
-							boolean flag = true; 
-							if(TextUtils.isEmpty(newText)){
-								flag = false;
-							}								
-							if(target.equals("TOPIC")){
-								if(topicDatas!=null)
-									topicDatas.clear();
-								if(flag)
-									requestTopics(newText);
-								else
-									showTopicView();
-							}else if(target.equals("COLLECTOR")){
-								if(userDatas!=null)
-									userDatas.clear();
-								if(flag)
-									requestUsers(newText);
-								else
-									showUserView();
-							}else if(target.equals("CONTENT")){
-								if(contentDatas != null)
-									contentDatas.clear();
-								if(flag)
-									requestContent(newText);
-								else
-									showContentView();
-							}
-							return true;
-						}
-			});		
-		}
-		super.onCreateOptionsMenu(menu);     
-		return true;
 	}
 
 	void showTopicView()
@@ -484,7 +489,7 @@ public class SearchViewActivity extends BaseActivity implements OnLoadListener{
 
 	@Override
 	public void onLoadMore() {
-		String query  = searchView.getQuery().toString();
+		String query  = searchView.getText().toString();
 		if(TextUtils.isEmpty(query))
 			return  ;
 		if(target.equals("TOPIC")){

@@ -42,6 +42,8 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 	private List<TopicItemBean> mdatas = new ArrayList<TopicItemBean>();
 	private MultiStateView mMultiStateView;
 	
+	
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

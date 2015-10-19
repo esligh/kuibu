@@ -6,7 +6,8 @@ import android.support.v4.app.Fragment;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.fragment.FocusTopicFragment;
 
-public class UserTopicListActivity extends UserInfoListFragmentActivity {
+public class UserTopicListActivity extends UserInfoFragmentActivity{
+	
 	@Override
 	protected Fragment createFragment() {
 		// TODO Auto-generated method stub
@@ -15,5 +16,6 @@ public class UserTopicListActivity extends UserInfoListFragmentActivity {
 		bundle.putString("uid", getIntent().getStringExtra(StaticValue.USERINFO.USER_ID));
 		fragment.setArguments(bundle);
 		return fragment ; 
-	}	
+	}
+	
 }

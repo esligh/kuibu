@@ -80,7 +80,7 @@ public class WelcomeActivity extends ActionBarActivity {
         mPager.setAdapter(mAdapter);
         mPagerIndicator.setViewPager(mPager);
 
-        mPager.setPageTransformer(true, new ParallaxTransformer(PARALLAX_COEFFICIENT, DISTANCE_COEFFICIENT));
+//        mPager.setPageTransformer(true, new ParallaxTransformer(PARALLAX_COEFFICIENT, DISTANCE_COEFFICIENT));
         mPagerIndicator.setOnPageChangeListener(new GuidePageChangeListener());
     }
 

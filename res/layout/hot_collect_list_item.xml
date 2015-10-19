@@ -26,7 +26,7 @@
             android:layout_height="@dimen/icon_small_height"
             android:layout_alignParentRight="true"
             android:layout_marginRight="@dimen/android_spaces" 
-            android:src="@drawable/ic_drawer_collect_normal">
+            android:src="@drawable/ic_collect_tag">
         </ImageView>
 
         <TextView

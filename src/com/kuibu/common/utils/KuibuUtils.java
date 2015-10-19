@@ -1,6 +1,8 @@
 package com.kuibu.common.utils;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.kuibu.data.global.Constants;
+import com.kuibu.data.global.Session;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 public class KuibuUtils {
@@ -42,4 +45,13 @@ public class KuibuUtils {
             }
         }
     }
+	
+	public static Map<String,String> prepareReqHeader()
+	{
+		HashMap<String, String> headers = new HashMap<String, String>();
+		String credentials = Session.getSession().getToken()+":unused";
+		headers.put("Authorization","Basic "+
+		SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
+		return headers;
+	}
 }

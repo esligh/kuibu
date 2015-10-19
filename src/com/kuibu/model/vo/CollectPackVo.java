@@ -23,9 +23,9 @@ public class CollectPackVo extends BaseDbVo{
         getDB().beginTransaction();   
         try {  
             for (CollectPackBean p : packs) {  
-            	getDB().execSQL("INSERT INTO "+table_name+"( pack_name,pack_desc,create_by,is_private,topic_id,pack_id,is_sync)"
-                		+ " VALUES(?, ?, ?, ?, ?, ? ,?)", 
-                		new Object[]{p.pack_name, p.pack_desc,p.create_by,
+            	getDB().execSQL("INSERT INTO "+table_name+"( pack_name,pack_desc,pack_type,create_by,is_private,topic_id,pack_id,is_sync)"
+                		+ " VALUES(?, ?, ?, ?, ?, ?, ? ,?)", 
+                		new Object[]{p.pack_name, p.pack_desc,p.pack_type,p.create_by,
                 		p.is_private,p.topic_id,p.pack_id,p.is_sync});  
             }  
             getDB().setTransactionSuccessful();
@@ -38,9 +38,9 @@ public class CollectPackVo extends BaseDbVo{
     {
     	getDB().beginTransaction();
     	try{
-    		getDB().execSQL("INSERT INTO "+table_name+"( pack_name,pack_desc,create_by,is_private,topic_id,pack_id,is_sync )"
-            		+ " VALUES(?, ?, ?, ?, ?, ?, ?)", 
-            		new Object[]{p.pack_name, p.pack_desc,p.create_by,
+    		getDB().execSQL("INSERT INTO "+table_name+"( pack_name,pack_desc,pack_type,create_by,is_private,topic_id,pack_id,is_sync )"
+            		+ " VALUES(?, ?, ?, ?, ?, ?, ?, ?)", 
+            		new Object[]{p.pack_name, p.pack_desc,p.pack_type,p.create_by,
     				p.is_private,p.topic_id,p.pack_id,p.is_sync});
     		getDB().setTransactionSuccessful();
     	}finally{
@@ -68,7 +68,7 @@ public class CollectPackVo extends BaseDbVo{
     
     public List<CollectPackBean> queryAll(String uid) {  
         ArrayList<CollectPackBean> packs = new ArrayList<CollectPackBean>();  
-        Cursor c = getDB().rawQuery("SELECT _id,pack_id,pack_name,pack_desc,collect_count FROM "+table_name + 
+        Cursor c = getDB().rawQuery("SELECT _id,pack_id,pack_name,pack_desc,pack_type,collect_count FROM "+table_name + 
         		" where create_by = ? ", new String[]{uid});  
         while (c.moveToNext()) {  
         	CollectPackBean pack = new CollectPackBean();  
@@ -76,6 +76,7 @@ public class CollectPackVo extends BaseDbVo{
         	pack.pack_id = c.getString(c.getColumnIndex("pack_id"));
         	pack.pack_name = c.getString(c.getColumnIndex("pack_name"));  
         	pack.pack_desc = c.getString(c.getColumnIndex("pack_desc"));
+        	pack.pack_type = c.getString(c.getColumnIndex("pack_type"));
         	int count = c.getInt(c.getColumnIndex("collect_count"));
         	pack.collect_count = String.valueOf(count);             	
             packs.add(pack);  
@@ -87,12 +88,13 @@ public class CollectPackVo extends BaseDbVo{
     public CollectPackBean queryWithkey(String _id)
     {
     	CollectPackBean bean = new CollectPackBean();
-    	Cursor c = getDB().rawQuery("SELECT _id,pack_id,pack_name,pack_desc,collect_count,last_modify FROM collectpack where _id = ? ",
+    	Cursor c = getDB().rawQuery("SELECT _id,pack_id,pack_name,pack_desc,pack_type,collect_count,last_modify FROM collectpack where _id = ? ",
     			new String[]{_id});
         while (c.moveToNext()) {
         	bean.pack_id = c.getString(c.getColumnIndex("pack_id"));
         	bean.pack_name= c.getString(c.getColumnIndex("pack_name"));
             bean.pack_desc = c.getString(c.getColumnIndex("pack_desc"));
+            bean.pack_type = c.getString(c.getColumnIndex("pack_type"));
             bean.collect_count = c.getString(c.getColumnIndex("collect_count"));
             break;
         }
@@ -103,9 +105,9 @@ public class CollectPackVo extends BaseDbVo{
     	getDB().beginTransaction(); 
     	try{
     		StringBuffer SQL  =new StringBuffer("update collectpack set ");
-    		SQL.append(" pack_name = ? , pack_desc = ? , topic_id = ? , is_private = ? ");
+    		SQL.append(" pack_name = ? , pack_desc = ? , pack_type = ? ,topic_id = ? , is_private = ? ");
     		SQL.append(" where _id = ?");
-    		getDB().execSQL(SQL.toString(), new Object[]{item.pack_name,item.pack_desc,item.topic_id,item.is_private,item._id});
+    		getDB().execSQL(SQL.toString(), new Object[]{item.pack_name,item.pack_desc,item.pack_type,item.topic_id,item.is_private,item._id});
     		getDB().setTransactionSuccessful(); 
     	}finally{
     		getDB().endTransaction();

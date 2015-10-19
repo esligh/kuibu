@@ -38,13 +38,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.UserInfoBean;
-import com.kuibu.module.iterf.ICamera;
+import com.kuibu.module.iterfaces.ICamera;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
 
@@ -186,8 +187,6 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 		});
 		finalHttp = new FinalHttp();
 		requestDetail();
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 	
 	private void switchSexBack(String sex)

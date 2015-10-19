@@ -1,12 +1,19 @@
 package com.kuibu.model.welcome;
 
+import com.kuibu.module.activity.R;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kuibu.module.activity.R;
-
+/**
+ * Created with Android Studio.
+ * User: ryan@xisue.com
+ * Date: 7/14/14
+ * Time: 11:10 PM
+ * Desc: ThirdGuideFragment
+ */
 public class ThirdGuideFragment extends BaseGuideFragment {
 
     @Override

@@ -1,6 +1,9 @@
 package com.kuibu.model.bean;
 
-public class ImageBean {
+@SuppressWarnings("serial")
+public class ImageBean extends BaseEntity
+{
+	
 	private String topImagePath ;  //文件夹第一张图路径
 	private String folderName;  //文件夹
 	private int imageCounts ; //文件夹内的图片数

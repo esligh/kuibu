@@ -15,13 +15,14 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
@@ -46,7 +47,6 @@ public class CollectPackListActivity extends BaseActivity implements
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_pagination_listview);
-		;
 		mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
 		mMultiStateView.getView(MultiStateView.ViewState.ERROR)
 				.findViewById(R.id.retry)
@@ -106,6 +106,7 @@ public class CollectPackListActivity extends BaseActivity implements
 							item.set_id(obj.getString("id"));
 							item.setPack_name(obj.getString("pack_name"));
 							item.setPack_desc(obj.getString("pack_desc"));
+							item.setPack_type(obj.getString("pack_type"));
 							item.setTopic_id(obj.getString("topic_ids"));
 							item.setCollect_count(obj.getString("collect_count"));
 							datas.add(item);

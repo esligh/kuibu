@@ -1,13 +1,14 @@
 package com.kuibu.model.bean;
 
-public class CollectPackItemBean {
+@SuppressWarnings("serial")
+public class CollectPackItemBean extends BaseEntity{
 	private String id ; 
+	private String packType ; 
 	private String packName;
 	private String packDesc;
 	private String collectCount ; 
 	private String followCount ; 
 	private String createBy; 
-	
 	public String getPackName() {
 		return packName;
 	}
@@ -19,6 +20,13 @@ public class CollectPackItemBean {
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	public String getPackType() {
+		return packType;
+	}
+	public void setPackType(String packType) {
+		this.packType = packType;
 	}
 	public String getPackDesc() {
 		return packDesc;

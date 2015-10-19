@@ -20,10 +20,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.kuibu.common.utils.PreferencesUtils;
+import com.kuibu.data.global.AppInfo;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.MateListItem;
 import com.kuibu.module.activity.CollectInfoListActivity;
 import com.kuibu.module.activity.CollectionDetailActivity;
+import com.kuibu.module.activity.CollectionImageDetailActivity;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.UserInfoActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -56,13 +59,15 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 		TextView time_tv;
 	}
 
-//	public class HolderViewForPics {
-//		RelativeLayout layout2_rl;
-//		TextView topic_tv;
-//		ImageView topic_icon_iv;
-//		TextView title_tv;
-//		GridView item_pics_gv;
-//	}
+	public class HolderViewForPics {
+		RelativeLayout layout2_rl;
+		TextView topic_tv;
+		ImageView topic_icon_iv;
+		TextView title_tv;
+		ImageView item_pic_iv;
+		TextView desc_tv ; 
+		TextView time_tv;
+	}
 
 	public HomeListViewItemAdapter(Context context, List<MateListItem> datas) {
 		this.datas = datas;
@@ -74,9 +79,10 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 		Resources.Theme theme = context.getTheme();
 		TypedArray typedArray = null;
 
-		SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-		if (mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false)) {
+		boolean isDarkTheme = PreferencesUtils.getBooleanByDefault(context,
+				StaticValue.PrefKey.DARK_THEME_KEY , false);
+		if (isDarkTheme) {
 			typedArray = theme.obtainStyledAttributes(R.style.Theme_Kuibu_AppTheme_Dark,
 					new int[] {R.attr.listItemDefaultImage });
 		} else {
@@ -143,7 +149,8 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 		// TODO Auto-generated method stub
 		HolderViewForText holderforText = null;
 		HolderViewForTextPics holderfortextPic = null;
-
+		HolderViewForPics holderforpics = null; 
+		
 		int item_type = getItemViewType(position);
 		if (convertView == null) {
 			switch (item_type) {
@@ -184,7 +191,24 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 				convertView.setTag(holderfortextPic);
 				break;
 			case MateListItem.ItemType.PICS_MODE:
-				
+				convertView = LayoutInflater.from(context).inflate(
+						R.layout.home_list_view_item_type2, parent, false);
+				holderforpics = new HolderViewForPics();
+				holderforpics.layout2_rl = (RelativeLayout) convertView
+						.findViewById(R.id.home_2_rela_layout2_rl);
+				holderforpics.topic_tv = (TextView) convertView
+						.findViewById(R.id.home_2_topic_tv);
+				holderforpics.topic_icon_iv = (ImageView) convertView
+						.findViewById(R.id.home_2_topic_pic_iv);
+				holderforpics.title_tv = (TextView) convertView
+						.findViewById(R.id.home_2_item_title_tv);
+				holderforpics.item_pic_iv = (ImageView) convertView
+						.findViewById(R.id.home_2_image_iv);	
+				holderforpics.item_pic_iv.setAdjustViewBounds(true);
+				holderforpics.item_pic_iv.setMaxWidth(AppInfo.getInstance().screenWidth);
+				holderforpics.desc_tv = (TextView)convertView.findViewById(R.id.home_2_item_desc_tv);
+				holderforpics.time_tv = (TextView)convertView.findViewById(R.id.home_2_item_time_iv);
+				convertView.setTag(holderforpics);
 				break;
 			}
 		} else {
@@ -197,6 +221,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 				holderfortextPic.item_pic_iv.setImageDrawable(null);
 				break;
 			case MateListItem.ItemType.PICS_MODE:
+				holderforpics = (HolderViewForPics)convertView.getTag();
 				break;
 			}
 		}
@@ -205,21 +230,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			holderforText.layout0_rl.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View arg0) {
-					Intent intent = new Intent(context, UserInfoActivity.class);
-					intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
-					intent.putExtra(StaticValue.USERINFO.USER_ID,
-							datas.get(position).getCreateBy());
-					intent.putExtra(StaticValue.USERINFO.USER_SEX,
-							datas.get(position).getUserSex());
-					intent.putExtra(StaticValue.USERINFO.USER_NAME,
-							datas.get(position).getTopText());
-					intent.putExtra(StaticValue.USERINFO.USER_SIGNATURE, datas
-							.get(position).getUserSignature());
-					
-					intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
-							datas.get(position).getTopUrl());
-					context.startActivity(intent);
-					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+					showUserInfo(position);
 				}
 			});
 			holderforText.title_tv.setOnClickListener(new OnClickListener() {
@@ -229,6 +240,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 					Intent intent = new Intent(context,
 							CollectInfoListActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
+					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
 					intent.putExtra("create_by", datas.get(position).getCreateBy());
 					context.startActivity(intent);
 					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
@@ -267,24 +279,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 						@Override
 						public void onClick(View arg0) {
 							// TODO Auto-generated method stub
-							Intent intent = new Intent(context,
-									UserInfoActivity.class);
-							intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT,
-									true);
-							intent.putExtra(StaticValue.USERINFO.USER_ID, datas
-									.get(position).getCreateBy());
-							intent.putExtra(StaticValue.USERINFO.USER_SEX,
-									datas.get(position).getUserSex());
-							intent.putExtra(StaticValue.USERINFO.USER_NAME,
-									datas.get(position).getTopText());
-							intent.putExtra(
-									StaticValue.USERINFO.USER_SIGNATURE, datas
-											.get(position)
-											.getUserSignature());
-							intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
-									datas.get(position).getTopUrl());
-							context.startActivity(intent);
-							((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+							showUserInfo(position);
 						}
 					});
 			holderfortextPic.title_tv.setOnClickListener(new OnClickListener() {
@@ -294,6 +289,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 					Intent intent = new Intent(context,
 							CollectInfoListActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
+					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
 					intent.putExtra("create_by", datas.get(position).getCreateBy());
 					context.startActivity(intent);
 					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
@@ -327,8 +323,10 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			
 			String summary = datas.get(position).getSummary().replace("\n", "");
 			if(TextUtils.isEmpty(summary) || summary.equals("null")){
-				holderfortextPic.content_tv.setText("(多图)");
+				holderfortextPic.content_tv.setVisibility(View.GONE);
+				holderfortextPic.content_tv.setText("(图)");
 			}else{
+				holderfortextPic.content_tv.setVisibility(View.VISIBLE);
 				holderfortextPic.content_tv.setText(summary);
 			}
 			
@@ -343,7 +341,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			StringBuffer title = new StringBuffer(datas.get(position).getTitle());
 			if(noPic){
 				holderfortextPic.item_pic_iv.setVisibility(View.GONE);
-				title  = title.append("  (多图)");
+				title  = title.append("  (图)");
 			}else{
 				// ImageLoad
 				String item_url = datas.get(position).getItemPic();
@@ -354,6 +352,82 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			
 			break;
 		case MateListItem.ItemType.PICS_MODE:
+			holderforpics.layout2_rl.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					showUserInfo(position);
+				}
+			});
+			holderforpics.title_tv.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					Intent intent = new Intent(context,
+							CollectInfoListActivity.class);
+					intent.putExtra("pack_id", datas.get(position).getPackId());
+					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
+					intent.putExtra("create_by", datas.get(position).getCreateBy());
+					context.startActivity(intent);
+					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+				}
+			});
+			holderforpics.item_pic_iv.setOnClickListener( new OnClickListener() {				
+				@Override
+				public void onClick(View arg0) {
+					// TODO Auto-generated method stub
+					Intent intent = new Intent(context,CollectionImageDetailActivity.class);
+					intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ID,
+							datas.get(position).getId()) ; 
+					context.startActivity(intent);
+					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,
+							R.anim.anim_slide_out_left);
+				}
+			});
+			
+			holderforpics.topic_tv
+			.setText(datas.get(position).getTopText());
+
+			String url3 = datas.get(position).getTopUrl();
+			if (TextUtils.isEmpty(url3) || url3.equals("null")) {
+				holderforText.topic_icon_iv
+							.setImageResource(R.drawable.default_pic_avata);
+				
+			} else {
+				ImageLoader.getInstance().displayImage(url3,
+						holderforpics.topic_icon_iv,options,null);
+			}
+			
+
+			boolean bnoPic = PreferencesUtils.getBooleanByDefault(context,
+					StaticValue.PrefKey.NO_PICTRUE_KEY, false);
+			
+			StringBuffer title2 = new StringBuffer(datas.get(position).getTitle());
+			if(bnoPic){
+				holderforpics.item_pic_iv.setVisibility(View.GONE);
+				title2  = title2.append("  (图)");
+			}else{
+				holderforpics.item_pic_iv.setVisibility(View.VISIBLE);
+				// ImageLoad
+				String item_url = datas.get(position).getItemPic();
+				ImageLoader.getInstance().displayImage(item_url,
+						holderforpics.item_pic_iv,options,null);
+			}
+			
+			holderforpics.title_tv.setText(datas.get(position).getTitle().replace("\n", ""));
+			String desc = datas.get(position).getSummary(); 
+			if(TextUtils.isEmpty(desc)){
+				holderforpics.desc_tv.setVisibility(View.GONE);
+			}else{
+				holderforpics.desc_tv.setVisibility(View.VISIBLE);
+				holderforpics.desc_tv.setText(desc);
+			}
+			
+			String date3 = datas.get(position).getLastModify().trim();
+			if(!date3.equals("null")){
+				holderforpics.time_tv.setText(date3);
+			}		
 			break;
 		}
 		return convertView;
@@ -368,6 +442,8 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 				intent = new Intent(context, CollectionDetailActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID,
 						datas.get(position).getId());
+				intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN,
+						datas.get(position).getCisn());
 				break;
 			default:
 				break;
@@ -378,5 +454,27 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 		}
 	}
 	
+	
+	private void showUserInfo(int position)
+	{
+		Intent intent = new Intent(context,
+				UserInfoActivity.class);
+		intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT,
+				true);
+		intent.putExtra(StaticValue.USERINFO.USER_ID, datas
+				.get(position).getCreateBy());
+		intent.putExtra(StaticValue.USERINFO.USER_SEX,
+				datas.get(position).getUserSex());
+		intent.putExtra(StaticValue.USERINFO.USER_NAME,
+				datas.get(position).getTopText());
+		intent.putExtra(
+				StaticValue.USERINFO.USER_SIGNATURE, datas
+						.get(position)
+						.getUserSignature());
+		intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
+				datas.get(position).getTopUrl());
+		context.startActivity(intent);
+		((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+	}
 	
 }

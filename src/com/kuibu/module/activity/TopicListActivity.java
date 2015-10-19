@@ -15,14 +15,15 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;

@@ -1,12 +1,9 @@
 package com.kuibu.model.bean;
 
-import java.io.Serializable;
 
-public class UserInfoBean implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+@SuppressWarnings("serial")
+public class UserInfoBean extends BaseEntity{
+	
 	private String id ; 
 	private String name ; 
 	private String sex ; 

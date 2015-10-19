@@ -45,7 +45,7 @@
         <item>发现</item>
      	<item>关注</item>
         <item>收藏</item>
-        <item>收集</item>       
+        <item>集册</item>       
         <item>设置</item>
     </string-array>
     
@@ -119,8 +119,6 @@
   	<string-array name="collectpack_operator">
   	    <item>修改</item>
   	    <item>删除</item>
-  	    <item>重命名</item>
-  	    <item>取消</item>
   	</string-array>
   	
   	<string-array name="favorite_box_item_opt">

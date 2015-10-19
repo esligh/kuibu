@@ -48,6 +48,19 @@ public class ImageLibVo extends BaseDbVo{
         	getDB().endTransaction();      
         }  
     }
+    
+    public void add(String cid , String url)
+    {
+    	getDB().beginTransaction();   
+        try {  
+            getDB().execSQL("INSERT INTO imglib VALUES(null, ?, ?, ?)", 
+                		new Object[]{cid, url, 
+                		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date())});   
+            getDB().setTransactionSuccessful();   
+        } finally {  
+        	getDB().endTransaction();      
+        }  
+    }
       
     public void delete(String cid) {  
     	getDB().delete("imglib", "cid = ?", new String[]{String.valueOf(cid)});  

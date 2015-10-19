@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.data.global.Constants;
 
 public class MDHandBookActivity extends BaseActivity{

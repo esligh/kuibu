@@ -2,6 +2,7 @@ package com.kuibu.module.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,15 +15,15 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,6 +35,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.huewu.pla.lib.MultiColumnListView;
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
@@ -45,19 +50,25 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.model.bean.CollectionBean;
 import com.kuibu.model.bean.CollectionItemBean;
 import com.kuibu.module.adapter.CollectPackInfoAdapter;
+import com.kuibu.module.adapter.ImageGridAdapter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CollectInfoListActivity extends BaseActivity implements
 		OnBorderListener {
+	
 	private static final String VOLLEY_REQUEST_TAG = "collectpack_info";
-	private ListView cardListView;
+	private ListView mList;
+	private MultiColumnListView mCardList ; 
 	private RelativeLayout focusLayout;
 	private View footerView;
 	private BorderScrollView borderScrollView;
 	private CollectPackInfoAdapter infoAdapter;
-	private List<CollectionItemBean> item_datas = new ArrayList<CollectionItemBean>();
+	private ImageGridAdapter mCardApdater ; 
+	private List<CollectionBean> card_datas = null; 
+	private List<CollectionItemBean> item_datas = null ; 
 	private String packId;
 	private TextView titleView;
 	private TextView descView;
@@ -70,7 +81,9 @@ public class CollectInfoListActivity extends BaseActivity implements
 	private String topic_id;
 	private MultiStateView mMultiStateView;
 	private Map<String,String> packInfo = new HashMap<String,String>();
+	private String type ; 
 	
+	@SuppressWarnings("deprecation")
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -112,28 +125,11 @@ public class CollectInfoListActivity extends BaseActivity implements
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}
 		});
-		cardListView = (ListView) findViewById(R.id.collectpack_cards_list);
+		
 		borderScrollView = (BorderScrollView) findViewById(R.id.collect_pack_scroll_view);
 		borderScrollView.setOnBorderListener(this);
 		footerView = LayoutInflater.from(this).inflate(R.layout.footer, null);
 		footerView.setVisibility(View.GONE);
-		cardListView.addFooterView(footerView);
-
-		cardListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> viewAdapter, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(CollectInfoListActivity.this,
-						CollectionDetailActivity.class);
-				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item_datas
-						.get(position).getId());						
-				startActivity(intent);
-				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
-			}
-		});
-
 		titleView = (TextView) findViewById(R.id.collect_pack_title_tv);
 		descView = (TextView) findViewById(R.id.collect_pack_desc_tv);
 		creatorPicView = (ImageView) findViewById(R.id.pack_creator_pic_iv);
@@ -167,14 +163,75 @@ public class CollectInfoListActivity extends BaseActivity implements
 				showUserview();
 			}
 		});
+		type = getIntent().getStringExtra("type");		
+		mList = (ListView) findViewById(R.id.collectpack_cards_list);
+		mCardList = (MultiColumnListView)findViewById(R.id.grid_cards_list);
+		if(StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)){
+			mCardList.setVisibility(View.VISIBLE);
+			mCardList.setVerticalScrollBarEnabled(false);
+			mCardList.addFooterView(footerView);
+			card_datas = new LinkedList<CollectionBean>(); 			
+			mCardApdater = new ImageGridAdapter(this, card_datas, false);
+			mCardList.setAdapter(mCardApdater);
+			mCardList.addFooterView(footerView);
+			mCardList.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(PLA_AdapterView<?> viewAdapter, View view,
+						int position, long id) {
+					CollectionBean bean = (CollectionBean)viewAdapter.getAdapter().getItem(position);
+					Intent intent = new Intent(CollectInfoListActivity.this,
+							CollectionImageDetailActivity.class);
+					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, bean.getCid());
+					startActivity(intent);
+					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+				}				
+			});
+		}else{
+			item_datas = new ArrayList<CollectionItemBean>();
+			mList.setVisibility(View.VISIBLE);
+			mList.addFooterView(footerView);
+			mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> viewAdapter, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					Intent intent = new Intent(CollectInfoListActivity.this,
+							CollectionDetailActivity.class);
+					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item_datas
+							.get(position).getId());
+					intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN, item_datas
+							.get(position).getCisn());
+					startActivity(intent);
+					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+				}
+			});
+			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
+			mList.setAdapter(infoAdapter);
+		}
 		loadPack();
-		showView();
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 	
+	public void setListViewHeightBasedOnChildren(MultiColumnListView listView) {    
+        ListAdapter listAdapter = listView.getAdapter();    
+        if (listAdapter == null) {  
+            return;    
+        }    
+  
+        int totalHeight =0; 
+        int count = (listAdapter.getCount()+1)/2; 
+        for (int i = 0; i < count; i++) {    
+            View listItem = listAdapter.getView(i, null, listView);    
+            listItem.measure(0, 0);   
+            totalHeight += listItem.getMeasuredHeight();    
+        }    
+  
+        ViewGroup.LayoutParams params = listView.getLayoutParams();    
+        params.height = totalHeight;    
+        listView.setLayoutParams(params);    
+   }
+	
 	@Override
-	protected void onDestroy() {
+	protected void onDestroy(){
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		KuibuApplication.getInstance().cancelPendingRequests(VOLLEY_REQUEST_TAG);
@@ -197,15 +254,17 @@ public class CollectInfoListActivity extends BaseActivity implements
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}	
 
+	
 	private void showView() {
-		if (infoAdapter == null) {
-			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
-			cardListView.setAdapter(infoAdapter);
+		if (StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)) {
+			mCardApdater.updateView(card_datas);
+			setListViewHeightBasedOnChildren(mCardList);
 		} else {
 			infoAdapter.updateView(item_datas);
 		}
+		
 	}
-
+	
 	@Override
 	public void onBottom() {
 		// TODO Auto-generated method stub
@@ -251,6 +310,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 							.append("/get_collectpack").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onResponse(JSONObject response) {
 				try {
@@ -303,7 +363,6 @@ public class CollectInfoListActivity extends BaseActivity implements
 							}else{
 								tagGroup.setVisibility(View.GONE); //not likely 
 							}														
-							
 							loadList();
 						}
 					}
@@ -345,6 +404,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onResponse(JSONObject response) {
 				// TODO Auto-generated method stub
@@ -360,7 +420,6 @@ public class CollectInfoListActivity extends BaseActivity implements
 							focusBtn.setText(getString(R.string.btn_focus));
 							isfocus = false; 
 						} else {
-							
 							followCount.setText(DataUtils.formatNumber(count+1));
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_concrete);
@@ -400,7 +459,12 @@ public class CollectInfoListActivity extends BaseActivity implements
 	private void loadList() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("pack_id", packId);
-		params.put("off", String.valueOf(item_datas.size()));
+		if(StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)){
+			params.put("off", String.valueOf(card_datas.size()));
+		}else{
+			params.put("off", String.valueOf(item_datas.size()));
+		}
+		
 		params.put("uid", Session.getSession().getuId());
 		final String URL = Constants.Config.SERVER_URI
 				+ Constants.Config.REST_API_VERSION + "/get_packlist";
@@ -412,22 +476,13 @@ public class CollectInfoListActivity extends BaseActivity implements
 						try {
 							String state = response.getString("state");
 							if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS
-									.equals(state)) {
+									.equals(state)) {			
 								String data = response.getString("result");
 								JSONArray arr = new JSONArray(data);
-								for (int i = 0; i < arr.length(); i++) {
-									JSONObject temp = (JSONObject) arr.get(i);
-									CollectionItemBean bean = new CollectionItemBean();
-									bean.setId(temp.getString("cid"));
-									bean.setTitle(temp.getString("title"));
-									bean.setSummary(temp.getString("abstract"));
-									bean.setCreateBy(temp.getString("create_by"));
-									bean.setVoteCount(temp.getString("vote_count"));
-									item_datas.add(bean);
-								}
-								CollectInfoListActivity.this.setTitle("共有"
-										+ arr.length() + "条收集");
-								showView();																
+								if(arr!=null && arr.length()>0){
+									parsePackList(arr);
+									showView();
+								}																
 							}
 							borderScrollView.loadComplete();
 							footerView.setVisibility(View.GONE);
@@ -452,5 +507,36 @@ public class CollectInfoListActivity extends BaseActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req,VOLLEY_REQUEST_TAG);
 	}
 	
-	
+	private void parsePackList(JSONArray arr) throws JSONException
+	{	 
+		if(StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)){
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject temp = (JSONObject) arr.get(i);
+				CollectionBean bean = new CollectionBean();
+				bean.cid = temp.getString("cid");
+				bean.title = temp.getString("title");
+				bean.cover = temp.getString("cover");
+				bean.content = temp.getString("abstract");
+				bean.createBy = temp.getString("create_by");
+				bean.isPublish = 1; 
+				card_datas.add(bean);
+			}
+			CollectInfoListActivity.this.setTitle("共有"
+					+ card_datas.size() + "条收集");
+		}else{
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject temp = (JSONObject) arr.get(i);
+				CollectionItemBean bean = new CollectionItemBean();
+				bean.setId(temp.getString("cid"));
+				bean.setCisn(temp.getString("cisn"));
+				bean.setTitle(temp.getString("title"));
+				bean.setSummary(temp.getString("abstract"));
+				bean.setCreateBy(temp.getString("create_by"));
+				bean.setVoteCount(temp.getString("vote_count"));
+				item_datas.add(bean);
+			}
+			CollectInfoListActivity.this.setTitle("共有"
+					+ item_datas.size() + "条收集");
+		}		
+	}
 }

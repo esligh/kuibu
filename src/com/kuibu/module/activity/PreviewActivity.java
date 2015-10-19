@@ -57,7 +57,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.BitmapHelper;
+import com.kuibu.common.utils.FileUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.StorageUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
@@ -70,7 +72,7 @@ import com.kuibu.model.bean.CollectionBean;
 import com.kuibu.model.vo.CollectionVo;
 import com.kuibu.model.vo.ImageLibVo;
 import com.kuibu.model.webview.InJavaScriptObject;
-import com.kuibu.module.iterf.OnPageLoadFinished;
+import com.kuibu.module.iterfaces.OnPageLoadFinished;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
 
@@ -285,7 +287,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 	{
 		if(resultCode == RESULT_OK){
 			switch (requestCode){
-			case StaticValue.TAKE_PHOTO_OK:
+			case StaticValue.TAKE_PHOTO_CODE:
             	ImageLoader.getInstance().displayImage(Constants.URI_PREFIX+mCoverPath, imageHeader);
             	collectionVo.update(" cover = ? ", " _id = ? ", new String[]{mCoverPath,collection._id});
 				break;
@@ -325,7 +327,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 		Uri imageUri = Uri.fromFile(file);
 		Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		startActivityForResult(openCameraIntent, StaticValue.TAKE_PHOTO_OK);
+		startActivityForResult(openCameraIntent, StaticValue.TAKE_PHOTO_CODE);
 		return file.getPath();  
 	}
 
@@ -382,7 +384,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 		
 		for (int i = 0; i < images.size(); i++) {
 			String uuid = UUID.randomUUID().toString();
-			String ext = getExtensionName(images.get(i));
+			String ext = FileUtils.getExtensionName(images.get(i));
 			StringBuffer buffer = new StringBuffer(url_root);
 			buffer.append(uuid).append(".").append(ext);
 			imgurl_map.put(images.get(i), buffer.toString());
@@ -410,7 +412,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 					.toString(); 
 			params.put("csn",SafeEDcoderUtil.MD5(descript));
 			params.put("pack_id", collection.pid);			
-			
+			params.put("cover", "");
 			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 					.append(Constants.Config.REST_API_VERSION)
 					.append("/add_collection").toString();
@@ -565,7 +567,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 			
 			for (int i = 0; i < localImgs.size(); i++) {
 				String uuid = UUID.randomUUID().toString();
-				String ext = getExtensionName(localImgs.get(i));
+				String ext = FileUtils.getExtensionName(localImgs.get(i));
 				StringBuffer buffer = new StringBuffer(url_root);
 				buffer.append(uuid).append(".").append(ext);
 				imgurl_map.put(localImgs.get(i), buffer.toString());
@@ -596,7 +598,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 		try {			
 			if(!TextUtils.isEmpty(mCoverPath)){
 				StringBuffer buffer = new StringBuffer();
-				buffer.append(UUID.randomUUID().toString()).append(".").append(getExtensionName(mCoverPath));
+				buffer.append(UUID.randomUUID().toString()).append(".").append(FileUtils.getExtensionName(mCoverPath));
 				params.put("cover_name", mCoverPath);
 				params.put("cover_url", buffer.toString());
 				String dest = BitmapHelper.hasCompressFile(this, mCoverPath);
@@ -835,17 +837,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 		overridePendingTransition(R.anim.anim_slide_out_right,
 				R.anim.anim_slide_in_right);
 	}
-	
-	private String getExtensionName(String filename) {
-		if ((filename != null) && (filename.length() > 0)) {
-			int dot = filename.lastIndexOf('.');
-			if ((dot > -1) && (dot < (filename.length() - 1))) {
-				return filename.substring(dot + 1);
-			}
-		}
-		return null;
-	}
-	
+		
 	private String adjustMarkDownText(String markdownText) {
 		String pattern = "!\\[.*\\]\\(\\s*(file:.*)\\)";
 		Pattern p = Pattern.compile(pattern);

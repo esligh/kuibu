@@ -22,6 +22,7 @@ import android.media.ExifInterface;
 import android.util.Log;
 
 import com.kuibu.data.global.Constants;
+import com.kuibu.model.bean.ImageInfo;
 import com.nostra13.universalimageloader.utils.StorageUtils;
  
 /**
@@ -348,5 +349,18 @@ public class BitmapHelper {
 			return null;
 		}
 		return compressFile ; 
+	}
+	
+	
+	
+	public static ImageInfo getImageInfo(String url)
+	{
+		ImageInfo result = new ImageInfo();
+		BitmapFactory.Options options = new BitmapFactory.Options();  
+	    options.inJustDecodeBounds = true;  
+	    BitmapFactory.decodeFile(url, options);
+	    result.height = options.outHeight ; 
+	    result.width = options.outWidth ; 
+	    return result ; 
 	}
 }

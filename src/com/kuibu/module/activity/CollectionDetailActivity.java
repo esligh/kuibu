@@ -34,7 +34,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -78,15 +78,15 @@ import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.webview.InJavaScriptObject;
-import com.kuibu.module.iterf.OnPageLoadFinished;
-import com.kuibu.module.iterf.ResponseListener;
+import com.kuibu.module.iterfaces.OnPageLoadFinished;
+import com.kuibu.module.iterfaces.ResponseListener;
 import com.kuibu.module.net.PublicRequestor;
 import com.kuibu.module.task.DownloadWebImgTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petebevin.markdown.MarkdownProcessor;
 
 
-public class CollectionDetailActivity extends ActionBarActivity 
+public class CollectionDetailActivity extends AppCompatActivity 
 		implements OnPageLoadFinished {
 
 	//手指在屏幕滑动，X轴最小变化值
@@ -103,7 +103,7 @@ public class CollectionDetailActivity extends ActionBarActivity
     private MenuItem mFavActionItem ;
 	private boolean isInFavorite = false;
 	private boolean isSupport = false; 
-	private String cid ,createBy; 
+	private String cid ,cisn,createBy; 
 	private String cssFile ; 
 	private MultiStateView mMultiStateView;
 	private FButton likeBtn , commentBtn ;
@@ -191,10 +191,8 @@ public class CollectionDetailActivity extends ActionBarActivity
 			}
 		});
 		layoutTools = (LinearLayout)findViewById(R.id.layout_tools);
-        NotifyingScrollView scrollView = (NotifyingScrollView)findViewById(R.id.scroll_view);
-        SharedPreferences mPerferences = PreferenceManager
-				.getDefaultSharedPreferences(this);		
-		isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);
+        NotifyingScrollView scrollView = (NotifyingScrollView)findViewById(R.id.scroll_view);       	
+		isDarkTheme= PreferencesUtils.getBooleanByDefault(this,StaticValue.PrefKey.DARK_THEME_KEY, false);
 		if(isDarkTheme){			
 			scrollView.setBackgroundColor(getResources().getColor(R.color.webview_dark));
 			mMultiStateView.setBackgroundColor(getResources().getColor(R.color.list_view_bg_dark));
@@ -212,12 +210,18 @@ public class CollectionDetailActivity extends ActionBarActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setUpWebViewDefaults();
         cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
-                
-        loadContent();  
+        cisn = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_CISN);
+        JSONObject cacheObj = KuibuApplication.getCacheInstance().getAsJSONObject(cisn);
+        if(cacheObj != null){
+        	readFromJson(cacheObj);
+        }else{
+        	loadContent();
+        }          
         if(Session.getSession().isLogin())
         	loadActions();
     }
 
+    
 	@SuppressLint("SetJavaScriptEnabled")
 	private void setUpWebViewDefaults()
 	{
@@ -370,8 +374,7 @@ public class CollectionDetailActivity extends ActionBarActivity
 
     @Override
     protected void onDestroy()
-    {
-    	mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
+    {    	
     	super.onDestroy();
     	if(downLoadTask !=null )
     		downLoadTask.cancel(false);
@@ -380,7 +383,8 @@ public class CollectionDetailActivity extends ActionBarActivity
       	contentView.removeAllViews();
       	contentView.destroy();
       	mDetailImageList.clear();
-      	mDetailImageList = null ; 
+      	mDetailImageList = null ;
+      	mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
     }
      
     @Override
@@ -532,7 +536,7 @@ public class CollectionDetailActivity extends ActionBarActivity
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
-		 mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
+	//	 mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}
 
@@ -604,7 +608,7 @@ public class CollectionDetailActivity extends ActionBarActivity
 						Map<String,String> params = new HashMap<String,String>();
 						params.put("accuser_id", Session.getSession().getuId());
 						params.put("defendant_id", createBy);
-						
+						params.put("cid", cid);
 						String[] items = getResources().getStringArray(
 								R.array.report_content);
 						
@@ -668,53 +672,10 @@ public class CollectionDetailActivity extends ActionBarActivity
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						
 						JSONObject obj = new JSONObject(response.getString("result"));
-						if(obj!=null){
-					        createBy = obj.getString("create_by");	
-					        String uid = Session.getSession().getuId(); 
-					        if(uid != null && uid.equals(createBy)){
-					        	messageCode = StaticValue.MSG_CODE.HIDE_TOOLS;
-					        }else{
-					        	messageCode = StaticValue.MSG_CODE.SHOW_TOOLS;
-					        }
-					        
-					        String coverUrl = obj.getString("cover_url");	
-					        if(!TextUtils.isEmpty(coverUrl) && !coverUrl.equals("null")){
-					        	ImageLoader.getInstance().displayImage(coverUrl,mHeaderImage);
-					        }
-					     
-					        commentCount = obj.getInt("comment_count");
-					        if(commentCount>0){
-					        	StringBuilder buff = new StringBuilder(getString(R.string.comment_text))
-					        	.append(" ").append(DataUtils.formatNumber(commentCount));
-					        	commentBtn.setText(buff.toString());
-					        }
-					        voteCount = obj.getInt("vote_count");
-					        if(voteCount > 0){
-					        	StringBuilder buff = new StringBuilder(getString(R.string.like))
-					        	.append(" ").append(DataUtils.formatNumber(voteCount));
-					        	likeBtn.setText(buff.toString());
-					        }
-							final String template = prepareHeader(obj);
-							String type = obj.getString("type");
-							String content = obj.getString("content");
-							if(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE.equals(type)){
-								SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(CollectionDetailActivity.this);
-								boolean noPic = pref.getBoolean(StaticValue.PrefKey.NO_PICTRUE_KEY, false);
-								if(noPic){
-									content = adjustMarkDownText(content);
-								}
-							}
-							MarkdownProcessor m = new MarkdownProcessor();
-							String html = new String(template);
-							StringBuilder footer = new StringBuilder();							
-							footer.append("<span class=\"time\">").append("编辑于 ").append(obj.getString("create_time")).append("</span><br>");
-							html = html.replace("{footer}", footer.toString());
-							content = m.markdown(content);		
-							html = html.replace("{content}", content);
-							html = replaceImgTagFromHTML(html);
-							contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
-							mActionBarBackgroundDrawable.setAlpha(0);
-							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+						if(obj!=null){							
+							readFromJson(obj);		
+							KuibuApplication.getCacheInstance().put(cisn, 
+									obj, Constants.Config.CACHE_SAVE_TIME);
 						}
 					}
 				} catch (JSONException e) {
@@ -735,6 +696,62 @@ public class CollectionDetailActivity extends ActionBarActivity
 			
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);	
+	}
+	
+	private void readFromJson(JSONObject obj)
+	{
+		try {
+			createBy = obj.getString("create_by");
+			String uid = Session.getSession().getuId(); 
+	        if(uid != null && uid.equals(createBy)){
+	        	messageCode = StaticValue.MSG_CODE.HIDE_TOOLS;
+	        }else{
+	        	messageCode = StaticValue.MSG_CODE.SHOW_TOOLS;
+	        }
+	        
+	        String coverUrl = obj.getString("cover_url");	
+	        if(!TextUtils.isEmpty(coverUrl) && !coverUrl.equals("null")){
+	        	ImageLoader.getInstance().displayImage(coverUrl,mHeaderImage);
+	        }
+	     
+	        commentCount = obj.getInt("comment_count");
+	        if(commentCount>0){
+	        	StringBuilder buff = new StringBuilder(getString(R.string.comment_text))
+	        	.append(" ").append(DataUtils.formatNumber(commentCount));
+	        	commentBtn.setText(buff.toString());
+	        }
+	        voteCount = obj.getInt("vote_count");
+	        if(voteCount > 0){
+	        	StringBuilder buff = new StringBuilder(getString(R.string.like))
+	        	.append(" ").append(DataUtils.formatNumber(voteCount));
+	        	likeBtn.setText(buff.toString());
+	        }
+			final String template = prepareHeader(obj);
+			String type = obj.getString("type");
+			String content = obj.getString("content");
+			if(StaticValue.EDITOR_VALUE.COLLECTION_TEXTIMAGE.equals(type)){
+				SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(CollectionDetailActivity.this);
+				boolean noPic = pref.getBoolean(StaticValue.PrefKey.NO_PICTRUE_KEY, false);
+				if(noPic){
+					content = adjustMarkDownText(content);
+				}
+			}
+			MarkdownProcessor m = new MarkdownProcessor();
+			String html = new String(template);
+			StringBuilder footer = new StringBuilder();							
+			footer.append("<span class=\"time\">").append("编辑于 ").append(obj.getString("create_time")).append("</span><br>");
+			html = html.replace("{footer}", footer.toString());
+			content = m.markdown(content);		
+			html = html.replace("{content}", content);
+			html = replaceImgTagFromHTML(html);
+			contentView.loadDataWithBaseURL("http://", html, "text/html", "UTF-8", null);
+			mActionBarBackgroundDrawable.setAlpha(0);
+			mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+		}      
 	}
 	
 	private void doVote(String action_type,boolean isChecked)

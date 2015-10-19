@@ -7,7 +7,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="21" />
+        android:targetSdkVersion="23" />
      
     <uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.INTERNET" />  	    
@@ -50,43 +50,32 @@
             android:name="com.kuibu.module.activity.RegisterActivity"
             android:label="@string/register_name" >
         </activity>
+        
         <activity
             android:name="com.kuibu.module.activity.UserInfoActivity">
         </activity>
-        
+                
+        <activity 
+            android:configChanges="orientation|screenSize"           
+            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity" 
+            android:label="@string/app_name" />
+                        
         <activity
             android:name="com.kuibu.module.activity.UserInfoEditActivity">
         </activity>         
-        <activity 
-            android:name="com.kuibu.module.activity.CreateImageActivity"
-            android:label="@string/pictures">           
-        </activity>
-       
-        <activity 
-            android:name="com.kuibu.module.activity.ImageScanActivity"
-          	android:label="@string/choose_pics">  
-        </activity>
-        
-        <activity 
-            android:name="com.kuibu.module.activity.ImageChooseActivity"
-          	android:label="@string/choose_pics">  
-        </activity>
-        
-        <activity 
-            android:name="com.kuibu.module.activity.PhotoActivity"  >
-        </activity>
-                	    
+            	    
         <activity 
             android:name="com.kuibu.module.activity.CommentActivity"
             android:label="@string/comment_text">
         </activity>
+        
         <activity
             android:name="com.kuibu.module.activity.CollectionDetailActivity"
             android:hardwareAccelerated="true"
           	android:theme="@style/Theme.TranslucentActionBar.ActionBar.Overlay"
-            android:label="@string/app_name" >;
-			
+            android:label="@string/app_name" >;			
         </activity>
+        
         <activity
             android:name="com.kuibu.module.activity.CollectPackListActivity">
        	</activity>
@@ -96,6 +85,13 @@
        	<activity
        	    android:name="com.kuibu.module.activity.CollectionEditorActivity">      	    	    
        	</activity>
+       	<activity
+       	    android:name="com.kuibu.module.activity.CollectionImageActivity">      	    	    
+       	</activity>
+       	<activity
+       	    android:name="com.kuibu.module.activity.CollectionImageDetailActivity">      	    	    
+       	</activity>
+       	
        	<activity android:name="com.kuibu.module.activity.PreviewActivity"
        	    android:hardwareAccelerated="true"
             android:label="@string/preview">
@@ -110,7 +106,10 @@
 		<activity android:name="com.kuibu.module.activity.CollectionListActivity">    
 		</activity>
         <activity 
-        	android:name="com.kuibu.module.activity.LocalCollectionListActivity">    
+        	android:name="com.kuibu.module.activity.LocalCollectionWListActivity">    
+        </activity>
+        <activity 
+        	android:name="com.kuibu.module.activity.LocalCollectionPListActivity">    
         </activity>
         <activity
             android:name ="com.kuibu.module.activity.CollectInfoListActivity">     
@@ -132,6 +131,10 @@
 		</activity>
 		<activity 
 			android:name="com.kuibu.module.activity.FavoriteBoxDetailActivity">		    
+		</activity>
+		
+		<activity 
+			android:name="com.kuibu.module.activity.SelectImageActivity">		    
 		</activity>
 		
 		<activity 
@@ -169,24 +172,20 @@
 		     android:name=".ImageDetailActivity"
 		     android:label="@string/look_at">
 		 </activity>
-	
+		
+		 <activity
+		     android:name=".ImagePreviewActivity">
+		 </activity>
+		 
 		 <activity
 		     android:name=".ReportActivity"
 		     android:label="@string/report">
 		 </activity>
+		 
 		<activity 
 		    android:name=".AdviceFeedBackActivity"
-		    android:label="@string/preference_feedback">
-		   
+		    android:label="@string/preference_feedback"> 
 		</activity>
-		 <service
-		     android:name="com.kuibu.module.service.HeartBeatService">
-			 <intent-filter>
-			     <action
-			         android:name="kuibu.service.HeartBeatService">
-			     </action>
-			 </intent-filter> 
-		 </service>
 		 
     </application> 
 </manifest>

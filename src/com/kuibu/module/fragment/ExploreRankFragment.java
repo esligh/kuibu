@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
@@ -55,6 +56,7 @@ public class ExploreRankFragment extends BaseFragment implements
 	        });
 			rankList = (PaginationListView) rootView
 					.findViewById(R.id.pagination_lv);
+			rankList.setVerticalScrollBarEnabled(false);
 			rankList.setOnLoadListener(this);
 			JSONArray arr = KuibuApplication.getCacheInstance()
 					.getAsJSONArray(StaticValue.LOCALCACHE.HOME_RANK_CACHE);
@@ -92,15 +94,18 @@ public class ExploreRankFragment extends BaseFragment implements
 	private void loadFromArray(JSONArray arr,String action)
 	{
 			try{
-				if(arr.length()>0){
-					for (int i = 0; i < arr.length(); i++) {
+				int size = arr.length() ; 
+				if(size > 0){
+					for (int i = 0; i < size; i++) {
 					    JSONObject temp = (JSONObject) arr.get(i);
 					    MateListItem bean = new MateListItem();
 					    bean.setId(temp.getString("cid"));
+					    bean.setCisn(temp.getString("cisn"));
 					    bean.setType(Integer.parseInt(temp.getString("type")));
 					    bean.setTitle(temp.getString("title"));
 					    bean.setSummary(temp.getString("abstract"));
 					    bean.setItemPic(temp.getString("image_url"));
+					    bean.setCover(temp.getString("cover"));
 					    bean.setCreateBy(temp.getString("create_by"));
 					    bean.setTopText(temp.getString("name"));
 					    bean.setTopUrl(temp.getString("photo"));
@@ -117,15 +122,17 @@ public class ExploreRankFragment extends BaseFragment implements
 					    }				    
 					}
 					showView();
-				}
-			}catch (JSONException e) {
-				e.printStackTrace();
 			}
-		if(mdatas.size()>0){
-			mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
-		}else{
-			mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
+			if(mdatas.size()>0){
+				mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+			}else{
+				mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
+			}
+		}catch (JSONException e) {
+			e.printStackTrace();
+			mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 		}
+		
 	}
 	
 	private void loadData(final String action) {

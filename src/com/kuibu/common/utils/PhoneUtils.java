@@ -280,4 +280,5 @@ public class PhoneUtils {
 		instance.getWindowManager().getDefaultDisplay().getMetrics(dm);
 		return dm.widthPixels;
 	}
+	
 }

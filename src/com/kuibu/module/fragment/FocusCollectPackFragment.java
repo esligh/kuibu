@@ -16,14 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -71,6 +69,7 @@ public class FocusCollectPackFragment extends Fragment implements
 				Intent intent = new Intent(getActivity(),
 						CollectInfoListActivity.class);
 				intent.putExtra("pack_id", datas.get(position).getId());
+				intent.putExtra("type", datas.get(position).getPackType());
 				intent.putExtra("create_by", datas.get(position).getCreateBy());
 				getActivity().startActivity(intent);
 				getActivity().overridePendingTransition(
@@ -116,6 +115,7 @@ public class FocusCollectPackFragment extends Fragment implements
 								bean.setId(temp.getString("pid"));
 								bean.setPackName(temp.getString("pack_name"));
 								bean.setPackDesc(temp.getString("pack_desc"));
+								bean.setPackType(temp.getString("pack_type"));
 								bean.setFollowCount(temp.getString("follow_count"));
 								bean.setCollectCount(temp
 										.getString("collect_count"));
@@ -123,17 +123,16 @@ public class FocusCollectPackFragment extends Fragment implements
 								datas.add(bean);
 							}
 							showView();
-						}
-						
-						if (datas.size() > 0) {
-							mMultiStateView
-									.setViewState(MultiStateView.ViewState.CONTENT);
-						} else {
-							mMultiStateView
-									.setViewState(MultiStateView.ViewState.EMPTY);
-						}
-						packList.loadComplete();
+						}												
 					}
+					if (datas.size() > 0) {
+						mMultiStateView
+								.setViewState(MultiStateView.ViewState.CONTENT);
+					} else {
+						mMultiStateView
+								.setViewState(MultiStateView.ViewState.EMPTY);
+					}
+					packList.loadComplete();
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -145,9 +144,6 @@ public class FocusCollectPackFragment extends Fragment implements
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);

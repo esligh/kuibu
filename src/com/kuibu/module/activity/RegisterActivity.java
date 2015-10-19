@@ -36,12 +36,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.dd.processbutton.iml.ActionProcessButton;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.PhoneUtils;
 import com.kuibu.common.utils.StorageUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.iterf.ICamera;
+import com.kuibu.module.iterfaces.ICamera;
 import com.soundcloud.android.crop.Crop;
 
 public class RegisterActivity extends BaseActivity implements ICamera {
@@ -111,6 +112,7 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 			progressBtn.setProgress(0);
 			return;
 		}
+		
 		if (TextUtils.isEmpty(user_email)) {
 			Toast.makeText(RegisterActivity.this, getString(R.string.input_email), 
 					Toast.LENGTH_LONG).show();

@@ -1,5 +1,7 @@
 package com.kuibu.model.welcome;
 
+import com.kuibu.module.activity.R;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -8,8 +10,13 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import com.kuibu.module.activity.R;
-
+/**
+ * Created with Android Studio.
+ * User: ryan@xisue.com
+ * Date: 7/14/14
+ * Time: 11:10 PM
+ * Desc: FirstGuideFragment
+ */
 public class FirstGuideFragment extends BaseGuideFragment {
 
     final long ANIMATION_DURATION = 500;

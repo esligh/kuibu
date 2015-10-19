@@ -19,22 +19,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 
 public class AdviceFeedBackActivity extends BaseActivity {
-
 	private EditText adviceEt;
-	private EditText contactEt;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.advice_feedback_activity);
 		adviceEt = (EditText)findViewById(R.id.advice);
-		contactEt = (EditText)findViewById(R.id.contact);
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
@@ -70,9 +68,14 @@ public class AdviceFeedBackActivity extends BaseActivity {
 	}
 
 	public void sendAdvice() {
+		String advice = adviceEt.getText().toString().trim();
+		if(TextUtils.isEmpty(advice)){
+			Toast.makeText(getApplicationContext(), "请填写您的意见", Toast.LENGTH_SHORT).show();
+			return ; 
+		}
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("advice", adviceEt.getText().toString());
-		params.put("contact", contactEt.getText().toString());
+		params.put("advice", advice);
+		params.put("contact", Session.getSession().getuEmail());
 		String uid = Session.getSession().getuId();//maybe null
 		if(TextUtils.isEmpty(uid)){
 			params.put("adviser_id", "");
@@ -110,7 +113,5 @@ public class AdviceFeedBackActivity extends BaseActivity {
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
-	
-	
+	}	
 }

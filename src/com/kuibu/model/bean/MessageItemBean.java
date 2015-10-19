@@ -1,6 +1,7 @@
 package com.kuibu.model.bean;
 
-public class MessageItemBean {
+@SuppressWarnings("serial")
+public class MessageItemBean extends BaseEntity{
 
 	private String msgId;
 	private String message;

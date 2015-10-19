@@ -7,5 +7,9 @@
     <item android:id="@+id/context_menu_delete"
         android:icon="@drawable/ic_trash_light"
         android:title="@string/action_delete"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/context_menu_manage"
+        android:icon="@drawable/iconfont_manage"
+        android:title="@string/action_manage"
+        app:showAsAction="ifRoom" />
 </menu>

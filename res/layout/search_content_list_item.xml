@@ -8,7 +8,7 @@
         android:id="@+id/search_content_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?listItemTextColor"
         android:textSize="18sp"
         android:padding="@dimen/android_spaces"/>
 
@@ -19,7 +19,7 @@
         android:layout_below="@id/search_content_item_title"
         android:paddingLeft="@dimen/android_spaces"
         android:paddingBottom="@dimen/android_spaces"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="?listItemExtraTextColor"
         android:textSize="14sp"/>
     
     <TextView
@@ -30,7 +30,7 @@
         android:layout_below="@id/search_content_item_title"
         android:paddingLeft="@dimen/android_spaces"
         android:paddingRight="@dimen/android_spaces"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="?listItemExtraTextColor"
         android:textSize="14sp"/>
 	
 </RelativeLayout>

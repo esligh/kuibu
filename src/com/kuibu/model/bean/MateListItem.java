@@ -1,17 +1,13 @@
 package com.kuibu.model.bean;
 
-import java.io.Serializable;
-
-
-/**主要的列表项数据定义
- * 如首页列表，本月热榜等
- * */
-
 /**
+ * 主要的列表项数据定义
+ * 如首页列表，本月热榜等
+ * 
  * @author ThinkPad
  *
  */
-public class MateListItem  implements Serializable{
+public class MateListItem  extends BaseEntity{
 	
 	private static final long serialVersionUID = 1L;
 	public static final int ITEM_TYPE_COUNT = 3; 
@@ -22,19 +18,24 @@ public class MateListItem  implements Serializable{
 	
 	private String 		_id  ; //local model internal id 
 	private int 		type ; //item type 
+	private String  	cisn ; 
 	private String 		topId; 
 	private String 		topText ;
 	private String 	 	topUrl ; 
+	
 	private String  	title;
 	private String  	summary ;
 	private String 		itemPic; //if have   
+	private String 		cover ; 
 	
 	private int 		commentCount;
 	private int 		voteCount;
 	private int 		shareCount ; 
+	
 	private String 		packId; 
 	private String      topicId; 
-	private String 		createBy; 
+	private String 		createBy;
+	
 	private String 		userSex; 
 	private String   	userSignature; 
 	private String 		lastModify; 
@@ -45,6 +46,14 @@ public class MateListItem  implements Serializable{
 	public void setId(String _id) {
 		this._id = _id;
 	}
+	
+	public String getCisn() {
+		return cisn;
+	}
+	public void setCisn(String cisn) {
+		this.cisn = cisn;
+	}
+	
 	public int getType() {
 		return type;
 	}
@@ -62,6 +71,13 @@ public class MateListItem  implements Serializable{
 	}
 	public void setTopText(String topText) {
 		this.topText = topText;
+	}
+	
+	public String getCover() {
+		return cover;
+	}
+	public void setCover(String cover) {
+		this.cover = cover;
 	}
 	public String getTopUrl() {
 		return topUrl;

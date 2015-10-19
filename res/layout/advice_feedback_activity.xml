@@ -3,29 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-       
-    
+         
 	<EditText
         android:id="@+id/advice"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:gravity="start"
         android:layout_margin="@dimen/android_spaces"
         android:hint="@string/hint_advice"
         android:background="@drawable/bg_edittext_border"
         android:textSize="18sp"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/> 
-       
-	
-	<EditText
-        android:id="@+id/contact"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:singleLine="true"
-        android:layout_margin="@dimen/android_spaces"
-        android:background="@drawable/bg_edittext_border"        
-        android:hint="@string/hint_contact"
-        android:textSize="18sp"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/> 
-        
+             
 </LinearLayout>

@@ -20,7 +20,8 @@
             android:id="@+id/pagination_lv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:listSelector="@color/transparent" />
+            android:listSelector="@color/transparent" 
+            android:scrollbarStyle="outsideOverlay"/>
     </LinearLayout>
 
 </com.kuibu.custom.widget.MultiStateView>

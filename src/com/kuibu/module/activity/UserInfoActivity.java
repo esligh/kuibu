@@ -1,14 +1,15 @@
 package com.kuibu.module.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.fragment.UserInfoContentFragment;
@@ -27,8 +28,10 @@ public class UserInfoActivity extends BaseActivity {
 			fm.beginTransaction().add(R.id.fragmentContainer,fragment).commit();
 		}
 		setTitle(getString(R.string.home_page));
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			getSupportActionBar().setElevation(0); //remove actionbar shadow 
+		}
 	}
 	
 	 @Override

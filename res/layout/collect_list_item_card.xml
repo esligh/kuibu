@@ -9,13 +9,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         
+        <ImageView
+	        android:id="@+id/type_icon"
+	        android:layout_width="@dimen/icon_medium_width"
+	        android:layout_height="@dimen/icon_medium_height"
+	        android:layout_alignParentRight="true"
+	        android:scaleType="centerInside"/>
+        
         <TextView
             android:id="@+id/box_listitem_card_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-			android:layout_alignParentRight="true"			
+			android:layout_toLeftOf="@id/type_icon"			
             android:textColor="?listItemExtraTextColor"
-			android:padding="10dp"
+			android:layout_marginLeft="@dimen/android_spaces"
+			android:layout_marginRight="@dimen/android_spaces_large"
+			android:layout_centerVertical="true"
 			android:textSize="16sp"/>   
 			
         <TextView
@@ -24,10 +33,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_toLeftOf="@id/box_listitem_card_count"
-            android:padding="10dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/android_spaces_medium"
             android:textSize="18sp"
-            android:textColor="?listItemTextColor"/>
-     
+            android:textColor="?listItemTextColor"/>     
     </RelativeLayout>
 	
     <View
@@ -35,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="@color/light_grey"/>
-	
+    	
     <TextView
         android:id="@+id/list_item_card_title"
         android:layout_width="match_parent"
@@ -45,5 +54,6 @@
         android:paddingTop="@dimen/android_spaces"
         android:paddingBottom="@dimen/android_spaces"
         android:textColor="?listItemExtraTextColor"
-        android:textSize="16sp"/>       
+        android:textSize="16sp"/>
+           
 </LinearLayout>

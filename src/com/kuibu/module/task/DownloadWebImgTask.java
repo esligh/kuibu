@@ -15,7 +15,7 @@ import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.Logger;
 import com.kuibu.common.utils.SDCardUtils;
 import com.kuibu.common.utils.StreamUtils;
-import com.kuibu.module.iterf.ResponseListener;
+import com.kuibu.module.iterfaces.ResponseListener;
 import com.kuibu.module.net.HttpClientUtils;
 
 public class DownloadWebImgTask extends AsyncTask<String, String, String>{
@@ -59,12 +59,9 @@ public class DownloadWebImgTask extends AsyncTask<String, String, String>{
 	
     @Override  
     protected String doInBackground(String... params) {  
-    	
-    	String externalCacheDir = SDCardUtils.getExternalCacheDir(mContext);
-		
+    	String externalCacheDir = SDCardUtils.getExternalCacheDir(mContext);		
 		if (params.length == 0 || TextUtils.isEmpty(externalCacheDir))
-			return null;
-	
+			return null;	
 		File file = null;
 		for (String param : params) {
 

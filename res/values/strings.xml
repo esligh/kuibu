@@ -31,12 +31,14 @@
     <string name="hint_fbox_private">私有(私有集册只对自己可见)</string>
 	<string name="hint_report">举报原因&#8230;</string>
 	<string name="hint_advice">你的宝贵意见是跬步不断进步的动力&#8230;</string>
-	<string name="hint_contact">手机号/Email/QQ</string>
-	
+	<string name="hint_desc">添加描述</string>
+	<string name="hint_search">搜索的话题、收集、人</string>
+		
 	<string name="report_reason">举报原因</string>
     <string name="empty_view_desc">暂无数据</string>
     <string name="error_view_desc">加载数据出错</string>
     <string name="error_view_retry">重试</string>  
+    <string name="error_reload">再次加载</string>
     <string name="btn_confirm">确定</string>
     <string name="btn_cancel">取消</string>
     <string name="onloading">正在加载&#8230;</string>
@@ -83,6 +85,8 @@
     <string name="like">赞</string>
     <string name="setting_cover">设置封面</string>    
     <string name="contact">联系方式</string>
+    <string name="collect_pack_word">文</string>
+    <string name="collect_pack_pic">图</string>
     
     <!-- action -->
     <string name="action_create">创建</string>
@@ -100,6 +104,7 @@
     <string name="action_notify">通知</string>
     <string name="action_move">移动</string>
     <string name="action_delete">删除</string>
+    <string name="action_manage">管理</string>
   	<string name="delete_fail">删除失败</string>
   	
     <!-- title -->
@@ -167,6 +172,7 @@
 	<string name="max_topic">最多添加5个话题哦</string>
 	<string name="need_topic">还没添加话题呢</string>
 	<string name="need_name">还没输入名称呢</string>
+	<string name="need_title">添加一个标题吧</string>
 	<string name="thanks_for_report">感谢您的举报,我们会尽快处理</string>
 	<string name="no_new_version">暂无新版本</string>
 	<string name="quest_update">是否更新?</string>
@@ -182,6 +188,8 @@
 	<string name="no_desc">暂无描述</string>
 	<string name="note_active">为了您的账号安全,请先登录邮箱激活</string>
 		
+	<string name="add_desc">添加描述</string>
+	<string name="boxtype_not_match">收藏的目录类型不匹配</string>
 	<!-- menu text -->
 	<string name ="operator">操作</string>
 	<string name ="reply">回复</string>

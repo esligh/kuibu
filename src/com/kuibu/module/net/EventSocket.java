@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.net.ssl.SSLContext;
 
 import com.kuibu.data.global.Constants;
-import com.kuibu.module.iterf.EventCallback;
+import com.kuibu.module.iterfaces.EventCallback;
 /**
  * socketio 用来建立与服务端的长连接
  * */

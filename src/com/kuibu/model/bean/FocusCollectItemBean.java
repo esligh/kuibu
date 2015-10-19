@@ -1,6 +1,7 @@
 package com.kuibu.model.bean;
 
-public class FocusCollectItemBean {
+@SuppressWarnings("serial")
+public class FocusCollectItemBean extends BaseEntity{
 	private String collect_package;
 	private String sub_desc ;
 	public String getCollect_package() {

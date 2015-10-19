@@ -1,6 +1,5 @@
 package com.kuibu.model.bean;
 
-import java.io.Serializable;
 
 /**
  * @author ThinkPad
@@ -8,9 +7,11 @@ import java.io.Serializable;
  * map to local table collectpack .
  */
 
-public class CollectPackBean implements Serializable{
-	private static final long serialVersionUID = 1L;
+@SuppressWarnings("serial")
+public class CollectPackBean extends BaseEntity{
+
 	public String _id ; 
+	public String pack_type ; 
 	public String pack_id ; //server side 
 	public String pack_name ; 
 	public String pack_desc ;
@@ -47,6 +48,13 @@ public class CollectPackBean implements Serializable{
 	}
 	public void setPack_name(String pack_name) {
 		this.pack_name = pack_name;
+	}
+	
+	public String getPack_type() {
+		return pack_type;
+	}
+	public void setPack_type(String pack_type) {
+		this.pack_type = pack_type;
 	}
 	public String getPack_desc() {
 		return pack_desc;

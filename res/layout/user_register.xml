@@ -2,15 +2,16 @@
     xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     xmlns:custom="http://schemas.android.com/apk/res-auto"   
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"    
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?listViewBackground" >
-
+	
     <ImageView
         android:id="@+id/user_photo"
         android:layout_width="@dimen/user_pic_width_big"
         android:layout_height="@dimen/user_pic_height_big"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/android_spaces_large"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
         android:src="@drawable/icon_addpic_focused" />
@@ -19,9 +20,9 @@
         android:id = "@+id/sex_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" 
-        android:layout_below="@id/user_photo"        
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_toRightOf="@id/user_photo"        
+        android:layout_marginTop="@dimen/android_spaces_large"
+        android:layout_marginBottom="@dimen/android_spaces_large"
         android:layout_centerHorizontal="true">
 
         <RadioGroup
@@ -30,6 +31,7 @@
             android:layout_height="wrap_content"  
             android:layout_gravity="center"     
             android:layout_centerHorizontal="true"
+            
             android:orientation="horizontal" >
 
             <RadioButton
@@ -50,53 +52,90 @@
         </RadioGroup>
     </RelativeLayout>
 
-    <LinearLayout
+   <LinearLayout
         android:id="@+id/edit_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/sex_layout"
-        android:layout_margin="16dp"
+        android:layout_below="@id/user_photo"
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_marginRight="@dimen/android_spaces_large"
+        android:layout_marginBottom="@dimen/android_spaces"
         android:orientation="vertical" >
 		
-	        <EditText
-	            android:id="@+id/user_name"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:hint="@string/user_name" >
-	        </EditText>
-
-       
-	        <EditText
-	            android:id="@+id/user_email"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:ems="10"
-	            android:hint="@string/email"
-	            android:inputType="textEmailAddress" />
+      	   <com.rengwuxian.materialedittext.MaterialEditText
+      	       android:id="@+id/user_name"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:hint="@string/user_name"
+		       app:met_floatingLabel="highlight"
+		       app:met_baseColor="?android:attr/textColorPrimary" 
+		       app:met_primaryColor="#16a085"
+		       app:met_textColorHint="?hintTextColor"
+		       app:met_errorColor="#ddaa00"
+		       app:met_helperTextColor="#795548"
+		       app:met_underlineColor="#16a085"
+		       app:met_clearButton = "true"/>
+        	      
+	        <com.rengwuxian.materialedittext.MaterialEditText
+	           android:id="@+id/user_email"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:hint="@string/email"
+		       app:met_floatingLabel="highlight"
+			   app:met_baseColor="?android:attr/textColorPrimary"
+		       app:met_primaryColor="#16a085"
+		       app:met_textColorHint="?hintTextColor"
+		       app:met_errorColor="#ddaa00"
+		       app:met_helperTextColor="#795548"
+		       app:met_underlineColor="#16a085"
+	           android:inputType="textEmailAddress" 
+	           app:met_clearButton = "true"/>
 	
-	        <EditText
-	            android:id="@+id/user_signature"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:hint="@string/hint_signature"
-	            android:inputType="text" />
-
-	        <EditText
-	            android:id="@+id/user_pwd"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:ems="10"
-	            android:hint="@string/user_pwd"
-	            android:inputType="textPassword" />
+	        <com.rengwuxian.materialedittext.MaterialEditText
+	           android:id="@+id/user_signature"
+		       android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:hint="@string/hint_signature"
+		       app:met_floatingLabel="highlight"
+		       app:met_maxCharacters="20"
+			   app:met_baseColor="?android:attr/textColorPrimary"
+		       app:met_primaryColor="#16a085"
+		       app:met_textColorHint="?hintTextColor"
+		       app:met_errorColor="#ddaa00"
+		       app:met_underlineColor="#16a085"  
+	           android:inputType="text" 
+	           app:met_clearButton = "true"/>
+			
+		   <!--app:met_floatingLabelTextColor="#003587"  -->  
+	        <com.rengwuxian.materialedittext.MaterialEditText
+	           android:id="@+id/user_pwd"
+	           android:layout_width="match_parent"
+		       android:layout_height="wrap_content"
+		       android:hint="@string/user_pwd"
+		       app:met_floatingLabel="highlight"
+		       app:met_maxCharacters="5"
+			   app:met_baseColor="?android:attr/textColorPrimary"
+		       app:met_primaryColor="#16a085"
+		       app:met_textColorHint="?hintTextColor"
+		       app:met_errorColor="#ddaa00"
+		       app:met_underlineColor="#16a085"
+	           android:inputType="textPassword" 
+	           app:met_clearButton = "true"/>
 		
 
-	        <EditText
+	        <com.rengwuxian.materialedittext.MaterialEditText
 	            android:id="@+id/user_pwd_confirm"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
-	            android:ems="10"
 	            android:hint="@string/user_pwdconfirm"
-	            android:inputType="textPassword" />
+			    app:met_floatingLabel="highlight"
+			    app:met_baseColor="?android:attr/textColorPrimary"
+			    app:met_primaryColor="#16a085"
+		       	app:met_textColorHint="?hintTextColor"
+			    app:met_errorColor="#ddaa00"
+			    app:met_underlineColor="#16a085"
+	            android:inputType="textPassword"
+	            app:met_clearButton = "true" />
     </LinearLayout>
 
     <com.dd.processbutton.iml.ActionProcessButton

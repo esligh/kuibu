@@ -5,7 +5,7 @@ import android.webkit.JavascriptInterface;
 
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.ImageDetailActivity;
-import com.kuibu.module.iterf.OnPageLoadFinished;
+import com.kuibu.module.iterfaces.OnPageLoadFinished;
 
 public class InJavaScriptObject {
 	

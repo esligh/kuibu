@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">	    
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_note" />
+    
+    <ScrollView 
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent" 
+	    android:scrollbars="vertical"
+	    android:background="?listViewBackground">
+	        
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">	
+	          
+	        <uk.co.senab.photoview.PhotoView
+	            android:id="@+id/collection_image"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_marginTop="@dimen/android_spaces"
+	            android:layout_marginLeft="@dimen/android_spaces"
+	            android:layout_marginRight="@dimen/android_spaces"
+	            android:scaleType="fitXY"
+	            android:contentDescription="@null" />
+	           
+	        <ImageButton
+	            android:id="@+id/rotate_btn"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_alignParentTop="true"
+	            android:layout_alignParentRight="true"
+	            android:layout_marginTop="@dimen/android_spaces_small"
+	            android:layout_marginRight="@dimen/android_spaces_small"
+	            android:src="@drawable/pic_rotate_icon"/>
+	        
+	        <EditText
+	            android:id="@+id/collection_desc"
+	            android:layout_width="match_parent"
+	            android:layout_height="200dp"
+	            android:layout_below="@id/collection_image"
+	            android:padding="4dp"
+	            android:gravity="start"
+	            android:layout_marginTop="@dimen/android_spaces"
+	            android:layout_marginLeft="@dimen/android_spaces"
+	            android:layout_marginRight="@dimen/android_spaces"
+	            android:layout_marginBottom="@dimen/android_spaces"
+	            android:hint="@string/add_desc"
+	            android:textColor="?listItemTextColor"
+	            android:background="@drawable/bg_edittext_border" 
+	            android:focusable="true"/>
+	    </RelativeLayout>	
+	</ScrollView>	
+</LinearLayout>

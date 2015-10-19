@@ -11,8 +11,9 @@
     <color name="background">#FF004068</color>
     <color name="guide_start_background">@color/background</color>
     <color name="guide_end_background">#FF006480</color>
-    
-    
+    <color name="primary_text_color">#EE000000</color>
+    <color name="secondary_text_color">#FF656565</color>
+       
     <!-- 第一种配色方案 -->
  	<color name="colorPrimaryDark">#006480</color>     	
  	<color name="colorPrimary">#006480</color>   
@@ -101,4 +102,9 @@
     
     <color name="navigation_divider_light">#ffc3c3c3</color>
     <color name="navigation_divider_dark">#ff434343</color>
+    
+    <!-- material edittext -->
+    <color name="indigo_500">#3f51b5</color>
+  	<color name="indigo_700">#303f9f</color>
+  	<color name="cyan_500">#00bcd4</color>
 </resources>

@@ -8,7 +8,8 @@ import android.support.v4.app.Fragment;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.fragment.UserListFragment;
  
-public class UserListActivity extends UserInfoListFragmentActivity {
+public class UserListActivity extends UserInfoFragmentActivity {
+	
 	@Override
 	protected Fragment createFragment() {
 		// TODO Auto-generated method stub

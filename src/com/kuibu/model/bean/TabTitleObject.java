@@ -1,6 +1,7 @@
 package com.kuibu.model.bean;
 
-public class TabTitleObject {
+@SuppressWarnings("serial")
+public class TabTitleObject extends BaseEntity{
 	
 	private String title = null;
 	private String Tag = null;

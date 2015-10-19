@@ -5,21 +5,33 @@
     android:background="?listItemBackground"
     android:descendantFocusability="blocksDescendants">
     
-    <TextView
-        android:id="@+id/favorite_box_name_tv"   
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:gravity="center"
-        android:textSize="16sp"/>
+    <ImageView
+        android:id="@+id/type_icon"
+        android:layout_width="@dimen/icon_medium_width"
+        android:layout_height="@dimen/icon_medium_height"
+        android:layout_alignParentRight="true"
+        android:scaleType="centerInside"/>
     
     <CheckBox
         android:id="@+id/favorite_box_cb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/type_icon"
         android:clickable="false"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="10dp"/>
+        android:layout_alignParentEnd="true"    
+        android:layout_marginRight="@dimen/android_spaces_large"    
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:layout_centerVertical="true"/>
     
+    
+    <TextView
+        android:id="@+id/favorite_box_name_tv"   
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:padding="@dimen/android_spaces_large"
+        android:gravity="center"
+        android:textSize="16sp"/>
+   
 </RelativeLayout>

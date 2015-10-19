@@ -40,9 +40,10 @@ import com.kuibu.module.activity.R;
 /**
  * @class  登录窗体
  * @author ThinkPad
- *
  */
+
 public class LoginDialog {
+	
 	private Context mContext;
 	private EditText mUserEmailEt;
 	private EditText mUserPwdEt;
@@ -66,14 +67,17 @@ public class LoginDialog {
 		mUserEmailEt = (EditText) loginLayout.findViewById(R.id.login_user_email);
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
 		String account = pref.getString(StaticValue.PrefKey.LOGIN_ACCOUNT, null);
+		
 		if(!TextUtils.isEmpty(account)){
 			mUserEmailEt.setText(account);
 		}
+		
 		mUserPwdEt = (EditText) loginLayout.findViewById(R.id.login_user_pwd);
 		btnLogIn = (ActionProcessButton)loginLayout.findViewById(R.id.btnLogIn);
 		btnLogIn.setMode(ActionProcessButton.Mode.ENDLESS);
 		
-		AlertDialog.Builder builder = new AlertDialog.Builder(mContext).setTitle("登录").setView(loginLayout);
+		AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
+						.setTitle(mContext.getString(R.string.login)).setView(loginLayout);
 		alertLogIn = builder.show();
 		btnLogIn.setOnClickListener(new OnClickListener() {			
 			@Override
@@ -117,9 +121,11 @@ public class LoginDialog {
 					params.put("errCode", state);
 					if (StaticValue.RESPONSE_STATUS.LOGIN_SUCCESS // 登录成功
 							.equals(state)) {
-						Session.getSession().setLogin(true); //设置session状态
+						
+						Session.getSession().setLogin(true); //设置session状态						
 						String token = response.getString("token"); //获取令牌token
 						String expirydate = response.getString("expirydate");//令牌的失效日期
+						
 						Date date = null;
 						try {
 							SimpleDateFormat sdf = new SimpleDateFormat(
@@ -128,6 +134,7 @@ public class LoginDialog {
 						} catch (ParseException e) {
 							e.printStackTrace();
 						}						
+						
 						//解析其他用户信息并放到session中
 						Session.getSession().setToken(token);
 						String sinfo = response.getString("user_info");
@@ -144,10 +151,16 @@ public class LoginDialog {
 						Session.getSession().setuSignature(signature);	
 						String regState = info.getString("reg_state");
 						Session.getSession().setRegState(regState);
+						
 						params.put("uId", uid);
 						params.put("uName", uname);
 						params.put("uPhoto", photoUrl);
 												
+						SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+						Editor editor= pref.edit();
+						editor.putString(StaticValue.PrefKey.LOGIN_ACCOUNT, email);
+						editor.commit();
+						
 						// 保存cookie
 						KuibuApplication.getInstance()
 								.getPersistentCookieStore()
@@ -180,13 +193,7 @@ public class LoginDialog {
 						KuibuApplication.getInstance()
 								.getPersistentCookieStore()
 								.addCookie("reg_state", regState, date);
-						
-
-						SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
-						Editor editor= pref.edit();
-						editor.putString(StaticValue.PrefKey.LOGIN_ACCOUNT, email);
-						editor.commit();
-										
+							
 						//success,establish persistent connection 
 						try {							
 							JSONObject obj = new JSONObject();
@@ -212,13 +219,13 @@ public class LoginDialog {
 								.show();
 						btnLogIn.setProgress(0);
 					}
-					params.put("isAuto", "false");
+					params.put("isAuto", false);
 					loginListener.onLoginComplete(params); //回调登录接口
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 			}
-		}, new Response.ErrorListener() {
+		}, new Response.ErrorListener(){
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				btnLogIn.setProgress(0);
@@ -235,8 +242,7 @@ public class LoginDialog {
 	 * 自动登录实现
 	 * @return
 	 */
-	public boolean autoLogin() {
-		
+	public boolean autoLogin() {		
 		Cookie cookie = KuibuApplication.getInstance()
 				.getPersistentCookieStore().getCookie("token");
 		if (cookie == null || cookie.isExpired(new Date())) {
@@ -280,7 +286,7 @@ public class LoginDialog {
 					.getPersistentCookieStore().getCookie("user_photo")
 					.getValue();
 			Session.getSession().setuPic(photoUrl);
-			params.put("isAuto", "true");
+			params.put("isAuto", true);
 			loginListener.onLoginComplete(params); //回调接口			
 			return true;
 		}

@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
@@ -82,8 +83,9 @@ public class SendMessageActivity extends BaseActivity
 				sendMsg();
 			}
 		});
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		msgEt.setFocusable(true);
+		msgEt.setFocusableInTouchMode(true);
+		msgEt.requestFocus();
 		showView();
 		loadData();
 	}

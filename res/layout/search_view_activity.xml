@@ -5,8 +5,37 @@
     android:background="?listCardViewBackground"
     android:orientation="vertical" >
    
+    <android.support.v7.widget.Toolbar
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:app="http://schemas.android.com/apk/res-auto"
+	    android:id="@+id/toolbar"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:background="?toolbarBackground"
+	    android:minHeight="@dimen/abc_action_bar_default_height_material"
+	    android:theme="@style/LightTextToolbarOverlay" >
+	    
+	    <com.rengwuxian.materialedittext.MaterialEditText
+	        android:id="@+id/search_content"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingLeft="@dimen/android_spaces_small"
+	        android:paddingRight="@dimen/android_spaces_small"
+	        android:layout_marginRight="@dimen/android_spaces_large"
+	        android:textSize="18sp"
+	        android:inputType="textMultiLine"
+	        android:hint="@string/hint_search"
+	        app:met_baseColor="@color/white"
+	        app:met_textColor="@color/white"        
+	        app:met_floatingLabel = "none"
+	        app:met_clearButton = "true"
+	        app:met_underlineColor="@color/white"
+	        app:met_primaryColor = "#16a085"  />	    
+	</android.support.v7.widget.Toolbar>
+
     <com.kuibu.custom.widget.PaginationListView  
-        android:id="@+id/search_view_list"  
+        android:id="@+id/search_view_list"
+        android:layout_below="@id/toolbar"  
         android:layout_width="match_parent"  
         android:layout_height="wrap_content" />  
   	
@@ -20,8 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?listViewBackground"
         android:orientation="horizontal">
+	    
         <TextView
     	    android:id="@+id/topic_tv"
     	    android:layout_width="0dp"
@@ -32,7 +61,8 @@
     	    android:paddingBottom="15dp"
     	    android:clickable="true"
     	    android:focusable="true"
-    	    android:text="@string/topic_text"/>
+    	    android:text="@string/topic_text"
+    	    android:textColor="?listItemTextColor"/>
  
     	<View
             android:layout_width="1px"
@@ -49,7 +79,8 @@
     	    android:paddingBottom="15dp"
     	    android:clickable="true"
     	    android:focusable="true"
-    	    android:text="@string/content_text"/>	
+    	    android:text="@string/content_text"
+    	    android:textColor="?listItemTextColor"/>	
  	   	  	 
     	 <View
             android:layout_width="1px"
@@ -66,6 +97,8 @@
     	    android:paddingBottom="15dp"
     	    android:clickable="true"
     	    android:focusable="true"
-    	    android:text="@string/person_text"/>
+    	    android:text="@string/person_text"
+    	    android:textColor="?listItemTextColor"/>
+        
     </LinearLayout>
 </RelativeLayout>

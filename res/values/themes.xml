@@ -1,11 +1,9 @@
 <resources>   
-    <style name="AppTheme.Light" parent="Theme.AppCompat">
+    <style name="AppTheme.Light" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="windowActionBarOverlay">true</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>       
         <item name="listItemBackground">@drawable/mate_list_item_selector_light</item>
         <item name="listItemDefaultImage">@drawable/image_small_default</item>
 		<item name="listItemTextColor">@color/list_item_title_light</item>
@@ -15,13 +13,11 @@
         <item name="toolbarBackground">@color/colorPrimary</item>
     </style>
 
-    <style name="AppTheme.Dark" parent="Theme.AppCompat">
+    <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="windowActionBarOverlay">true</item>
         <item name="android:windowActionBarOverlay">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
         <item name="listItemBackground">@drawable/mate_list_item_selector_dark</item>
         <item name="listItemDefaultImage">@drawable/dark_image_small_default</item>
         <item name="listItemTextColor">@color/list_item_title_dark</item>

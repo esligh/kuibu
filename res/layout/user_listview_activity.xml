@@ -19,7 +19,8 @@
         <com.kuibu.custom.widget.PaginationListView
             android:id="@+id/user_list_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:scrollbarStyle="outsideOverlay" />
     </LinearLayout>
 
 </com.kuibu.custom.widget.MultiStateView>

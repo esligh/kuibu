@@ -187,4 +187,32 @@ public class CollectionVo extends BaseDbVo {
         c.close();  
         return collections; 
     }
+    
+    public List<CollectionBean> queryWithByPage(String cons ,String[] args,int limit,int off)
+    {
+    	ArrayList<CollectionBean> collections = new ArrayList<CollectionBean>();
+    	StringBuffer SQL = new StringBuffer(BASE_QUERY_STR);    	
+    	SQL.append(" where ").append(cons);
+    	SQL.append(" order by _id desc " );
+    	SQL.append("Limit ").append(String.valueOf(limit)).append(" Offset ").append(String.valueOf(off));
+        Cursor c = getDB().rawQuery(SQL.toString(),args);
+        
+        while (c.moveToNext()) {  
+        	CollectionBean collection = new CollectionBean();  
+        	collection._id = c.getString(c.getColumnIndex("_id"));  
+        	collection.cid = c.getString(c.getColumnIndex("cid"));
+        	collection.pid = c.getString(c.getColumnIndex("pid"));  
+            collection.tid = c.getString(c.getColumnIndex("tid"));
+            collection.type= c.getString(c.getColumnIndex("type"));
+            collection.isPublish = c.getInt(c.getColumnIndex("is_pub"));
+            collection.isSync = c.getInt(c.getColumnIndex("is_sync"));
+            collection.title = c.getString(c.getColumnIndex("title"));
+            collection.content = c.getString(c.getColumnIndex("content"));
+            collection.cover = c.getString(c.getColumnIndex("cover"));
+            collection.createDate = c.getString(c.getColumnIndex("last_modify"));
+            collections.add(collection);  
+        }  
+        c.close();  
+        return collections; 
+    }
 }

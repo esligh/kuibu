@@ -4,19 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?listViewBackground"
+    android:background="?listCardViewBackground"
     android:orientation="vertical" >    
+    
     <com.kuibu.custom.widget.FButton
          android:id="@+id/create_collectpack_bt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/create_new_cpack"
-                android:textColor="@android:color/white"
-                fbutton:buttonColor="@color/fbutton_color_green_sea"
-                fbutton:cornerRadius="1dp"               
-                fbutton:shadowEnabled="false" />
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:text="@string/create_new_cpack"
+         android:textColor="@android:color/white"
+         fbutton:buttonColor="@color/fbutton_color_green_sea"
+         fbutton:cornerRadius="1dp"               
+         fbutton:shadowEnabled="false" />
+    
    <ListView
        android:id="@+id/collectpack_lv"
        android:layout_width="match_parent"
-       android:layout_height="match_parent"/>
+       android:layout_height="wrap_content"
+       android:clipToPadding="false"
+       android:divider="@android:color/transparent"
+       android:dividerHeight="@dimen/android_spaces_medium"
+       android:padding="@dimen/android_spaces_medium"
+       android:scrollbarStyle="outsideOverlay"
+       tools:listitem="@layout/collectpack_list_item"/>
+   
 </LinearLayout>

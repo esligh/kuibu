@@ -26,7 +26,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +38,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.NetUtils;
 import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
@@ -55,8 +56,6 @@ import com.kuibu.module.fragment.ExplorePageFragment;
 import com.kuibu.module.fragment.FavoriteBoxFragment;
 import com.kuibu.module.fragment.FocusPageFragment;
 import com.kuibu.module.fragment.HomePageFragment;
-
-
 
 public class KuibuMainActivity extends BaseActivity 
 	implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnLoginLisener {
@@ -88,6 +87,7 @@ public class KuibuMainActivity extends BaseActivity
 			//#bug fragment overlay
 			mCurposition = savedInstanceState.getInt(StaticValue.TAG_VLAUE.DRAWER_POSITION);
 			mNavigationDrawerFragment.selectItem(mCurposition);		
+			
 		}else{//first launch 	
 			mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
 			boolean bWithDlg = getIntent().getBooleanExtra(StaticValue.MAINWITHDLG, false);			
@@ -115,15 +115,12 @@ public class KuibuMainActivity extends BaseActivity
 			if(!NetUtils.isNetworkAvailable(this)){
 				Toast.makeText(this, getString(R.string.poor_net_state), 
 						Toast.LENGTH_LONG).show();
-			}else{ 			
-		//		this.startService(new Intent(this,HeartBeatService.class));
 			}		
 		}
 		
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			getSupportActionBar().setElevation(0); //remove actionbar shadow 
-		}
-		
+		}		
 	}
 	
 	
@@ -131,14 +128,12 @@ public class KuibuMainActivity extends BaseActivity
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-	//	this.startService(new Intent(this,HeartBeatService.class));
 	}
 
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-	//	this.stopService(new Intent(this,HeartBeatService.class));
 	}
 
 
@@ -166,7 +161,7 @@ public class KuibuMainActivity extends BaseActivity
 		}else if(Constants.Tag.SETTING.equals(tag)){
 			Intent intent = new Intent(this,SettingsActivity.class);
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-				//startActivityForResult(new Intent(this, PrefsActivity.class), REQUESTCODE_SETTING);
+				
 			} else {
 				startActivityForResult(intent, StaticValue.RequestCode.REQ_CODE_SETTING);
 			}
@@ -220,11 +215,6 @@ public class KuibuMainActivity extends BaseActivity
 		setTitle(title);
 	}
 	
-	public void restoreActionBar() {
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-	}
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
@@ -237,9 +227,6 @@ public class KuibuMainActivity extends BaseActivity
 		}
 		if(!Session.getSession().isLogin()){
 			mLogoutMenu.setVisible(false);
-		}
-		if (!mNavigationDrawerFragment.isDrawerOpen()) {
-			restoreActionBar();
 		}
 		return true;
 	}
@@ -301,11 +288,12 @@ public class KuibuMainActivity extends BaseActivity
 	 * @description: 登录完成回调接口
 	 * @see com.kuibu.module.dlg.LoginDialog.OnLoginLisener#onLoginComplete(java.util.Map)
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onLoginComplete(Map<String,Object> params) {
 		String errCode = (String)params.get("errCode");
 		if (StaticValue.RESPONSE_STATUS.LOGIN_SUCCESS.equals(errCode)) {
-			if(!Boolean.valueOf((String)params.get("isAuto"))){
+			if(!(Boolean)params.get("isAuto")){
 				mNotifyMenu.setVisible(true);
 				mLogoutMenu.setVisible(true);
 			}
@@ -473,11 +461,7 @@ public class KuibuMainActivity extends BaseActivity
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader();
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -538,8 +522,7 @@ public class KuibuMainActivity extends BaseActivity
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();	
-				
+		super.onDestroy();					
 	}
 
 	@Override  

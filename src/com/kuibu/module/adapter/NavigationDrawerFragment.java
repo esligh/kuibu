@@ -19,6 +19,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,9 +39,9 @@ import com.kuibu.model.bean.UserInfoBean;
 import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+@SuppressWarnings("deprecation")
 public class NavigationDrawerFragment extends Fragment {
     private static final String STATE_SELECTED_CUR_POSITION = "drawer_cur_position";
-    private static final String STATE_SELECTED_LAST_POSITION = "drawer_last_position";
 
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
     private NavigationDrawerCallbacks mCallbacks;
@@ -122,7 +123,7 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate(R.layout.fragment_navigation_drawer, container, false);
-        headerView = inflater.inflate(R.layout.list_header, null);
+        headerView = inflater.inflate(R.layout.list_header, container,false);
         headerText = (TextView)headerView.findViewById(R.id.drawerheader_title);
         headerIcon = (ImageView)headerView.findViewById(R.id.drawerheader_icon);
         headerView.setTag("login"); 
@@ -187,11 +188,10 @@ public class NavigationDrawerFragment extends Fragment {
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-        ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(false);
-
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
+          
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    
                 mDrawerLayout,                    
@@ -202,7 +202,6 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-    	//		getActionBar().setIcon(R.drawable.ic_drawer);
                 if (!isAdded()) {
                     return;
                 }
@@ -212,11 +211,9 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-    	//		getActionBar().setIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
                 if (!isAdded()) {
                     return;
                 }
-
                 if (!mUserLearnedDrawer) {
                     mUserLearnedDrawer = true;
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -224,6 +221,20 @@ public class NavigationDrawerFragment extends Fragment {
                 }
                 
                 getActivity().supportInvalidateOptionsMenu(); 
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                if (newState == DrawerLayout.STATE_SETTLING) {
+                    if (!isDrawerOpen()) {
+                        // starts opening
+                        actionBar.setHomeAsUpIndicator(R.drawable.abc_ic_ab_back_mtrl_am_alpha);                                
+                    } else {
+                        // closing drawer
+                        actionBar.setHomeAsUpIndicator(R.drawable.ic_drawer);
+                    }
+                    
+                }
             }
         };
 
@@ -305,15 +316,8 @@ public class NavigationDrawerFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
     
-    private void showGlobalContextActionBar() {
-        ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(R.string.app_name);
-    }
-
     private ActionBar getActionBar() {
-        return ((ActionBarActivity) getActivity()).getSupportActionBar();
+        return ((AppCompatActivity) getActivity()).getSupportActionBar();
     }
 
     public static interface NavigationDrawerCallbacks {    	

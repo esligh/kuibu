@@ -41,7 +41,7 @@ import com.kuibu.module.activity.FavoriteBoxActivity;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.activity.UserListActivity;
 import com.kuibu.module.activity.UserTopicListActivity;
-import com.kuibu.module.iterf.IConstructFragment;
+import com.kuibu.module.iterfaces.IConstructFragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public final class UserInfoContentFragment extends Fragment implements
@@ -160,8 +160,7 @@ public final class UserInfoContentFragment extends Fragment implements
 								Toast.LENGTH_SHORT).show();
 					}
 				}
-			});
-			initData();
+			});			
 			favorite_box_tv.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View arg0) {
@@ -187,6 +186,14 @@ public final class UserInfoContentFragment extends Fragment implements
 		return rootView;
 	}
 	
+	
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		initData(); //solve problem : Fragment（XXFragment） not attached to Activity
+	}
+
 	void initData()
 	{
 		boolean flag = this.getActivity().getIntent().getBooleanExtra(
@@ -269,7 +276,6 @@ public final class UserInfoContentFragment extends Fragment implements
 				params), new Response.Listener<JSONObject>() {
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
@@ -292,13 +298,14 @@ public final class UserInfoContentFragment extends Fragment implements
 						}
 						bUserIsFollow = obj.getBoolean("is_focus");
 						if(bUserIsFollow){
-							int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
-							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText(getActivity().getString(R.string.btn_cancel_focus));											
+							if(!isDetached()){
+								int btnColor= getActivity().getResources().getColor(R.color.fbutton_color_concrete);
+								focusBtn.setButtonColor(btnColor);						
+								focusBtn.setText(getActivity().getString(R.string.btn_cancel_focus));
+							}											
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -308,9 +315,6 @@ public final class UserInfoContentFragment extends Fragment implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);	
@@ -334,12 +338,13 @@ public final class UserInfoContentFragment extends Fragment implements
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
+			
 			@Override
 			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
+				
 				try {
 					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state) && !isDetached()) {
 						int count = Integer.parseInt(follow_me_count_tv.getText().toString().trim());						
 						if(bUserIsFollow){
 							follow_me_count_tv.setText(DataUtils.formatNumber(count-1));
@@ -356,7 +361,6 @@ public final class UserInfoContentFragment extends Fragment implements
 						}
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -388,4 +392,5 @@ public final class UserInfoContentFragment extends Fragment implements
 		super.onDestroyView();
 		getActivity().unregisterReceiver(userUpdateReceiver);
 	}
+	
 }

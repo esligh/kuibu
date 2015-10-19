@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.kuibu.model.bean.TabTitleObject;
-import com.kuibu.module.iterf.IConstructFragment;
+import com.kuibu.module.iterfaces.IConstructFragment;
 
 public class TabPageViewAdapter extends FragmentStatePagerAdapter {	
 	private List<TabTitleObject> tabList = null;

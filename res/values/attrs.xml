@@ -43,5 +43,10 @@
     <attr name="layoutBorderBackground" format="reference" />
     <attr name="homeHeaderBackground" format="reference" />
     <attr name="navigationDivider" format="reference" />
-    <attr name="navigationBackground" format="reference" />        
+    <attr name="navigationBackground" format="reference" />
+    <attr name="layoutBorderBackGround" format="reference" />
+    <attr name="hintTextColor" format="reference" />    
+    <!-- require api 14 support 11-->
+    <attr name="attr_textAppearanceListItemSmall" format="reference" />
+    
 </resources>

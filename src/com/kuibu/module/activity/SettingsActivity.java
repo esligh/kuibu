@@ -2,9 +2,9 @@ package com.kuibu.module.activity;
 
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.module.fragment.SettingsFragment;
 import com.kuibu.module.fragment.SettingsFragment.OnPreChangeListener;
 
@@ -20,9 +20,6 @@ public class SettingsActivity extends BaseActivity  implements OnPreChangeListen
         getFragmentManager().beginTransaction()
         .replace(R.id.frame, settingsFragment)
         .commit();
-
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 	}
 	
 	@Override

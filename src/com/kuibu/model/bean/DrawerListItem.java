@@ -2,7 +2,8 @@ package com.kuibu.model.bean;
 
 import android.graphics.drawable.Drawable;
 
-public class DrawerListItem {	
+@SuppressWarnings("serial")
+public class DrawerListItem extends BaseEntity{	
 	private Drawable icon;
 	private String title;
 	private String tag ; 	

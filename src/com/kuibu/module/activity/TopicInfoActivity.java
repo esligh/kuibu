@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.custom.widget.FButton;
@@ -107,8 +107,6 @@ public class TopicInfoActivity extends BaseActivity {
 				}		
 			}
 		});
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
 		loadData();
 		loadAuthors();
 		showView();

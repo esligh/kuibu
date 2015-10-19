@@ -121,5 +121,5 @@ public class Session implements Serializable{
 
 	public void setRegState(String regState) {
 		this.regState = regState;
-	}		
+	}			
 }

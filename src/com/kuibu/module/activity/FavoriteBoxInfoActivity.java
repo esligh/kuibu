@@ -2,6 +2,7 @@ package com.kuibu.module.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,15 +13,15 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +33,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.huewu.pla.lib.MultiColumnListView;
+import com.huewu.pla.lib.internal.PLA_AdapterView;
+import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
+import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.BorderScrollView;
@@ -42,19 +48,26 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.model.bean.CollectionBean;
 import com.kuibu.model.bean.CollectionItemBean;
 import com.kuibu.module.adapter.CollectPackInfoAdapter;
+import com.kuibu.module.adapter.ImageGridAdapter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class FavoriteBoxInfoActivity extends BaseActivity implements
 		OnBorderListener {
 	
-	private ListView cardListView;
+	private ListView mList;
+	private MultiColumnListView mCardList ; 
 	private RelativeLayout focusLayout;
 	private View footerView;
 	private BorderScrollView borderScrollView;
 	private CollectPackInfoAdapter infoAdapter;
-	private List<CollectionItemBean> item_datas = new ArrayList<CollectionItemBean>();
+
+	private ImageGridAdapter mCardApdater ; 
+	private List<CollectionBean> card_datas = null; 
+	private List<CollectionItemBean> item_datas = null ;
+	
 	private String box_id;
 	private TextView titleView;
 	private TextView descView;
@@ -66,7 +79,8 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 	private boolean bUserIsFollow;
 	private RelativeLayout tagLayout;
 	private MultiStateView mMultiStateView;
-
+	private String type ; 
+	
 	@SuppressLint("InflateParams")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -91,26 +105,11 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		}		
 		tagLayout = (RelativeLayout) findViewById(R.id.tags_layout);
 		tagLayout.setVisibility(View.GONE);
-		cardListView = (ListView) findViewById(R.id.collectpack_cards_list);
+		
 		borderScrollView = (BorderScrollView) findViewById(R.id.collect_pack_scroll_view);
 		borderScrollView.setOnBorderListener(this);
 		footerView = LayoutInflater.from(this).inflate(R.layout.footer, null);
 		footerView.setVisibility(View.GONE);
-		cardListView.addFooterView(footerView);
-
-		cardListView.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> viewAdapter, View view,
-					int position, long id) {
-				Intent intent = new Intent(FavoriteBoxInfoActivity.this,
-						CollectionDetailActivity.class);
-				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item_datas
-						.get(position).getId());	
-				startActivity(intent);
-				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
-			}
-		});
 
 		titleView = (TextView) findViewById(R.id.collect_pack_title_tv);
 		descView = (TextView) findViewById(R.id.collect_pack_desc_tv);
@@ -125,7 +124,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			@Override
 			public void onClick(View view) {
 				if (Session.getSession().isLogin()) {
-					do_focus(isfocus);
+					do_focus();
 				} else {
 					Toast.makeText(FavoriteBoxInfoActivity.this, getString(R.string.need_login),
 							Toast.LENGTH_SHORT).show();
@@ -144,8 +143,49 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				showUserview();
 			}
 		});
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		type = getIntent().getStringExtra("box_type");		
+		mList = (ListView) findViewById(R.id.collectpack_cards_list);
+		mCardList = (MultiColumnListView)findViewById(R.id.grid_cards_list);
+		if(StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)){
+			mCardList.setVisibility(View.VISIBLE);
+			mCardList.setVerticalScrollBarEnabled(false);
+			mCardList.addFooterView(footerView);
+			card_datas = new LinkedList<CollectionBean>(); 			
+			mCardApdater = new ImageGridAdapter(this, card_datas, false);
+			mCardList.setAdapter(mCardApdater);
+			mCardList.addFooterView(footerView);
+			mCardList.setOnItemClickListener(new OnItemClickListener() {
+				@Override
+				public void onItemClick(PLA_AdapterView<?> viewAdapter, View view,
+						int position, long id) {
+					CollectionBean bean = (CollectionBean)viewAdapter.getAdapter().getItem(position);
+					Intent intent = new Intent(FavoriteBoxInfoActivity.this,
+							CollectionImageDetailActivity.class);
+					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, bean.getCid());
+					startActivity(intent);
+					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+				}				
+			});
+		}else{
+			item_datas = new ArrayList<CollectionItemBean>();
+			mList.setVisibility(View.VISIBLE);
+			mList.addFooterView(footerView);
+			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
+			mList.setAdapter(infoAdapter);
+			mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> viewAdapter, View view,
+						int position, long id) {
+					Intent intent = new Intent(FavoriteBoxInfoActivity.this,
+							CollectionDetailActivity.class);
+					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item_datas
+							.get(position).getId());	
+					intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN, item_datas.get(position).getCisn());
+					startActivity(intent);
+					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+				}
+			});
+		}
 		loadPack();
 		loadUserinfo();
 		loadList();
@@ -164,7 +204,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		intent.putExtra(StaticValue.USERINFO.USER_SIGNATURE,
 				(String) userInfo.get("signature"));
 		intent.putExtra(StaticValue.USERINFO.USER_PHOTO,
-				(byte[]) userInfo.get("photo"));
+				(String) userInfo.get("photo"));
 		intent.putExtra(StaticValue.USERINFO.USER_SEX,
 				(String) userInfo.get("sex"));
 		intent.putExtra(StaticValue.USERINFO.USER_ISFOLLOW, bUserIsFollow);
@@ -193,14 +233,32 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 	}	
 
 	private void showView() {
-		if (infoAdapter == null) {
-			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
-			cardListView.setAdapter(infoAdapter);
+		if (StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)) {
+			mCardApdater.updateView(card_datas);
+			setListViewHeightBasedOnChildren(mCardList);
 		} else {
 			infoAdapter.updateView(item_datas);
 		}
 	}
 
+	public void setListViewHeightBasedOnChildren(MultiColumnListView listView) {    
+        ListAdapter listAdapter = listView.getAdapter();    
+        if (listAdapter == null) {  
+            return;    
+        }    
+  
+        int totalHeight =0; 
+        int count = (listAdapter.getCount()+1)/2; 
+        for (int i = 0; i < count; i++) {    
+            View listItem = listAdapter.getView(i, null, listView);    
+            listItem.measure(0, 0);   
+            totalHeight += listItem.getMeasuredHeight();    
+        }    
+  
+        ViewGroup.LayoutParams params = listView.getLayoutParams();    
+        params.height = totalHeight;    
+        listView.setLayoutParams(params);    
+   }
 	@Override
 	public void onBottom() {
 		footerView.setVisibility(View.VISIBLE);
@@ -214,7 +272,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 	
 	private void loadPack() {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("uid", getIntent().getStringExtra("create_by"));
+		params.put("uid", Session.getSession().getuId());
 		params.put("box_id", box_id);
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 		.append(Constants.Config.REST_API_VERSION)
@@ -264,7 +322,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
-	private void do_focus(final boolean bfocus) {
+	private void do_focus() {
 		if(!Session.getSession().isLogin()){
 			Toast.makeText(this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 			return ;
@@ -275,7 +333,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		params.put("type", StaticValue.SERMODLE.FAVORITE_TYPE);
 		params.put("obj_id", box_id);
 		final String URL;
-		if (bfocus) {
+		if (isfocus) {
 			URL = new StringBuilder(Constants.Config.SERVER_URI)
 			.append(Constants.Config.REST_API_VERSION)
 			.append("/del_follows").toString();
@@ -291,12 +349,15 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						if (bfocus) {
+						int count = Integer.parseInt(followCount.getText().toString().trim());
+						if (isfocus) {
+							followCount.setText(DataUtils.formatNumber(count-1));
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);
 							focusBtn.setText(getString(R.string.btn_focus));
 						} else {
+							followCount.setText(DataUtils.formatNumber(count+1));
 							int btnColor = getResources().getColor(
 									R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);
@@ -333,7 +394,11 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 	private void loadList() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("box_id", box_id);
-		params.put("off", item_datas.size() + "");
+		if(StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)){
+			params.put("off", card_datas.size()+"");
+		}else{
+			params.put("off", item_datas.size() + "");
+		}
 
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 							.append(Constants.Config.REST_API_VERSION)
@@ -349,26 +414,11 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 									.equals(state)) {
 								String data = response.getString("result");
 								JSONArray arr = new JSONArray(data);
-								for (int i = 0; i < arr.length(); i++) {
-									JSONObject temp = (JSONObject) arr.get(i);
-									CollectionItemBean bean = new CollectionItemBean();
-									bean.setId(temp.getString("id"));
-									bean.setTitle(temp.getString("title"));
-									bean.setSummary(temp.getString("abstract"));
-									bean.setCreateBy(temp.getString("create_by"));
-									bean.setVoteCount(temp.getString("vote_count"));
-								    bean.setCreatorSex(temp.getString("sex"));
-								    bean.setCreatorSignature(temp.getString("signature"));
-								    bean.setCreatorName(temp.getString("name"));
-								    bean.setCreatorPic(temp.getString("photo"));								    
-									item_datas.add(bean);
-								}
-								FavoriteBoxInfoActivity.this.setTitle("共有"
-										+ arr.length() + "条收集");
-								showView();
-							} else if (StaticValue.RESPONSE_STATUS.COLLETION_NFRECORD
-									.equals(state)) {								
-							} else {}
+								if(arr!=null && arr.length()>0){
+									parseBoxList(arr);
+									showView();
+								}								
+							} 
 							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 							borderScrollView.loadComplete();
 							footerView.setVisibility(View.GONE);
@@ -390,7 +440,45 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				});
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
+	
+	private void parseBoxList(JSONArray arr) throws JSONException
+	{
+		if(StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)){
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject temp = (JSONObject) arr.get(i);
+				CollectionBean bean = new CollectionBean();
+				bean.cid = temp.getString("id");
+				bean.title = temp.getString("title");
+				bean.cover = temp.getString("cover");
+				bean.content = temp.getString("abstract");
+				bean.createBy = temp.getString("create_by");
+				bean.isPublish = 1; 
+				card_datas.add(bean);
+			}
+			FavoriteBoxInfoActivity.this.setTitle("共有"
+					+ card_datas.size() + "条收集");
+		}else{
+			for (int i = 0; i < arr.length(); i++) {
+				JSONObject temp = (JSONObject) arr.get(i);
+				CollectionItemBean bean = new CollectionItemBean();
+				bean.setId(temp.getString("id"));
+				bean.setTitle(temp.getString("title"));
+				bean.setCisn(temp.getString("cisn"));
+				bean.setSummary(temp.getString("abstract"));
+				bean.setCreateBy(temp.getString("create_by"));
+				bean.setVoteCount(temp.getString("vote_count"));
+			    bean.setCreatorSex(temp.getString("sex"));
+			    bean.setCreatorSignature(temp.getString("signature"));
+			    bean.setCreatorName(temp.getString("name"));
+			    bean.setCreatorPic(temp.getString("photo"));								    
+				item_datas.add(bean);
+			}
 
+			FavoriteBoxInfoActivity.this.setTitle("共有"
+					+ item_datas.size() + "条收集");
+		}		
+	}
+	
 	private void loadUserinfo() {
 		Map<String, String> params = new HashMap<String, String>();
 		String create_by = getIntent().getStringExtra("create_by");

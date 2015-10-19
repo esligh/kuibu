@@ -1,7 +1,8 @@
 package com.kuibu.model.bean;
 
 
-public class CommentItemBean {
+@SuppressWarnings("serial")
+public class CommentItemBean extends BaseEntity{
 	private String id ; 
 	private String cid ; 
 	private String userName ; 

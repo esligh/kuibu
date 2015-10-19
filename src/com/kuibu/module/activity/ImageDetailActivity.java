@@ -5,11 +5,11 @@ import java.io.File;
 import uk.co.senab.photoview.PhotoView;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.FileUtils;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.StorageUtils;
@@ -32,8 +32,6 @@ public class ImageDetailActivity extends BaseActivity{
         String path = KuibuUtils.getCacheImgFilePath(this, imgUrl);
         ImageLoader.getInstance().displayImage(Constants.URI_PREFIX+path,photo);
         setContentView(photo);        
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

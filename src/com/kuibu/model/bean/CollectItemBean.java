@@ -1,6 +1,7 @@
 package com.kuibu.model.bean;
 
-public class CollectItemBean {
+@SuppressWarnings("serial")
+public class CollectItemBean extends BaseEntity{
 	public String topic; 
 	public String id ;
 	

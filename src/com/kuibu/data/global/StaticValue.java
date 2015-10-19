@@ -4,7 +4,8 @@ public class StaticValue {
 	public static final String CHOOSE_PIC_OVER = "com.caddy.pickpic_complete";
 	public static final String CHOOSE_PIC_CANCEL = "com.caddy.pickpic_cancel";
 	public static final String USER_INFO_UPDATE = "com.caddy.update_userinfo" ; 
-	public static final int    TAKE_PHOTO_OK = 0x000012;
+	public static final int    TAKE_PHOTO_CODE = 0x000012;
+	public static final int    PICK_PHOTO_CDOE = 0x000013 ;
 	public static final String MAINWITHDLG =  "main_with_dlg";
 	public static final String HIDE_FOCUS = "hide_focus";
 	public static final String IMG_URL = "img_url";
@@ -61,13 +62,15 @@ public class StaticValue {
 		public static final int SHARE_ID = 203 ;
 		public static final int SEND_ID = 204 ; 
 		public static final int CLEAR_ID = 205 ;
-		public static final int CREATE_ID = 205; 
+		public static final int CREATE_ID = 206;
+		public static final int PREVIEW_ID = 206;
 	}
 	
 	public static class MENU_ORDER{
+		public static final int BASE_ORDER_ID = 100;
 		public static final int SAVE_ORDER_ID = 1; 
 		public static final int CANCEL_ORDER_ID = 2;
-		public static final int FIRST_ID = 1; 
+		public static final int FIRST_ID = 3; 
 	}
 	
 	public static class IMAGE_SCAN{
@@ -152,7 +155,9 @@ public class StaticValue {
 		public static final String FAVORITE_TYPE = "004";		
 		
 		public static final String COLLECTION_ID = "collection_id";
+		public static final String COLLECTION_CISN = "collection_cisn";
 		public static final String BOX_ID = "box_id";
+		
 		public static final String BOX_NAME = "box_name";
 		public static final String BOX_DESC = "box_desc";
 		public static final String BOX_COUNT = "box_count";
@@ -165,6 +170,11 @@ public class StaticValue {
 		public static final String USER_SEX_FEMALE = "W";
 		public static final String USER_SEX_MALE = "M";
 		
+		public static final String PACK_TYPE_WORD = "1";
+		public static final String PACK_TYPE_PIC = "2";
+
+		public static final String BOX_TYPE_WORD = "1";
+		public static final String BOX_TYPE_PIC = "2";
 		
 		public static final String VERSION_CODE = "version_code";
 	}

@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 
 public class FavoriteBoxAdapter extends BaseAdapter{
@@ -62,6 +64,7 @@ public class FavoriteBoxAdapter extends BaseAdapter{
 			convertView  = LayoutInflater.from(context).inflate(R.layout.favorite_box_list_item, parent,false);
 			holder.box_name_tv = (TextView) convertView.findViewById(R.id.favorite_box_name_tv);
 			holder.box_cb = (CheckBox)convertView.findViewById(R.id.favorite_box_cb);
+			holder.type_iv = (ImageView)convertView.findViewById(R.id.type_icon);
 			convertView.setTag(holder);
 		}else{
 			holder = (HolderView)convertView.getTag();
@@ -72,12 +75,18 @@ public class FavoriteBoxAdapter extends BaseAdapter{
 		}else{
 			holder.box_cb.setChecked(false);
 		}
+		if(StaticValue.SERMODLE.BOX_TYPE_PIC.equals(datas.get(position).get("box_type"))){
+			holder.type_iv.setImageResource(R.drawable.pack_type_pic);
+		}else{
+			holder.type_iv.setImageResource(R.drawable.pack_type_word);
+		}
 		return convertView;
 	}
 
 	public class HolderView
 	{
 		public TextView box_name_tv ; 
-		public CheckBox box_cb ; 
+		public CheckBox box_cb ;
+		public ImageView type_iv ; 
 	}
 }
