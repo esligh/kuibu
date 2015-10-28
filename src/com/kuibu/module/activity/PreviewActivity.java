@@ -60,6 +60,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.common.utils.FileUtils;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.StorageUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
@@ -517,16 +518,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 		}){
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put(
-						"Authorization",
-						"Basic "
-								+ SafeEDcoderUtil.encryptBASE64(
-										credentials.getBytes()).replaceAll(
-										"\\s+", ""));
-				return headers;
+				return KuibuUtils.prepareReqHeader();
 			}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -746,23 +738,11 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put(
-						"Authorization",
-						"Basic "
-								+ SafeEDcoderUtil.encryptBASE64(
-										credentials.getBytes()).replaceAll(
-										"\\s+", ""));
-				return headers;
+				return KuibuUtils.prepareReqHeader();
 			}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -805,23 +785,11 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put(
-						"Authorization",
-						"Basic "
-								+ SafeEDcoderUtil.encryptBASE64(
-										credentials.getBytes()).replaceAll(
-										"\\s+", ""));
-				return headers;
+				return KuibuUtils.prepareReqHeader();
 			}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);

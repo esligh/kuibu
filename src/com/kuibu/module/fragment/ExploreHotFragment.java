@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -24,7 +23,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseFragment;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -37,6 +35,7 @@ import com.kuibu.module.adapter.HotListViewItemAdapter;
 
 public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 
+	private static final String VOLLEY_REQ_TAG = "explore_hot_fragment";
 	private PaginationListView hotList = null;
 	private HotListViewItemAdapter hotAdapter = null;
 	private List<Map<String, String>> mdatas = new ArrayList<Map<String, String>>();
@@ -101,7 +100,6 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 	public void onDestroy() {
 		super.onDestroy();
 		mdatas.clear();
-		mdatas = null ;
 	}
 		
 
@@ -182,14 +180,11 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
 				Constants.Config.RETRY_TIMES, 1.0f));
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,VOLLEY_REQ_TAG);
 	}
 
 	private void showView() {
@@ -200,5 +195,14 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 			hotAdapter.updateView(mdatas);
 		}
 	}
+
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		KuibuApplication.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG);
+	}
+	
+	
 
 }

@@ -49,8 +49,8 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.bean.DrawerListItem;
 import com.kuibu.module.adapter.NavigationDrawerFragment;
-import com.kuibu.module.dlg.LoginDialog;
-import com.kuibu.module.dlg.LoginDialog.OnLoginLisener;
+import com.kuibu.module.dlg.LoginProcess;
+import com.kuibu.module.dlg.LoginProcess.OnLoginLisener;
 import com.kuibu.module.fragment.CollectionMainFragment;
 import com.kuibu.module.fragment.ExplorePageFragment;
 import com.kuibu.module.fragment.FavoriteBoxFragment;
@@ -63,7 +63,7 @@ public class KuibuMainActivity extends BaseActivity
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private Fragment currentFragment;
 	private Fragment lastFragment;
-	private LoginDialog mLoginDlg = null;
+	private LoginProcess mLoginProcess = null;
 	private static final int DEFAULT_POSITINO = 1; //登录状态抽屉选项的默认位置
 	private MenuItem mLogoutMenu,mNotifyMenu;
 	private int mCurposition = 0  ;
@@ -73,15 +73,15 @@ public class KuibuMainActivity extends BaseActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_kuibu_main);
 
-		mLoginDlg = new LoginDialog(this);
-		mLoginDlg.setOnLoginLisener(this);
+		mLoginProcess = new LoginProcess(this);
+		mLoginProcess.setOnLoginLisener(this);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));	
 		getSupportFragmentManager().beginTransaction()
 			.add(R.id.container, new PlaceholderFragment()).commit();
-		mLoginDlg.autoLogin(); //自动登录
+		mLoginProcess.autoLogin(); //自动登录
 		
 		if (savedInstanceState != null) {		
 			//#bug fragment overlay
@@ -93,24 +93,6 @@ public class KuibuMainActivity extends BaseActivity
 			boolean bWithDlg = getIntent().getBooleanExtra(StaticValue.MAINWITHDLG, false);			
 			if(bWithDlg){
 				mNavigationDrawerFragment.selectItem(0);
-			}
-			if(Session.getSession().isLogin()){
-				try {
-					JSONObject obj = new JSONObject();
-					obj.put("uid", Session.getSession().getuId());
-					obj.put("name", Session.getSession().getuName());
-					
-					KuibuApplication.getSocketIoInstance().SetUp();
-					KuibuApplication.getSocketIoInstance().getSocketIO().
-					emit(StaticValue.EVENT.LOGIN_EVENT, obj);
-					
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
 			}
 			if(!NetUtils.isNetworkAvailable(this)){
 				Toast.makeText(this, getString(R.string.poor_net_state), 
@@ -140,10 +122,10 @@ public class KuibuMainActivity extends BaseActivity
 	@Override
 	public void onNavigationDrawerItemSelected(int position , String title, String tag) {
 		if (Constants.Tag.LOGIN.equals(tag)) { 
-			if (mLoginDlg == null)
+			if (mLoginProcess == null)
 				return;
 			if (!Session.getSession().isLogin()) {
-				mLoginDlg.show();
+				mLoginProcess.show();
 				return;
 			} else {
 				Intent intent = new Intent(this, UserInfoActivity.class);
@@ -246,6 +228,7 @@ public class KuibuMainActivity extends BaseActivity
 		}
     }
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
@@ -271,10 +254,6 @@ public class KuibuMainActivity extends BaseActivity
 
 	
 	public static class PlaceholderFragment extends Fragment {
-		public PlaceholderFragment() {
-			
-		}
-
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -318,6 +297,23 @@ public class KuibuMainActivity extends BaseActivity
 			mNavigationDrawerFragment.updateDrawerList(params);
 		}
 		mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
+
+		//success,establish persistent connection 
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("uid", Session.getSession().getuId());
+			obj.put("name", Session.getSession().getuName());
+			
+			KuibuApplication.getSocketIoInstance().SetUp();
+			KuibuApplication.getSocketIoInstance().getSocketIO().
+			emit(StaticValue.EVENT.LOGIN_EVENT, obj);					
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		//login success 
 		login();
 	}
@@ -522,7 +518,7 @@ public class KuibuMainActivity extends BaseActivity
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();					
+		super.onDestroy();	
 	}
 
 	@Override  

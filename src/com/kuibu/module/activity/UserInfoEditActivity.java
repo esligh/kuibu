@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +38,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -418,11 +418,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			}){
 				@Override  
 		 		public Map<String, String> getHeaders() throws AuthFailureError {  
-		 			HashMap<String, String> headers = new HashMap<String, String>();
-		 			String credentials = Session.getSession().getToken()+":unused";
-		 			headers.put("Authorization","Basic "+
-		 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-		 			return headers;  
+		 			return KuibuUtils.prepareReqHeader();
 		 		} 
 			};
 			KuibuApplication.getInstance().addToRequestQueue(req);

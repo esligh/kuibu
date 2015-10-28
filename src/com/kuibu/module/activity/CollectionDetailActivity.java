@@ -68,7 +68,6 @@ import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.NetUtils;
 import com.kuibu.common.utils.PreferencesUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
@@ -88,7 +87,6 @@ import com.petebevin.markdown.MarkdownProcessor;
 
 public class CollectionDetailActivity extends AppCompatActivity 
 		implements OnPageLoadFinished {
-
 	//手指在屏幕滑动，X轴最小变化值
 	private static final int FLING_MIN_DISTANCE_X = 200;
 	//手指在屏幕滑动，Y轴最小变化值
@@ -385,6 +383,7 @@ public class CollectionDetailActivity extends AppCompatActivity
       	mDetailImageList.clear();
       	mDetailImageList = null ;
       	mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
+      	KuibuApplication.getInstance().cancelPendingRequests(getClass().toString());
     }
      
     @Override
@@ -695,7 +694,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 			}
 			
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req);	
+		KuibuApplication.getInstance().addToRequestQueue(req,getClass().toString());	
 	}
 	
 	private void readFromJson(JSONObject obj)
@@ -811,20 +810,10 @@ public class CollectionDetailActivity extends AppCompatActivity
 		}){
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put(
-						"Authorization",
-						"Basic "
-								+ SafeEDcoderUtil.encryptBASE64(
-										credentials.getBytes()).replaceAll(
-										"\\s+", ""));
-				return headers;
+				return KuibuUtils.prepareReqHeader();
 			}
 		};
-		KuibuApplication.getInstance().addToRequestQueue(req, 
-				StaticValue.TAG_VLAUE.DETAIL_PAGE_VOLLEY);
+		KuibuApplication.getInstance().addToRequestQueue(req, getClass().toString());
 	}
 	
 	public void loadActions()
@@ -875,6 +864,6 @@ public class CollectionDetailActivity extends AppCompatActivity
 						Toast.LENGTH_SHORT).show();
 			}
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,getClass().toString());
 	}
 }

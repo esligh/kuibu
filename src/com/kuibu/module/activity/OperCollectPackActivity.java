@@ -37,6 +37,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
@@ -222,9 +223,6 @@ public class OperCollectPackActivity extends BaseActivity {
 					VolleyLog.e("Error: ", error.getMessage());
 					VolleyLog.e("Error:", error.getCause());
 					error.printStackTrace();
-					Toast.makeText(getApplicationContext(), 
-							VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-							Toast.LENGTH_SHORT).show();
 				}
 			});
 			KuibuApplication.getInstance().addToRequestQueue(req);					
@@ -245,7 +243,6 @@ public class OperCollectPackActivity extends BaseActivity {
 		MenuItem add = menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
 				StaticValue.MENU_ITEM.SAVE_ID,
 				StaticValue.MENU_ORDER.SAVE_ORDER_ID, getString(R.string.action_save));
-
 		add.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}
@@ -424,18 +421,11 @@ public class OperCollectPackActivity extends BaseActivity {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader();  
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	
@@ -468,7 +458,6 @@ public class OperCollectPackActivity extends BaseActivity {
 								Toast.LENGTH_SHORT).show();
 					}
 				} catch (JSONException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				finish();
@@ -479,18 +468,11 @@ public class OperCollectPackActivity extends BaseActivity {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader();
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	

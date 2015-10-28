@@ -23,7 +23,6 @@ public class ImageDetailActivity extends BaseActivity{
     private boolean rotating = false;
 	private String imgUrl ; 
 
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

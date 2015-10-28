@@ -36,7 +36,8 @@ public final class Constants {
 		public static final String IMG_COMPRESS_PATH="/compress/"; 
 		public static final String WEBVIEW_IMG_CACHE_DIR = "webview_tmp";
 		public static final int CACHE_SAVE_TIME = 3*24*60*60;
-		public static final int MAX_IMAGE_SELECT = 9 ; 
+		public static final int MAX_IMAGE_SELECT = 9 ;
+		public static final int PASSWORD_MIN_LEN = 6 ; 
 	}
 	
 	public static final int COMPRESS_WIDTH = 640 ; 

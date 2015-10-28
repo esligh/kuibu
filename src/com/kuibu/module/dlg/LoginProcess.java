@@ -42,7 +42,7 @@ import com.kuibu.module.activity.R;
  * @author ThinkPad
  */
 
-public class LoginDialog {
+public class LoginProcess {
 	
 	private Context mContext;
 	private EditText mUserEmailEt;
@@ -52,7 +52,7 @@ public class LoginDialog {
 	private static final int PROGRESS_LEN  = 10 ; 
 	private AlertDialog   alertLogIn ;
 	
-	public LoginDialog(Context context) {
+	public LoginProcess(Context context) {
 		this.mContext = context;
 	}
 

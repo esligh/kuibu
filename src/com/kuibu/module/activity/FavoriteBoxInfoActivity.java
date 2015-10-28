@@ -17,8 +17,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
@@ -38,7 +38,7 @@ import com.huewu.pla.lib.internal.PLA_AdapterView;
 import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.DataUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.BorderScrollView;
 import com.kuibu.custom.widget.BorderScrollView.OnBorderListener;
@@ -151,7 +151,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			mCardList.setVerticalScrollBarEnabled(false);
 			mCardList.addFooterView(footerView);
 			card_datas = new LinkedList<CollectionBean>(); 			
-			mCardApdater = new ImageGridAdapter(this, card_datas, false);
+			mCardApdater = new ImageGridAdapter(this, card_datas,false);
 			mCardList.setAdapter(mCardApdater);
 			mCardList.addFooterView(footerView);
 			mCardList.setOnItemClickListener(new OnItemClickListener() {
@@ -279,6 +279,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		.append("/get_boxinfo").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onResponse(JSONObject response) {
 				try {
@@ -326,8 +327,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		if(!Session.getSession().isLogin()){
 			Toast.makeText(this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 			return ;
-		}
-		
+		}		
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("follower_id", Session.getSession().getuId());
 		params.put("type", StaticValue.SERMODLE.FAVORITE_TYPE);
@@ -344,22 +344,21 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onResponse(JSONObject response) {
 				try {
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						int count = Integer.parseInt(followCount.getText().toString().trim());
-						if (isfocus) {
+						if (isfocus){
 							followCount.setText(DataUtils.formatNumber(count-1));
-							int btnColor = getResources().getColor(
-									R.color.fbutton_color_green_sea);
+							int btnColor = getResources().getColor(R.color.fbutton_color_green_sea);
 							focusBtn.setButtonColor(btnColor);
 							focusBtn.setText(getString(R.string.btn_focus));
-						} else {
+						}else{
 							followCount.setText(DataUtils.formatNumber(count+1));
-							int btnColor = getResources().getColor(
-									R.color.fbutton_color_concrete);
+							int btnColor = getResources().getColor(R.color.fbutton_color_concrete);
 							focusBtn.setButtonColor(btnColor);
 							focusBtn.setText(getString(R.string.btn_cancel_focus));
 						}
@@ -374,18 +373,11 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader(); 
 	 		} 
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -455,8 +447,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				bean.isPublish = 1; 
 				card_datas.add(bean);
 			}
-			FavoriteBoxInfoActivity.this.setTitle("共有"
-					+ card_datas.size() + "条收集");
+			FavoriteBoxInfoActivity.this.setTitle(new StringBuilder("共有").append(card_datas.size()).append("条收集"));
 		}else{
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject temp = (JSONObject) arr.get(i);
@@ -473,9 +464,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			    bean.setCreatorPic(temp.getString("photo"));								    
 				item_datas.add(bean);
 			}
-
-			FavoriteBoxInfoActivity.this.setTitle("共有"
-					+ item_datas.size() + "条收集");
+			FavoriteBoxInfoActivity.this.setTitle(new StringBuilder("共有").append(item_datas.size()).append("条收集"));
 		}		
 	}
 	
@@ -510,8 +499,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 							String url = obj.getString("photo");
 							userInfo.put("photo", url);
 							if (TextUtils.isEmpty(url)) {								
-									creatorPicView
-											.setImageResource(R.drawable.default_pic_avata); 
+									creatorPicView.setImageResource(R.drawable.default_pic_avata); 
 							} else {								
 								ImageLoader.getInstance().displayImage((String)userInfo.get("photo"),
 										creatorPicView);
@@ -527,10 +515,6 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			public void onErrorResponse(VolleyError error) {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);

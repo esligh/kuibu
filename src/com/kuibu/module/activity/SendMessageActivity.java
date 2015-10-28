@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,8 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
-import com.kuibu.common.utils.SafeEDcoderUtil;
-import com.kuibu.common.utils.VolleyErrorHelper;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.PaginationListView;
 import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
@@ -167,19 +165,12 @@ public class SendMessageActivity extends BaseActivity
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
-	 		}
+					return KuibuUtils.prepareReqHeader();
+			}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);		
 	}
@@ -225,18 +216,11 @@ public class SendMessageActivity extends BaseActivity
 					VolleyLog.e("Error: ", error.getMessage());
 					VolleyLog.e("Error:", error.getCause());
 					error.printStackTrace();
-					Toast.makeText(getApplicationContext(), 
-							VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-							Toast.LENGTH_SHORT).show();
 				}
 			}){
 				@Override  
 		 		public Map<String, String> getHeaders() throws AuthFailureError {  
-		 			HashMap<String, String> headers = new HashMap<String, String>();
-		 			String credentials = Session.getSession().getToken()+":unused";
-		 			headers.put("Authorization","Basic "+
-		 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-		 			return headers;  
+		 			return KuibuUtils.prepareReqHeader();
 		 		}
 			};
 			KuibuApplication.getInstance().addToRequestQueue(req);		

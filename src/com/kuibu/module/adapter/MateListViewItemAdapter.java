@@ -438,8 +438,8 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				public void onClick(View view) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(context,CollectionImageDetailActivity.class);
-					intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ENTITY,
-							datas.get(position)) ; 
+					intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ID,
+							datas.get(position).getId()) ;
 					context.startActivity(intent);
 					((Activity)context).overridePendingTransition(R.anim.anim_slide_in_left,
 							R.anim.anim_slide_out_left);

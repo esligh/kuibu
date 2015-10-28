@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -97,13 +96,13 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 							    bean.setTopUrl(temp.getString("photo"));
 							    datas.add(bean);
 							}
+							showView();
 						}
 						if(datas.size()>0){
 							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 						}else{
 							mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 						}
-						showView();
 					}	
 					listView.loadComplete();
 				} catch (JSONException e) {

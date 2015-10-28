@@ -4,49 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/list_card_view_bg_dark" >
-
-    <RelativeLayout
-        android:id="@+id/top_ll"
-        android:layout_width="match_parent"
-        android:layout_height="50dip" >
-
-        <ImageView
-            android:id="@+id/img_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/android_spaces_large"
-            android:layout_marginTop="@dimen/android_spaces_medium"
-            android:src="@drawable/card_complete_back" />
-
-        <ImageView
-            android:id="@+id/share_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/android_spaces_large"
-            android:layout_marginTop="@dimen/android_spaces_large"
-            android:src="@drawable/ic_action_share"
-            android:textColor="@color/white"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/fav_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/android_spaces_large"
-            android:layout_marginTop="@dimen/android_spaces_medium"
-            android:layout_toLeftOf="@id/share_btn"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ab_fav_normal" />
-    </RelativeLayout>
+    android:background="@color/list_view_bg_dark" >
 
     <com.kuibu.custom.widget.MultiStateView
         android:id="@+id/multiStateView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"      
-        android:layout_below="@id/top_ll"  
-        android:background="@color/list_card_view_bg_dark"
+        android:layout_height="match_parent"  
+        android:background="@color/list_view_bg_dark"
         app:msv_emptyView="@layout/empty_view"
         app:msv_errorView="@layout/error_view"
         app:msv_loadingView="@layout/loading_view"
@@ -89,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="80dp"
                 android:scaleType="fitXY"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <ImageButton
                 android:id="@+id/report_btn"

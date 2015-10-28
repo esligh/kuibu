@@ -28,7 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.DataUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.data.global.Constants;
@@ -194,6 +194,7 @@ public final class UserInfoContentFragment extends Fragment implements
 		initData(); //solve problem : Fragment（XXFragment） not attached to Activity
 	}
 
+	@SuppressWarnings("deprecation")
 	void initData()
 	{
 		boolean flag = this.getActivity().getIntent().getBooleanExtra(
@@ -297,8 +298,9 @@ public final class UserInfoContentFragment extends Fragment implements
 							user_residence_tv.setText(residence);
 						}
 						bUserIsFollow = obj.getBoolean("is_focus");
-						if(bUserIsFollow){
+						if(bUserIsFollow && Session.getSession().isLogin()){
 							if(!isDetached()){
+								@SuppressWarnings("deprecation")
 								int btnColor= getActivity().getResources().getColor(R.color.fbutton_color_concrete);
 								focusBtn.setButtonColor(btnColor);						
 								focusBtn.setText(getActivity().getString(R.string.btn_cancel_focus));
@@ -339,6 +341,7 @@ public final class UserInfoContentFragment extends Fragment implements
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onResponse(JSONObject response) {
 				
@@ -376,12 +379,8 @@ public final class UserInfoContentFragment extends Fragment implements
 			}
 		}){
 			@Override  
-	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 		public Map<String, String> getHeaders() throws AuthFailureError {   
+	 			return KuibuUtils.prepareReqHeader();  
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	

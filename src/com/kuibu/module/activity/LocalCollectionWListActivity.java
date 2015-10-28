@@ -30,6 +30,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.gc.materialdesign.views.ButtonFloat;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
@@ -143,11 +144,9 @@ public class LocalCollectionWListActivity extends BaseActivity {
 		MenuItem delMenu = menu.findItem(R.id.context_menu_delete);
 		MenuItem manageItem = menu.findItem(R.id.context_menu_manage);
 		if(showContextMenu){
-	//		moveMenu.setVisible(true);
 			delMenu.setVisible(true);
 			manageItem.setVisible(false);
 		}else{
-	//		moveMenu.setVisible(false);
 			delMenu.setVisible(false);
 			manageItem.setVisible(true);
 		}
@@ -309,19 +308,11 @@ public class LocalCollectionWListActivity extends BaseActivity {
 			public void onErrorResponse(VolleyError error) {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader();
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	

@@ -33,6 +33,7 @@ import com.kuibu.module.activity.UserInfoActivity;
 import com.kuibu.module.adapter.UserListAdapter;
 
 public class UserListFragment extends Fragment implements OnLoadListener{
+	
 	private PaginationListView userList;
 	private List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
 	private UserListAdapter authorAdapter;
@@ -161,7 +162,6 @@ public class UserListFragment extends Fragment implements OnLoadListener{
 			userList.setAdapter(authorAdapter);
 		} else {
 			authorAdapter.updateView(datas);
-
 		}
 	}
 

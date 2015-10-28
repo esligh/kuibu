@@ -171,7 +171,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 			mCardList.setVerticalScrollBarEnabled(false);
 			mCardList.addFooterView(footerView);
 			card_datas = new LinkedList<CollectionBean>(); 			
-			mCardApdater = new ImageGridAdapter(this, card_datas, false);
+			mCardApdater = new ImageGridAdapter(this, card_datas,false);
 			mCardList.setAdapter(mCardApdater);
 			mCardList.addFooterView(footerView);
 			mCardList.setOnItemClickListener(new OnItemClickListener() {

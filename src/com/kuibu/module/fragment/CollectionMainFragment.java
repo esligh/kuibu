@@ -32,7 +32,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -224,11 +224,7 @@ public class CollectionMainFragment extends Fragment {
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader();
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	

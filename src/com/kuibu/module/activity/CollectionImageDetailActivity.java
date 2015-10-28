@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import uk.co.senab.photoview.PhotoView;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
@@ -18,16 +17,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,10 +36,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.DataUtils;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.PreferencesUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
@@ -52,9 +51,8 @@ import com.kuibu.module.net.PublicRequestor;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-public class CollectionImageDetailActivity extends Activity{	
+public class CollectionImageDetailActivity extends BaseActivity{	
 	
-	private ImageView backIv ,favIv,shareIv; 
 	private PhotoView imageIv; 
 	private TextView  titleTv ; 
 	private TextView  descTv ; 
@@ -65,16 +63,21 @@ public class CollectionImageDetailActivity extends Activity{
 	private int voteCount ,commentCount; 
 	private ImageButton reportBtn;  
 	private CollectionItemBean collection = new CollectionItemBean(); 
-	private MultiStateView mMultiStateView;
-	
+	private MultiStateView mMultiStateView;	 
+    private MenuItem mFavActionItem ;
+    private Animation imgAnim ;
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);		
 		setContentView(R.layout.collection_image_detail_activity);
+		setTitle(null);
+		ActionBar toolbar =getSupportActionBar(); 
+		if(toolbar != null){
+			toolbar.setDisplayHomeAsUpEnabled(true);
+			toolbar.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_ab_solid_dark_holo));
+		}
 		mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
 		mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
         .setOnClickListener(new View.OnClickListener() {
@@ -84,15 +87,12 @@ public class CollectionImageDetailActivity extends Activity{
 				loadContent();
 			}   	
         });
+		imgAnim = AnimationUtils.loadAnimation(CollectionImageDetailActivity.this, 
+				R.anim.anim_slide_in_up);
+		
 		toolsLayout = (LinearLayout)findViewById(R.id.layout_tools);
 		reportBtn = (ImageButton)findViewById(R.id.report_btn);
-		backIv =(ImageView)findViewById(R.id.img_back);
-		backIv.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View view) {
-				onBackPressed();
-			}
-		});
+		reportBtn.setAnimation(imgAnim);
 		reportBtn.setOnClickListener( new OnClickListener() {			
 			@Override
 			public void onClick(View view) {
@@ -100,8 +100,6 @@ public class CollectionImageDetailActivity extends Activity{
 			}
 		});
 		
-		shareIv = (ImageView)findViewById(R.id.share_btn);
-		favIv = (ImageView)findViewById(R.id.fav_btn);		
 		imageIv = (PhotoView)findViewById(R.id.image_iv);
 		imageIv.setAdjustViewBounds(true);
 		DisplayMetrics dm = new DisplayMetrics();
@@ -112,28 +110,6 @@ public class CollectionImageDetailActivity extends Activity{
 		titleTv = (TextView)findViewById(R.id.title_tv);
 		descTv  = (TextView)findViewById(R.id.desc_tv);
 		
-		
-		favIv.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View arg0) {
-				if(Session.getSession().isLogin()){
-					Intent intent = new Intent(CollectionImageDetailActivity.this,CollectFavoriteBoxActivity.class);
-					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, collection.getId());
-					intent.putExtra("type",collection.getType());
-					intent.putExtra(StaticValue.COLLECTION.IS_COLLECTED, isInFavorite);
-					startActivityForResult(intent,StaticValue.RequestCode.FAVORITE_BOX_REQCODE);
-					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
-				}else{
-					Toast.makeText(CollectionImageDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
-				}
-			}
-		});		
-		shareIv.setOnClickListener(new OnClickListener(){			
-			@Override
-			public void onClick(View arg0) {
-				
-			}
-		});
 		likeBtn = (FButton) findViewById(R.id.like_bt);
 		likeBtn.setOnClickListener(new OnClickListener() {			
 			@Override
@@ -174,6 +150,7 @@ public class CollectionImageDetailActivity extends Activity{
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		collection = null;
 	}
 	
 	private void loadContent()
@@ -193,8 +170,6 @@ public class CollectionImageDetailActivity extends Activity{
 						JSONObject obj = new JSONObject(response.getString("result"));
 						if(obj!=null){
 							readFromJson(obj);
-							Animation imgAnim = AnimationUtils.loadAnimation(CollectionImageDetailActivity.this, 
-									R.anim.anim_slide_in_up);
 							toolsLayout.setVisibility(View.VISIBLE);
 							toolsLayout.startAnimation(imgAnim);												
 							
@@ -293,6 +268,7 @@ public class CollectionImageDetailActivity extends Activity{
 		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onResponse(JSONObject response) {
 				try {
@@ -331,22 +307,14 @@ public class CollectionImageDetailActivity extends Activity{
 		}){
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put(
-						"Authorization",
-						"Basic "
-								+ SafeEDcoderUtil.encryptBASE64(
-										credentials.getBytes()).replaceAll(
-										"\\s+", ""));
-				return headers;
+				return KuibuUtils.prepareReqHeader();
 			}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req, 
 				StaticValue.TAG_VLAUE.DETAIL_PAGE_VOLLEY);
 	}
 		
+	@SuppressWarnings("deprecation")
 	private void doReport()
 	{ 
 		AlertDialog.Builder builder =null ; 
@@ -419,7 +387,8 @@ public class CollectionImageDetailActivity extends Activity{
 								isSupport = true; 
 							}
 							if(codes.contains(StaticValue.USER_ACTION.ACTION_COLLECT_COLLECTION)){
-								favIv.setImageResource(R.drawable.ab_fav_active);
+								mFavActionItem.setIcon(R.drawable.ab_fav_active);
+								mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
 								isInFavorite = true;
 							}
 						}						
@@ -434,14 +403,46 @@ public class CollectionImageDetailActivity extends Activity{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.content_detail, menu);
+		mFavActionItem = menu.findItem(R.id.menu_item_fav_action_bar);
+		if (isInFavorite) {
+			mFavActionItem.setIcon(R.drawable.ab_fav_active);
+			mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
+		} else {
+			mFavActionItem.setIcon(R.drawable.ab_fav_normal);
+			mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
+		}
+		return true;
+	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home:				
+				this.onBackPressed();
+				break;
+			case R.id.menu_item_fav_action_bar:
+				if(Session.getSession().isLogin()){
+					Intent intent = new Intent(CollectionImageDetailActivity.this,CollectFavoriteBoxActivity.class);
+					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, collection.getId());
+					intent.putExtra("type",collection.getType());
+					intent.putExtra(StaticValue.COLLECTION.IS_COLLECTED, isInFavorite);
+					startActivityForResult(intent,StaticValue.RequestCode.FAVORITE_BOX_REQCODE);
+					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
+				}else{
+					Toast.makeText(CollectionImageDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
+				}
+				break;
+				
+		}
+		return super.onOptionsItemSelected(item);
+	}
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
@@ -451,11 +452,13 @@ public class CollectionImageDetailActivity extends Activity{
 					isInFavorite = data.getBooleanExtra("isCollected", false);
 					if (isInFavorite) {
 						Toast.makeText(this, R.string.fav_add_success, Toast.LENGTH_SHORT).show();
-						favIv.setImageResource(R.drawable.ab_fav_active);
+						mFavActionItem.setIcon(R.drawable.ab_fav_active);
+						mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
 							
 					} else {
 						Toast.makeText(this, R.string.fav_cancel_success, Toast.LENGTH_SHORT).show();
-						favIv.setImageResource(R.drawable.ab_fav_normal);
+						mFavActionItem.setIcon(R.drawable.ab_fav_normal);
+						mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
 										
 					}				
 				}

@@ -2,49 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/list_card_view_bg_dark">
-    	
-    <RelativeLayout
-        android:id="@+id/top_ll" 
-        android:layout_width="match_parent"
-        android:layout_height="50dip">
-	    
-	    <ImageView
-            android:id="@+id/img_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/android_spaces_medium"
-            android:layout_marginLeft="@dimen/android_spaces_large"
-            android:src="@drawable/card_complete_back" />
-	    
-	    <TextView
-	        android:id="@+id/send_btn"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_marginTop="@dimen/android_spaces_large"
-	        android:layout_marginRight="@dimen/android_spaces_large"
-	        android:text="@string/publish"
-	        android:textSize="18sp"
-	        android:textColor="@color/white"/>
-	    
-		<ImageView 
-		    android:id="@+id/edit_btn"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:src="@drawable/ic_edit_light"
-		    android:scaleType="fitCenter"
-		    android:layout_toLeftOf="@id/send_btn"
-		    android:layout_marginTop="@dimen/android_spaces_large"
-		    android:layout_marginRight="@dimen/android_spaces_large"/>
-			    	        
-    </RelativeLayout>
-    
+    android:background="@color/list_view_bg_dark">
+   
     <TextView 
         android:id="@+id/title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/top_ll"
         android:textColor="@color/white"
         android:layout_marginTop="@dimen/android_spaces"
         android:layout_marginLeft="@dimen/android_spaces_large"
@@ -63,13 +26,25 @@
         android:layout_marginBottom="@dimen/android_spaces"
         android:textColor="@color/white"
         android:textSize="18sp"/>
-  	  	    
-    <uk.co.senab.photoview.PhotoView 
-        android:id="@+id/image_iv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/android_spaces"
-        android:layout_below="@id/desc_tv"
-        android:scaleType="fitXY" 
-        android:contentDescription="@null"/>	
+  	
+  	<FrameLayout
+  	    android:layout_width="match_parent"
+  	    android:layout_height="wrap_content"
+  	    android:layout_below="@id/desc_tv">
+  	      	    
+	    <uk.co.senab.photoview.PhotoView 
+	        android:id="@+id/image_iv"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_marginBottom="@dimen/android_spaces"
+	        android:scaleType="fitXY" 
+	        android:contentDescription="@null"/>
+	    <ImageView
+	        android:id="@+id/action_btn"
+	        android:layout_width="@dimen/icon_medium_width"
+	        android:layout_height="@dimen/icon_medium_height"
+	        android:scaleType="fitCenter"
+	        android:layout_gravity="center"
+	        android:src="@drawable/iconfont_start"/>	        
+    </FrameLayout>	
 </RelativeLayout>

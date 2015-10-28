@@ -2,6 +2,7 @@ package com.kuibu.common.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -146,7 +147,33 @@ public class BitmapHelper {
         }        
         return desPath;
     }
-     
+    
+    public final static String rotateImage(Context context,String srcPath,int degree,int quality)
+    {
+    	final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(srcPath, options);
+        options.inSampleSize = 1;
+        options.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeFile(srcPath, options);       
+    	File srcFile = new File(srcPath);
+    	String desPath = getImageCacheDir(context) + srcFile.getName(); 	
+        bitmap = rotateBitmap(bitmap,degree);        
+		try {
+			File file = new File(desPath);
+	        FileOutputStream fos = new FileOutputStream(file);
+	        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos);
+	        fos.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			if(bitmap != null && !bitmap.isRecycled()){
+            	bitmap.recycle();
+            }
+		}
+		return desPath ; 
+    }
+    
     /**
      * 此方法过期，该方法可能造成OutOfMemoryError，使用不含isAdjust参数的方法
      * @param is

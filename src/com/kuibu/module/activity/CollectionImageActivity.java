@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -40,10 +41,10 @@ public class CollectionImageActivity extends AppCompatActivity{
 	private CollectionBean collection ; 
 	private ImageButton rotateBtn; 
 	private String action ; 
+	private int degree ; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		SharedPreferences mPerferences = PreferenceManager
 				.getDefaultSharedPreferences(this);		
 		isDarkTheme= mPerferences.getBoolean(StaticValue.PrefKey.DARK_THEME_KEY, false);
@@ -76,8 +77,8 @@ public class CollectionImageActivity extends AppCompatActivity{
 		rotateBtn.setOnClickListener(new OnClickListener() {			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				imageIv.setRotationBy(90);
+				degree = (degree+90)%360;
 			}
 		});
 		
@@ -134,8 +135,7 @@ public class CollectionImageActivity extends AppCompatActivity{
 		}
 		return super.onOptionsItemSelected(item);
 	}
-		
-	
+			
 	@Override
 	public void onBackPressed() {
 		saveCollection();		
@@ -159,7 +159,11 @@ public class CollectionImageActivity extends AppCompatActivity{
 			collection = new CollectionBean();			
 			collection.title = title;
 			collection.content = content;
-			collection.cover = mImgUri;
+			if(degree>0){
+				collection.cover = BitmapHelper.rotateImage(this, mImgUri, degree, 90);				
+			}else{
+				collection.cover = mImgUri;
+			}			
 			collection.pid = getIntent().getStringExtra(
 					StaticValue.EDITOR_VALUE.COLLECT_PACK_ID);
 			collection.type = StaticValue.EDITOR_VALUE.COLLECTION_IMAGE;
@@ -182,6 +186,12 @@ public class CollectionImageActivity extends AppCompatActivity{
 				cons.append(" content = ? ") ;
 				collection.content = content ; 
 				args.add(content);
+			}
+			
+			if(degree>0){
+				cons.append(" cover= ? ");
+				collection.cover = BitmapHelper.rotateImage(this, mImgUri, degree, 90);			
+				args.add(collection.cover);
 			}
 			
 			if(cons.length()>0){

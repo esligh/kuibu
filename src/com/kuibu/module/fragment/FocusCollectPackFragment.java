@@ -143,7 +143,8 @@ public class FocusCollectPackFragment extends Fragment implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
+				if(datas.size()<=0)
+					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);

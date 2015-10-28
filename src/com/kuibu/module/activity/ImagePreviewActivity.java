@@ -15,20 +15,20 @@ import org.json.JSONObject;
 
 import uk.co.senab.photoview.PhotoView;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,8 +38,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.common.utils.FileUtils;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -49,37 +51,35 @@ import com.kuibu.model.bean.CollectionBean;
 import com.kuibu.model.vo.CollectionVo;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class ImagePreviewActivity extends Activity{
+public class ImagePreviewActivity extends BaseActivity{
 	
 	public static final int EDIT_REQ_CODE = 0x2001 ; 
-	private ImageView backIv ,editTv; 
 	private PhotoView imageIv; 
 	private TextView  titleTv ; 
 	private TextView  descTv ; 
 	private CollectionBean collection ; 
-	private TextView pubTv; 
 	private ProgressDialog progressDialog;
 	private FinalHttp finalHttp = null;
 	private CollectionVo collectionVo ; 
 	private String action ;  
-	private boolean bEdit =false ; 
+	private boolean bEdit =false ;  
+	private MenuItem pubMenu ; 
+	private ImageView actionBtn ;  
+	private final Handler handler = new Handler();
+    private boolean rotating = false;
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);		
+		
 		setContentView(R.layout.image_preview_activity);
+		ActionBar toolbar =getSupportActionBar(); 
+		if(toolbar != null){
+			toolbar.setDisplayHomeAsUpEnabled(true);
+			toolbar.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_ab_solid_dark_holo));
+		}		
 		collectionVo = new CollectionVo(this);
-		backIv =(ImageView)findViewById(R.id.img_back);
-		backIv.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View arg0) {
-				onBackPressed();
-			}
-		});
-		editTv = (ImageView)findViewById(R.id.edit_btn);		
 		imageIv = (PhotoView)findViewById(R.id.image_iv);
 		imageIv.setAdjustViewBounds(true);
 		DisplayMetrics dm = new DisplayMetrics();
@@ -89,32 +89,9 @@ public class ImagePreviewActivity extends Activity{
 		
 		titleTv = (TextView)findViewById(R.id.title_tv);
 		descTv  = (TextView)findViewById(R.id.desc_tv);
-		pubTv = (TextView)findViewById(R.id.send_btn);
-		pubTv.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				publishCollection();
-			}
-		});
 		collection = (CollectionBean)getIntent().getSerializableExtra(
 				StaticValue.EDITOR_VALUE.COLLECTION_ENTITY);
-		int from_who = getIntent().getIntExtra(
-				StaticValue.EDITOR_VALUE.FROM_WHO, 0);
-		if (from_who == StaticValue.EDITOR_VALUE.EDITOR_TO_PREVIEW) {
-			editTv.setVisibility(View.GONE);
-		} else {
-			editTv.setVisibility(View.VISIBLE);
-		}
 		if(collection != null ){
-			if ((collection.isPublish == 1 && collection.isSync == 1)) {
-				pubTv.setVisibility(View.GONE);		
-				RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)editTv.getLayoutParams();
-				params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-				editTv.setLayoutParams(params);
-			} else {
-				pubTv.setVisibility(View.VISIBLE);			
-			}
 			if(!collection.cover.startsWith(Constants.URI_PREFIX)){
 				collection.cover = Constants.URI_PREFIX + collection.cover ; 
 			}						
@@ -130,24 +107,71 @@ public class ImagePreviewActivity extends Activity{
 			ImageLoader.getInstance().displayImage(collection.cover, imageIv);			 			
 			Animation anim = AnimationUtils.loadAnimation(ImagePreviewActivity.this, 
 					R.anim.anim_slide_in_up);
-			imageIv.startAnimation(anim);
-		}
-				
-		editTv.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				bEdit  = false ; 
-				Intent intent = new Intent(ImagePreviewActivity.this, CollectionImageActivity.class);
-				intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ENTITY, collection);
-				startActivityForResult(intent,EDIT_REQ_CODE);
-			}
-		});
-		
+			imageIv.startAnimation(anim);			
+			actionBtn = (ImageView)findViewById(R.id.action_btn);
+			actionBtn.startAnimation(anim);
+			actionBtn.setOnClickListener(new OnClickListener() {			
+				@Override
+				public void onClick(View view) {
+					if(!rotating){
+						toggleRotation();
+						actionBtn.setImageResource(R.drawable.iconfont_stop);
+					}else{
+						handler.removeCallbacksAndMessages(null);
+						imageIv.setRotationTo(0);
+						actionBtn.setImageResource(R.drawable.iconfont_start);
+					}
+					rotating = !rotating;
+				}
+			});
+		}	
 		finalHttp = new FinalHttp();
+		setTitle(null);
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.preview_menu, menu);
+		pubMenu = menu.findItem(R.id.action_publish);
+		MenuItem edit = menu.findItem(R.id.action_edit);
+		int from_who = getIntent().getIntExtra(
+				StaticValue.EDITOR_VALUE.FROM_WHO, 0);
+		if (from_who == StaticValue.EDITOR_VALUE.EDITOR_TO_PREVIEW) {
+			edit.setVisible(false);
+		} else {
+			edit.setVisible(true);
+		}
+
+		if (collection == null || (collection.isPublish == 1 && collection.isSync == 1)
+				|| collection.content.equals("")) {
+			pubMenu.setVisible(false);
+		} else {
+			pubMenu.setVisible(true);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.onBackPressed();
+			overridePendingTransition(R.anim.anim_slide_out_right,
+					R.anim.anim_slide_in_right);
+			return true;
+		case R.id.action_publish:
+			publishCollection();			
+			return true;
+		case R.id.action_edit:
+			bEdit  = false ; 
+			Intent intent = new Intent(ImagePreviewActivity.this, CollectionImageActivity.class);
+			intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ENTITY, collection);
+			startActivityForResult(intent,EDIT_REQ_CODE);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent result) {
 		super.onActivityResult(requestCode, resultCode, result);
@@ -182,6 +206,9 @@ public class ImagePreviewActivity extends Activity{
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		if(handler != null){
+			handler.removeCallbacksAndMessages(null);
+		}
 		collectionVo.closeDB();
 	}
 	
@@ -268,14 +295,7 @@ public class ImagePreviewActivity extends Activity{
 		}) {
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken() + ":unused";
-				headers.put(
-						"Authorization",
-						"Basic " + SafeEDcoderUtil.encryptBASE64(
-										credentials.getBytes()).replaceAll(
-										"\\s+", ""));
-				return headers;
+				return KuibuUtils.prepareReqHeader();
 			}
 		};
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,
@@ -343,11 +363,7 @@ public class ImagePreviewActivity extends Activity{
 											String.valueOf(collection._id) });
 							bEdit = true ; 
 							collection.isPublish=collection.isSync = 1 ; 
-							pubTv.setVisibility(View.GONE);
-							RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)editTv.getLayoutParams();
-							params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-							editTv.setLayoutParams(params);
-							
+							pubMenu.setVisible(false);							
 							Toast.makeText(ImagePreviewActivity.this, getString(R.string.publish_success),
 									Toast.LENGTH_SHORT).show();
 							
@@ -366,4 +382,22 @@ public class ImagePreviewActivity extends Activity{
 			}
 		});
 	}
+	
+	private void toggleRotation() {
+        if (rotating) {
+            handler.removeCallbacksAndMessages(null);            
+        } else {
+            rotateLoop();
+        }
+    }
+
+    private void rotateLoop() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                imageIv.setRotationBy(1);
+                rotateLoop();
+            }
+        }, 15);
+    }
 }

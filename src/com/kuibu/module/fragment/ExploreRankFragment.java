@@ -36,6 +36,7 @@ import com.kuibu.module.adapter.MateListViewItemAdapter;
 public class ExploreRankFragment extends BaseFragment implements
 	OnLoadListener{
 	
+	private static final String VOLLEY_REQ_TAG = "explore_rank_fragment";
 	private PaginationListView rankList = null;
 	private MateListViewItemAdapter rankAdapter = null;
 	private List<MateListItem> mdatas = new ArrayList<MateListItem>();
@@ -89,6 +90,7 @@ public class ExploreRankFragment extends BaseFragment implements
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		mdatas.clear();
+		KuibuApplication.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG);
 	}
 	
 	private void loadFromArray(JSONArray arr,String action)
@@ -192,7 +194,7 @@ public class ExploreRankFragment extends BaseFragment implements
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
 				Constants.Config.RETRY_TIMES, 1.0f));
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,VOLLEY_REQ_TAG);
 	}	
 	
 	private void showView() {

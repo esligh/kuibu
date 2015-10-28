@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -107,7 +108,6 @@ public class CollectionEditorActivity extends AppCompatActivity {
             intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, Constants.Config.MAX_IMAGE_SELECT);
             intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
             startActivityForResult(intent, REQUEST_IMAGE);
-            
 			return true;
 		case R.id.action_preview:
 			previewCollection();
@@ -162,13 +162,13 @@ public class CollectionEditorActivity extends AppCompatActivity {
 			if (TextUtils.isEmpty(mTitle.getText().toString())) {
 				if (TextUtils.isEmpty(mContent.getText().toString())) {
 					return;
-				} else {
+				}else{
 					String snippet = "";
 					if (mContent.getText().toString().length() < Constants.MAX_TITLE_LENGTH) {
 						snippet = mContent.getText().toString().substring(0,
 								mContent.getText().toString().length())
 								.replace("[^\\w\\s]+", " ");
-					} else {
+					}else{
 						snippet = mContent.getText().toString()
 								.substring(0, Constants.MAX_TITLE_LENGTH)
 								.replace("[^\\w\\s]+", " ");
@@ -186,8 +186,7 @@ public class CollectionEditorActivity extends AppCompatActivity {
 					: StaticValue.EDITOR_VALUE.COLLECTION_IMAGE;
 			collection.createBy = Session.getSession().getuId();
 			collection.isSync= 0 ; 
-			collectionVo.add(collection);
-			
+			collectionVo.add(collection);			
 			int key = collectionVo.getlastkey() ;
 			collection._id = String.valueOf(key);			
 			packVo.update(" collect_count = collect_count+1 ", " pack_id = ?", new String[]{String.valueOf(collection.pid)});
