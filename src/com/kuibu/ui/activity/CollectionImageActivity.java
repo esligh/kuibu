@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +24,10 @@ import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.vo.CollectPackVo;
-import com.kuibu.model.vo.CollectionVo;
+import com.kuibu.model.db.CollectPackVo;
+import com.kuibu.model.db.CollectionVo;
+import com.kuibu.model.entity.CollectionBean;
+import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CollectionImageActivity extends AppCompatActivity{

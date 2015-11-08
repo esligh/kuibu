@@ -17,32 +17,11 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content">	
 	          
-	        <uk.co.senab.photoview.PhotoView
-	            android:id="@+id/collection_image"
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content"
-	            android:layout_marginTop="@dimen/android_spaces"
-	            android:layout_marginLeft="@dimen/android_spaces"
-	            android:layout_marginRight="@dimen/android_spaces"
-	            android:scaleType="fitXY"
-	            android:contentDescription="@null" />
-	           
-	        <ImageButton
-	            android:id="@+id/rotate_btn"
-	            android:layout_width="wrap_content"
-	            android:layout_height="wrap_content"
-	            android:layout_alignParentTop="true"
-	            android:layout_alignParentRight="true"
-	            android:layout_marginTop="@dimen/android_spaces_small"
-	            android:layout_marginRight="@dimen/android_spaces_small"
-	            android:src="@drawable/pic_rotate_icon"/>
-	        
 	        <EditText
 	            android:id="@+id/collection_desc"
 	            android:layout_width="match_parent"
-	            android:layout_height="200dp"
-	            android:layout_below="@id/collection_image"
-	            android:padding="4dp"
+	            android:layout_height="160dip"
+	            android:padding="@dimen/android_spaces_small"
 	            android:gravity="start"
 	            android:layout_marginTop="@dimen/android_spaces"
 	            android:layout_marginLeft="@dimen/android_spaces"
@@ -52,6 +31,26 @@
 	            android:textColor="?listItemTextColor"
 	            android:background="@drawable/bg_edittext_border" 
 	            android:focusable="true"/>
+	        
+	        <uk.co.senab.photoview.PhotoView
+	            android:id="@+id/collection_image"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_below="@id/collection_desc"    
+	            android:layout_marginTop="@dimen/android_spaces"
+	            android:layout_marginLeft="@dimen/android_spaces"
+	            android:layout_marginRight="@dimen/android_spaces"
+	            android:scaleType="fitXY"
+	            android:contentDescription="@null" />
+	        
+	        <ImageButton
+	            android:id="@+id/rotate_btn"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_below="@id/collection_desc"    
+	            android:layout_alignParentRight="true"
+	            android:layout_marginRight="@dimen/android_spaces_small"
+	            android:src="@drawable/pic_rotate_icon"/>
 	    </RelativeLayout>	
 	</ScrollView>	
 </LinearLayout>

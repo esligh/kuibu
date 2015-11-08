@@ -4,95 +4,43 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.kuibu.app.model.base.CommonAdapter;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 
-public class FavoriteBoxCardListAdapter extends BaseAdapter {
+public class FavoriteBoxCardListAdapter extends CommonAdapter<Map<String,String>> {
 
-    private List<Map<String,String>> items;
-    private final Context context;
 
-    public FavoriteBoxCardListAdapter(Context context, List<Map<String,String>> items) {
-        this.context = context;
-        this.items = items;
+    public FavoriteBoxCardListAdapter(Context context, List<Map<String,String>> items,int layoutId) {
+        super(context,items,layoutId);
     }
 
-    public void updateView(List<Map<String,String>> items)
-    {
-    	this.items = items ; 
-    	this.notifyDataSetChanged();
-    }
-    @Override
-    public int getCount() {
-    	if(items!=null)
-    		return items.size();
-    	return 0 ; 
-    }
-
-    @Override
-    public Object getItem(int position) {
-    	if(items!=null)
-    		return items.get(position);
-    	return 0 ; 
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;       
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.collect_list_item_card, parent,false);            
-            holder = new ViewHolder();
-            holder.box_name_tv = (TextView) convertView.findViewById(R.id.listitem_card_box_name);
-            holder.item_title_tv= (TextView) convertView.findViewById(R.id.list_item_card_title);          
-            holder.box_count = (TextView) convertView.findViewById(R.id.box_listitem_card_count);           
-            holder.dividerLine = convertView.findViewById(R.id.list_item_seperator);
-            holder.type_iv = (ImageView)convertView.findViewById(R.id.type_icon);
-            convertView.setTag(holder);
-
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        holder.box_name_tv.setText(items.get(position).get("box_name"));
-        String count = items.get(position).get("box_count");
-        holder.box_count.setText(count+"个收藏");
+	@Override
+	public void convert(com.kuibu.app.model.base.ViewHolder holder,
+			Map<String, String> item) {
+		// TODO Auto-generated method stub
+		holder.setTvText(R.id.listitem_card_box_name,item.get("box_name"));
+        String count = item.get("box_count");
+        holder.setTvText(R.id.box_listitem_card_count,count+"个收藏");
         if(Integer.parseInt(count) > 0){        	      
-        	String[] titles = items.get(position).get("titles").split(",");
+        	String[] titles = item.get("titles").split(",");
         	StringBuilder builder = new StringBuilder();
         	for(int i=0;i<titles.length;i++){
         		builder.append(i+1).append(". ").append(titles[i]).append("\n");
         	}        	
-        	holder.item_title_tv.setVisibility(View.VISIBLE);
-        	holder.item_title_tv.setText(builder.toString());
-        	holder.dividerLine.setVisibility(View.VISIBLE);        	
+        	holder.setVisibility(R.id.list_item_card_title,View.VISIBLE);
+        	holder.setTvText(R.id.list_item_card_title,builder.toString());
+        	holder.setVisibility(R.id.list_item_seperator,View.VISIBLE);        	
         }else{        	
-        	holder.item_title_tv.setVisibility(View.GONE);     	
-        	holder.dividerLine.setVisibility(View.GONE);        	
+        	holder.setVisibility(R.id.list_item_card_title,View.GONE);     	
+        	holder.setVisibility(R.id.list_item_seperator,View.GONE);        	
         }
-        if(StaticValue.SERMODLE.BOX_TYPE_PIC.equals(items.get(position).get("box_type"))){
-        	holder.type_iv.setImageResource(R.drawable.pack_type_pic);
+        if(StaticValue.SERMODLE.BOX_TYPE_PIC.equals(item.get("box_type"))){
+        	holder.setImageResource(R.id.type_icon,R.drawable.pack_type_pic);
         }else{
-        	holder.type_iv.setImageResource(R.drawable.pack_type_word);
+        	holder.setImageResource(R.id.type_icon,R.drawable.pack_type_word);
         }
-        return convertView;
-    }
-
-    private static class ViewHolder {
-        private TextView box_name_tv;
-        private TextView item_title_tv;
-        private TextView box_count;
-        private View dividerLine ; 
-        private ImageView type_iv ; 
-    }
+	}
 }

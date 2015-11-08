@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,7 +44,8 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.UserInfoBean;
+import com.kuibu.model.entity.UserInfoBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.iterfaces.ICamera;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
@@ -333,7 +334,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 						if(TextUtils.isEmpty(url) || url.equals("null")){
 							userPhoto.setImageResource(R.drawable.icon_addpic_focused);
 						}else{
-							ImageLoader.getInstance().displayImage(url,userPhoto);
+							ImageLoader.getInstance().displayImage(url,userPhoto,Constants.defaultAvataOptions);
 						}	
 						
 						String sex = obj.getString("sex");

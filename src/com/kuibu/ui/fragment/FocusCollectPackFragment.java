@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,32 +12,35 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectPackItemBean;
-import com.kuibu.module.activity.CollectInfoListActivity;
+import com.kuibu.model.entity.CollectPackItemBean;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.FocusCollectItemAdapter;
+import com.kuibu.ui.activity.CollectInfoListActivity;
 
-public class FocusCollectPackFragment extends Fragment implements
-		OnLoadListener {
+public class FocusCollectPackFragment extends Fragment {
 
-	private PaginationListView packList = null;
+	private PullToRefreshListView packList = null;
 	private FocusCollectItemAdapter adapter = null;
 	private List<CollectPackItemBean> datas = new ArrayList<CollectPackItemBean>();
 	private MultiStateView mMultiStateView;
@@ -45,7 +48,7 @@ public class FocusCollectPackFragment extends Fragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_pagination_listview,
+		View rootView = inflater.inflate(R.layout.activity_pullrefresh_listview,
 				container, false);
 		mMultiStateView = (MultiStateView) rootView
 				.findViewById(R.id.multiStateView);
@@ -59,18 +62,34 @@ public class FocusCollectPackFragment extends Fragment implements
 						loadData();
 					}
 				});
-		packList = (PaginationListView) rootView
+		packList = (PullToRefreshListView) rootView
 				.findViewById(R.id.pagination_lv);
-		packList.setOnLoadListener(this);
+		packList.setMode(Mode.PULL_FROM_END);
+		packList.setPullToRefreshOverScrollEnabled(false);
+		packList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+				String label = DateUtils.formatDateTime(getActivity(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}
+		});
 		packList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
 				Intent intent = new Intent(getActivity(),
 						CollectInfoListActivity.class);
-				intent.putExtra("pack_id", datas.get(position).getId());
-				intent.putExtra("type", datas.get(position).getPackType());
-				intent.putExtra("create_by", datas.get(position).getCreateBy());
+				intent.putExtra("pack_id", datas.get(position-1).getId());
+				intent.putExtra("type", datas.get(position-1).getPackType());
+				intent.putExtra("create_by", datas.get(position-1).getCreateBy());
 				getActivity().startActivity(intent);
 				getActivity().overridePendingTransition(
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
@@ -132,7 +151,7 @@ public class FocusCollectPackFragment extends Fragment implements
 						mMultiStateView
 								.setViewState(MultiStateView.ViewState.EMPTY);
 					}
-					packList.loadComplete();
+					packList.onRefreshComplete();
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -159,8 +178,4 @@ public class FocusCollectPackFragment extends Fragment implements
 		}
 	}
 
-	@Override
-	public void onLoadMore() {
-		loadData();
-	}
 }

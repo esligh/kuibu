@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -58,6 +58,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.app.module.core.InJavaScriptObject;
 import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.common.utils.FileUtils;
 import com.kuibu.common.utils.KuibuUtils;
@@ -69,10 +70,10 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.vo.CollectionVo;
-import com.kuibu.model.vo.ImageLibVo;
-import com.kuibu.model.webview.InJavaScriptObject;
+import com.kuibu.model.db.CollectionVo;
+import com.kuibu.model.db.ImageLibVo;
+import com.kuibu.model.entity.CollectionBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.iterfaces.OnPageLoadFinished;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
@@ -411,7 +412,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 			String descript = new StringBuffer(Session.getSession().getuId()).append(":")
 					.append(collection.content)
 					.toString(); 
-			params.put("csn",SafeEDcoderUtil.MD5(descript));
+			params.put("cisn",SafeEDcoderUtil.MD5(descript));
 			params.put("pack_id", collection.pid);			
 			params.put("cover", "");
 			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
@@ -440,8 +441,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 								progressDialog.dismiss();
 								
 								Toast.makeText(PreviewActivity.this, getString(R.string.publish_success),
-										Toast.LENGTH_SHORT).show();
-								
+										Toast.LENGTH_SHORT).show();								
 							}					
 						}else{
 							progressDialog.dismiss();
@@ -466,14 +466,7 @@ public class PreviewActivity extends BaseActivity implements OnPageLoadFinished{
 			}) {
 				@Override
 				public Map<String, String> getHeaders() throws AuthFailureError {
-					HashMap<String, String> headers = new HashMap<String, String>();
-					String credentials = Session.getSession().getToken() + ":unused";
-					headers.put(
-							"Authorization",
-							"Basic " + SafeEDcoderUtil.encryptBASE64(
-											credentials.getBytes()).replaceAll(
-											"\\s+", ""));
-					return headers;
+					return KuibuUtils.prepareReqHeader();
 				}
 			};
 			req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,

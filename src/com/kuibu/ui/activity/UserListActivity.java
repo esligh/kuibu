@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,8 @@ import java.util.Map;
 import android.support.v4.app.Fragment;
 
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.fragment.UserListFragment;
+import com.kuibu.module.activity.R;
+import com.kuibu.ui.fragment.UserListFragment;
  
 public class UserListActivity extends UserInfoFragmentActivity {
 	

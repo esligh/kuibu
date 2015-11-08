@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +19,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -34,26 +36,31 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CommentItemBean;
-import com.kuibu.module.adapter.CommentItemAdapter;
+import com.kuibu.model.entity.CommentItemBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.net.PublicRequestor;
 
 public class CommentActivity extends BaseActivity implements
-		OnLoadListener, OnItemClickListener {
+	OnItemClickListener {
 	
-	private CommentItemAdapter commentItemAdapter;
+	private CommonAdapter<CommentItemBean> commentItemAdapter;
 	private List<CommentItemBean> datas = new ArrayList<CommentItemBean>();
-	private PaginationListView commentList;
+	private PullToRefreshListView commentList;
 	private ImageButton btnSend;
 	private EditText editContent;
 	private String cid;
@@ -76,14 +83,31 @@ public class CommentActivity extends BaseActivity implements
 				loadData();
 			}   	
         });
-		commentList = (PaginationListView) findViewById(R.id.comment_list);
+		commentList = (PullToRefreshListView) findViewById(R.id.comment_list);
+		commentList.setMode(Mode.PULL_FROM_END);
+		commentList.setPullToRefreshOverScrollEnabled(false);
+		commentList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+				String label = DateUtils.formatDateTime(getApplicationContext(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}
+		});
 		editContent = (EditText) findViewById(R.id.edit_comment);
 		editContent.setOnFocusChangeListener(new OnFocusChangeListener() {			
 			@Override
 			public void onFocusChange(View view, boolean hasFocus) {
 				// TODO Auto-generated method stub
 				if(hasFocus){
-					commentList.setSelection(datas.size()-1);
+	//				commentList.setSelection(datas.size()-1);
 				}
 			}
 		});
@@ -101,7 +125,6 @@ public class CommentActivity extends BaseActivity implements
 				
 			}
 		});
-		commentList.setOnLoadListener(this);
 		commentList.setOnItemClickListener(this);
 		loadData();
 		showView();
@@ -158,7 +181,7 @@ public class CommentActivity extends BaseActivity implements
 						}
 						mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 					}
-					commentList.loadComplete();
+					commentList.onRefreshComplete();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -181,10 +204,27 @@ public class CommentActivity extends BaseActivity implements
 
 	private void showView() {
 		if (commentItemAdapter == null) {
-			commentItemAdapter = new CommentItemAdapter(this, datas);
+			commentItemAdapter = new CommonAdapter<CommentItemBean>(this, datas,R.layout.comment_list_item){
+
+				@Override
+				public void convert(ViewHolder holder, CommentItemBean item) {
+					// TODO Auto-generated method stub
+					holder.setTvText(R.id.user_name_tv,item.getUserName());
+					holder.setTvText(R.id.content_tv,item.getContent());
+					holder.setTvText(R.id.date_tv,item.getGenDate());		
+					String url = item.getUserPicUrl();
+					
+					if(TextUtils.isEmpty(url) || url.equals("null")){
+						holder.setImageResource(R.id.user_photo_iv,R.drawable.default_pic_avata);						
+					}else{
+						holder.setImageByUrl(R.id.user_photo_iv, url);
+					}		
+				}
+				
+			};
 			commentList.setAdapter(commentItemAdapter);
 		} else {
-			commentItemAdapter.updateView(datas);
+			commentItemAdapter.refreshView(datas);
 		}
 	}
 
@@ -376,13 +416,7 @@ public class CommentActivity extends BaseActivity implements
 		}) {
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put("Authorization", "Basic "
-						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
-								.replaceAll("\\s+", ""));
-				return headers;
+				return KuibuUtils.prepareReqHeader();
 			}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -424,21 +458,12 @@ public class CommentActivity extends BaseActivity implements
 		}) {
 			@Override
 			public Map<String, String> getHeaders() throws AuthFailureError {
-				HashMap<String, String> headers = new HashMap<String, String>();
-				String credentials = Session.getSession().getToken()
-						+ ":unused";
-				headers.put("Authorization", "Basic "
-						+ SafeEDcoderUtil.encryptBASE64(credentials.getBytes())
-								.replaceAll("\\s+", ""));
-				return headers;
+				return KuibuUtils.prepareReqHeader();
 			}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
-	@Override
-	public void onLoadMore() {
-		loadData();
-	}
+	
 	
 	@Override
 	public void onBackPressed() {

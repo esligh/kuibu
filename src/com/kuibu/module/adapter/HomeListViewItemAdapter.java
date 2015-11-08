@@ -23,12 +23,12 @@ import android.widget.TextView;
 import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.data.global.AppInfo;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.MateListItem;
-import com.kuibu.module.activity.CollectInfoListActivity;
-import com.kuibu.module.activity.CollectionDetailActivity;
-import com.kuibu.module.activity.CollectionImageDetailActivity;
+import com.kuibu.model.entity.MateListItem;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.activity.UserInfoActivity;
+import com.kuibu.ui.activity.CollectInfoListActivity;
+import com.kuibu.ui.activity.CollectionDetailActivity;
+import com.kuibu.ui.activity.CollectionImageDetailActivity;
+import com.kuibu.ui.activity.UserInfoActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,28 +30,32 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.TopicItemBean;
-import com.kuibu.module.adapter.SearchContentAdapter;
+import com.kuibu.model.entity.TopicItemBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.TopicListAdapter;
 import com.kuibu.module.adapter.UserListAdapter;
 
-public class SearchViewActivity extends AppCompatActivity implements OnLoadListener{
+public class SearchViewActivity extends AppCompatActivity{
 	
-	private PaginationListView thingList ;	
+	private PullToRefreshListView thingList ;	
 	private TextView collection_tv,collector_tv ,topic_tv; 
 	private String  target ;
 	private TopicListAdapter topicAdapter;
 	private List<TopicItemBean> topicDatas ;
 	private UserListAdapter userAdapter;
 	private List<Map<String,Object>> userDatas  ;
-	private SearchContentAdapter contentAdapter ; 
+	private CommonAdapter<Map<String,String>> contentAdapter ; 
 	private List<Map<String,String>> contentDatas ; 
 	private boolean isDarkTheme ; 
 	private EditText searchView ; 
@@ -73,8 +78,16 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 		searchView = (EditText)findViewById(R.id.search_content);
-		thingList = (PaginationListView)findViewById(R.id.search_view_list);
-		thingList.setOnLoadListener(this);
+		thingList = (PullToRefreshListView)findViewById(R.id.search_view_list);
+		thingList.setMode(Mode.PULL_FROM_END);
+		thingList.setPullToRefreshOverScrollEnabled(false);
+		thingList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				onLoadMore();
+			}
+		});
 		collection_tv = (TextView)findViewById(R.id.collection_tv);
 		collector_tv = (TextView)findViewById(R.id.collector_tv);
 		topic_tv = (TextView)findViewById(R.id.topic_tv);
@@ -87,7 +100,15 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 				if(contentDatas!=null)
 					contentDatas.clear();
 				if(contentAdapter==null)
-					contentAdapter = new SearchContentAdapter(SearchViewActivity.this, contentDatas);				
+					contentAdapter = new CommonAdapter<Map<String,String>>(SearchViewActivity.this, contentDatas,R.layout.search_content_list_item){
+
+						@Override
+						public void convert(ViewHolder holder,
+								Map<String, String> item) {
+							// TODO Auto-generated method stub
+							content_convert(holder,item);
+						}					
+				};				
 				thingList.setAdapter(contentAdapter);
 				String query = searchView.getText().toString();
 				if(!TextUtils.isEmpty(query)){
@@ -178,6 +199,8 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 					}else if(tag.equals("collection")){
 						Intent intent = new Intent(SearchViewActivity.this,CollectionDetailActivity.class);
 						intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,item.get("item_id"));
+						intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN,
+								item.get("cisn"));
 						startActivity(intent);
 						overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 					}
@@ -292,13 +315,35 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 	void showContentView()
 	{
 		if(contentAdapter==null){
-			contentAdapter = new SearchContentAdapter(this, contentDatas);
+			contentAdapter = new CommonAdapter<Map<String,String>>(this, contentDatas,
+					R.layout.search_content_list_item){
+
+						@Override
+						public void convert(ViewHolder holder,
+								Map<String, String> item) {
+							// TODO Auto-generated method stub
+							content_convert(holder,item);
+						}
+				
+			};
 			thingList.setAdapter(contentAdapter);
 		}else{
-			contentAdapter.updateView(contentDatas);
+			contentAdapter.refreshView(contentDatas);
 		}
 	}
-	
+	private void content_convert(ViewHolder holder,
+			Map<String, String> item)
+	{
+		if(item.get("tag").equals("collectpack")){
+			holder.setTvText(R.id.search_content_item_title,item.get("item_title"));
+			holder.setTvText(R.id.search_content_item_sub1,item.get("item_count_1")+"条收集");
+			holder.setTvText(R.id.search_content_item_sub2,item.get("item_count_2")+"人关注");			
+		}else if(item.get("tag").equals("collection")){
+			holder.setTvText(R.id.search_content_item_title,item.get("item_title"));
+			holder.setTvText(R.id.search_content_item_sub1,item.get("item_count_1")+"人赞");
+			holder.setTvText(R.id.search_content_item_sub2,"");
+		}
+	}
 	void requestTopics(String query)
 	{
 		Map<String, String> params = new HashMap<String, String>();
@@ -331,7 +376,7 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 						}
 						showTopicView();
 					}
-					thingList.loadComplete();
+					thingList.onRefreshComplete();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -386,7 +431,7 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 							showUserView();
 						}
 					}
-					thingList.loadComplete();
+					thingList.onRefreshComplete();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -398,9 +443,6 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);		
@@ -438,8 +480,10 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 								item.put("item_count_1", obj.getString("collect_count"));
 								item.put("item_count_2", obj.getString("focus_count"));		
 								item.put("create_by", obj.getString("create_by"));
+								item.put("csn", obj.getString("csn"));
 							}else{
 								item.put("item_id", obj.getString("id"));
+								item.put("cisn", obj.getString("cisn"));
 								item.put("item_title", obj.getString("title"));
 								item.put("item_count_1", obj.getString("vote_count"));
 							}
@@ -447,7 +491,7 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 						}
 						showContentView();
 					}
-					thingList.loadComplete();
+					thingList.onRefreshComplete();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -484,8 +528,7 @@ public class SearchViewActivity extends AppCompatActivity implements OnLoadListe
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);	
 	}
 
-	@Override
-	public void onLoadMore() {
+	private void onLoadMore() {
 		String query  = searchView.getText().toString();
 		if(TextUtils.isEmpty(query))
 			return  ;

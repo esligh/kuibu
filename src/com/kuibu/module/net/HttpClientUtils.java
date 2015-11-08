@@ -53,6 +53,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.kuibu.common.utils.Logger;
+import com.kuibu.common.utils.UrlUtils;
 import com.kuibu.module.exception.KuibuIOException;
 import com.kuibu.module.exception.KuibuOtherException;
 

@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,33 +16,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.activity.SendMessageActivity;
 import com.kuibu.module.adapter.UserListAdapter;
 import com.kuibu.module.adapter.UserListAdapter.ViewHolder;
 //private letter  
+import com.kuibu.ui.activity.SendMessageActivity;
 
-public class NotifyMessageFragment extends Fragment implements OnLoadListener {
+public class NotifyMessageFragment extends Fragment {
 	
-	private PaginationListView userList = null;
+	private PullToRefreshListView userList = null;
 	private UserListAdapter listAdapter;
 	private List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
 	private MultiStateView mMultiStateView;
@@ -50,7 +52,7 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_pagination_listview,
+		View rootView = inflater.inflate(R.layout.activity_pullrefresh_listview,
 				container, false);
 		mMultiStateView = (MultiStateView) rootView
 				.findViewById(R.id.multiStateView);
@@ -64,9 +66,17 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 						loadData();
 					}
 				});
-		userList = (PaginationListView) rootView
+		userList = (PullToRefreshListView) rootView
 				.findViewById(R.id.pagination_lv);
-		userList.setOnLoadListener(this);
+		userList.setMode(Mode.PULL_FROM_END);
+		userList.setPullToRefreshOverScrollEnabled(false);
+		userList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+			}
+		});
 		userList.setOnItemClickListener(new OnItemClickListener() {
 			@SuppressWarnings("unchecked")
 			@Override
@@ -127,7 +137,7 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 							mMultiStateView
 									.setViewState(MultiStateView.ViewState.EMPTY);
 						}
-						userList.loadComplete();
+						userList.onRefreshComplete();
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -161,11 +171,6 @@ public class NotifyMessageFragment extends Fragment implements OnLoadListener {
 		} else {
 			listAdapter.updateView(datas);
 		}
-	}
-
-	@Override
-	public void onLoadMore() {
-		loadData();
 	}
 
 	@Override

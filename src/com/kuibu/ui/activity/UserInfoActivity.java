@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -12,7 +12,8 @@ import android.widget.Toast;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.fragment.UserInfoContentFragment;
+import com.kuibu.module.activity.R;
+import com.kuibu.ui.fragment.UserInfoContentFragment;
 
 public class UserInfoActivity extends BaseActivity {	
 	

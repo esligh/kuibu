@@ -24,7 +24,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Kuibu.AppTheme.Light" >
         <activity
-            android:name="com.kuibu.module.activity.SplashScreenActivity"
+            android:name="com.kuibu.ui.activity.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
             android:theme="@style/SplashScreenTheme" >
@@ -34,13 +34,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.kuibu.model.welcome.WelcomeActivity"
+            android:name="com.kuibu.ui.activity.WelcomeActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
 			android:theme="@style/Theme.AppCompat.NoActionBar" >
         </activity>
         <activity
-            android:name="com.kuibu.module.activity.KuibuMainActivity" 
+            android:name="com.kuibu.ui.activity.KuibuMainActivity" 
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
             
@@ -56,14 +56,14 @@
             android:configChanges="keyboardHidden|orientation"/>
         
         <activity
-            android:name="com.kuibu.module.activity.RegisterActivity"
+            android:name="com.kuibu.ui.activity.RegisterActivity"
             android:label="@string/register_name" 
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
         </activity>
         
         <activity
-            android:name="com.kuibu.module.activity.UserInfoActivity"
+            android:name="com.kuibu.ui.activity.UserInfoActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
         </activity>
@@ -74,20 +74,20 @@
             android:label="@string/app_name" />
                         
         <activity
-            android:name="com.kuibu.module.activity.UserInfoEditActivity"
+            android:name="com.kuibu.ui.activity.UserInfoEditActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
         </activity>         
             	    
         <activity 
-            android:name="com.kuibu.module.activity.CommentActivity"
+            android:name="com.kuibu.ui.activity.CommentActivity"
             android:label="@string/comment_text"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
         </activity>
         
         <activity
-            android:name="com.kuibu.module.activity.CollectionDetailActivity"
+            android:name="com.kuibu.ui.activity.CollectionDetailActivity"
             android:hardwareAccelerated="true"
           	android:theme="@style/Theme.TranslucentActionBar.ActionBar.Overlay"
             android:label="@string/app_name" 
@@ -96,17 +96,17 @@
         </activity>
         
         <activity
-            android:name="com.kuibu.module.activity.CollectPackListActivity"
+            android:name="com.kuibu.ui.activity.CollectPackListActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
        	</activity>
        	<activity
-       	    android:name="com.kuibu.module.activity.TopicMaterialActivity"
+       	    android:name="com.kuibu.ui.activity.TopicMaterialActivity"
        	    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">       	    
        	</activity>
        	<activity
-       	    android:name="com.kuibu.module.activity.CollectionEditorActivity"
+       	    android:name="com.kuibu.ui.activity.CollectionEditorActivity"
        	    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">      	    	    
        	</activity>
@@ -114,15 +114,15 @@
        	    android:windowSoftInputMode="adjustResize"
        	    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"
-       	    android:name="com.kuibu.module.activity.CollectionImageActivity">      	    	    
+       	    android:name="com.kuibu.ui.activity.CollectionImageActivity">      	    	    
        	</activity>
        	<activity
-       	    android:name="com.kuibu.module.activity.CollectionImageDetailActivity"
+       	    android:name="com.kuibu.ui.activity.CollectionImageDetailActivity"
        	    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">      	    	    
        	</activity>
        	
-       	<activity android:name="com.kuibu.module.activity.PreviewActivity"
+       	<activity android:name="com.kuibu.ui.activity.PreviewActivity"
        	    android:hardwareAccelerated="true"
             android:label="@string/preview"
             android:screenOrientation="portrait"
@@ -132,134 +132,134 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.kuibu.module.activity.OperCollectPackActivity"
+            android:name="com.kuibu.ui.activity.OperCollectPackActivity"
             android:label="@string/create_new_cpack"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">			
 		</activity>
-		<activity android:name="com.kuibu.module.activity.CollectionListActivity"
+		<activity android:name="com.kuibu.ui.activity.CollectionListActivity"
 		    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">    
 		</activity>
         <activity 
-        	android:name="com.kuibu.module.activity.LocalCollectionWListActivity"
+        	android:name="com.kuibu.ui.activity.LocalCollectionWListActivity"
         	android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">    
         </activity>
         <activity 
-        	android:name="com.kuibu.module.activity.LocalCollectionPListActivity"
+        	android:name="com.kuibu.ui.activity.LocalCollectionPListActivity"
         	android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">    
         </activity>
         <activity
-            android:name ="com.kuibu.module.activity.CollectInfoListActivity"
+            android:name ="com.kuibu.ui.activity.CollectInfoListActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">     
         </activity>
         <activity
-            android:name = "com.kuibu.module.activity.TopicListActivity"
+            android:name = "com.kuibu.ui.activity.TopicListActivity"
             android:label="@string/topic_text"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">           
         </activity>
         <activity
-            android:name = "com.kuibu.module.activity.TopicInfoActivity"
+            android:name = "com.kuibu.ui.activity.TopicInfoActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		</activity>
 		
         <activity
-            android:name="com.kuibu.module.activity.CollectFavoriteBoxActivity"
+            android:name="com.kuibu.ui.activity.CollectFavoriteBoxActivity"
          	android:label="@string/choose_favoritebox"
          	android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		</activity>
 		<activity
-            android:name="com.kuibu.module.activity.FavoriteBoxActivity"
+            android:name="com.kuibu.ui.activity.FavoriteBoxActivity"
             android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		</activity>
 		<activity 
-			android:name="com.kuibu.module.activity.FavoriteBoxDetailActivity"
+			android:name="com.kuibu.ui.activity.FavoriteBoxDetailActivity"
 			android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">		    
 		</activity>
 		
 		<activity 
-			android:name="com.kuibu.module.activity.SelectImageActivity"
+			android:name="com.kuibu.ui.activity.SelectImageActivity"
 			android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">		    
 		</activity>
 		
 		<activity 
-			android:name="com.kuibu.module.activity.FavoriteBoxInfoActivity"
+			android:name="com.kuibu.ui.activity.FavoriteBoxInfoActivity"
 			android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">		    
 		</activity>
 		
 		<activity
-		    android:name="com.kuibu.module.activity.UserTopicListActivity"
+		    android:name="com.kuibu.ui.activity.UserTopicListActivity"
 		    android:label="@string/focus_topics"
 		    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		</activity>
 		<activity
-		    android:name="com.kuibu.module.activity.UserListActivity"
+		    android:name="com.kuibu.ui.activity.UserListActivity"
 		    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		</activity>	
 		<activity 
-		    android:name="com.kuibu.module.activity.SettingsActivity"
+		    android:name="com.kuibu.ui.activity.SettingsActivity"
 		    android:label="@string/settings"
 		    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		</activity>
 		<activity
-		    android:name="com.kuibu.module.activity.SearchViewActivity"
+		    android:name="com.kuibu.ui.activity.SearchViewActivity"
 		    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		 </activity>
 		 <activity 
-		     android:name=".SendMessageActivity"
+		     android:name="com.kuibu.ui.activity.SendMessageActivity"
 		   	 android:label="@string/private_letter"
 		   	 android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">		     
 		 </activity>   
 		 <activity 
-		     android:name=".NotifyMessageActivity"
+		     android:name="com.kuibu.ui.activity.NotifyMessageActivity"
 		     android:label="@string/message"
 		     android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">		     
 		 </activity>
 		 
 		 <activity
-		     android:name=".MDHandBookActivity"
+		     android:name="com.kuibu.ui.activity.MDHandBookActivity"
 		 	 android:label="@string/handbook"
 		 	 android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">   
 		 </activity>
 		 <activity
-		     android:name=".ImageDetailActivity"
+		     android:name="com.kuibu.ui.activity.ImageDetailActivity"
 		     android:label="@string/look_at"
 		     android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		 </activity>
 		
 		 <activity
-		     android:name=".ImagePreviewActivity"
+		     android:name="com.kuibu.ui.activity.ImagePreviewActivity"
 		     android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		 </activity>
 		 
 		 <activity
-		     android:name=".ReportActivity"
+		     android:name="com.kuibu.ui.activity.ReportActivity"
 		     android:label="@string/report"
 		     android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">
 		 </activity>
 		 
 		<activity 
-		    android:name=".AdviceFeedBackActivity"
+		    android:name="com.kuibu.ui.activity.AdviceFeedBackActivity"
 		    android:label="@string/preference_feedback"
 		    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation"> 

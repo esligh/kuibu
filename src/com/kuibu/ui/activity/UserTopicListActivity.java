@@ -1,10 +1,10 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.fragment.FocusTopicFragment;
+import com.kuibu.ui.fragment.FocusTopicFragment;
 
 public class UserTopicListActivity extends UserInfoFragmentActivity{
 	

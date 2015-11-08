@@ -8,27 +8,22 @@
     app:msv_errorView="@layout/error_view"
     app:msv_loadingView="@layout/loading_view"
     app:msv_viewState="loading" >
-
+    
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?listViewBackground"
             android:orientation="vertical" >
-            
-	    <com.baoyz.widget.PullRefreshLayout
-	        android:id="@+id/swipeRefreshLayout"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent">
+           
 	        	        	
-		            <com.kuibu.custom.widget.PaginationListView
-		                android:id="@+id/pagination_lv"
-		                android:layout_width="match_parent"
-		                android:layout_height="match_parent"
-		                android:listSelector="@color/transparent"
-		                android:footerDividersEnabled="false"
-		                android:scrollbars="none"
-		                android:scrollbarStyle="outsideOverlay" />
-		            	        
-	    </com.baoyz.widget.PullRefreshLayout>
+			<com.handmark.pulltorefresh.library.PullToRefreshListView
+		            android:id="@+id/pullToRefreshListView"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
+		            android:listSelector="@color/transparent"
+		            android:footerDividersEnabled="false"
+		            android:scrollbars="none"
+		            android:scrollbarStyle="outsideOverlay" />
+	            	     
 	</LinearLayout>	
 </com.kuibu.custom.widget.MultiStateView>

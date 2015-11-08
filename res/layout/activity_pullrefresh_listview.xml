@@ -16,12 +16,13 @@
         android:background="?listViewBackground"
         android:orientation="vertical" >
 
-        <com.kuibu.custom.widget.PaginationListView
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
             android:id="@+id/pagination_lv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:listSelector="@color/transparent" 
-            android:scrollbarStyle="outsideOverlay"/>
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="none"/>
     </LinearLayout>
 
 </com.kuibu.custom.widget.MultiStateView>

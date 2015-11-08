@@ -1,12 +1,10 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -17,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kuibu.app.model.base.BaseFragment;
-import com.kuibu.model.bean.TabTitleObject;
+import com.kuibu.common.utils.PreferencesUtils;
+import com.kuibu.data.global.StaticValue;
+import com.kuibu.model.entity.TabHotInfo;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.TabPageViewAdapter;
 import com.viewpagerindicator.SlidingTabIndicator;
@@ -28,15 +28,14 @@ import com.viewpagerindicator.SlidingTabIndicator;
 public  class ExplorePageFragment extends Fragment 
 {
 	private final int DEFAULT_BACKUP_TABPAGE_NUM = 3;	
-	private List<TabTitleObject> exportpageTabTitle = null; 
+	private List<TabHotInfo> exportpageTabTitle = null; 
 	private TabPageViewAdapter adapter= null;
 	private ViewPager pager ; 
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {			
-			initData();
-			SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-			boolean isDarkTheme = mPerferences.getBoolean("dark_theme", false); 
+			Bundle savedInstanceState) {					
+			boolean isDarkTheme = PreferencesUtils.getBooleanByDefault(getActivity(), StaticValue.PrefKey.DARK_THEME_KEY, false);
 			Context contextTheme = null ; 
 			if(isDarkTheme){
 				 contextTheme = new ContextThemeWrapper(getActivity(),
@@ -48,6 +47,7 @@ public  class ExplorePageFragment extends Fragment
 		    LayoutInflater themeflater = inflater.cloneInContext(contextTheme);
 			View rootView = themeflater.inflate(R.layout.frame_tabpage, container, false);
 			pager = (ViewPager)rootView.findViewById(R.id.pager);
+			initData();
 			if(adapter == null){
 				adapter =  new TabPageViewAdapter(getActivity().getSupportFragmentManager(),
 						exportpageTabTitle,new ExploreConstruct());
@@ -84,24 +84,22 @@ public  class ExplorePageFragment extends Fragment
 	
 	public  void initData(){
 		if(exportpageTabTitle == null){
-			exportpageTabTitle = new ArrayList<TabTitleObject>();
-			String[] itemTitle = getResources().getStringArray(
-					R.array.home_tab_name);
-			String[] itemTag = getResources().getStringArray(
-					R.array.home_tab_tag);
+			exportpageTabTitle = new ArrayList<TabHotInfo>();
+			String[] itemTitle = getResources().getStringArray(R.array.home_tab_name);
+			String[] itemTag = getResources().getStringArray(R.array.home_tab_tag);
 			for (int i = 0; i < itemTitle.length; ++i) {
-				exportpageTabTitle.add(new TabTitleObject(itemTitle[i],
-						itemTag[i], null));
+				exportpageTabTitle.add(new TabHotInfo(itemTitle[i],itemTag[i], null));
 			}
 		} 
 	}
-	
+
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onDestroy() {
 		// TODO Auto-generated method stub
-		
-		super.onSaveInstanceState(outState);
+		super.onDestroyView();
+		exportpageTabTitle.clear();
 	}
+	
 	
 }
 

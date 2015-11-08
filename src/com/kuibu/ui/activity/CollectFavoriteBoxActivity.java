@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +40,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
@@ -48,8 +49,8 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.FavoriteBoxAdapter;
-import com.kuibu.module.adapter.FavoriteBoxAdapter.HolderView;
 
 public class CollectFavoriteBoxActivity extends BaseActivity{
 
@@ -95,14 +96,14 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view, int position,
 					long id) {				
-				Map<String,String> item = (Map<String,String>)viewAdapter.getAdapter()
-											.getItem(position);
-				HolderView  holderView = (HolderView)view.getTag();
+				Map<String,String> item = (Map<String,String>)viewAdapter.getAdapter().getItem(position);
+				ViewHolder  holderView = (ViewHolder)view.getTag();
 				if(holderView ==null)
 					return ;
-				if(holderView.box_cb.isChecked()){
-					holderView.box_cb.setChecked(false);
-					selIds.remove((String)mDatas.get(position).get("box_id"));
+				CheckBox cbx = holderView.getView(R.id.favorite_box_cb);
+				if(cbx.isChecked()){
+					cbx.setChecked(false);
+					selIds.remove((String)item.get("box_id"));
 				}else{
 					if(StaticValue.SERMODLE.BOX_TYPE_PIC.
 							equals(item.get("box_type"))){ //收藏类型2只能收藏colletion type为2的收集 
@@ -119,7 +120,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 							return ;
 						}
 					}
-					holderView.box_cb.setChecked(true);
+					cbx.setChecked(true);
 					selIds.add((String)mDatas.get(position).get("box_id"));
 				}
 				setTitle("已选"+selIds.size()+"项");
@@ -223,7 +224,7 @@ public class CollectFavoriteBoxActivity extends BaseActivity{
 
 	private void showView() {
 		if (boxAdatper == null) {
-			boxAdatper = new FavoriteBoxAdapter(this, mDatas,selIds);
+			boxAdatper = new FavoriteBoxAdapter(this, mDatas,selIds,R.layout.favorite_box_list_item);
 			boxList.setAdapter(boxAdatper);
 		} else {
 			boxAdatper.updateView(mDatas,selIds);

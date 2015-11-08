@@ -1,4 +1,4 @@
-package com.kuibu.model.bean;
+package com.kuibu.model.entity;
 
 public class ImageInfo {
 	public int height ; 

@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +39,8 @@ import com.huewu.pla.lib.MultiColumnListView;
 import com.huewu.pla.lib.internal.PLA_AdapterView;
 import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
@@ -50,9 +52,9 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.bean.CollectionItemBean;
-import com.kuibu.module.adapter.CollectPackInfoAdapter;
+import com.kuibu.model.entity.CollectionBean;
+import com.kuibu.model.entity.CollectionItemBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.ImageGridAdapter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -65,7 +67,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 	private RelativeLayout focusLayout;
 	private View footerView;
 	private BorderScrollView borderScrollView;
-	private CollectPackInfoAdapter infoAdapter;
+	private CommonAdapter<CollectionItemBean> infoAdapter;
 	private ImageGridAdapter mCardApdater ; 
 	private List<CollectionBean> card_datas = null; 
 	private List<CollectionItemBean> item_datas = null ; 
@@ -205,7 +207,25 @@ public class CollectInfoListActivity extends BaseActivity implements
 					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}
 			});
-			infoAdapter = new CollectPackInfoAdapter(this, item_datas);
+			infoAdapter = new CommonAdapter<CollectionItemBean>(this, item_datas,
+					R.layout.collectpack_info_list_item){
+
+					@Override
+					public void convert(ViewHolder holder,
+							CollectionItemBean item) {
+						// TODO Auto-generated method stub
+						holder.setTvText(R.id.pack_info_collection_title,item.getTitle());
+						holder.setTvText(R.id.pack_info_collection_vote_count,item.getVoteCount());
+
+						String summary = item.getSummary().trim().replace("\n", "");
+						if(TextUtils.isEmpty(summary) || summary.equals("null")){
+							holder.setTvText(R.id.pack_info_collection_content,"(多图)");
+						}else{
+							holder.setTvText(R.id.pack_info_collection_content,summary);
+						}
+					}
+				
+			};
 			mList.setAdapter(infoAdapter);
 		}
 		loadPack();
@@ -260,7 +280,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 			mCardApdater.updateView(card_datas);
 			setListViewHeightBasedOnChildren(mCardList);
 		} else {
-			infoAdapter.updateView(item_datas);
+			infoAdapter.refreshView(item_datas);
 		}
 		
 	}

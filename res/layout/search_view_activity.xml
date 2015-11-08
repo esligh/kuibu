@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ptr="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?listCardViewBackground"
-    android:orientation="vertical" >
+    android:background="?listViewBackground">
    
     <android.support.v7.widget.Toolbar
 	    xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,17 +32,25 @@
 	        app:met_underlineColor="@color/white"
 	        app:met_primaryColor = "#16a085"  />	    
 	</android.support.v7.widget.Toolbar>
-
-    <com.kuibu.custom.widget.PaginationListView  
-        android:id="@+id/search_view_list"
+	
+	<LinearLayout
+	    android:layout_width="match_parent"  
+        android:layout_height="match_parent"        
         android:layout_below="@id/toolbar"  
-        android:layout_width="match_parent"  
-        android:layout_height="wrap_content" />  
-  	
-  	<View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="?android:attr/listDivider" />
+        android:background="?listCardViewBackground"
+        android:orientation="vertical">
+	    
+	    <com.handmark.pulltorefresh.library.PullToRefreshListView
+	        android:id="@+id/search_view_list"
+	        android:layout_width="match_parent"  
+	        android:layout_height="match_parent"
+	        ptr:ptrHeaderTextColor="?listItemTextColor"/>  
+	  		
+	  	<View
+	        android:layout_width="match_parent"
+	        android:layout_height="1px"
+	        android:background="?android:attr/listDivider" />
+  	</LinearLayout>
   	
     <LinearLayout
         android:id = "@+id/search_view_btns"

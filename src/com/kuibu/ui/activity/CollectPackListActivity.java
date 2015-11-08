@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,31 +12,35 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.text.format.DateUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectPackBean;
+import com.kuibu.model.entity.CollectPackBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.CollectPackItemAdapter;
 
-public class CollectPackListActivity extends BaseActivity implements
-		OnLoadListener {
+public class CollectPackListActivity extends BaseActivity{
 
-	private PaginationListView packList;
+	private PullToRefreshListView packList;
 	private CollectPackItemAdapter packAdapter;
 	private List<CollectPackBean> datas = new ArrayList<CollectPackBean>();
 	private String uid;
@@ -46,7 +50,7 @@ public class CollectPackListActivity extends BaseActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_pagination_listview);
+		setContentView(R.layout.activity_pullrefresh_listview);
 		mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
 		mMultiStateView.getView(MultiStateView.ViewState.ERROR)
 				.findViewById(R.id.retry)
@@ -58,14 +62,31 @@ public class CollectPackListActivity extends BaseActivity implements
 					}
 				});
 
-		packList = (PaginationListView) findViewById(R.id.pagination_lv);
-		packList.setOnLoadListener(this);
+		packList = (PullToRefreshListView) findViewById(R.id.pagination_lv);
+		packList.setMode(Mode.PULL_FROM_END);
+		packList.setPullToRefreshOverScrollEnabled(false);
+		packList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+				String label = DateUtils.formatDateTime(getApplicationContext(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}
+			
+		});
 		packList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				CollectPackBean item = datas.get(position);
+				CollectPackBean item = datas.get(position-1);
 				Intent intent = new Intent(CollectPackListActivity.this,
 						CollectionListActivity.class);
 				intent.putExtra("pack_id", item.get_id());
@@ -120,7 +141,7 @@ public class CollectPackListActivity extends BaseActivity implements
 									.setViewState(MultiStateView.ViewState.EMPTY);
 						}
 					}
-					packList.loadComplete();
+					packList.onRefreshComplete();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -143,17 +164,11 @@ public class CollectPackListActivity extends BaseActivity implements
 
 	private void showView() {
 		if (packAdapter == null) {
-			packAdapter = new CollectPackItemAdapter(this, datas);
+			packAdapter = new CollectPackItemAdapter(this, datas,R.layout.collectpack_list_item);
 			packList.setAdapter(packAdapter);
 		} else {
-			packAdapter.updateView(datas);
+			packAdapter.refreshView(datas);
 		}
-	}
-
-	@Override
-	public void onLoadMore() {
-		// TODO Auto-generated method stub
-		loadData();
 	}
 
 	@Override

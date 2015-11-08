@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:fillViewport="true">
 
-        <com.kuibu.module.markdown.HighlightingEditor
+        <com.kuibu.custom.widget.HighlightingEditor
             android:id="@+id/note_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

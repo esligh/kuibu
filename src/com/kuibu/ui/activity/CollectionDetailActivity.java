@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +63,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.module.core.DownloadWebImgTask;
+import com.kuibu.app.module.core.InJavaScriptObject;
 import com.kuibu.common.utils.AssetsUtils;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.KuibuUtils;
@@ -76,11 +78,10 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.webview.InJavaScriptObject;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.iterfaces.OnPageLoadFinished;
 import com.kuibu.module.iterfaces.ResponseListener;
 import com.kuibu.module.net.PublicRequestor;
-import com.kuibu.module.task.DownloadWebImgTask;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petebevin.markdown.MarkdownProcessor;
 
@@ -118,7 +119,8 @@ public class CollectionDetailActivity extends AppCompatActivity
 	private int voteCount ; 
 	private DownloadWebImgTask downLoadTask ; 
 	
-    @SuppressLint("HandlerLeak")
+    @SuppressWarnings("deprecation")
+	@SuppressLint("HandlerLeak")
 	@Override
     public void onCreate(Bundle savedInstanceState) {				
         super.onCreate(savedInstanceState);
@@ -210,11 +212,11 @@ public class CollectionDetailActivity extends AppCompatActivity
         cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
         cisn = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_CISN);
         JSONObject cacheObj = KuibuApplication.getCacheInstance().getAsJSONObject(cisn);
-        if(cacheObj != null){
-        	readFromJson(cacheObj);
-        }else{
+//        if(cacheObj != null){
+//        	readFromJson(cacheObj);
+//        }else{
         	loadContent();
-        }          
+//        }          
         if(Session.getSession().isLogin())
         	loadActions();
     }
@@ -673,6 +675,9 @@ public class CollectionDetailActivity extends AppCompatActivity
 						JSONObject obj = new JSONObject(response.getString("result"));
 						if(obj!=null){							
 							readFromJson(obj);		
+							if(TextUtils.isEmpty(cisn)){
+								cisn = obj.getString("cisn");
+							}
 							KuibuApplication.getCacheInstance().put(cisn, 
 									obj, Constants.Config.CACHE_SAVE_TIME);
 						}
@@ -859,9 +864,6 @@ public class CollectionDetailActivity extends AppCompatActivity
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req,getClass().toString());

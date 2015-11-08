@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kuibu.custom.widget.BadgeView;
+import com.kuibu.data.global.Constants;
 import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -79,7 +80,7 @@ public class UserListAdapter extends BaseAdapter{
 		if(TextUtils.isEmpty(url) || url.equals("null")){
 				holder.user_pic_iv.setImageResource(R.drawable.default_pic_avata);	
 		}else{
-			ImageLoader.getInstance().displayImage(url, holder.user_pic_iv);			
+			ImageLoader.getInstance().displayImage(url, holder.user_pic_iv,Constants.defaultAvataOptions);			
 		}
 		if(datas.get(position).get("msg_count")!=null && 
 				(Integer)datas.get(position).get("msg_count")>0){			 

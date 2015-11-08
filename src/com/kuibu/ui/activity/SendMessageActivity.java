@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -24,22 +25,24 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.MessageItemBean;
+import com.kuibu.model.entity.MessageItemBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.MessageListAdapter;
 
-public class SendMessageActivity extends BaseActivity 
-	implements OnLoadListener{
+public class SendMessageActivity extends BaseActivity {
 	
-	private PaginationListView msgList; 
+	private PullToRefreshListView msgList; 
 	private EditText msgEt;
 	private ImageButton btnSend;
 	private MessageListAdapter adapter; 
@@ -60,15 +63,24 @@ public class SendMessageActivity extends BaseActivity
 				loadData();
 			}   	
         });
-		msgList = (PaginationListView)findViewById(R.id.message_list);
-		msgList.setOnLoadListener(this);
+		msgList = (PullToRefreshListView)findViewById(R.id.message_list);
+		msgList.setMode(Mode.PULL_FROM_END);
+		msgList.setPullToRefreshOverScrollEnabled(false);
+		msgList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+			}
+			
+		});
 		msgEt = (EditText)findViewById(R.id.edit_message);
 		msgEt.setOnFocusChangeListener(new OnFocusChangeListener() {			
 			@Override
 			public void onFocusChange(View view, boolean hasFocus) {
 				// TODO Auto-generated method stub
 				if(hasFocus){
-					msgList.setSelection(mDatas.size()-1);
+	//				msgList.setSelection(mDatas.size()-1);
 				}
 			}
 		});
@@ -96,12 +108,6 @@ public class SendMessageActivity extends BaseActivity
 		}else{
 			adapter.updateView(mDatas);
 		}
-	}
-	
-	@Override
-	public void onLoadMore() {
-		// TODO Auto-generated method stub
-		loadData();
 	}
 	
 	@Override
@@ -151,7 +157,7 @@ public class SendMessageActivity extends BaseActivity
 						}
 						showView();
 					}
-					msgList.loadComplete();
+					msgList.onRefreshComplete();
 					mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block

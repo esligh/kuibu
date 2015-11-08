@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,38 +12,44 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.activity.CollectionDetailActivity;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.adapter.NotifyCommentAdapter;
+import com.kuibu.ui.activity.CollectionDetailActivity;
+import com.kuibu.ui.activity.CollectionImageDetailActivity;
 
-public class NotifyCommentFragment extends Fragment implements OnLoadListener{
+public class NotifyCommentFragment extends Fragment{
 	
-	private PaginationListView listView = null;
-	private NotifyCommentAdapter adapter = null; 
+	private PullToRefreshListView listView = null;
+	private CommonAdapter<Map<String,String>> adapter = null; 
 	private List<Map<String,String>> datas = new ArrayList<Map<String,String>>();
 	private MultiStateView mMultiStateView;	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_pagination_listview,container, false);
+		View rootView = inflater.inflate(R.layout.activity_pullrefresh_listview,container, false);
 		mMultiStateView = (MultiStateView) rootView.findViewById(R.id.multiStateView);
 		mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
         .setOnClickListener(new View.OnClickListener() {
@@ -53,17 +59,38 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 				loadData();
 			}   	
         });
-		listView = (PaginationListView) rootView.findViewById(R.id.pagination_lv);
-		listView.setOnLoadListener(this);
+		listView = (PullToRefreshListView) rootView.findViewById(R.id.pagination_lv);
+		listView.setMode(Mode.PULL_FROM_END);
+		listView.setPullToRefreshOverScrollEnabled(false);
+		listView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+				String label = DateUtils.formatDateTime(getActivity(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}
+		});
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adpaterView, View view, int position,
 					long id) {
 				@SuppressWarnings("unchecked")
 				Map<String,String> item = (Map<String,String>)adpaterView.getAdapter().getItem(position);
-				Intent intent = new Intent(getActivity(),CollectionDetailActivity.class);
+				Intent intent = new Intent();
+				String type = item.get("type");
+				if(StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)){
+					intent.setClass(getActivity(), CollectionImageDetailActivity.class);
+				}else{
+					intent.setClass(getActivity(), CollectionDetailActivity.class);
+				}
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,item.get("cid"));
-				intent.putExtra("title", item.get("title"));
 				startActivity(intent);
 				getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}
@@ -76,10 +103,20 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 	private void showView()
 	{
 		if(adapter == null){
-			adapter =new NotifyCommentAdapter(this.getActivity(),datas);
+			adapter =new CommonAdapter<Map<String,String>>(this.getActivity(),datas,R.layout.notifycomment_list_item){
+
+				@Override
+				public void convert(ViewHolder holder, Map<String,String> item) {
+					// TODO Auto-generated method stub
+					holder.setTvText(R.id.top_text_left_tv,item.get("name"));
+					holder.setTvText(R.id.top_text_Right_tv,item.get("desc"));
+					holder.setTvText(R.id.title_tv,item.get("title"));
+					holder.setTvText(R.id.content_tv,item.get("abstract"));
+				}				
+			};
 			listView.setAdapter(adapter);
 		}else{
-			adapter.updateView(datas);
+			adapter.refreshView(datas);
 		}
 	}
 	
@@ -118,6 +155,7 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 									item.put("desc", getActivity().getString(R.string.collect_prompt));
 								}
 								item.put("title", obj.getString("title"));
+								item.put("type", obj.getString("type"));
 								item.put("abstract", obj.getString("abstract"));
 								datas.add(item);
 							}
@@ -129,10 +167,11 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 					}else{
 						mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 					}
-					
+					listView.onRefreshComplete();
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
+			
 			}
 		}, new Response.ErrorListener() {
 			@Override
@@ -144,11 +183,6 @@ public class NotifyCommentFragment extends Fragment implements OnLoadListener{
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
-		
-	@Override
-	public void onLoadMore() {
-		loadData();
 	}
 
 	@Override

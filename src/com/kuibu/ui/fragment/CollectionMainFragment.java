@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,16 +38,16 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectPackBean;
-import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.vo.CollectPackVo;
-import com.kuibu.model.vo.CollectionVo;
-import com.kuibu.model.vo.ImageLibVo;
-import com.kuibu.module.activity.LocalCollectionPListActivity;
-import com.kuibu.module.activity.LocalCollectionWListActivity;
-import com.kuibu.module.activity.OperCollectPackActivity;
+import com.kuibu.model.db.CollectPackVo;
+import com.kuibu.model.db.CollectionVo;
+import com.kuibu.model.db.ImageLibVo;
+import com.kuibu.model.entity.CollectPackBean;
+import com.kuibu.model.entity.CollectionBean;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.CollectPackItemAdapter;
+import com.kuibu.ui.activity.LocalCollectionPListActivity;
+import com.kuibu.ui.activity.LocalCollectionWListActivity;
+import com.kuibu.ui.activity.OperCollectPackActivity;
 
 public class CollectionMainFragment extends Fragment {
 
@@ -60,8 +60,7 @@ public class CollectionMainFragment extends Fragment {
 	private CollectionVo collectionVo = null ;
 	private ImageLibVo imageVo = null ;	
 	private Handler mHandler;
-	
-	
+
 	@Override
 	public void onAttach(Context context){
 		super.onAttach(context);
@@ -184,10 +183,10 @@ public class CollectionMainFragment extends Fragment {
 	private void showView()
 	{
 		if(packAdapter==null){
-			packAdapter = new CollectPackItemAdapter(getActivity(), mData);
+			packAdapter = new CollectPackItemAdapter(getActivity(), mData,R.layout.collectpack_list_item);
 			packList.setAdapter(packAdapter);
 		}else{
-			packAdapter.updateView(mData);
+			packAdapter.refreshView(mData);
 		}	
 	}
 	

@@ -5,86 +5,31 @@ import java.util.Map;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
+import com.kuibu.data.global.Constants;
 import com.kuibu.module.activity.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class HotListViewItemAdapter extends BaseAdapter {
-	private List<Map<String,String>> datas;
-	private Context context;
-
-	public class HolderView {
-		TextView  pack_name_tv;
-		TextView  pack_desc_tv;
-		ImageView owner_pic_iv;
-		TextView  owner_name_tv;
-		TextView  collect_count_tv;
+public class HotListViewItemAdapter extends CommonAdapter<Map<String,String>> {
+	
+	public HotListViewItemAdapter(Context context, List<Map<String,String>> datas,int layoutId) {
+		super(context,datas,layoutId);
 	}
-
-	public HotListViewItemAdapter(Context context, List<Map<String,String>> datas) {
-		this.datas = datas;
-		this.context = context;
-	}
-
-	public void updateView(List<Map<String,String>> datas) {
-		this.datas = datas;
-		this.notifyDataSetChanged();
-	}
-
+	
 	@Override
-	public int getCount() {
+	public void convert(ViewHolder holder, Map<String, String> item) {
 		// TODO Auto-generated method stub
-		return datas.size();
-	}
-
-	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return datas.get(position);
-	}
-
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
-	}
-
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		HolderView holderView;
-		if (convertView == null) {
-			holderView = new HolderView();
-			convertView = LayoutInflater.from(context).inflate(R.layout.hot_collect_list_item,
-					parent,false);
-			holderView.pack_name_tv = (TextView) convertView
-					.findViewById(R.id.hot_collect_folder_name);
-			holderView.pack_desc_tv = (TextView) convertView
-					.findViewById(R.id.hot_collect_folder_desc);
-			holderView.owner_name_tv = (TextView) convertView.findViewById(R.id.hot_collect_folder_owner_name);
-			holderView.owner_pic_iv = (ImageView) convertView
-					.findViewById(R.id.hot_collect_folder_owner_pic);
-			holderView.collect_count_tv =(TextView) convertView.findViewById(R.id.hot_collect_folder_visit_count);
-			convertView.setTag(holderView);
-		} else {
-			holderView = (HolderView) convertView.getTag();
-		}
-		holderView.pack_name_tv.setText(datas.get(position).get("box_name"));
-		holderView.pack_desc_tv.setText(datas.get(position).get("box_desc"));
-		holderView.owner_name_tv.setText(datas.get(position).get("user_name"));
-		holderView.collect_count_tv.setText(datas.get(position).get("box_count"));
-		String url = datas.get(position).get("user_pic");
+		holder.setTvText(R.id.hot_collect_folder_name,item.get("box_name"));
+		holder.setTvText(R.id.hot_collect_folder_desc,item.get("box_desc"));
+		holder.setTvText(R.id.hot_collect_folder_owner_name,item.get("user_name"));
+		holder.setTvText(R.id.hot_collect_folder_visit_count,item.get("box_count"));
+		String url = item.get("user_pic");
 		if(TextUtils.isEmpty(url) || url.equals("null")){
-			holderView.owner_pic_iv.setImageResource(R.drawable.default_pic_avata);
+			holder.setImageResource(R.id.hot_collect_folder_owner_pic,R.drawable.default_pic_avata);
 		}else{
-			ImageLoader.getInstance().displayImage(url, holderView.owner_pic_iv);
+			holder.setImageByUrl(R.id.hot_collect_folder_owner_pic, url, Constants.defaultAvataOptions);
 		}
-		return convertView;
 	}
+	
 }

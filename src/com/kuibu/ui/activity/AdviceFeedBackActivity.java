@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +24,7 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.activity.R;
 
 public class AdviceFeedBackActivity extends BaseActivity {
 	private EditText adviceEt;

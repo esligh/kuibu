@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +11,6 @@ import android.util.DisplayMetrics;
 import com.kuibu.common.utils.PhoneUtils;
 import com.kuibu.data.global.AppInfo;
 import com.kuibu.data.global.Constants;
-import com.kuibu.model.welcome.WelcomeActivity;
 
 /**
  * 启动页*/

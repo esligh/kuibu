@@ -11,7 +11,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kuibu.model.bean.CollectionBean;
+import com.kuibu.model.entity.CollectionBean;
 import com.kuibu.module.activity.R;
 
 public class LocalCollectionWAdapter extends BaseAdapter{

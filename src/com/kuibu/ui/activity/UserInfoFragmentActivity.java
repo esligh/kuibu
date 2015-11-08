@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.module.activity.R;
 
 public abstract class UserInfoFragmentActivity extends BaseActivity {
 	

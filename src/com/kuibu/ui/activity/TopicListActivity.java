@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,18 +17,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.TopicItemBean;
+import com.kuibu.model.entity.TopicItemBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.TopicListAdapter;
 
 public class TopicListActivity extends BaseActivity {

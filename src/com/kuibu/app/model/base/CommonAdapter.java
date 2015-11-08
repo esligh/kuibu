@@ -26,10 +26,16 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
 		this.mItemLayoutId = itemLayoutId;
 	}
 	
+	public void refreshView(List<T> data)
+	{
+		this.mData = data;  
+		notifyDataSetChanged();
+	}
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return mData.size();
+		return mData==null ? 0 :mData.size();
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import android.support.v4.app.Fragment;
 
@@ -14,7 +14,7 @@ public final class ExploreConstruct
 		if(StaticValue.TAB_PAGE.TAB_PAGE_RANK.equals(tag)){
 			fragment = new ExploreRankFragment();
 		}else if (StaticValue.TAB_PAGE.TAB_PAGE_HOT.equals(tag)){
-			fragment = new ExploreHotFragment();
+			fragment = new ExploreFavoriteFragment();
 		}else if (StaticValue.TAB_PAGE.TAB_PAGE_RECOMMEND.equals(tag)) {
 			fragment = new ExploreRecommendFragment();
 		}

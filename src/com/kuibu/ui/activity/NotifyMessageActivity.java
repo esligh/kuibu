@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,7 +7,8 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import com.kuibu.app.model.base.BaseActivity;
-import com.kuibu.module.fragment.NotifyTabPageFragment;
+import com.kuibu.module.activity.R;
+import com.kuibu.ui.fragment.NotifyTabPageFragment;
 
 public class NotifyMessageActivity extends BaseActivity{
 		

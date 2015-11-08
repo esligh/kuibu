@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -23,6 +23,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -50,9 +52,9 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.activity.AdviceFeedBackActivity;
-import com.kuibu.module.activity.MDHandBookActivity;
 import com.kuibu.module.activity.R;
+import com.kuibu.ui.activity.AdviceFeedBackActivity;
+import com.kuibu.ui.activity.MDHandBookActivity;
 
 public class SettingsFragment extends PreferenceFragment implements
 		OnPreferenceChangeListener ,OnPreferenceClickListener{
@@ -62,18 +64,24 @@ public class SettingsFragment extends PreferenceFragment implements
 	private int mNewVersionCode ; 
 	private String mAppVersionName ; 
     private ProgressDialog mProDlg;  
+    private ProgressDialog progressDlg; 
     private PreferenceScreen mVersion ; 
     private final int MAX_PROGRESS = 100  ; 
     private String mUpdateUrl; 
-    
+    private Handler mHandler = new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			switch(msg.what){
+			}
+		}
+    };
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
 			mListener = (OnPreChangeListener) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnPreChangeListener");
 		}
 	}
 
@@ -90,23 +98,20 @@ public class SettingsFragment extends PreferenceFragment implements
 		} else {
 			getActivity().setTheme(R.style.Theme_Kuibu_AppTheme_Light);
 		}
-
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
 		final PreferenceScreen clearBuffer = (PreferenceScreen) findPreference(
 				StaticValue.PrefKey.CLEAR_BUFFER);
-		clearBuffer
-				.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+		clearBuffer.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 					@Override
 					public boolean onPreferenceClick(Preference arg0) {
 						BufferManager.clearAllCache(getActivity());
-						clearBuffer.setSummary("当前缓存大小"
+						clearBuffer.setSummary(getActivity().getString(R.string.cache_size)
 								+ BufferManager.getTotalCacheSize(getActivity()));
 						return true;
 					}
 				});
-		clearBuffer.setSummary("当前缓存大小"
-				+ BufferManager.getTotalCacheSize(getActivity()));
+		clearBuffer.setSummary(getActivity().getString(R.string.cache_size)+ BufferManager.getTotalCacheSize(getActivity()));
 		try {
 			mVersion= (PreferenceScreen) findPreference(StaticValue.PrefKey.LASTEST_VERSION);
 			mVersion.setOnPreferenceClickListener(this);					
@@ -117,10 +122,8 @@ public class SettingsFragment extends PreferenceFragment implements
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
-		PreferenceScreen account = (PreferenceScreen) findPreference(
-					StaticValue.PrefKey.ACCOUNT_PROTECT);
-		if (StaticValue.REGSTATE.ACCOUNT_ACTIVATED.equals(Session.getSession()
-				.getRegState())) {
+		PreferenceScreen account = (PreferenceScreen) findPreference(StaticValue.PrefKey.ACCOUNT_PROTECT);
+		if (StaticValue.REGSTATE.ACCOUNT_ACTIVATED.equals(Session.getSession().getRegState())) {
 			account.setSummary(getString(R.string.account_protect));
 		} else {
 			account.setSummary(getString(R.string.account_no_protect));
@@ -132,11 +135,7 @@ public class SettingsFragment extends PreferenceFragment implements
 		findPreference(StaticValue.PrefKey.HAND_BOOK).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.FLOW_STATISTICS).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.ADVICE_FEEDBACK).setOnPreferenceClickListener(this);
-		findPreference(StaticValue.PrefKey.EXCEPTION_REPORT).setOnPreferenceClickListener(this);
-		mProDlg =  new ProgressDialog(getActivity());  
-		mProDlg.setMax(MAX_PROGRESS);
-		mProDlg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 		
-		finalHttp = new FinalHttp() ; 
+		findPreference(StaticValue.PrefKey.EXCEPTION_REPORT).setOnPreferenceClickListener(this);					
 	}
 
 	@Override
@@ -189,7 +188,8 @@ public class SettingsFragment extends PreferenceFragment implements
 			}
               new AlertDialog.Builder(getActivity()).setTitle("异常")
               .setMessage("上传异常日志?")
-              .setPositiveButton("确定", new  DialogInterface.OnClickListener(){
+              .setPositiveButton(getActivity().getString(R.string.btn_confirm),
+            		  new  DialogInterface.OnClickListener(){
       			@Override
       			public void onClick(DialogInterface arg0, int arg1) {
       				
@@ -202,8 +202,10 @@ public class SettingsFragment extends PreferenceFragment implements
       		    			AjaxParams params = new AjaxParams();
       		    			params.put("file_name", fileName);
       						params.put("data", new File(path));
+      						if(finalHttp == null){ 
+      							finalHttp = new FinalHttp() ;
+      						}
       						finalHttp.post(URL, params, new AjaxCallBack<String>() {
-
       							@Override
       							public void onFailure(Throwable t, int errorNo,
       									String strMsg) {
@@ -235,7 +237,7 @@ public class SettingsFragment extends PreferenceFragment implements
       						e.printStackTrace();
       					}		   	 			
       	    	}
-              }).setNegativeButton("取消", null).show();	
+              }).setNegativeButton(getActivity().getString(R.string.btn_confirm), null).show();	
 		}
 		return true;
 	}
@@ -271,7 +273,14 @@ public class SettingsFragment extends PreferenceFragment implements
 	
     
 	private void reqAppVersion()
-	{		
+	{	
+		if(progressDlg == null){
+			progressDlg = new ProgressDialog(getActivity());
+			progressDlg.setCanceledOnTouchOutside(false);
+			progressDlg.setMessage(getString(R.string.get_versioninfo));
+		}	
+		progressDlg.show();
+		
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 							.append(Constants.Config.REST_API_VERSION)
 							.append("/get_appinfo").toString();
@@ -297,11 +306,12 @@ public class SettingsFragment extends PreferenceFragment implements
 						mAppVersionName = new StringBuffer(Constants.APP_NAME).append("-").
 								append(versionName).append(".apk").toString();
 						int curVersionCode = PhoneUtils.getPackageInfo(getActivity()).versionCode;
+						progressDlg.dismiss();
 						if(mNewVersionCode > curVersionCode){
 							doUpdate();
-						}else{
+						}else{							
 							Toast.makeText(getActivity(), getString(R.string.no_new_version), Toast.LENGTH_SHORT).show();
-						}		
+						}	
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -322,7 +332,13 @@ public class SettingsFragment extends PreferenceFragment implements
 	}
 	
 	private void doUpdate()
-	{              
+	{   
+		if(mProDlg == null){
+			mProDlg =  new ProgressDialog(getActivity());
+		}
+		mProDlg.setMax(MAX_PROGRESS);
+		mProDlg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 	
+	
          Dialog dialog = new AlertDialog.Builder(getActivity()).setTitle(getString(R.string.update_version))
         		 .setMessage(getString(R.string.quest_update))
                  .setPositiveButton(getString(R.string.btn_confirm),    
@@ -353,6 +369,8 @@ public class SettingsFragment extends PreferenceFragment implements
 			file.delete();
 		}
 		final String URL = mUpdateUrl;
+		if(finalHttp == null) 
+				finalHttp = new FinalHttp() ; 
 		finalHttp.download(URL, apkPath, new AjaxCallBack<File>() {
 			@Override
 			public void onLoading(long count, long current) {

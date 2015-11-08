@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 /**
  * @class 常量
@@ -17,10 +17,10 @@ public final class Constants {
 	public static final String TEMPLATE_DEF_URL = "html/template.html";
 
 	public static class Config {
-//	/	public static final String SERVER_URI = "http://115.28.200.109:80/";
-	//	public static final String SOCKETIO_SERVER = "http://115.28.200.109:80/socket.io";
-		public static final String SERVER_URI = "http://192.168.1.6:5000/";
-		public static final String SOCKETIO_SERVER = "http://192.168.1.6:5000/";
+		public static final String SERVER_URI = "http://115.28.200.109:80/";
+		public static final String SOCKETIO_SERVER = "http://115.28.200.109:5000/";
+	//	public static final String SERVER_URI = "http://169.254.62.66:5000/";
+	//	public static final String SOCKETIO_SERVER = "http://115.28.200.109:5000/";
 		public static final String REST_API_VERSION = "/caddy/api/v1.0";	
 		public static final boolean DEBUG_MODE = true ; 
 		public static final String USER_PHOTO_TMP  = "pictmp";//用户头像裁剪的缓存文件
@@ -72,4 +72,14 @@ public final class Constants {
     public static final String WEBVIEW_LIGHT_CSSFILE= "file:///android_asset/markdown_css_themes/classic.css";    
     public static final String GITGUB_PROJECT = "https://github.com/esligh/kuibu";
     
+    public static DisplayImageOptions defaultAvataOptions = new DisplayImageOptions.Builder()
+	.showImageOnLoading(R.drawable.default_pic_avata)//image_small_default
+	.showImageForEmptyUri(R.drawable.default_pic_avata)
+	.showImageOnFail(R.drawable.default_pic_avata)
+	.cacheInMemory(true)
+	.cacheOnDisk(true)
+	.considerExifParams(true)
+	.bitmapConfig(Bitmap.Config.RGB_565)
+	.imageScaleType(ImageScaleType.EXACTLY)
+	.build(); 
 }

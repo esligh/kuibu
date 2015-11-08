@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +37,7 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.UserListAdapter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

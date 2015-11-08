@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,12 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import me.maxwin.view.XListView;
 import me.maxwin.view.XListView.IXListViewListener;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -38,17 +39,17 @@ import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.bean.ImageInfo;
-import com.kuibu.model.vo.CollectPackVo;
-import com.kuibu.model.vo.CollectionVo;
-import com.kuibu.model.vo.ImageLibVo;
+import com.kuibu.model.db.CollectPackVo;
+import com.kuibu.model.db.CollectionVo;
+import com.kuibu.model.db.ImageLibVo;
+import com.kuibu.model.entity.CollectionBean;
+import com.kuibu.model.entity.ImageInfo;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.ImageGridAdapter;
 import com.kuibu.module.adapter.ImageGridAdapter.HolderView;
 

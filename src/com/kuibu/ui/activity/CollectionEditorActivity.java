@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -24,14 +23,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.kuibu.custom.widget.HighlightingEditor;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.vo.CollectPackVo;
-import com.kuibu.model.vo.CollectionVo;
-import com.kuibu.model.vo.ImageLibVo;
-import com.kuibu.module.markdown.HighlightingEditor;
+import com.kuibu.model.db.CollectPackVo;
+import com.kuibu.model.db.CollectionVo;
+import com.kuibu.model.db.ImageLibVo;
+import com.kuibu.model.entity.CollectionBean;
+import com.kuibu.module.activity.R;
 
 /**
  * @class Markdown编辑主Activity页

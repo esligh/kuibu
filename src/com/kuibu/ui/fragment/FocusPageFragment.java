@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.TabTitleObject;
+import com.kuibu.model.entity.TabHotInfo;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.TabPageViewAdapter;
 import com.viewpagerindicator.SlidingTabIndicator;
@@ -26,7 +26,7 @@ import com.viewpagerindicator.SlidingTabIndicator;
 public class FocusPageFragment extends Fragment {	
 	
 	private final int DEFAULT_BACKUP_TABPAGE_NUM = 2;	
-	private List<TabTitleObject> focuspageTabTitle = null; 
+	private List<TabHotInfo> focuspageTabTitle = null; 
 	private TabPageViewAdapter adapter= null;
 	
 	@Override
@@ -73,13 +73,13 @@ public class FocusPageFragment extends Fragment {
 	
 	public  void initData(){
 		if(focuspageTabTitle ==null){
-			focuspageTabTitle = new ArrayList<TabTitleObject>();
+			focuspageTabTitle = new ArrayList<TabHotInfo>();
 			String[] itemTitle = getResources().getStringArray(
 					R.array.focus_tab_name);
 			String[] itemTag = getResources().getStringArray(
 					R.array.focus_tab_tag);
 			for (int i = 0; i < itemTitle.length; ++i) {
-				focuspageTabTitle.add(new TabTitleObject(itemTitle[i],
+				focuspageTabTitle.add(new TabHotInfo(itemTitle[i],
 						itemTag[i], null));
 			}
 		} 

@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:background="?listItemBackground">
          
 	<EditText
         android:id="@+id/advice"
@@ -11,8 +12,9 @@
         android:gravity="start"
         android:layout_margin="@dimen/android_spaces"
         android:hint="@string/hint_advice"
-        android:background="@drawable/bg_edittext_border"
-        android:textSize="18sp"
-        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/> 
-             
+        android:background="@null"
+        android:textSize="16sp"
+        android:textColor="?listItemTextColor"
+        android:clickable="true"
+        android:focusable="true"/>              
 </LinearLayout>

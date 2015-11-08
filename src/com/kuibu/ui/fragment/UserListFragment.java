@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,24 +17,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.activity.UserInfoActivity;
 import com.kuibu.module.adapter.UserListAdapter;
+import com.kuibu.ui.activity.UserInfoActivity;
 
-public class UserListFragment extends Fragment implements OnLoadListener{
+public class UserListFragment extends Fragment {
 	
-	private PaginationListView userList;
+	private PullToRefreshListView userList;
 	private List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
 	private UserListAdapter authorAdapter;
 	private Map<String, String> mParams;
@@ -69,15 +73,23 @@ public class UserListFragment extends Fragment implements OnLoadListener{
 					}
 				});
 
-		userList = (PaginationListView) rootView
+		userList = (PullToRefreshListView) rootView
 				.findViewById(R.id.user_list_view);
-		userList.setOnLoadListener(this);
+		userList.setMode(Mode.PULL_FROM_END);
+		userList.setPullToRefreshOverScrollEnabled(false);
+		userList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+			}
+		});
 		userList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
 				// TODO Auto-generated method stub
-				Map<String, Object> item = datas.get(position);
+				Map<String, Object> item = datas.get(position-1);
 				Intent intent = new Intent(getActivity(),
 						UserInfoActivity.class);
 				intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
@@ -131,14 +143,13 @@ public class UserListFragment extends Fragment implements OnLoadListener{
 						}
 						showView();
 						if (arr.length() > 0) {
-							mMultiStateView
-									.setViewState(MultiStateView.ViewState.CONTENT);
+							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 						} else {
-							mMultiStateView
-									.setViewState(MultiStateView.ViewState.EMPTY);
+							Toast.makeText(getActivity(),getActivity().getString(R.string.nomore_data),
+									Toast.LENGTH_SHORT).show();
 						}
 					}
-					userList.loadComplete();
+					userList.onRefreshComplete();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -163,11 +174,5 @@ public class UserListFragment extends Fragment implements OnLoadListener{
 		} else {
 			authorAdapter.updateView(datas);
 		}
-	}
-
-	@Override
-	public void onLoadMore() {
-		// TODO Auto-generated method stub
-		loadData();
 	}
 }

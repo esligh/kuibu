@@ -1,4 +1,4 @@
-package com.kuibu.model.bean;
+package com.kuibu.model.entity;
 
 /**
  * 主要的列表项数据定义

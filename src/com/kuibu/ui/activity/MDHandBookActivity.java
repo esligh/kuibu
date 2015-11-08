@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import us.feras.mdv.MarkdownView;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.data.global.Constants;
+import com.kuibu.module.activity.R;
 
 public class MDHandBookActivity extends BaseActivity{
 	private MarkdownView bookView ; 	

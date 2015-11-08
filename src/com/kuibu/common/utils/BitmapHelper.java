@@ -23,7 +23,7 @@ import android.media.ExifInterface;
 import android.util.Log;
 
 import com.kuibu.data.global.Constants;
-import com.kuibu.model.bean.ImageInfo;
+import com.kuibu.model.entity.ImageInfo;
 import com.nostra13.universalimageloader.utils.StorageUtils;
  
 /**

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.kuibu.model.bean.CollectPackItemBean;
+import com.kuibu.model.entity.CollectPackItemBean;
 import com.kuibu.module.activity.R;
 
 public class FocusCollectItemAdapter extends BaseAdapter{

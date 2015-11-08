@@ -6,7 +6,7 @@
  * @date 2015/1/18
  * */
 
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
@@ -39,23 +39,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.app.module.core.LoginProcess;
+import com.kuibu.app.module.core.LoginProcess.OnLoginLisener;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.NetUtils;
 import com.kuibu.common.utils.PreferencesUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.DrawerListItem;
+import com.kuibu.model.entity.DrawerListItem;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.NavigationDrawerFragment;
-import com.kuibu.module.dlg.LoginProcess;
-import com.kuibu.module.dlg.LoginProcess.OnLoginLisener;
-import com.kuibu.module.fragment.CollectionMainFragment;
-import com.kuibu.module.fragment.ExplorePageFragment;
-import com.kuibu.module.fragment.FavoriteBoxFragment;
-import com.kuibu.module.fragment.FocusPageFragment;
-import com.kuibu.module.fragment.HomePageFragment;
+import com.kuibu.ui.fragment.CollectionMainFragment;
+import com.kuibu.ui.fragment.ExplorePageFragment;
+import com.kuibu.ui.fragment.FavoriteBoxFragment;
+import com.kuibu.ui.fragment.FocusPageFragment;
+import com.kuibu.ui.fragment.HomePageFragment;
 
 public class KuibuMainActivity extends BaseActivity 
 	implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnLoginLisener {
@@ -303,7 +303,6 @@ public class KuibuMainActivity extends BaseActivity
 			JSONObject obj = new JSONObject();
 			obj.put("uid", Session.getSession().getuId());
 			obj.put("name", Session.getSession().getuName());
-			
 			KuibuApplication.getSocketIoInstance().SetUp();
 			KuibuApplication.getSocketIoInstance().getSocketIO().
 			emit(StaticValue.EVENT.LOGIN_EVENT, obj);					
@@ -315,7 +314,7 @@ public class KuibuMainActivity extends BaseActivity
 			e.printStackTrace();
 		}
 		//login success 
-		login();
+		login_over();
 	}
 
 	
@@ -363,7 +362,7 @@ public class KuibuMainActivity extends BaseActivity
 		logout();
 	}
 	
-	private void login()
+	private void login_over()
 	{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
@@ -398,11 +397,7 @@ public class KuibuMainActivity extends BaseActivity
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 			return KuibuUtils.prepareReqHeader();
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -463,7 +458,8 @@ public class KuibuMainActivity extends BaseActivity
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 	
-	private boolean doubleBackToExitPressedOnce;	
+	private boolean doubleBackToExitPressedOnce;
+	
 	@Override
 	public void onBackPressed() {
 		if (doubleBackToExitPressedOnce) {
@@ -518,16 +514,7 @@ public class KuibuMainActivity extends BaseActivity
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();	
+		super.onDestroy();
+		
 	}
-
-	@Override  
-	public void onTrimMemory(int level) {  
-	    super.onTrimMemory(level);  
-	    switch (level) {  
-	    case TRIM_MEMORY_UI_HIDDEN:  
-	        
-	        break;  
-	    }  
-	} 
 }

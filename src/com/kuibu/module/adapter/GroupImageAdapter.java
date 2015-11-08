@@ -17,7 +17,7 @@ import com.kuibu.common.utils.NativeImageLoader;
 import com.kuibu.common.utils.NativeImageLoader.NativeImageCallBack;
 import com.kuibu.custom.widget.MyImageView;
 import com.kuibu.custom.widget.MyImageView.OnMeasureListener;
-import com.kuibu.model.bean.ImageBean;
+import com.kuibu.model.entity.ImageBean;
 import com.kuibu.module.activity.R;
 
 public class GroupImageAdapter extends BaseAdapter {
@@ -102,8 +102,6 @@ public class GroupImageAdapter extends BaseAdapter {
 	        }else{  
 	            viewHolder.mImageView.setImageResource(R.drawable.friends_sends_pictures_no);  
 	        }  
-	          
-	          
 	        return convertView;  
 	    }  
 	      

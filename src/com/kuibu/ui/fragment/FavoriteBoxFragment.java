@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,9 +37,9 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.activity.FavoriteBoxInfoActivity;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.FavoriteBoxCardListAdapter;
+import com.kuibu.ui.activity.FavoriteBoxInfoActivity;
 
 public class FavoriteBoxFragment extends Fragment {
 	
@@ -120,10 +120,10 @@ public class FavoriteBoxFragment extends Fragment {
     private void showView()
     {
     	if(adapter == null){
-    		adapter = new FavoriteBoxCardListAdapter(this.getActivity(), datas);
+    		adapter = new FavoriteBoxCardListAdapter(this.getActivity(), datas,R.layout.collect_list_item_card);
     		cardsList.setAdapter(adapter);
     	}else{
-    		adapter.updateView(datas);
+    		adapter.refreshView(datas);
     	}
     }
     

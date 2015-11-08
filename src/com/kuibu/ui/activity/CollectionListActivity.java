@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,25 +12,29 @@ import org.json.JSONObject;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.MateListItem;
+import com.kuibu.model.entity.MateListItem;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.MateListViewItemAdapter;
 
-public class CollectionListActivity extends BaseActivity implements OnLoadListener{	
-	private PaginationListView listView ; 
+public class CollectionListActivity extends BaseActivity{	
+	private PullToRefreshListView listView ; 
 	private List<MateListItem> datas = new ArrayList<MateListItem>();
 	private MateListViewItemAdapter mAdapter ; 
 	private String mPackId ; 
@@ -39,7 +43,7 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_pagination_listview);
+		setContentView(R.layout.activity_pullrefresh_listview);
 		mMultiStateView = (MultiStateView)findViewById(R.id.multiStateView);
         mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
         .setOnClickListener(new View.OnClickListener() {
@@ -49,8 +53,17 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 				loadData();
 			}   	
         });
-		listView = (PaginationListView)findViewById(R.id.pagination_lv);
-		listView.setOnLoadListener(this);
+		listView = (PullToRefreshListView)findViewById(R.id.pagination_lv);
+		listView.setMode(Mode.PULL_FROM_END);
+		listView.setPullToRefreshOverScrollEnabled(false);
+		listView.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+			}
+			
+		});
 		loadData();
 		showView();
 	}
@@ -104,7 +117,7 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 							mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 						}
 					}	
-					listView.loadComplete();
+					listView.onRefreshComplete();
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -135,10 +148,6 @@ public class CollectionListActivity extends BaseActivity implements OnLoadListen
 		}
 	}
 
-	@Override
-	public void onLoadMore() {
-		loadData();
-	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

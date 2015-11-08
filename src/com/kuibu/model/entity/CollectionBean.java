@@ -1,11 +1,16 @@
-package com.kuibu.model.bean;
+package com.kuibu.model.entity;
 
+import com.google.gson.annotations.Expose;
 
 @SuppressWarnings("serial")
 public class CollectionBean extends BaseEntity{
 	
-	public String _id ; 
-	public String pid ; 
+	@Expose
+	public String _id ;
+	
+	@Expose 	
+	public String pid ;
+	
 	public String tid ;
 	public String cid ;
 	public String type ;
@@ -135,7 +140,10 @@ public class CollectionBean extends BaseEntity{
 	}
 
 	@Override
-	public boolean equals(Object o) {		
+	public boolean equals(Object o) {
+		if(o == this){
+			return true ; 
+		}
 		if(o instanceof CollectionBean){
 			CollectionBean obj = (CollectionBean)o ;
 			if(obj != null){

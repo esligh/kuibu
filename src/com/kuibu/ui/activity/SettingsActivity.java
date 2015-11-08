@@ -1,12 +1,13 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.kuibu.app.model.base.BaseActivity;
-import com.kuibu.module.fragment.SettingsFragment;
-import com.kuibu.module.fragment.SettingsFragment.OnPreChangeListener;
+import com.kuibu.module.activity.R;
+import com.kuibu.ui.fragment.SettingsFragment;
+import com.kuibu.ui.fragment.SettingsFragment.OnPreChangeListener;
 
 public class SettingsActivity extends BaseActivity  implements OnPreChangeListener{
 	private SettingsFragment settingsFragment;

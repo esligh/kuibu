@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.net.PublicRequestor;
 
 public class ReportActivity extends BaseActivity {

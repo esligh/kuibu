@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,32 +11,37 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.module.activity.FavoriteBoxInfoActivity;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.HotListViewItemAdapter;
+import com.kuibu.ui.activity.FavoriteBoxInfoActivity;
 
-public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
-
+public class ExploreFavoriteFragment extends BaseFragment {
+	
 	private static final String VOLLEY_REQ_TAG = "explore_hot_fragment";
-	private PaginationListView hotList = null;
+	private PullToRefreshListView hotList = null;
 	private HotListViewItemAdapter hotAdapter = null;
 	private List<Map<String, String>> mdatas = new ArrayList<Map<String, String>>();
 	private MultiStateView mMultiStateView;
@@ -59,18 +64,35 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 					}
 				});
 
-		hotList = (PaginationListView) rootView
+		hotList = (PullToRefreshListView) rootView
 				.findViewById(R.id.pagination_lv);
-		hotList.setOnLoadListener(this);
+		hotList.setMode(Mode.PULL_FROM_END);
+		hotList.setPullToRefreshOverScrollEnabled(false);
+		hotList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData("REQ_HISTORY");
+				String label = DateUtils.formatDateTime(getActivity(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}
+			
+		});
 		hotList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
 				Intent intent = new Intent(getActivity(),
 						FavoriteBoxInfoActivity.class);
-				intent.putExtra("box_id", mdatas.get(position).get("box_id"));
-				intent.putExtra("box_type", mdatas.get(position).get("box_type"));
-				intent.putExtra("create_by", mdatas.get(position).get("uid"));
+				intent.putExtra("box_id", mdatas.get(position-1).get("box_id"));
+				intent.putExtra("box_type", mdatas.get(position-1).get("box_type"));
+				intent.putExtra("create_by", mdatas.get(position-1).get("uid"));
 				getActivity().startActivity(intent);
 				getActivity().overridePendingTransition(
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
@@ -91,10 +113,6 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 		}
 	}
 
-	@Override
-	public void onLoadMore() {
-		loadData("REQ_HISTORY");
-	}
 
 	@Override
 	public void onDestroy() {
@@ -106,7 +124,6 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 	private void loadFromArray(JSONArray arr,String action) {
 		try {
 			if(arr.length()>0){
-
 				for (int i = 0; i < arr.length(); i++) {
 					JSONObject temp = (JSONObject) arr.get(i);
 					Map<String, String> item = new HashMap<String, String>();
@@ -164,8 +181,13 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
-						loadFromArray(arr,action);
-						hotList.loadComplete();
+						if(arr.length()>0){
+							loadFromArray(arr,action);
+						}else{
+							Toast.makeText(getActivity(), getString(R.string.nomore_data), 
+									Toast.LENGTH_SHORT).show();
+						}
+						hotList.onRefreshComplete();
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();					
@@ -176,7 +198,7 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 			public void onErrorResponse(VolleyError error) {
 				if(mdatas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				hotList.loadComplete();
+				hotList.onRefreshComplete();
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
@@ -189,10 +211,11 @@ public class ExploreHotFragment extends BaseFragment implements OnLoadListener {
 
 	private void showView() {
 		if (hotAdapter == null) {
-			hotAdapter = new HotListViewItemAdapter(getActivity(), mdatas);
+			hotAdapter = new HotListViewItemAdapter(getActivity(), mdatas,
+					R.layout.hot_collect_list_item);
 			hotList.setAdapter(hotAdapter);
 		} else {
-			hotAdapter.updateView(mdatas);
+			hotAdapter.refreshView(mdatas);
 		}
 	}
 

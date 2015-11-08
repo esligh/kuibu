@@ -7,3 +7,8 @@
 /proguard-project.txt
 /project.properties
 /README.md
+
+.classpath
+.progject
+lint.xml
+proguard-project.txt

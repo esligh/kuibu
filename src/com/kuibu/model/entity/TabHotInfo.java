@@ -1,13 +1,13 @@
-package com.kuibu.model.bean;
+package com.kuibu.model.entity;
 
 @SuppressWarnings("serial")
-public class TabTitleObject extends BaseEntity{
+public class TabHotInfo extends BaseEntity{
 	
 	private String title = null;
 	private String Tag = null;
 	private String comment = null;
 	
-	public TabTitleObject(String title,String tag,String comment)
+	public TabHotInfo(String title,String tag,String comment)
 	{
 		this.title = title ; 
 		this.Tag = tag; 

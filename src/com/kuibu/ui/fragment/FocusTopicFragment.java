@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,42 +12,45 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.TopicItemBean;
+import com.kuibu.model.entity.TopicItemBean;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.activity.TopicInfoActivity;
-import com.kuibu.module.adapter.FocusTopicItemAdapter;
+import com.kuibu.ui.activity.TopicInfoActivity;
 
-public class FocusTopicFragment extends Fragment implements OnLoadListener {
+public class FocusTopicFragment extends Fragment {
 
-	private PaginationListView topicList = null;
-	private FocusTopicItemAdapter adapter = null;
+	private PullToRefreshListView topicList = null;
+	private CommonAdapter<TopicItemBean> adapter = null;
 	private List<TopicItemBean> mdatas = new ArrayList<TopicItemBean>();
 	private MultiStateView mMultiStateView;
-	
-	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_pagination_listview,
+		View rootView = inflater.inflate(R.layout.activity_pullrefresh_listview,
 				container, false);
 		mMultiStateView = (MultiStateView) rootView
 				.findViewById(R.id.multiStateView);
@@ -61,9 +64,25 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 						loadData();
 					}
 				});
-		topicList = (PaginationListView) rootView
+		topicList = (PullToRefreshListView) rootView
 				.findViewById(R.id.pagination_lv);
-		topicList.setOnLoadListener(this);
+		topicList.setMode(Mode.PULL_FROM_END);
+		topicList.setPullToRefreshOverScrollEnabled(false);
+		topicList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData();
+				String label = DateUtils.formatDateTime(getActivity(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}
+		});
 		topicList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
@@ -72,13 +91,13 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 				Intent intent = new Intent(getActivity(),
 						TopicInfoActivity.class);
 				intent.putExtra(StaticValue.TOPICINFO.TOPIC_ID,
-						mdatas.get(position).getId());
+						mdatas.get(position-1).getId());
 				intent.putExtra(StaticValue.TOPICINFO.TOPIC_NAME,
-						mdatas.get(position).getTopic());
+						mdatas.get(position-1).getTopic());
 				intent.putExtra(StaticValue.TOPICINFO.TOPIC_EXTRA,
-						mdatas.get(position).getIntroduce());
+						mdatas.get(position-1).getIntroduce());
 				intent.putExtra(StaticValue.TOPICINFO.TOPIC_PIC,
-						mdatas.get(position).getTopicPicUrl());
+						mdatas.get(position-1).getTopicPicUrl());
 				getActivity().startActivity(intent);
 				getActivity().overridePendingTransition(
 						R.anim.anim_slide_in_left, R.anim.anim_slide_out_left);
@@ -139,7 +158,7 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 							mMultiStateView
 									.setViewState(MultiStateView.ViewState.EMPTY);
 						}
-						topicList.loadComplete();
+						topicList.onRefreshComplete();
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -163,16 +182,22 @@ public class FocusTopicFragment extends Fragment implements OnLoadListener {
 
 	private void showView() {
 		if (adapter == null) {
-			adapter = new FocusTopicItemAdapter(getActivity(), mdatas);
+			adapter = new CommonAdapter<TopicItemBean>(getActivity(), mdatas,R.layout.focus_topic_list_item){
+
+				@Override
+				public void convert(ViewHolder holder, TopicItemBean item) {
+					// TODO Auto-generated method stub
+
+					holder.setTvText(R.id.focus_topic_tv,item.getTopic());
+					holder.setTvText(R.id.focus_topic_introduce_tv,item.getIntroduce());
+					holder.setImageByUrl(R.id.focus_topic_pic_iv, item.getTopicPicUrl());	
+				}
+				
+			};
 			topicList.setAdapter(adapter);
 		} else {
-			adapter.updateView(mdatas);
+			adapter.refreshView(mdatas);
 		}
 	}
 
-	@Override
-	public void onLoadMore() {
-		// TODO Auto-generated method stub
-		loadData();
-	}
 }

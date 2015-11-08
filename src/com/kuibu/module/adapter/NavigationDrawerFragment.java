@@ -32,10 +32,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.DrawerListItem;
-import com.kuibu.model.bean.UserInfoBean;
+import com.kuibu.model.entity.DrawerListItem;
+import com.kuibu.model.entity.UserInfoBean;
 import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -90,7 +91,7 @@ public class NavigationDrawerFragment extends Fragment {
 			if(TextUtils.isEmpty(url) || url.equals("null")){
 					headerIcon.setImageResource(R.drawable.default_pic_avata);
 			}else{
-				ImageLoader.getInstance().displayImage(url, headerIcon);					
+				ImageLoader.getInstance().displayImage(url, headerIcon,Constants.defaultAvataOptions);					
 			}				
 		}else{
 			headerIcon.setImageResource(R.drawable.ic_drawer_login);

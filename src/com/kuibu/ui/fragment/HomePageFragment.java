@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,27 +11,29 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ListView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.baoyz.widget.PullRefreshLayout;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.common.utils.DataUtils;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.MateListItem;
+import com.kuibu.model.entity.MateListItem;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.HomeListViewItemAdapter;
 
@@ -40,12 +42,10 @@ import com.kuibu.module.adapter.HomeListViewItemAdapter;
  * @author ThinkPad
  */
 
-public class HomePageFragment extends Fragment implements OnLoadListener{
-	
+public class HomePageFragment extends Fragment {
 	private HomeListViewItemAdapter homeListViewAdapter = null;
-	private List <MateListItem> mHomeDatas = new ArrayList <MateListItem>();
-	private PaginationListView mListView;  
-    private PullRefreshLayout pullFreshlayout;
+	private List <MateListItem> mHomeDatas = new ArrayList <MateListItem>();  
+    private PullToRefreshListView mPullRefreshListView;
     private MultiStateView mMultiStateView;
     
 	@Override
@@ -61,17 +61,54 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				loadData("INIT",true);				
 			}
         });
-		mListView = (PaginationListView) rootView.findViewById(R.id.pagination_lv);
-		pullFreshlayout = (PullRefreshLayout)rootView.findViewById(R.id.swipeRefreshLayout);
+        mPullRefreshListView = (PullToRefreshListView) rootView.findViewById(R.id.pullToRefreshListView);
+		mPullRefreshListView.setMode(Mode.BOTH);
+		mPullRefreshListView.setPullToRefreshOverScrollEnabled(false);
+		mPullRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
+			//下拉刷新
+			@Override
+			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData("DOWN",true);
+				
+				String label = DateUtils.formatDateTime(getActivity()
+						.getApplicationContext(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}
+
+			//向上拖动刷新
+			@Override
+			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData("UP",false);
+				String label = DateUtils.formatDateTime(getActivity()
+						.getApplicationContext(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}			
+		});
 		
-		pullFreshlayout.setRefreshStyle(PullRefreshLayout.STYLE_CIRCLES);
-		mListView.setOnLoadListener(this);
-		pullFreshlayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadData("DOWN",true);
-            }
-        });
+		//到底部时自动加载
+		mPullRefreshListView.setOnLastItemVisibleListener(new OnLastItemVisibleListener() {
+			@Override
+			public void onLastItemVisible() {
+				// TODO Auto-generated method stub
+				loadData("UP",false);
+				mPullRefreshListView.setRefreshingFooter();
+			}
+		});
+		
 		JSONArray arr = KuibuApplication.getCacheInstance()
 				.getAsJSONArray(StaticValue.LOCALCACHE.HOME_LIST_CACHE);
 		if(arr!=null && arr.length()>0){
@@ -110,15 +147,10 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 		if (homeListViewAdapter == null) {
 			homeListViewAdapter = new HomeListViewItemAdapter(getActivity(),
 					mHomeDatas);
-			mListView.setAdapter(homeListViewAdapter);
+			mPullRefreshListView.setAdapter(homeListViewAdapter);
 		} else {
 			homeListViewAdapter.updateView(mHomeDatas);
 		}
-	}
-
-	@Override
-	public void onLoadMore() {
-		loadData("UP",false);
 	}
 		
 	public void loadData(final String action,final boolean bcache)
@@ -147,9 +179,7 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data); 
 						parseFromJson(arr,action);
-						pullFreshlayout.setRefreshing(false);
-						mListView.loadComplete();
-						
+						mPullRefreshListView.onRefreshComplete();
 						if(arr.length()>0){
 							if(action.equals("INIT")&& bcache){
 							    	KuibuApplication.getCacheInstance()
@@ -174,13 +204,12 @@ public class HomePageFragment extends Fragment implements OnLoadListener{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				if(mHomeDatas.isEmpty())
+				if(!mHomeDatas.isEmpty()){
+					mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
+				}else{
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				pullFreshlayout.setRefreshing(false);
-				mListView.loadComplete();
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
+				}					
+				mPullRefreshListView.onRefreshComplete();
 			}
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 

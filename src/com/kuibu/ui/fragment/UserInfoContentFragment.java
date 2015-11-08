@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,13 +35,13 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.UserInfoBean;
-import com.kuibu.module.activity.CollectPackListActivity;
-import com.kuibu.module.activity.FavoriteBoxActivity;
+import com.kuibu.model.entity.UserInfoBean;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.activity.UserListActivity;
-import com.kuibu.module.activity.UserTopicListActivity;
 import com.kuibu.module.iterfaces.IConstructFragment;
+import com.kuibu.ui.activity.CollectPackListActivity;
+import com.kuibu.ui.activity.FavoriteBoxActivity;
+import com.kuibu.ui.activity.UserListActivity;
+import com.kuibu.ui.activity.UserTopicListActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public final class UserInfoContentFragment extends Fragment implements
@@ -215,7 +215,7 @@ public final class UserInfoContentFragment extends Fragment implements
 			if(TextUtils.isEmpty(url) || url.equals("null")){
 				user_photo_iv.setImageResource(R.drawable.default_pic_avata);
 			}else{
-				ImageLoader.getInstance().displayImage(url, user_photo_iv);
+				ImageLoader.getInstance().displayImage(url, user_photo_iv,Constants.defaultAvataOptions);
 			}			
 		}else{
 			String uid = this.getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_ID);
@@ -254,7 +254,7 @@ public final class UserInfoContentFragment extends Fragment implements
 			if(TextUtils.isEmpty(url) || url.equals("null")){			
 				user_photo_iv.setImageResource(R.drawable.default_pic_avata);
 			}else{
-				ImageLoader.getInstance().displayImage(url, user_photo_iv);
+				ImageLoader.getInstance().displayImage(url, user_photo_iv,Constants.defaultAvataOptions);
 			}				
 		}		
 		if(StaticValue.SERMODLE.USER_SEX_MALE.equals(sex)){
@@ -299,7 +299,7 @@ public final class UserInfoContentFragment extends Fragment implements
 						}
 						bUserIsFollow = obj.getBoolean("is_focus");
 						if(bUserIsFollow && Session.getSession().isLogin()){
-							if(!isDetached()){
+							if(isAdded()){
 								@SuppressWarnings("deprecation")
 								int btnColor= getActivity().getResources().getColor(R.color.fbutton_color_concrete);
 								focusBtn.setButtonColor(btnColor);						

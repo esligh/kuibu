@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,16 +31,15 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.gc.materialdesign.views.ButtonFloat;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.vo.CollectPackVo;
-import com.kuibu.model.vo.CollectionVo;
-import com.kuibu.model.vo.ImageLibVo;
+import com.kuibu.model.db.CollectPackVo;
+import com.kuibu.model.db.CollectionVo;
+import com.kuibu.model.db.ImageLibVo;
+import com.kuibu.model.entity.CollectionBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.LocalCollectionWAdapter;
 import com.kuibu.module.adapter.LocalCollectionWAdapter.HolderView;
 

@@ -1,4 +1,4 @@
-package com.kuibu.module.fragment;
+package com.kuibu.ui.fragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +11,11 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -21,24 +23,25 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.custom.widget.PaginationListView;
-import com.kuibu.custom.widget.PaginationListView.OnLoadListener;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.MateListItem;
+import com.kuibu.model.entity.MateListItem;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.MateListViewItemAdapter;
 
-public class ExploreRecommendFragment extends BaseFragment implements
-		OnLoadListener {
+public class ExploreRecommendFragment extends BaseFragment {
 	
 	private static final String VOLLEY_REQ_TAG = "explore_recommend_fragment";
-	private PaginationListView recommendList = null;
+	private PullToRefreshListView recommendList = null;
 	private MateListViewItemAdapter recommendAdapter = null;
 	private List<MateListItem> mdatas = new ArrayList<MateListItem>();
 	private MultiStateView mMultiStateView;
@@ -47,7 +50,7 @@ public class ExploreRecommendFragment extends BaseFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.activity_pagination_listview,
+		View rootView = inflater.inflate(R.layout.activity_pullrefresh_listview,
 				container, false);
 		mMultiStateView = (MultiStateView) rootView
 				.findViewById(R.id.multiStateView);
@@ -61,10 +64,26 @@ public class ExploreRecommendFragment extends BaseFragment implements
 						loadData("REQ_NEWDATA");
 					}
 				});
-		recommendList = (PaginationListView) rootView
+		recommendList = (PullToRefreshListView) rootView
 				.findViewById(R.id.pagination_lv);
 		recommendList.setVerticalScrollBarEnabled(false);
-		recommendList.setOnLoadListener(this);
+		recommendList.setMode(Mode.PULL_FROM_END);
+		recommendList.setPullToRefreshOverScrollEnabled(false);
+		recommendList.setOnRefreshListener(new OnRefreshListener<ListView>() {
+			@Override
+			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+				// TODO Auto-generated method stub
+				loadData("REQ_HISTORY");
+				String label = DateUtils.formatDateTime(getActivity(), System
+						.currentTimeMillis(),
+						DateUtils.FORMAT_SHOW_TIME
+								| DateUtils.FORMAT_SHOW_DATE
+								| DateUtils.FORMAT_ABBREV_ALL);
+
+				refreshView.getLoadingLayoutProxy()
+						.setLastUpdatedLabel(label);
+			}
+		});
 		JSONArray arr = KuibuApplication.getCacheInstance()
 				.getAsJSONArray(StaticValue.LOCALCACHE.HOME_RECOMMAND_CACHE);
 		if (arr != null) {
@@ -86,11 +105,6 @@ public class ExploreRecommendFragment extends BaseFragment implements
 		}
 	}
 	
-	@Override
-	public void onLoadMore() {
-		loadData("REQ_HISTORY");
-	}
-
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
@@ -168,7 +182,7 @@ public class ExploreRecommendFragment extends BaseFragment implements
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data);
 						loadFromArray(arr,action);
-						recommendList.loadComplete();						
+						recommendList.onRefreshComplete();						
 						if(arr.length()>0){							
 							if(action.equals("REQ_NEWDATA")){
 								JSONArray oldarr = KuibuApplication.getCacheInstance()
@@ -190,7 +204,7 @@ public class ExploreRecommendFragment extends BaseFragment implements
 			public void onErrorResponse(VolleyError error) {
 				if(mdatas!=null && mdatas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				recommendList.loadComplete();
+				recommendList.onRefreshComplete();
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();

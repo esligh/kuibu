@@ -12,81 +12,42 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 
-public class FavoriteBoxAdapter extends BaseAdapter{
+public class FavoriteBoxAdapter extends CommonAdapter<Map<String,String>>{
 	
-	private  List<Map<String,String>> datas ; 
-	private  Context context ;  
 	private  List<String> selIds ; 
 	
-	public FavoriteBoxAdapter(Context context, List<Map<String,String>> datas,List<String> selIds)
+	public FavoriteBoxAdapter(Context context, List<Map<String,String>> datas,
+			List<String> selIds,int layoutId)
 	{
-		this.context = context ; 
-		this.datas = datas ; 
+		super(context,datas,layoutId); 
 		this.selIds = selIds;
 	}
 	
 	public void updateView(List<Map<String,String>> datas,List<String> selIds)
-	{
-		this.datas =datas ; 
+	{ 
 		this.selIds = selIds; 
-		this.notifyDataSetChanged();
-	}
-	
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		if(datas != null )
-			return datas.size();
-		return  0 ;
+		refreshView(datas);
 	}
 
-	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return datas.get(position);
-	}
 
 	@Override
-	public long getItemId(int position) {
+	public void convert(ViewHolder holder, Map<String, String> item) {
 		// TODO Auto-generated method stub
-		return position;
-	}
-
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		HolderView holder ; 
-		if(convertView == null){
-			holder = new HolderView();
-			convertView  = LayoutInflater.from(context).inflate(R.layout.favorite_box_list_item, parent,false);
-			holder.box_name_tv = (TextView) convertView.findViewById(R.id.favorite_box_name_tv);
-			holder.box_cb = (CheckBox)convertView.findViewById(R.id.favorite_box_cb);
-			holder.type_iv = (ImageView)convertView.findViewById(R.id.type_icon);
-			convertView.setTag(holder);
+		holder.setTvText(R.id.favorite_box_name_tv,item.get("box_name"));
+		if(selIds!=null && selIds.contains(item.get("box_id"))){
+			holder.setChecked(R.id.favorite_box_cb,true);
 		}else{
-			holder = (HolderView)convertView.getTag();
-		}		
-		holder.box_name_tv.setText((String)datas.get(position).get("box_name"));
-		if(selIds!=null && selIds.contains((String)datas.get(position).get("box_id"))){
-			holder.box_cb.setChecked(true);
-		}else{
-			holder.box_cb.setChecked(false);
+			holder.setChecked(R.id.favorite_box_cb,false);
 		}
-		if(StaticValue.SERMODLE.BOX_TYPE_PIC.equals(datas.get(position).get("box_type"))){
-			holder.type_iv.setImageResource(R.drawable.pack_type_pic);
+		if(StaticValue.SERMODLE.BOX_TYPE_PIC.equals(item.get("box_type"))){
+			holder.setImageResource(R.id.type_icon,R.drawable.pack_type_pic);
 		}else{
-			holder.type_iv.setImageResource(R.drawable.pack_type_word);
+			holder.setImageResource(R.id.type_icon,R.drawable.pack_type_word);
 		}
-		return convertView;
-	}
-
-	public class HolderView
-	{
-		public TextView box_name_tv ; 
-		public CheckBox box_cb ;
-		public ImageView type_iv ; 
 	}
 }

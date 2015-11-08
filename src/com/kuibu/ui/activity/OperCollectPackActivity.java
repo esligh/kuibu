@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -32,6 +33,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -39,14 +41,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectPackBean;
-import com.kuibu.model.bean.TopicItemBean;
-import com.kuibu.model.vo.CollectPackVo;
+import com.kuibu.model.db.CollectPackVo;
+import com.kuibu.model.entity.CollectPackBean;
+import com.kuibu.model.entity.TopicItemBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.TopicListAdapter;
 
 public class OperCollectPackActivity extends BaseActivity {
@@ -64,6 +66,7 @@ public class OperCollectPackActivity extends BaseActivity {
 	private String pack_id ; 
 	private String oper ; 
 	private RadioGroup pack_type_rg ;  
+	private ProgressDialog progressDlg ; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -294,8 +297,8 @@ public class OperCollectPackActivity extends BaseActivity {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		packVo.closeDB();
-		datas.clear();datas= null; 
-		tags.clear();tags = null; 
+		datas.clear();
+		tags.clear();
 	}
 
 	@Override
@@ -372,6 +375,13 @@ public class OperCollectPackActivity extends BaseActivity {
 	
 	private void requestAddpack(final CollectPackBean newOne)
 	{
+		if(progressDlg == null){
+			progressDlg = new ProgressDialog(this);
+			progressDlg.setCanceledOnTouchOutside(false);
+			progressDlg.setMessage(getString(R.string.saving));			
+		}
+		progressDlg.show();
+		
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("pack_name", newOne.getPack_name());
 		params.put("pack_type", newOne.getPack_type());
@@ -413,6 +423,7 @@ public class OperCollectPackActivity extends BaseActivity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				progressDlg.dismiss();
 				finish();
 			}
 		}, new Response.ErrorListener() {
@@ -421,6 +432,9 @@ public class OperCollectPackActivity extends BaseActivity {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				progressDlg.dismiss();
+				Toast.makeText(getApplicationContext(), getString(R.string.oper_fail),
+						Toast.LENGTH_SHORT).show();		
 			}
 		}){
 			@Override  
@@ -428,6 +442,8 @@ public class OperCollectPackActivity extends BaseActivity {
 	 			return KuibuUtils.prepareReqHeader();  
 	 		}
 		};
+		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,
+				Constants.Config.RETRY_TIMES, 1.0f));
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
 	
@@ -445,7 +461,7 @@ public class OperCollectPackActivity extends BaseActivity {
 				.append(Constants.Config.REST_API_VERSION )
 				.append("/update_collectpack").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
+				params), new Response.Listener<JSONObject>(){
 			@Override
 			public void onResponse(JSONObject response) {
 				// TODO Auto-generated method stub
@@ -468,6 +484,8 @@ public class OperCollectPackActivity extends BaseActivity {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				Toast.makeText(getApplicationContext(), getString(R.string.oper_fail),
+						Toast.LENGTH_SHORT).show();	
 			}
 		}){
 			@Override  
@@ -475,7 +493,7 @@ public class OperCollectPackActivity extends BaseActivity {
 	 			return KuibuUtils.prepareReqHeader();
 	 		}
 		};
+		
 		KuibuApplication.getInstance().addToRequestQueue(req);	
 	}
-
 }

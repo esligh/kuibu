@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -47,8 +47,9 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectionBean;
-import com.kuibu.model.vo.CollectionVo;
+import com.kuibu.model.db.CollectionVo;
+import com.kuibu.model.entity.CollectionBean;
+import com.kuibu.module.activity.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ImagePreviewActivity extends BaseActivity{

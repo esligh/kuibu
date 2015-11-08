@@ -1,4 +1,4 @@
-package com.kuibu.module.activity;
+package com.kuibu.ui.activity;
 
 
 import java.util.Arrays;
@@ -46,7 +46,8 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.bean.CollectionItemBean;
+import com.kuibu.model.entity.CollectionItemBean;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.net.PublicRequestor;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
@@ -150,7 +151,6 @@ public class CollectionImageDetailActivity extends BaseActivity{
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		collection = null;
 	}
 	
 	private void loadContent()

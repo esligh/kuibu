@@ -16,7 +16,7 @@
         android:background="?listCardViewBackground"
         android:orientation="vertical" >
 
-        <com.kuibu.custom.widget.PaginationListView
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
             android:id="@+id/pagination_lv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,7 +24,8 @@
             android:clipToPadding="false"
             android:divider="@android:color/transparent"
             android:dividerHeight="@dimen/android_spaces_medium"
-            android:padding="@dimen/android_spaces_medium"
+            android:layout_marginLeft="@dimen/android_spaces"
+            android:layout_marginRight="@dimen/android_spaces"
             android:scrollbarStyle="outsideOverlay"
             tools:listitem="@layout/hot_collect_list_item" />
     </LinearLayout>
