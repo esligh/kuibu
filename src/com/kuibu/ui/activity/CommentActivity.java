@@ -23,7 +23,6 @@ import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnFocusChangeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
@@ -37,15 +36,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.app.model.base.CommonAdapter;
 import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -67,7 +64,9 @@ public class CommentActivity extends BaseActivity implements
 	private String collection_creator_id;
 	private MenuItem cancelReply;
 	private MultiStateView mMultiStateView;
-	private int commentCount = 0;
+	private int commentCount;
+	private CommentItemBean curItem ; 
+	private int curPos ;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,15 +101,6 @@ public class CommentActivity extends BaseActivity implements
 			}
 		});
 		editContent = (EditText) findViewById(R.id.edit_comment);
-		editContent.setOnFocusChangeListener(new OnFocusChangeListener() {			
-			@Override
-			public void onFocusChange(View view, boolean hasFocus) {
-				// TODO Auto-generated method stub
-				if(hasFocus){
-	//				commentList.setSelection(datas.size()-1);
-				}
-			}
-		});
 		btnSend = (ImageButton) findViewById(R.id.btn_send);
 		btnSend.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -120,11 +110,12 @@ public class CommentActivity extends BaseActivity implements
 					requestAdd();
 					editContent.setText("");
 				}else{
-					Toast.makeText(CommentActivity.this, "请先注册登录", Toast.LENGTH_SHORT).show();
-				}
-				
+					Toast.makeText(CommentActivity.this, getString(R.string.need_login), 
+							Toast.LENGTH_SHORT).show();
+				}				
 			}
 		});
+		commentCount = getIntent().getIntExtra("commont_count",0);
 		commentList.setOnItemClickListener(this);
 		loadData();
 		showView();
@@ -139,8 +130,7 @@ public class CommentActivity extends BaseActivity implements
 		params.put("cid", cid);
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
 					.append(Constants.Config.REST_API_VERSION)
-					.append("/get_comments").toString();
-		
+					.append("/get_comments").toString();		
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
 			@Override
@@ -194,9 +184,6 @@ public class CommentActivity extends BaseActivity implements
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
@@ -217,7 +204,7 @@ public class CommentActivity extends BaseActivity implements
 					if(TextUtils.isEmpty(url) || url.equals("null")){
 						holder.setImageResource(R.id.user_photo_iv,R.drawable.default_pic_avata);						
 					}else{
-						holder.setImageByUrl(R.id.user_photo_iv, url);
+						holder.setImageByUrl(R.id.user_photo_iv, url,Constants.defaultAvataOptions);
 					}		
 				}
 				
@@ -231,19 +218,20 @@ public class CommentActivity extends BaseActivity implements
 	@Override
 	public void onItemClick(AdapterView<?> viewAdpater, View view,
 			int position, long id) {
-		final CommentItemBean item = (CommentItemBean) viewAdpater.getAdapter()
+		curItem = (CommentItemBean) viewAdpater.getAdapter()
 				.getItem(position);
+		curPos = position ; 
 		if(!Session.getSession().isLogin())
 			return ; 
 		AlertDialog.Builder builder = new Builder(CommentActivity.this);
-		if (Session.getSession().getuId().equals(item.getCreateBy())) {
+		if (Session.getSession().getuId().equals(curItem.getCreateBy())) {
 			builder.setItems(getResources().getStringArray(R.array.comment_menu_item1),
 					new OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int position) {
 							switch(position){
 								case 0:
-									requestDel(item,position);
+									requestDel(curItem,curPos-1);
 								break;
 							}
 						}
@@ -258,11 +246,11 @@ public class CommentActivity extends BaseActivity implements
 							case 0: // reply
 								if (Session.getSession().isLogin()) {
 									editContent.setHint(new StringBuffer(getString(R.string.reply))
-											.append(" ").append(item.getUserName()));
+											.append(" ").append(curItem.getUserName()));
 									cancelReply.setVisible(true);
 									Map<String, String> tag = new HashMap<String, String>();
-									tag.put("receiver_id", item.getCreateBy());
-									tag.put("receiver_name", item.getUserName());
+									tag.put("receiver_id", curItem.getCreateBy());
+									tag.put("receiver_name", curItem.getUserName());
 									editContent.setTag(tag);
 								} else {
 									Toast.makeText(CommentActivity.this,
@@ -281,7 +269,7 @@ public class CommentActivity extends BaseActivity implements
 													int position) {
 												Map<String,String> params = new HashMap<String,String>();
 												params.put("accuser_id", Session.getSession().getuId());
-												params.put("defendant_id", item.getCreateBy());
+												params.put("defendant_id", curItem.getCreateBy());
 												
 												String[] items = getResources().getStringArray(
 														R.array.report_comment);
@@ -295,7 +283,7 @@ public class CommentActivity extends BaseActivity implements
 														break;
 													case 5:
 														Intent intent = new Intent(CommentActivity.this,ReportActivity.class);
-														intent.putExtra("defendant", item.getCreateBy());
+														intent.putExtra("defendant", curItem.getCreateBy());
 														startActivity(intent);
 														break;
 												}
@@ -371,6 +359,7 @@ public class CommentActivity extends BaseActivity implements
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						CommentItemBean bean = new CommentItemBean();
+						bean.setCreateBy(Session.getSession().getuId());
 						bean.setUserName(Session.getSession().getuName());
 						String url = KuibuApplication.getInstance()
 								.getPersistentCookieStore()
@@ -409,9 +398,6 @@ public class CommentActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}) {
 			@Override
@@ -438,6 +424,9 @@ public class CommentActivity extends BaseActivity implements
 					String state = response.getString("state");
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						datas.remove(position);
+						if(!cancelReply.isVisible()){
+							--commentCount;
+						}
 						showView();
 					}
 				} catch (JSONException e) {
@@ -451,9 +440,6 @@ public class CommentActivity extends BaseActivity implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}) {
 			@Override
@@ -469,8 +455,7 @@ public class CommentActivity extends BaseActivity implements
 	public void onBackPressed() {
 		Intent intent = new Intent();
 		intent.putExtra("comment_count", commentCount);
-		setResult(RESULT_OK, intent);
-		
+		setResult(RESULT_OK, intent);		
 		super.onBackPressed(); //afeter setResult 
 		overridePendingTransition(R.anim.anim_slide_out_right,
 				R.anim.anim_slide_in_right);

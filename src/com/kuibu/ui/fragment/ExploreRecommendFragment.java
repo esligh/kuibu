@@ -11,12 +11,10 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
@@ -29,7 +27,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.common.utils.DataUtils;
-import com.kuibu.common.utils.VolleyErrorHelper;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -40,7 +38,6 @@ import com.kuibu.module.adapter.MateListViewItemAdapter;
 
 public class ExploreRecommendFragment extends BaseFragment {
 	
-	private static final String VOLLEY_REQ_TAG = "explore_recommend_fragment";
 	private PullToRefreshListView recommendList = null;
 	private MateListViewItemAdapter recommendAdapter = null;
 	private List<MateListItem> mdatas = new ArrayList<MateListItem>();
@@ -74,14 +71,9 @@ public class ExploreRecommendFragment extends BaseFragment {
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 				// TODO Auto-generated method stub
 				loadData("REQ_HISTORY");
-				String label = DateUtils.formatDateTime(getActivity(), System
-						.currentTimeMillis(),
-						DateUtils.FORMAT_SHOW_TIME
-								| DateUtils.FORMAT_SHOW_DATE
-								| DateUtils.FORMAT_ABBREV_ALL);
-
 				refreshView.getLoadingLayoutProxy()
-						.setLastUpdatedLabel(label);
+				.setLastUpdatedLabel(KuibuUtils.getRefreshLabel(getActivity(),
+						StaticValue.PrefKey.REC_LAST_REFRESH_TIME));
 			}
 		});
 		JSONArray arr = KuibuApplication.getCacheInstance()
@@ -110,7 +102,6 @@ public class ExploreRecommendFragment extends BaseFragment {
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		mdatas.clear();
-		KuibuApplication.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG);
 	}
 	
 
@@ -208,14 +199,11 @@ public class ExploreRecommendFragment extends BaseFragment {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
 				Constants.Config.RETRY_TIMES, 1.0f));
-		KuibuApplication.getInstance().addToRequestQueue(req,VOLLEY_REQ_TAG);
+		KuibuApplication.getInstance().addToRequestQueue(req,this);
 	}
 
 	private void showView() {

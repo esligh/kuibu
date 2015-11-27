@@ -14,8 +14,8 @@
     <dimen name="icon_medium_width">30dp</dimen>
     <dimen name="icon_medium_height">30dp</dimen>
     
-    <dimen name="icon_super_small_width">18dp</dimen>
-    <dimen name="icon_super_small_height">18dp</dimen>
+    <dimen name="icon_super_small_width">16dp</dimen>
+    <dimen name="icon_super_small_height">16dp</dimen>
     
     <dimen name="icon_small_width">20dp</dimen>
     <dimen name="icon_small_height">20dp</dimen>

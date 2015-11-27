@@ -59,6 +59,7 @@ public class UserInfoActivity extends BaseActivity {
 	        		getString(R.string.share));
 	        share.setIcon(getResources().getDrawable(R.drawable.ic_action_share));
 	        share.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	        share.setVisible(false);
 	        return true;
 	 }
 	 

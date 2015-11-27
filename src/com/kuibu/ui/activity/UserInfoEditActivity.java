@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,7 +40,6 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
@@ -51,6 +51,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
 
 public class UserInfoEditActivity extends BaseActivity implements ICamera{
+
 	private ImageView userPhoto ; 
 	private TextView userName,userSexM,userSexF;
 	private TextView userSignature,userProfession,userResidence,userEducation; 
@@ -58,7 +59,8 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 	private boolean bModifyPhoto  = false ;
 	private FinalHttp finalHttp = null;
 	private Uri cameraPic = null; 
-
+	private ProgressDialog progressDlg ; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -216,7 +218,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 		super.onCreateOptionsMenu(menu);
 		MenuItem add = menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
 				StaticValue.MENU_ITEM.SAVE_ID,
-				StaticValue.MENU_ORDER.SAVE_ORDER_ID, "保存");
+				StaticValue.MENU_ORDER.SAVE_ORDER_ID, getString(R.string.action_save));
 
 		add.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
@@ -276,6 +278,12 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 	 
 	 private void requestDetail()
 	 {
+		if(progressDlg == null ){
+			progressDlg = new ProgressDialog(this);
+			progressDlg.setCanceledOnTouchOutside(false);	
+			progressDlg.setMessage(getString(R.string.please_wait));
+		}
+		progressDlg.show();
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
 		params.put("obj_id", Session.getSession().getuId());
@@ -298,7 +306,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 						userName.setText(mInfo.getName());
 						String signature= obj.getString("signature");							
 						if(TextUtils.isEmpty(signature) || signature.equals("null")){
-							userSignature.setText("请填写");
+							userSignature.setText(getString(R.string.please_input));
 							mInfo.setSignature("");
 						}else{
 							userSignature.setText(signature);
@@ -306,7 +314,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 						}
 						String profession = obj.getString("profession");
 						if(TextUtils.isEmpty(profession) || profession.equals("null")){
-							userProfession.setText("请填写");
+							userProfession.setText(getString(R.string.please_input));
 							mInfo.setSignature("");
 						}else{
 							userProfession.setText(profession);
@@ -315,7 +323,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 						
 						String residence = obj.getString("residence");
 						if(TextUtils.isEmpty(profession) || residence.equals("null")){
-							userResidence.setText("请填写");
+							userResidence.setText(getString(R.string.please_input));
 							mInfo.setSignature("");
 						}else{
 							userResidence.setText(residence);
@@ -324,7 +332,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 						
 						String education = obj.getString("education");
 						if(TextUtils.isEmpty(education) || education.equals("null")){
-							userEducation.setText("请填写");
+							userEducation.setText(getString(R.string.please_input));
 							mInfo.setSignature("");
 						}else{
 							userEducation.setText(education);
@@ -345,6 +353,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				progressDlg.dismiss();
 			}
 		}, new Response.ErrorListener() {
 			@Override
@@ -352,13 +361,16 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				progressDlg.dismiss();
 			}
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req);	
+		KuibuApplication.getInstance().addToRequestQueue(req,this);	
 	}
 	 
 	 private void requestUpdate()
 	 {
+			progressDlg.setMessage(getString(R.string.saving));
+		 	progressDlg.show();
 		 	Map<String, String> params = new HashMap<String, String>();
 			params.put("uid", Session.getSession().getuId());
 			params.put("name", mInfo.getName());
@@ -404,6 +416,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 							Toast.makeText(UserInfoEditActivity.this, getString(R.string.modify_fail),
 		        					Toast.LENGTH_SHORT).show();
 						}
+						progressDlg.dismiss();
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -415,6 +428,9 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 					VolleyLog.e("Error: ", error.getMessage());
 					VolleyLog.e("Error:", error.getCause());
 					error.printStackTrace();
+					Toast.makeText(UserInfoEditActivity.this, getString(R.string.modify_fail),
+        					Toast.LENGTH_SHORT).show();
+					progressDlg.dismiss();
 				}
 			}){
 				@Override  

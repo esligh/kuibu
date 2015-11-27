@@ -6,7 +6,6 @@ import java.util.List;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.view.ContextThemeWrapper;
@@ -14,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.TabHotInfo;
@@ -49,7 +47,7 @@ public  class ExplorePageFragment extends Fragment
 			pager = (ViewPager)rootView.findViewById(R.id.pager);
 			initData();
 			if(adapter == null){
-				adapter =  new TabPageViewAdapter(getActivity().getSupportFragmentManager(),
+				adapter =  new TabPageViewAdapter(getChildFragmentManager(),
 						exportpageTabTitle,new ExploreConstruct());
 				pager.setAdapter(adapter);
 			}
@@ -62,9 +60,7 @@ public  class ExplorePageFragment extends Fragment
 		   	indicator.setOnPageChangeListener(new SimpleOnPageChangeListener() {
 				@Override
 				public void onPageSelected(int position) {
-					FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter)pager.getAdapter();
-					BaseFragment f = (BaseFragment)adapter.getItem(position);
-					f.onTabPageChanged();
+					
 				}
 			});
 		   	
@@ -82,6 +78,15 @@ public  class ExplorePageFragment extends Fragment
 		    return rootView;
 	}
 	
+//	@Override
+//	public void onHiddenChanged(boolean hidden) {
+//		// TODO Auto-generated method stub
+//		super.onHiddenChanged(hidden);
+//		if(!hidden){
+//			pager.getAdapter().notifyDataSetChanged();
+//		}
+//	}
+	
 	public  void initData(){
 		if(exportpageTabTitle == null){
 			exportpageTabTitle = new ArrayList<TabHotInfo>();
@@ -98,8 +103,6 @@ public  class ExplorePageFragment extends Fragment
 		// TODO Auto-generated method stub
 		super.onDestroyView();
 		exportpageTabTitle.clear();
-	}
-	
-	
+	}	
 }
 

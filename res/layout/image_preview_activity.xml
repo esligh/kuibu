@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/list_view_bg_dark">
+    android:background="?listViewBackground">
    
     <TextView 
         android:id="@+id/title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="?listItemTextColor"
         android:layout_marginTop="@dimen/android_spaces"
         android:layout_marginLeft="@dimen/android_spaces_large"
         android:layout_marginRight="@dimen/android_spaces_large"
@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/android_spaces_large"
         android:layout_marginRight="@dimen/android_spaces_large"
         android:layout_marginBottom="@dimen/android_spaces"
-        android:textColor="@color/white"
+        android:textColor="?listItemExtraTextColor"
         android:textSize="18sp"/>
   	
   	<FrameLayout

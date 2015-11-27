@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +27,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.app.model.base.CommonAdapter;
 import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.custom.widget.MultiStateView;
@@ -39,7 +39,7 @@ import com.kuibu.module.activity.R;
 import com.kuibu.ui.activity.CollectionDetailActivity;
 import com.kuibu.ui.activity.CollectionImageDetailActivity;
 
-public class NotifyCommentFragment extends Fragment{
+public class NotifyCommentFragment extends BaseFragment{
 	
 	private PullToRefreshListView listView = null;
 	private CommonAdapter<Map<String,String>> adapter = null; 
@@ -182,7 +182,15 @@ public class NotifyCommentFragment extends Fragment{
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 			}
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,this);
+	}
+
+	
+	@Override
+	public void onDetach() {
+		// TODO Auto-generated method stub
+		KuibuApplication.getInstance().cancelPendingRequests(this);
+		super.onDetach();
 	}
 
 	@Override
@@ -190,7 +198,6 @@ public class NotifyCommentFragment extends Fragment{
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		datas.clear();
-		datas = null ;
-	}	
+	}
 	
 }

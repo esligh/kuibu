@@ -52,13 +52,13 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
@@ -70,7 +70,6 @@ import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.NetUtils;
 import com.kuibu.common.utils.PreferencesUtils;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.NotifyingScrollView;
@@ -81,7 +80,6 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.iterfaces.OnPageLoadFinished;
 import com.kuibu.module.iterfaces.ResponseListener;
-import com.kuibu.module.net.PublicRequestor;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.petebevin.markdown.MarkdownProcessor;
 
@@ -99,14 +97,13 @@ public class CollectionDetailActivity extends AppCompatActivity
 	private GestureDetector mGestureDetector;
     private Drawable mActionBarBackgroundDrawable;
     private MarkdownView contentView ; 
-    private MenuItem mFavActionItem ;
+    private MenuItem mFavActionItem ,mReportItem;
 	private boolean isInFavorite = false;
 	private boolean isSupport = false; 
 	private String cid ,cisn,createBy; 
 	private String cssFile ; 
 	private MultiStateView mMultiStateView;
 	private FButton likeBtn , commentBtn ;
-	private ImageButton reportBtn ; 
 	private LinearLayout layoutTools; 
 	private Handler mHandler  ; 
 	private ImageView mHeaderImage ; 
@@ -118,6 +115,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 	private int commentCount ; 
 	private int voteCount ; 
 	private DownloadWebImgTask downLoadTask ; 
+	private boolean bReport =false ; 
 	
     @SuppressWarnings("deprecation")
 	@SuppressLint("HandlerLeak")
@@ -128,10 +126,8 @@ public class CollectionDetailActivity extends AppCompatActivity
         setContentView(R.layout.collection_detail_activity);
         webViewContainer = (LinearLayout)findViewById(R.id.content_ll);
         contentView = new MarkdownView(getApplicationContext());
-        webViewContainer.addView(contentView);
-        
-        mHeaderImage = (ImageView)findViewById(R.id.image_header);
-        
+        webViewContainer.addView(contentView);        
+        mHeaderImage = (ImageView)findViewById(R.id.image_header);        
         mHandler = new Handler() {  
             @Override  
             public void handleMessage(Message msg) { //no leak,I know .   
@@ -140,12 +136,12 @@ public class CollectionDetailActivity extends AppCompatActivity
                 	case StaticValue.MSG_CODE.SHOW_TOOLS:                
 						layoutTools.setVisibility(View.VISIBLE);  
 						mFavActionItem.setVisible(true);
-						reportBtn.setVisibility(View.VISIBLE);
+						mReportItem.setVisible(true);
 						break; 	 
                 	case StaticValue.MSG_CODE.HIDE_TOOLS:
                 		layoutTools.setVisibility(View.GONE);
                 		mFavActionItem.setVisible(false);
-                		reportBtn.setVisibility(View.GONE);
+                		mReportItem.setVisible(false);
                 		break;
                 }  
             }  
@@ -178,17 +174,11 @@ public class CollectionDetailActivity extends AppCompatActivity
 				Intent intent = new Intent(CollectionDetailActivity.this,CommentActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, cid);
 				intent.putExtra("create_by", createBy);
+				intent.putExtra("commont_count", commentCount);
 				startActivityForResult(intent, StaticValue.RequestCode.COMMENT_OVER);
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}			
 			
-		});
-		reportBtn = (ImageButton)findViewById(R.id.roport_bt);
-		reportBtn.setOnClickListener(new OnClickListener() {			
-			@Override
-			public void onClick(View arg0) {
-				doReport();
-			}
 		});
 		layoutTools = (LinearLayout)findViewById(R.id.layout_tools);
         NotifyingScrollView scrollView = (NotifyingScrollView)findViewById(R.id.scroll_view);       	
@@ -211,12 +201,14 @@ public class CollectionDetailActivity extends AppCompatActivity
         setUpWebViewDefaults();
         cid = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
         cisn = getIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_CISN);
-        JSONObject cacheObj = KuibuApplication.getCacheInstance().getAsJSONObject(cisn);
+   /**
+    * 缓存content需要考虑更多的同步问题，比如点赞，评论的数目更新问题*/
+//        JSONObject cacheObj = KuibuApplication.getCacheInstance().getAsJSONObject(cisn);
 //        if(cacheObj != null){
 //        	readFromJson(cacheObj);
 //        }else{
         	loadContent();
-//        }          
+//       }          
         if(Session.getSession().isLogin())
         	loadActions();
     }
@@ -235,6 +227,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {   
 				 Intent i = new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+				 
 				 startActivity(i);
 		         return true;
 		    }  
@@ -383,9 +376,7 @@ public class CollectionDetailActivity extends AppCompatActivity
       	contentView.removeAllViews();
       	contentView.destroy();
       	mDetailImageList.clear();
-      	mDetailImageList = null ;
       	mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
-      	KuibuApplication.getInstance().cancelPendingRequests(getClass().toString());
     }
      
     @Override
@@ -398,14 +389,17 @@ public class CollectionDetailActivity extends AppCompatActivity
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.content_detail, menu);
 		mFavActionItem = menu.findItem(R.id.menu_item_fav_action_bar);
-		if (isInFavorite) {
-			mFavActionItem.setIcon(R.drawable.ab_fav_active);
-			mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
-		} else {
-			mFavActionItem.setIcon(R.drawable.ab_fav_normal);
-			mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
-		}
+		mReportItem = menu.findItem(R.id.menu_item_report_action_bar);
+//		mShareItem = menu.findItem(R.id.menu_item_share_action_bar);
+//		if (isInFavorite) {
+//			mFavActionItem.setIcon(R.drawable.ab_fav_active);
+//			mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
+//		} else {
+//			mFavActionItem.setIcon(R.drawable.ab_fav_normal);
+//			mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
+//		}
 		mFavActionItem.setVisible(false);
+		mReportItem.setVisible(false);
 		return true;
 	}
 	
@@ -429,7 +423,16 @@ public class CollectionDetailActivity extends AppCompatActivity
 					Toast.makeText(CollectionDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 				}	
 				break;
+			case R.id.menu_item_report_action_bar:
+				if(!bReport){
+					doReport();
+				}else{
+					Toast.makeText(CollectionDetailActivity.this, getString(R.string.have_reported),
+							Toast.LENGTH_SHORT).show();
+				}
+				break;
 			case R.id.menu_item_share_action_bar:
+				
 				Toast.makeText(CollectionDetailActivity.this, "开发中...", Toast.LENGTH_SHORT).show();
 				break;
 		}
@@ -508,12 +511,17 @@ public class CollectionDetailActivity extends AppCompatActivity
 			break;
 			case StaticValue.RequestCode.REPORT_COMPLETE:
 				mActionBarBackgroundDrawable.setAlpha(curAlpha);
+				if(data!=null){
+					bReport = data.getBooleanExtra("is_report", false);
+					if(bReport){
+						mReportItem.setIcon(R.drawable.ic_action_report_disabled);
+					}					
+				}
 				break;
 			case StaticValue.RequestCode.COMMENT_OVER:
 				if(data!=null){
-					int count = data.getIntExtra("comment_count", 0);
-					if(count>0){
-						commentCount += count;
+					commentCount  = data.getIntExtra("comment_count", 0);
+					if(commentCount >0){				
 						StringBuilder buff = new StringBuilder(getString(R.string.comment_text))
 			        	.append(" ").append(DataUtils.formatNumber(commentCount));
 			        	commentBtn.setText(buff.toString());		        	
@@ -530,8 +538,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 	@Override
 	protected void onStop() {
 		super.onStop();
-		KuibuApplication.getInstance().cancelPendingRequests(
-				StaticValue.TAG_VLAUE.DETAIL_PAGE_VOLLEY);
+		KuibuApplication.getInstance().cancelPendingRequests(this);
 	}
 
 	@Override
@@ -591,14 +598,12 @@ public class CollectionDetailActivity extends AppCompatActivity
 	
 	private void doReport()
 	{ 
-		AlertDialog.Builder builder =null ; 
-		
+		AlertDialog.Builder builder =null ; 		
 		if(isDarkTheme){
 			builder = new Builder(this,AlertDialog.THEME_HOLO_DARK);
 		}else{
 			builder = new Builder(this,AlertDialog.THEME_HOLO_LIGHT);
-		}
-		
+		}		
 		builder.setTitle(getString(R.string.report_reason));
 		builder.setItems(getResources().getStringArray(R.array.report_content), 
 				new android.content.DialogInterface.OnClickListener(){
@@ -617,24 +622,59 @@ public class CollectionDetailActivity extends AppCompatActivity
 							params.put("reason",items[position]);
 						
 						switch(position){
-						case 0:							
-							PublicRequestor.sendReport(params);
-							break;
-						case 1: case 2: case 3: case 4:
-							PublicRequestor.sendReport(params);
-							break;
-						case 5:
-							mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
-							Intent intent = new Intent(CollectionDetailActivity.this,ReportActivity.class);
-							intent.putExtra("defendant", createBy);
-							startActivityForResult(intent, StaticValue.RequestCode.REPORT_COMPLETE);							
-							break;
+							case 0:	case 1: case 2: case 3: case 4:
+								sendReport(params);
+								break;
+							case 5:
+								mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);
+								Intent intent = new Intent(CollectionDetailActivity.this,ReportActivity.class);
+								intent.putExtra("defendant", createBy);
+								startActivityForResult(intent, StaticValue.RequestCode.REPORT_COMPLETE);							
+								break;
 						}
 					}									
 		});
 		builder.show();
 	}
 	
+	public void sendReport(Map<String,String> params)
+	{
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/add_report").toString();
+		
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@SuppressLint("SimpleDateFormat")
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						bReport = true ;
+						mReportItem.setIcon(R.drawable.ic_action_report_disabled);
+						Toast.makeText(KuibuApplication.getContext(),"感谢您的举报,我们会尽快处理",Toast.LENGTH_SHORT).show();
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+			}
+		}) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				return KuibuUtils.prepareReqHeader();
+			}
+		};
+		KuibuApplication.getInstance().addToRequestQueue(req);		
+	}
+
 	private String replaceImgTagFromHTML(String html) {
 		Document doc = Jsoup.parse(html);
 		Elements es = doc.getElementsByTag("img");
@@ -679,7 +719,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 								cisn = obj.getString("cisn");
 							}
 							KuibuApplication.getCacheInstance().put(cisn, 
-									obj, Constants.Config.CACHE_SAVE_TIME);
+									obj, Constants.Config.CONTENT_CACHE_SAVE_TIME);
 						}
 					}
 				} catch (JSONException e) {
@@ -693,13 +733,10 @@ public class CollectionDetailActivity extends AppCompatActivity
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 			
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req,getClass().toString());	
+		KuibuApplication.getInstance().addToRequestQueue(req,this);	
 	}
 	
 	private void readFromJson(JSONObject obj)
@@ -743,7 +780,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 			MarkdownProcessor m = new MarkdownProcessor();
 			String html = new String(template);
 			StringBuilder footer = new StringBuilder();							
-			footer.append("<span class=\"time\">").append("编辑于 ").append(obj.getString("create_time")).append("</span><br>");
+			footer.append("<span class=\"time\">").append("编撰于 ").append(obj.getString("create_time")).append("</span><br>");
 			html = html.replace("{footer}", footer.toString());
 			content = m.markdown(content);		
 			html = html.replace("{content}", content);
@@ -752,7 +789,6 @@ public class CollectionDetailActivity extends AppCompatActivity
 			mActionBarBackgroundDrawable.setAlpha(0);
 			mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 		}      
@@ -818,7 +854,10 @@ public class CollectionDetailActivity extends AppCompatActivity
 				return KuibuUtils.prepareReqHeader();
 			}
 		};
-		KuibuApplication.getInstance().addToRequestQueue(req, getClass().toString());
+
+		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,
+			Constants.Config.RETRY_TIMES, 1.0f));
+		KuibuApplication.getInstance().addToRequestQueue(req,this);
 	}
 	
 	public void loadActions()
@@ -852,6 +891,11 @@ public class CollectionDetailActivity extends AppCompatActivity
 								mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
 								isInFavorite = true;
 							}
+							
+							if(codes.contains(StaticValue.USER_ACTION.ACTION_REPORT_COLLECTION)){
+								mReportItem.setIcon(R.drawable.ic_action_report_disabled);
+								bReport = true ; 								
+							}							
 						}						
 					}
 				} catch (JSONException e) {
@@ -866,6 +910,6 @@ public class CollectionDetailActivity extends AppCompatActivity
 				error.printStackTrace();
 			}
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req,getClass().toString());
+		KuibuApplication.getInstance().addToRequestQueue(req,this);
 	}
 }

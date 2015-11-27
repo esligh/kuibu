@@ -23,7 +23,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -31,7 +30,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -84,7 +82,7 @@ public class FavoriteBoxFragment extends Fragment {
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view,
 					final int position, long id) {
 				AlertDialog.Builder builder = new Builder(getActivity());
-				builder.setTitle("操作");
+				builder.setTitle(getActivity().getString(R.string.operator));
 				builder.setItems(getResources().getStringArray(R.array.favorite_box_item_opt),
 						new DialogInterface.OnClickListener() {
 						@Override
@@ -110,14 +108,21 @@ public class FavoriteBoxFragment extends Fragment {
 	public void onHiddenChanged(boolean hidden) {
 		// TODO Auto-generated method stub
 		super.onHiddenChanged(hidden);
-		if(hidden){ //hiding now 			 
-			
-		}else{//showing now
+		if(!hidden){ 			 
 			loadData();
 		}
 	}
 
-    private void showView()
+	
+    @Override
+	public void onDetach() {
+		// TODO Auto-generated method stub
+    	KuibuApplication.getInstance().cancelPendingRequests(this);
+		super.onDetach();
+	}
+
+
+	private void showView()
     {
     	if(adapter == null){
     		adapter = new FavoriteBoxCardListAdapter(this.getActivity(), datas,R.layout.collect_list_item_card);
@@ -189,12 +194,9 @@ public class FavoriteBoxFragment extends Fragment {
 				error.printStackTrace();
 				if(datas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				else{
-					
-				}
 			}
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,this);
     }
    
     private void delFavoriteBox(final int position)
@@ -224,17 +226,13 @@ public class FavoriteBoxFragment extends Fragment {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
 	 		public Map<String, String> getHeaders() throws AuthFailureError {  
 	 			return KuibuUtils.prepareReqHeader();  
 	 		}
-		};
-		KuibuApplication.getInstance().addToRequestQueue(req);	
+		};		
+		KuibuApplication.getInstance().addToRequestQueue(req,this);	
     }
-
 }

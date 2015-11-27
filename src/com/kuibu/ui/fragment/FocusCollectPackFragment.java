@@ -11,8 +11,6 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +26,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.kuibu.app.model.base.BaseFragment;
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
+import com.kuibu.common.utils.DataUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -35,13 +37,12 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.CollectPackItemBean;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.adapter.FocusCollectItemAdapter;
 import com.kuibu.ui.activity.CollectInfoListActivity;
 
-public class FocusCollectPackFragment extends Fragment {
+public class FocusCollectPackFragment extends BaseFragment {
 
 	private PullToRefreshListView packList = null;
-	private FocusCollectItemAdapter adapter = null;
+	private CommonAdapter<CollectPackItemBean> adapter = null;
 	private List<CollectPackItemBean> datas = new ArrayList<CollectPackItemBean>();
 	private MultiStateView mMultiStateView;
 
@@ -71,14 +72,6 @@ public class FocusCollectPackFragment extends Fragment {
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 				// TODO Auto-generated method stub
 				loadData();
-				String label = DateUtils.formatDateTime(getActivity(), System
-						.currentTimeMillis(),
-						DateUtils.FORMAT_SHOW_TIME
-								| DateUtils.FORMAT_SHOW_DATE
-								| DateUtils.FORMAT_ABBREV_ALL);
-
-				refreshView.getLoadingLayoutProxy()
-						.setLastUpdatedLabel(label);
 			}
 		});
 		packList.setOnItemClickListener(new OnItemClickListener() {
@@ -96,21 +89,24 @@ public class FocusCollectPackFragment extends Fragment {
 			}
 		});
 		loadData();
+		adapter = new CommonAdapter<CollectPackItemBean>(getActivity(), datas,
+				R.layout.focus_collect_list_item) {
+					@Override
+					public void convert(ViewHolder holder,
+							CollectPackItemBean item) {
+						// TODO Auto-generated method stub
+						holder.setTvText(R.id.focus_collect_name_tv,item.getPackName());
+						holder.setTvText(R.id.focus_collect_desc_tv,item.getPackDesc());
+						holder.setTvText(R.id.collect_follow_count_tv,
+								DataUtils.formatNumber(Integer.parseInt(item.getFollowCount()))+"人关注");
+						holder.setTvText(R.id.collect__count_tv,
+								DataUtils.formatNumber(Integer.parseInt(item.getCollectCount()))+"个收集");
+					}			
+		};
+		packList.setAdapter(adapter);
 		return rootView;
 	}
 	
-	@Override
-	public void onHiddenChanged(boolean hidden) {
-		// TODO Auto-generated method stub
-		super.onHiddenChanged(hidden);
-		if(hidden){			
-			
-		}else{
-			datas.clear();
-			loadData();
-		}
-	}
-
 	private void loadData() {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("uid", Session.getSession().getuId());
@@ -136,20 +132,17 @@ public class FocusCollectPackFragment extends Fragment {
 								bean.setPackDesc(temp.getString("pack_desc"));
 								bean.setPackType(temp.getString("pack_type"));
 								bean.setFollowCount(temp.getString("follow_count"));
-								bean.setCollectCount(temp
-										.getString("collect_count"));
+								bean.setCollectCount(temp.getString("collect_count"));
 								bean.setCreateBy(temp.getString("create_by"));
 								datas.add(bean);
 							}
-							showView();
-						}												
+						}	
+						adapter.notifyDataSetChanged();
 					}
-					if (datas.size() > 0) {
-						mMultiStateView
-								.setViewState(MultiStateView.ViewState.CONTENT);
+					if (datas.isEmpty()){
+						mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);						
 					} else {
-						mMultiStateView
-								.setViewState(MultiStateView.ViewState.EMPTY);
+						mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 					}
 					packList.onRefreshComplete();
 				} catch (JSONException e) {
@@ -162,20 +155,10 @@ public class FocusCollectPackFragment extends Fragment {
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				if(datas.size()<=0)
+				if(datas.isEmpty())
 					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
-
-	private void showView() {
-		if (adapter == null) {
-			adapter = new FocusCollectItemAdapter(getActivity(), datas);
-			packList.setAdapter(adapter);
-		} else {
-			adapter.updateView(datas);
-		}
-	}
-
 }

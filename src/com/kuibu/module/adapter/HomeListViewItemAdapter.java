@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.data.global.AppInfo;
 import com.kuibu.data.global.StaticValue;
@@ -75,6 +76,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 		initStyle();
 	}
 
+	@SuppressWarnings("deprecation")
 	private void initStyle() {
 		Resources.Theme theme = context.getTheme();
 		TypedArray typedArray = null;
@@ -268,9 +270,9 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			holderforText.title_tv.setText(datas.get(position).getTitle().replace("\n", ""));
 			holderforText.content_tv.setText(datas.get(position)
 					.getSummary().replace("\n", ""));
-			String date = datas.get(position).getLastModify().trim();
+			String date = datas.get(position).getLastModify().trim();			
 			if(!date.equals("null")){
-				holderforText.time_tv.setText(date);
+				holderforText.time_tv.setText(KuibuUtils.formatDateTime(date));
 			}									   
 			break;
 		case MateListItem.ItemType.TEXT_PICS_MODE:
@@ -333,7 +335,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			
 			String date2 = datas.get(position).getLastModify().trim();
 			if(!date2.equals("null")){
-				holderfortextPic.time_tv.setText(date2);
+				holderfortextPic.time_tv.setText(KuibuUtils.formatDateTime(date2));
 			}
 
 			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -426,7 +428,7 @@ public class HomeListViewItemAdapter extends BaseAdapter {
 			
 			String date3 = datas.get(position).getLastModify().trim();
 			if(!date3.equals("null")){
-				holderforpics.time_tv.setText(date3);
+				holderforpics.time_tv.setText(KuibuUtils.formatDateTime(date3));
 			}		
 			break;
 		}

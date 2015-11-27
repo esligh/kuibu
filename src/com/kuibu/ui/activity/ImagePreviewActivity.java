@@ -75,11 +75,12 @@ public class ImagePreviewActivity extends BaseActivity{
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.image_preview_activity);
-		ActionBar toolbar =getSupportActionBar(); 
+		/*ActionBar toolbar =getSupportActionBar(); 
 		if(toolbar != null){
 			toolbar.setDisplayHomeAsUpEnabled(true);
 			toolbar.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_ab_solid_dark_holo));
-		}		
+		}	
+		*/
 		collectionVo = new CollectionVo(this);
 		imageIv = (PhotoView)findViewById(R.id.image_iv);
 		imageIv.setAdjustViewBounds(true);

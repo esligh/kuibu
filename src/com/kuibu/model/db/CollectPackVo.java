@@ -68,11 +68,12 @@ public class CollectPackVo extends BaseDbVo{
     
     public List<CollectPackBean> queryAll(String uid) {  
         ArrayList<CollectPackBean> packs = new ArrayList<CollectPackBean>();  
-        Cursor c = getDB().rawQuery("SELECT _id,pack_id,pack_name,pack_desc,pack_type,collect_count FROM "+table_name + 
+        Cursor c = getDB().rawQuery("SELECT _id,pack_id,pack_name,pack_desc,pack_type,is_private,collect_count FROM "+table_name + 
         		" where create_by = ? ", new String[]{uid});  
-        while (c.moveToNext()) {  
+        while (c.moveToNext()){  
         	CollectPackBean pack = new CollectPackBean();  
         	pack._id = c.getString(c.getColumnIndex("_id"));
+        	pack.is_private = c.getInt(c.getColumnIndex("is_private"));
         	pack.pack_id = c.getString(c.getColumnIndex("pack_id"));
         	pack.pack_name = c.getString(c.getColumnIndex("pack_name"));  
         	pack.pack_desc = c.getString(c.getColumnIndex("pack_desc"));
@@ -88,10 +89,11 @@ public class CollectPackVo extends BaseDbVo{
     public CollectPackBean queryWithkey(String _id)
     {
     	CollectPackBean bean = new CollectPackBean();
-    	Cursor c = getDB().rawQuery("SELECT _id,pack_id,pack_name,pack_desc,pack_type,collect_count,last_modify FROM collectpack where _id = ? ",
+    	Cursor c = getDB().rawQuery("SELECT _id,pack_id,pack_name,pack_desc,pack_type,is_private,collect_count,last_modify FROM collectpack where _id = ? ",
     			new String[]{_id});
         while (c.moveToNext()) {
         	bean.pack_id = c.getString(c.getColumnIndex("pack_id"));
+        	bean.is_private = c.getInt(c.getColumnIndex("is_private"));
         	bean.pack_name= c.getString(c.getColumnIndex("pack_name"));
             bean.pack_desc = c.getString(c.getColumnIndex("pack_desc"));
             bean.pack_type = c.getString(c.getColumnIndex("pack_type"));

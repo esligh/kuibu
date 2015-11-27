@@ -3,7 +3,7 @@
     package="com.kuibu.module.activity"
     android:installLocation = "preferExternal"
     android:versionCode="1"
-    android:versionName="Alpha 1.0" >
+    android:versionName="beta-v1.0" >
 
     <uses-sdk
         android:minSdkVersion="11"

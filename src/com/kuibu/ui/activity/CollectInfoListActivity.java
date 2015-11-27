@@ -101,7 +101,6 @@ public class CollectInfoListActivity extends BaseActivity implements
 				loadPack();
 			}   	
         });
-		
 		focusLayout = (RelativeLayout) findViewById(R.id.collect_pack_info_focus_rl);
 		boolean flag = getIntent().getBooleanExtra(
 				StaticValue.HIDE_FOCUS, false);
@@ -173,7 +172,7 @@ public class CollectInfoListActivity extends BaseActivity implements
 			mCardList.setVerticalScrollBarEnabled(false);
 			mCardList.addFooterView(footerView);
 			card_datas = new LinkedList<CollectionBean>(); 			
-			mCardApdater = new ImageGridAdapter(this, card_datas,false);
+			mCardApdater = new ImageGridAdapter(this, card_datas,R.layout.item_grid_image,false);
 			mCardList.setAdapter(mCardApdater);
 			mCardList.addFooterView(footerView);
 			mCardList.setOnItemClickListener(new OnItemClickListener() {
@@ -251,10 +250,10 @@ public class CollectInfoListActivity extends BaseActivity implements
    }
 	
 	@Override
-	protected void onDestroy(){
+	protected void onStop(){
 		// TODO Auto-generated method stub
-		super.onDestroy();
-		KuibuApplication.getInstance().cancelPendingRequests(VOLLEY_REQUEST_TAG);
+		KuibuApplication.getInstance().cancelPendingRequests(this);
+		super.onStop();		
 	}
 	
 	@Override
@@ -274,15 +273,13 @@ public class CollectInfoListActivity extends BaseActivity implements
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}	
 
-	
 	private void showView() {
 		if (StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)) {
-			mCardApdater.updateView(card_datas);
+			mCardApdater.refreshView(card_datas);
 			setListViewHeightBasedOnChildren(mCardList);
 		} else {
 			infoAdapter.refreshView(item_datas);
-		}
-		
+		}		
 	}
 	
 	@Override

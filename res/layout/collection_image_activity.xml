@@ -17,26 +17,38 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content">	
 	          
-	        <EditText
-	            android:id="@+id/collection_desc"
+	        <FrameLayout
+	            android:id="@+id/edit_wrapper" 
 	            android:layout_width="match_parent"
-	            android:layout_height="160dip"
-	            android:padding="@dimen/android_spaces_small"
-	            android:gravity="start"
-	            android:layout_marginTop="@dimen/android_spaces"
-	            android:layout_marginLeft="@dimen/android_spaces"
-	            android:layout_marginRight="@dimen/android_spaces"
-	            android:layout_marginBottom="@dimen/android_spaces"
-	            android:hint="@string/add_desc"
-	            android:textColor="?listItemTextColor"
-	            android:background="@drawable/bg_edittext_border" 
-	            android:focusable="true"/>
+	            android:layout_height="200dip"
+	            android:layout_margin="@dimen/android_spaces">
+	            
+		        <EditText
+		            android:id="@+id/collection_desc"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
+		            android:padding="@dimen/android_spaces_small"
+		            android:gravity="start"
+		            android:hint="@string/add_desc"
+		            android:textColor="?listItemTextColor"
+		            android:background="@drawable/bg_edittext_border" 
+		            android:focusable="true"/>
+		        <TextView
+		            android:id="@+id/wrod_count"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_gravity="bottom|right"
+		            android:layout_marginRight="@dimen/android_spaces_large"
+		            android:layout_marginBottom="@dimen/android_spaces_small"
+		            android:text="140字"
+		            android:textColor="#BDC7D8"/>
+	        </FrameLayout>
 	        
 	        <uk.co.senab.photoview.PhotoView
 	            android:id="@+id/collection_image"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
-	            android:layout_below="@id/collection_desc"    
+	            android:layout_below="@id/edit_wrapper"    
 	            android:layout_marginTop="@dimen/android_spaces"
 	            android:layout_marginLeft="@dimen/android_spaces"
 	            android:layout_marginRight="@dimen/android_spaces"
@@ -47,7 +59,8 @@
 	            android:id="@+id/rotate_btn"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:layout_below="@id/collection_desc"    
+	            android:layout_below="@id/edit_wrapper"
+	            android:layout_marginTop="@dimen/android_spaces_small"        
 	            android:layout_alignParentRight="true"
 	            android:layout_marginRight="@dimen/android_spaces_small"
 	            android:src="@drawable/pic_rotate_icon"/>

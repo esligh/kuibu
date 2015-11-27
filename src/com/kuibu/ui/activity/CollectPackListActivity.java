@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -29,10 +28,10 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseActivity;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
+import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.CollectPackBean;
 import com.kuibu.module.activity.R;
@@ -105,6 +104,7 @@ public class CollectPackListActivity extends BaseActivity{
 	private void loadData() {
 		uid = getIntent().getStringExtra(StaticValue.USERINFO.USER_ID);
 		Map<String, String> params = new HashMap<String, String>();
+		params.put("req_uid", Session.getSession().getuId());
 		params.put("uid", uid);
 		params.put("off", String.valueOf(datas.size()));
 		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
@@ -134,11 +134,9 @@ public class CollectPackListActivity extends BaseActivity{
 						}
 						showView();
 						if (datas.size() > 0) {
-							mMultiStateView
-									.setViewState(MultiStateView.ViewState.CONTENT);
+							mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
 						} else {
-							mMultiStateView
-									.setViewState(MultiStateView.ViewState.EMPTY);
+							mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
 						}
 					}
 					packList.onRefreshComplete();
@@ -154,12 +152,9 @@ public class CollectPackListActivity extends BaseActivity{
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,this);
 	}
 
 	private void showView() {
@@ -180,7 +175,14 @@ public class CollectPackListActivity extends BaseActivity{
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
+	@Override
+	protected void onStop() {
+		// TODO Auto-generated method stub
+		KuibuApplication.getInstance().cancelPendingRequests(this);
+		super.onStop();		
+	}
+	
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub

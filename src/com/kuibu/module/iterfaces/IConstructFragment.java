@@ -1,9 +1,8 @@
 package com.kuibu.module.iterfaces;
 
-import android.support.v4.app.Fragment;
-
+import com.kuibu.app.model.base.BaseFragment;
 
 public interface IConstructFragment
 {
-	public Fragment newInstance(String tag);
+	public BaseFragment newInstance(String tag);
 }

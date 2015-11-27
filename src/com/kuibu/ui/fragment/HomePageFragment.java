@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleLis
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.common.utils.DataUtils;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -41,8 +41,8 @@ import com.kuibu.module.adapter.HomeListViewItemAdapter;
  * kuibu 主页
  * @author ThinkPad
  */
-
 public class HomePageFragment extends Fragment {
+	
 	private HomeListViewItemAdapter homeListViewAdapter = null;
 	private List <MateListItem> mHomeDatas = new ArrayList <MateListItem>();  
     private PullToRefreshListView mPullRefreshListView;
@@ -68,18 +68,12 @@ public class HomePageFragment extends Fragment {
 			//下拉刷新
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-				// TODO Auto-generated method stub
+				// TODO Auto-generated method stub			
 				loadData("DOWN",true);
-				
-				String label = DateUtils.formatDateTime(getActivity()
-						.getApplicationContext(), System
-						.currentTimeMillis(),
-						DateUtils.FORMAT_SHOW_TIME
-								| DateUtils.FORMAT_SHOW_DATE
-								| DateUtils.FORMAT_ABBREV_ALL);
-
-				refreshView.getLoadingLayoutProxy()
-						.setLastUpdatedLabel(label);
+				mPullRefreshListView.getLoadingLayoutProxy()
+				.setLastUpdatedLabel(KuibuUtils.getRefreshLabel(getActivity(),
+						StaticValue.PrefKey.HOME_LAST_REFRESH_TIME));
+			
 			}
 
 			//向上拖动刷新
@@ -87,15 +81,9 @@ public class HomePageFragment extends Fragment {
 			public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
 				// TODO Auto-generated method stub
 				loadData("UP",false);
-				String label = DateUtils.formatDateTime(getActivity()
-						.getApplicationContext(), System
-						.currentTimeMillis(),
-						DateUtils.FORMAT_SHOW_TIME
-								| DateUtils.FORMAT_SHOW_DATE
-								| DateUtils.FORMAT_ABBREV_ALL);
-
 				refreshView.getLoadingLayoutProxy()
-						.setLastUpdatedLabel(label);
+				.setLastUpdatedLabel(KuibuUtils.getRefreshLabel(getActivity(),
+						StaticValue.PrefKey.HOME_LAST_REFRESH_TIME));
 			}			
 		});
 		
@@ -119,29 +107,18 @@ public class HomePageFragment extends Fragment {
 		showHomeView();
 		return rootView;
 	}
-
 	
 	@Override
 	public void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-		KuibuApplication.getInstance().cancelPendingRequests(
-				StaticValue.TAG_VLAUE.HOME_PAGE_VOLLEY);
+		KuibuApplication.getInstance().cancelPendingRequests(this);
 	}
 
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onHiddenChanged(boolean) 
 	 */
-	@Override
-	public void onHiddenChanged(boolean hidden) {
-		super.onHiddenChanged(hidden);
-		if(hidden){ //hiding now 
-			
-		}else{//showing now 
-			loadData("DOWN",false);
-		}
-	}
 
 	private void showHomeView() {
 		if (homeListViewAdapter == null) {
@@ -178,8 +155,7 @@ public class HomePageFragment extends Fragment {
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 						String data = response.getString("result");
 						JSONArray arr = new JSONArray(data); 
-						parseFromJson(arr,action);
-						mPullRefreshListView.onRefreshComplete();
+						parseFromJson(arr,action);						
 						if(arr.length()>0){
 							if(action.equals("INIT")&& bcache){
 							    	KuibuApplication.getCacheInstance()
@@ -197,6 +173,7 @@ public class HomePageFragment extends Fragment {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
+				mPullRefreshListView.onRefreshComplete();
 			}
 		}, new Response.ErrorListener() {
 			@Override
@@ -214,8 +191,7 @@ public class HomePageFragment extends Fragment {
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
 				Constants.Config.RETRY_TIMES, 1.0f));
-		KuibuApplication.getInstance().addToRequestQueue(req,
-				StaticValue.TAG_VLAUE.HOME_PAGE_VOLLEY);	
+		KuibuApplication.getInstance().addToRequestQueue(req,this);	
 	}
 	
 	private void parseFromJson(JSONArray arr,String action)

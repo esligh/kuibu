@@ -40,7 +40,6 @@ import com.kuibu.ui.activity.FavoriteBoxInfoActivity;
 
 public class ExploreFavoriteFragment extends BaseFragment {
 	
-	private static final String VOLLEY_REQ_TAG = "explore_hot_fragment";
 	private PullToRefreshListView hotList = null;
 	private HotListViewItemAdapter hotAdapter = null;
 	private List<Map<String, String>> mdatas = new ArrayList<Map<String, String>>();
@@ -206,7 +205,7 @@ public class ExploreFavoriteFragment extends BaseFragment {
 		});
 		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_SHORT, 
 				Constants.Config.RETRY_TIMES, 1.0f));
-		KuibuApplication.getInstance().addToRequestQueue(req,VOLLEY_REQ_TAG);
+		KuibuApplication.getInstance().addToRequestQueue(req);
 	}
 
 	private void showView() {
@@ -218,14 +217,4 @@ public class ExploreFavoriteFragment extends BaseFragment {
 			hotAdapter.refreshView(mdatas);
 		}
 	}
-
-	@Override
-	public void onDestroyView() {
-		// TODO Auto-generated method stub
-		super.onDestroyView();
-		KuibuApplication.getInstance().cancelPendingRequests(VOLLEY_REQ_TAG);
-	}
-	
-	
-
 }

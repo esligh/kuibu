@@ -67,12 +67,10 @@ public class KuibuMainActivity extends BaseActivity
 	private static final int DEFAULT_POSITINO = 1; //登录状态抽屉选项的默认位置
 	private MenuItem mLogoutMenu,mNotifyMenu;
 	private int mCurposition = 0  ;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_kuibu_main);
-
 		mLoginProcess = new LoginProcess(this);
 		mLoginProcess.setOnLoginLisener(this);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
@@ -505,7 +503,7 @@ public class KuibuMainActivity extends BaseActivity
 				Toast.makeText(this, getString(R.string.received_comment), 
 						Toast.LENGTH_LONG).show();
 			}else if(StaticValue.EVENT.TYPE_KEEPALIVE.equals(type)){
-				Toast.makeText(this, "HELLO", Toast.LENGTH_SHORT).show();
+				
 			}				
 		} catch (JSONException e) {
 			e.printStackTrace();

@@ -23,8 +23,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -62,20 +60,12 @@ public class SettingsFragment extends PreferenceFragment implements
 	private OnPreChangeListener mListener = null;
 	private FinalHttp finalHttp = null;
 	private int mNewVersionCode ; 
-	private String mAppVersionName ; 
-    private ProgressDialog mProDlg;  
+	private String mAppVersionName ;   
     private ProgressDialog progressDlg; 
     private PreferenceScreen mVersion ; 
     private final int MAX_PROGRESS = 100  ; 
     private String mUpdateUrl; 
-    private Handler mHandler = new Handler(){
-		@Override
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			switch(msg.what){
-			}
-		}
-    };
+    
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -133,7 +123,7 @@ public class SettingsFragment extends PreferenceFragment implements
 		findPreference(StaticValue.PrefKey.DARK_THEME_KEY).setOnPreferenceChangeListener(this);
 		findPreference(StaticValue.PrefKey.ABOUT_ME).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.HAND_BOOK).setOnPreferenceClickListener(this);
-		findPreference(StaticValue.PrefKey.FLOW_STATISTICS).setOnPreferenceClickListener(this);
+	//	findPreference(StaticValue.PrefKey.FLOW_STATISTICS).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.ADVICE_FEEDBACK).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.EXCEPTION_REPORT).setOnPreferenceClickListener(this);					
 	}
@@ -170,7 +160,8 @@ public class SettingsFragment extends PreferenceFragment implements
 			getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 
 		}else if(pref.getKey().equals(StaticValue.PrefKey.FLOW_STATISTICS)){
-			Toast.makeText(getActivity(), "开发中...", Toast.LENGTH_SHORT).show();
+			
+			
 		}else if(pref.getKey().equals(StaticValue.PrefKey.ADVICE_FEEDBACK)){
 			Intent intent = new Intent(getActivity(),AdviceFeedBackActivity.class);
 			getActivity().startActivity(intent);
@@ -197,8 +188,11 @@ public class SettingsFragment extends PreferenceFragment implements
       				.append(Constants.Config.REST_API_VERSION)
       				.append("/crash_collector").toString();
       				try {
-      		    			mProDlg.setTitle(getString(R.string.preference_exception));   
-                            mProDlg.show();
+      						if(progressDlg == null){
+      							progressDlg = new ProgressDialog(getActivity());      							
+      						}
+      						progressDlg.setTitle(getString(R.string.preference_exception));   
+      						progressDlg.show();
       		    			AjaxParams params = new AjaxParams();
       		    			params.put("file_name", fileName);
       						params.put("data", new File(path));
@@ -210,7 +204,10 @@ public class SettingsFragment extends PreferenceFragment implements
       							public void onFailure(Throwable t, int errorNo,
       									String strMsg) {
       								super.onFailure(t, errorNo, strMsg);
-      								mProDlg.cancel();
+      								progressDlg.cancel();
+
+      								Toast.makeText(getActivity(), getString(R.string.upload_fail), 
+      										Toast.LENGTH_SHORT).show();
       							}
       							
       							@Override
@@ -218,18 +215,21 @@ public class SettingsFragment extends PreferenceFragment implements
       								super.onLoading(count, current);
       								int progress = 0;
       								if (current != count && current != 0) {
-      									progress = (int) (current / (float) count * 100);
+      									progress = (int) (current / (float) count * MAX_PROGRESS);
       								} else {
-      									progress = 100;
+      									progress = MAX_PROGRESS;
       								}
-      								mProDlg.setProgress(progress);
+      								progressDlg.setProgress(progress);
+      								
       							}
       							
 								@Override
-      							public void onSuccess(String t) {
-									mProDlg.dismiss();
+      							public void onSuccess(String t) {									
       								super.onSuccess(t);
+      								progressDlg.dismiss();
       								FileUtils.delFile(path);
+      								Toast.makeText(getActivity(), getString(R.string.upload_success), 
+      										Toast.LENGTH_SHORT).show();
       							}						
       						});  
       					} catch (FileNotFoundException e) {
@@ -237,7 +237,7 @@ public class SettingsFragment extends PreferenceFragment implements
       						e.printStackTrace();
       					}		   	 			
       	    	}
-              }).setNegativeButton(getActivity().getString(R.string.btn_confirm), null).show();	
+              }).setNegativeButton(getActivity().getString(R.string.btn_cancel), null).show();	
 		}
 		return true;
 	}
@@ -333,11 +333,11 @@ public class SettingsFragment extends PreferenceFragment implements
 	
 	private void doUpdate()
 	{   
-		if(mProDlg == null){
-			mProDlg =  new ProgressDialog(getActivity());
+		if(progressDlg == null){
+			progressDlg =  new ProgressDialog(getActivity());
 		}
-		mProDlg.setMax(MAX_PROGRESS);
-		mProDlg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 	
+		progressDlg.setMax(MAX_PROGRESS);
+		progressDlg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 	
 	
          Dialog dialog = new AlertDialog.Builder(getActivity()).setTitle(getString(R.string.update_version))
         		 .setMessage(getString(R.string.quest_update))
@@ -346,8 +346,8 @@ public class SettingsFragment extends PreferenceFragment implements
                              @Override    
                              public void onClick(DialogInterface dialog,    
                                      int witch) {    
-                            	 mProDlg.setTitle(getString(R.string.updating));   
-                                 mProDlg.show();
+                            	 progressDlg.setTitle(getString(R.string.updating));   
+                            	 progressDlg.show();
                                  downLoadApp();    
                              }    
                          })    
@@ -377,17 +377,17 @@ public class SettingsFragment extends PreferenceFragment implements
 				super.onLoading(count, current);
 				int progress = 0;
 				if (current != count && current != 0) {
-					progress = (int) (current / (float) count * 100);
+					progress = (int) (current / (float) count * MAX_PROGRESS);
 				} else {
-					progress = 100;
+					progress = MAX_PROGRESS;
 				}
-				mProDlg.setProgress(progress);
+				progressDlg.setProgress(progress);
 			}
 
 			@Override
 			public void onSuccess(File t) {				
 				super.onSuccess(t);
-				mProDlg.dismiss();
+				progressDlg.dismiss();
 				Intent intent = new Intent(Intent.ACTION_VIEW);  
 	            intent.setDataAndType(Uri.fromFile(new File(Environment  
 	                    .getExternalStorageDirectory(), mAppVersionName)),  
@@ -400,7 +400,7 @@ public class SettingsFragment extends PreferenceFragment implements
 				super.onFailure(t, errorNo, strMsg);
 				Toast.makeText(getActivity(), getString(R.string.update_fail), Toast.LENGTH_SHORT)
 						.show();
-				mProDlg.cancel();
+				progressDlg.cancel();
 			}
 		});    
 	}

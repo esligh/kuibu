@@ -93,8 +93,7 @@ public class CollectionMainFragment extends Fragment {
 			public void onItemClick(AdapterView<?> adpterView, View view, int position,
 					long id) {
 				CollectPackBean item = (CollectPackBean)adpterView.getAdapter()
-												.getItem(position);
-				
+												.getItem(position);				
 				Intent intent = new Intent();
 				if(StaticValue.SERMODLE.PACK_TYPE_PIC.equals(item.pack_type)){
 					intent.setClass(getActivity(),LocalCollectionPListActivity.class);										

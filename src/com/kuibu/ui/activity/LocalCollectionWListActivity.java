@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -57,6 +58,8 @@ public class LocalCollectionWListActivity extends BaseActivity {
 	private CollectPackVo packVo = null ; 
 	private ImageLibVo  imageVo = null ; 
 	private String pid ;
+	private ProgressDialog progressDlg ; 
+	private int packCount ; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -66,7 +69,8 @@ public class LocalCollectionWListActivity extends BaseActivity {
 		packVo = new CollectPackVo(this);
 		imageVo = new ImageLibVo(this);
 		pid = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_ID);
-		
+		String count = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT);
+		packCount = Integer.parseInt(count);
 		setTitle(getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_NAME));
 		setContentView(R.layout.local_collection_list_activity);	
 		fbutton = (ButtonFloat) findViewById(R.id.buttonFloat);
@@ -184,9 +188,8 @@ public class LocalCollectionWListActivity extends BaseActivity {
 	            	.setPositiveButton(getString(R.string.btn_confirm) , new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface arg0, int arg1) {	
-		            		RestoreToolBar();         		
 			            	//添加提示框
-			            	if(selItems != null){         					            		
+			            	if(selItems != null && selItems.size()>0){         					            		
 			            		ArrayList<String> cids = new ArrayList<String>();
 			            		int delSize = 0 ; 
 			            		for(int i =0 ;i<selItems.size();i++){
@@ -199,28 +202,30 @@ public class LocalCollectionWListActivity extends BaseActivity {
 			            			}			            			
 			            		}
 			            		
-			            		//delete local 
-			            		collectionVo.delete(cids);
-			            		imageVo.deleteBycids(cids);		
-			            		
-			            		String count = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT);
-			            		if(Integer.parseInt(count) >= delSize){
+			            		//删除本地还未发布的记录  
+			            		if(cids.size()>0){
+				            		collectionVo.delete(cids);
+				            		imageVo.deleteBycids(cids);		
+				            		showView();		
+			            		}
+			            		if(packCount>= delSize && delSize>0){
 			            			packVo.update("collect_count = collect_count - " + delSize, 
 			            					" pack_id = ? ", new String[]{String.valueOf(pid)});
-			            		}else{ //not likely 
-			            			return ;
 			            		}
-			            		showView();
 			            		
 			            		if(selItems.size()>0)
 			            			requestDel(selItems);
+			            		}else{
+			            			RestoreToolBar();
 			            		}
 						}						
 
 					})  
 	            	.setNegativeButton(getString(R.string.btn_cancel) , new DialogInterface.OnClickListener() {
 						@Override
-						public void onClick(DialogInterface arg0, int arg1) {}						
+						public void onClick(DialogInterface arg0, int arg1) {
+							RestoreToolBar();
+						}						
 					})  
 	            	.show();  
 	            	return true ; 
@@ -254,7 +259,9 @@ public class LocalCollectionWListActivity extends BaseActivity {
 	private void RestoreToolBar()
 	{
 		isMulChoice = false ; 
-		showContextMenu = false; 
+		showContextMenu = false;
+		if(selItems!=null)
+			selItems.clear();
 		invalidateOptionsMenu();
 		fbutton.setVisibility(View.VISIBLE);
 		collectionAdapter = new LocalCollectionWAdapter(this,mData,isMulChoice);
@@ -264,6 +271,12 @@ public class LocalCollectionWListActivity extends BaseActivity {
 	
 	private void requestDel(final List<CollectionBean> items)
 	{
+		if(progressDlg == null){
+			progressDlg = new ProgressDialog(this);
+			progressDlg.setTitle(getString(R.string.deleting));
+			progressDlg.setCanceledOnTouchOutside(false);
+		}
+		progressDlg.show();
 		Map<String, String> params = new HashMap<String, String>();		
 		params.put("uid", Session.getSession().getuId());
 		params.put("size", String.valueOf(items.size()));
@@ -289,11 +302,14 @@ public class LocalCollectionWListActivity extends BaseActivity {
 	            			cids.add(String.valueOf(item._id));
 	            			mData.remove(item);
 	            		}
+	            		//删除剩余的已经发布的记录
 	            		collectionVo.delete(cids);
 	            		imageVo.deleteBycids(cids);
 						packVo.update("collect_count = collect_count - " + items.size(), 
             					" pack_id = ? ", new String[]{String.valueOf(pid)});
-						showView();
+						showView();						
+						Toast.makeText(LocalCollectionWListActivity.this, 
+								getString(R.string.delete_success),Toast.LENGTH_SHORT).show();
 					}else{
 						Toast.makeText(LocalCollectionWListActivity.this, 
 								getString(R.string.delete_fail),Toast.LENGTH_SHORT).show();
@@ -301,12 +317,18 @@ public class LocalCollectionWListActivity extends BaseActivity {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
+				progressDlg.dismiss();
+				RestoreToolBar();
 			}
 		}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
 				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
+				VolleyLog.e("Error:", error.getCause());				
+				progressDlg.dismiss();
+				Toast.makeText(getApplicationContext(), 
+						getString(R.string.net_error),Toast.LENGTH_SHORT).show();
+				RestoreToolBar();
 			}
 		}){
 			@Override  

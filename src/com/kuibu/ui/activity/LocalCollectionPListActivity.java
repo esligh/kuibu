@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -37,9 +39,9 @@ import com.gc.materialdesign.views.ButtonFloat;
 import com.huewu.pla.lib.internal.PLA_AdapterView;
 import com.huewu.pla.lib.internal.PLA_AdapterView.OnItemClickListener;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.common.utils.BitmapHelper;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
@@ -51,7 +53,6 @@ import com.kuibu.model.entity.CollectionBean;
 import com.kuibu.model.entity.ImageInfo;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.ImageGridAdapter;
-import com.kuibu.module.adapter.ImageGridAdapter.HolderView;
 
 public class LocalCollectionPListActivity extends BaseActivity implements IXListViewListener{
 	
@@ -73,7 +74,9 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 	private LinkedList<CollectionBean> mData = new LinkedList<CollectionBean>();
 	private List<CollectionBean> selItems = null; 
 	private int curPosition  ; 
-	
+	private int packCount ; 
+	private ProgressDialog progressDlg ; 
+
 	@SuppressLint("SimpleDateFormat")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +84,11 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 		setTitle(getIntent().getStringExtra(
 				StaticValue.EDITOR_VALUE.COLLECT_PACK_NAME));
 		setContentView(R.layout.local_collection_grid_activity);
-		
+		String count = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT);
+		packCount = Integer.parseInt(count);
 		collectionVo = new CollectionVo(this);
 		packVo = new CollectPackVo(this);
-		imageVo = new ImageLibVo(this);
-		
+		imageVo = new ImageLibVo(this);		
 		fbutton = (ButtonFloat) findViewById(R.id.buttonFloat);
 		mAdapterView = (XListView) findViewById(R.id.list);
 		mAdapterView.setPullLoadEnable(true);
@@ -117,17 +120,17 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 					startActivityForResult(intent, PREVIEW_REQ_CODE);
 					overridePendingTransition(R.anim.anim_fade_in,R.anim.anim_fade_out);
 				}else{
-					HolderView  holderView = (HolderView)view.getTag();
+					ViewHolder  holderView = (ViewHolder)view.getTag();
 					if(selItems == null){
 						selItems = new LinkedList<CollectionBean>() ; 
 					}
 					if(item.isCheck){
 						item.isCheck = false ;
-						holderView.checkView.setImageResource(R.drawable.btn_unselected);
+						((ImageView)holderView.getView(R.id.checkmark)).setImageResource(R.drawable.btn_unselected);
 						selItems.remove(item);
 					}else{
 						item.isCheck = true ; 											
-						holderView.checkView.setImageResource(R.drawable.btn_selected);
+						((ImageView)holderView.getView(R.id.checkmark)).setImageResource(R.drawable.btn_selected);
 						selItems.add(item);
 					}
 
@@ -138,10 +141,8 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 			}
 		});
 		
-		pid = getIntent().getStringExtra(
-				StaticValue.EDITOR_VALUE.COLLECT_PACK_ID);
-		
-		mViewAdapter = new ImageGridAdapter(this,mData,bMultiChoice);
+		pid = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_ID);		
+		mViewAdapter = new ImageGridAdapter(this,mData,R.layout.item_grid_image,bMultiChoice);
 		mAdapterView.setAdapter(mViewAdapter);
 		mAdapterView.setPullRefreshEnable(false);
 		loadData(OPER_TYPE_LOADMORE);
@@ -171,8 +172,10 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 	{
 		bMultiChoice = false ;  
 		invalidateOptionsMenu();
+		if(selItems!=null)
+			selItems.clear();
 		fbutton.setVisibility(View.VISIBLE);
-		mViewAdapter = new ImageGridAdapter(this,mData, bMultiChoice);
+		mViewAdapter = new ImageGridAdapter(this,mData, R.layout.item_grid_image,bMultiChoice);
 		mAdapterView.setAdapter(mViewAdapter);
 		setTitle(getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECT_PACK_NAME));
 	}
@@ -202,7 +205,7 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 						newOne.width = info.width ; 
 						newOne.cover  = Constants.URI_PREFIX + newOne.cover ;
 						mData.addFirst(newOne);
-						mViewAdapter.updateView(mData);
+						mViewAdapter.refreshView(mData);
 					}			
 				}
 				break;
@@ -224,15 +227,18 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 		if (position >= first && position <= last) {
 			CollectionBean cur = (CollectionBean)mViewAdapter.getItem(position-1);
             View view = mAdapterView.getChildAt(position - first);  
-            HolderView holder = (HolderView) view.getTag();
+            ViewHolder holder = (ViewHolder) view.getTag();
             if(!cur.title.equals(bean.title)){
-            	holder.titleView.setText(bean.title);
+            	holder.setTvText(R.id.item_title,bean.title);
+            	cur.setTitle(bean.title);
             }
             if(!TextUtils.isEmpty(bean.content) && !bean.content.equals(cur.content)){
-            	holder.descView.setText(bean.content);
+            	holder.setTvText(R.id.item_desc,bean.content);
+            	cur.setContent(bean.content);
             }
             if(bean.isPublish == 1){
-            	holder.labelView.setVisibility(View.GONE);
+            	holder.setVisibility(R.id.published_icon,View.GONE);
+            	cur.setIsPublish(1);
             }
 		}		
 	}
@@ -250,7 +256,7 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 				invalidateOptionsMenu();
 				fbutton.setVisibility(View.GONE);				
 				mViewAdapter = new ImageGridAdapter(LocalCollectionPListActivity.this,
-						mData,bMultiChoice);
+						mData,R.layout.item_grid_image,bMultiChoice);
 				mAdapterView.setAdapter(mViewAdapter);
 				return true;
 				
@@ -265,10 +271,8 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
             	.setPositiveButton(getString(R.string.btn_confirm) , new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface arg0, int arg1) {	
-	            		RestoreToolBar();
-	            		
 		            	//添加提示框
-		            	if(selItems != null){         					            		
+		            	if(selItems != null && selItems.size()>0){         					            		
 		            		ArrayList<String> cids = new ArrayList<String>();
 		            		int delSize = 0 ; 
 		            		for(int i =0 ;i<selItems.size();i++){
@@ -280,21 +284,22 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 		            				++delSize ; 
 		            			}			            			
 		            		}
-		            		 
-		            		collectionVo.delete(cids);
-		            		imageVo.deleteBycids(cids);		
 		            		
-		            		String count = getIntent().getStringExtra(StaticValue.EDITOR_VALUE.COLLECTION_COUNT);
-		            		if(Integer.parseInt(count) >= delSize){
+		            		if(cids.size()>0){
+		            			collectionVo.delete(cids);
+		            			imageVo.deleteBycids(cids);		
+		            			mViewAdapter.refreshView(mData);
+		            		}
+		            		
+		            		if(packCount >= delSize && delSize>0){
 		            			packVo.update("collect_count = collect_count - " + delSize, 
 		            					" pack_id = ? ", new String[]{String.valueOf(pid)});
-		            		}else{ //not likely 
-		            			return ;
 		            		}
-		            		mViewAdapter.updateView(mData);
 		            		
 		            		if(selItems.size()>0)
 		            			requestDel(selItems);
+		            		}else{
+		            			RestoreToolBar();
 		            		}
 					}						
 
@@ -346,6 +351,13 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 	
 	private void requestDel(final List<CollectionBean> items)
 	{	
+		if(progressDlg == null){
+			progressDlg = new ProgressDialog(this);
+			progressDlg.setTitle(getString(R.string.deleting));
+			progressDlg.setCanceledOnTouchOutside(false);
+		}
+		progressDlg.show();
+
 		Map<String, String> params = new HashMap<String, String>();		
 		params.put("uid", Session.getSession().getuId());
 		params.put("size", String.valueOf(items.size()));
@@ -375,11 +387,14 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 	            		imageVo.deleteBycids(cids);
 						packVo.update("collect_count = collect_count - " + items.size(), 
             					" pack_id = ? ", new String[]{String.valueOf(pid)});
-						mViewAdapter.updateView(mData);
+						mViewAdapter.refreshView(mData);
 					}else{
 						Toast.makeText(LocalCollectionPListActivity.this, 
 								getString(R.string.delete_fail),Toast.LENGTH_SHORT).show();
 					}
+					progressDlg.dismiss();
+					RestoreToolBar();
+            		
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -391,8 +406,9 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				Toast.makeText(getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error,getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
+						getString(R.string.net_error),Toast.LENGTH_SHORT).show();
+				progressDlg.dismiss();
+				RestoreToolBar();
 			}
 		}){
 			@Override  
@@ -416,15 +432,8 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 		
 		@Override
 		protected List<CollectionBean> doInBackground(String... arg0) {
-			// TODO Auto-generated method stub
 			List<CollectionBean> result = new ArrayList<CollectionBean>();
 			if(oType == OPER_TYPE_REFRESH){
-//				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-//				String lastTime = prefs.getString("GRID_LAST_UPDATE_TIME", "");
-//				String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-//				prefs.edit().putString("GRID_LAST_UPDATE_TIME", time).commit();				
-//				mAdapterView.setRefreshTime(lastTime);
-				//search id > current max id
 				
 			}else if(oType == OPER_TYPE_LOADMORE){
 				//分页取数据
@@ -432,9 +441,6 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 						new String[]{String.valueOf(mViewAdapter.getMinId()),pid},PAGE_SIZE,0);
 				
 				for(CollectionBean item : result){
-					ImageInfo info = BitmapHelper.getImageInfo(item.cover);
-					item.height = info.height ; 
-					item.width = info.width ; 
 					item.cover  = Constants.URI_PREFIX + item.cover ; 
 				}
 			}
@@ -445,14 +451,13 @@ public class LocalCollectionPListActivity extends BaseActivity implements IXList
 	    protected void onPostExecute(List<CollectionBean> result) {
 			if(result != null ){
 				if(oType == OPER_TYPE_REFRESH){
-				//	mViewAdapter.addItemTop(result.get(0));
-	            //   mAdapterView.stopRefresh();
+					
 				}else if(oType == OPER_TYPE_LOADMORE){
 					if(result.size() < PAGE_SIZE){
 						mAdapterView.setPullLoadEnable(false);
 					}
 					mData.addAll(result);
-					mViewAdapter.updateView(mData);
+					mViewAdapter.refreshView(mData);
 	                mAdapterView.stopLoadMore();
 				}	
 			}		

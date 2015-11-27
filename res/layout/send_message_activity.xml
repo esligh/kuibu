@@ -15,16 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <com.handmark.pulltorefresh.library.PullToRefreshListView
-            android:id="@+id/message_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-       <LinearLayout
+        <LinearLayout
+            android:id="@+id/send_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"            
             android:showDividers="beginning"
-            android:background="?layoutBorderBackGround"            
+            android:background="?layoutBorderBackGround"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal" >       
                             
@@ -54,6 +50,14 @@
                 android:src="@drawable/bt_send_comment_selector" 
                 android:contentDescription="@null"/>
         </LinearLayout>
+        
+        <com.handmark.pulltorefresh.library.PullToRefreshListView
+            android:id="@+id/message_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/send_layout"
+            android:scrollbars="vertical"
+            android:scrollbarStyle="outsideOverlay"/> 
     </RelativeLayout>
 
 </com.kuibu.custom.widget.MultiStateView>

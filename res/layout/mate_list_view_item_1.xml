@@ -47,7 +47,7 @@
         android:paddingBottom="@dimen/android_spaces_small"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?listItemTextColor"
         android:textSize="17sp"         
         android:clickable="true"       
         android:descendantFocusability="blocksDescendants"
@@ -77,7 +77,7 @@
             android:layout_marginLeft="@dimen/android_spaces"
             android:ellipsize="end"
             android:maxLines="3"
-       		android:textColor="?android:attr/textColorSecondary"
+       		android:textColor="?listItemExtraTextColor"
             android:textSize="15sp"                      
         	android:clickable="true"       
         	android:descendantFocusability="blocksDescendants"
@@ -93,24 +93,23 @@
         android:layout_marginRight="@dimen/android_spaces_large">
 
         <TextView
-            android:id="@+id/mate_1_count_tv"
+            android:id="@+id/mate_1_comment_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/android_spaces"
+            android:layout_marginRight="@dimen/android_spaces_small"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"            
-			android:layout_centerVertical="true"			
+            android:layout_centerVertical="true"
             android:textSize="12sp" />
-
-        <ImageView
-            android:id="@+id/mate_1_count_pic_iv"
+        
+        <TextView
+            android:id="@+id/mate_1_vote_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/mate_1_count_tv"
-            android:layout_toStartOf="@id/mate_1_count_tv"
-            android:layout_marginLeft="@dimen/android_spaces"
-            android:layout_marginRight="@dimen/android_spaces"
-            android:src="@drawable/ic_vote_normal"            
-            android:contentDescription="@null" />
+            android:layout_toLeftOf="@id/mate_1_comment_count_tv"
+			android:layout_centerVertical="true"			
+            android:textSize="12sp" />
     </RelativeLayout>
 
 </LinearLayout>

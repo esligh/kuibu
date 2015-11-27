@@ -23,23 +23,33 @@
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="14sp" />
 
+    <ImageView
+            android:id="@+id/private_icon"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/icon_super_small_width"
+            android:layout_height="@dimen/icon_super_small_height"
+            android:layout_marginLeft="@dimen/android_spaces_super_small"
+            android:layout_marginRight="@dimen/android_spaces_super_small"
+            android:scaleType="fitXY"
+            android:src="@drawable/iconfont_private_key"/>
+    
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_toRightOf="@id/private_icon"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/file_count_tv" 
         android:orientation="vertical">
-
+         
         <TextView
             android:id="@+id/pack_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/android_spaces_small"
-            android:layout_marginLeft="@dimen/android_spaces_large"
             android:layout_marginRight="@dimen/android_spaces_small"
             android:layout_marginTop="@dimen/android_spaces"
-            android:textColor="?android:attr/textColorPrimary"
+            android:textColor="?listItemTextColor"
             android:textSize="18sp" />
 
         <TextView
@@ -47,11 +57,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/pack_name_tv"
-            android:layout_marginLeft="@dimen/android_spaces_large"
             android:layout_marginRight="@dimen/android_spaces_small"
             android:paddingBottom="@dimen/android_spaces"
             android:paddingTop="@dimen/android_spaces_small"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="?listItemExtraTextColor"
             android:textSize="16sp" />
     </LinearLayout>
 

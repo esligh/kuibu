@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:descendantFocusability="blocksDescendants" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/mate_2_rela_layout2_rl"
@@ -14,7 +13,6 @@
         android:layout_marginTop="@dimen/android_spaces_small"
         android:layout_marginBottom="@dimen/android_spaces_super_small"
         android:background="?listItemBackground"
-        android:orientation="horizontal" 
         android:focusable="false">
         
         <TextView
@@ -49,7 +47,7 @@
         android:layout_marginRight="@dimen/android_spaces_large"
         android:paddingTop="@dimen/android_spaces_super_small"
         android:paddingBottom="@dimen/android_spaces_super_small"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?listItemTextColor"
         android:textSize="17sp"
         android:focusable="false"/>
     
@@ -69,21 +67,21 @@
 	        android:layout_marginLeft="@dimen/android_spaces_large"
 	        android:layout_marginRight="@dimen/android_spaces_large"/>
 	
-    <TextView
-	        android:id="@+id/mate_2_item_desc_tv"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	   		android:layout_marginLeft="@dimen/android_spaces_large"
-	   		android:layout_marginRight="@dimen/android_spaces_large"
-	   		android:layout_marginBottom="@dimen/android_spaces_small"
-			android:padding="@dimen/android_spaces"
-	   		android:layout_gravity="bottom"
-	        android:background="#60000000"
-	        android:ellipsize="end"
-	        android:maxLines="2"
-	        android:textStyle="bold"
-	        android:textSize="15sp"
-	        android:textColor="@color/white"/>	    
+	    <TextView
+		        android:id="@+id/mate_2_item_desc_tv"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		   		android:layout_marginLeft="@dimen/android_spaces_large"
+		   		android:layout_marginRight="@dimen/android_spaces_large"
+		   		android:layout_marginBottom="@dimen/android_spaces_small"
+				android:padding="@dimen/android_spaces"
+		   		android:layout_gravity="bottom"
+		        android:background="#60000000"
+		        android:ellipsize="end"
+		        android:maxLines="2"
+		        android:textStyle="bold"
+		        android:textSize="15sp"
+		        android:textColor="@color/secondary_text_color_dark"/>	    
 	</FrameLayout>
     
     
@@ -93,28 +91,27 @@
         android:layout_marginTop="@dimen/android_spaces_small"
         android:layout_marginBottom="@dimen/android_spaces_small"
         android:layout_marginRight="@dimen/android_spaces_large"
-        android:layout_marginLeft="@dimen/android_spaces_large">
-
+        android:layout_marginLeft="@dimen/android_spaces_large"
+        android:visibility="gone">        
+        
         <TextView
-            android:id="@+id/mate_2_count_tv"
+            android:id="@+id/mate_2_comment_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/android_spaces"
+            android:layout_marginRight="@dimen/android_spaces_small"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"            
             android:layout_centerVertical="true"
             android:textSize="12sp" />
-
-        <ImageView
-            android:id="@+id/mate_2_count_pic_iv"
+        
+        <TextView
+            android:id="@+id/mate_2_vote_count_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/mate_2_count_tv"
-            android:layout_toStartOf="@id/mate_2_count_tv"
-            android:layout_marginLeft="@dimen/android_spaces_small"
-            android:layout_marginRight="@dimen/android_spaces_small"
+            android:layout_toLeftOf="@id/mate_2_comment_count_tv"                        
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_vote_normal"
-            android:contentDescription="@null"/>
+            android:textSize="12sp" />
     </RelativeLayout>
 
 </LinearLayout>

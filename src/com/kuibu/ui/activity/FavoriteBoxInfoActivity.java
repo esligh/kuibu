@@ -153,7 +153,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 			mCardList.setVerticalScrollBarEnabled(false);
 			mCardList.addFooterView(footerView);
 			card_datas = new LinkedList<CollectionBean>(); 			
-			mCardApdater = new ImageGridAdapter(this, card_datas,false);
+			mCardApdater = new ImageGridAdapter(this, card_datas,R.layout.item_grid_image,false);
 			mCardList.setAdapter(mCardApdater);
 			mCardList.addFooterView(footerView);
 			mCardList.setOnItemClickListener(new OnItemClickListener() {
@@ -252,7 +252,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 
 	private void showView() {
 		if (StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)) {
-			mCardApdater.updateView(card_datas);
+			mCardApdater.refreshView(card_datas);
 			setListViewHeightBasedOnChildren(mCardList);
 		} else {
 			infoAdapter.refreshView(item_datas);

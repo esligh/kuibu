@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.kuibu.module.iterfaces.EventCallback;
 import com.kuibu.module.iterfaces.IEventHandler;
 
@@ -47,24 +49,23 @@ public class SocketIOCallBack extends EventCallback{
 	}
 	
 	@Override
-	public void onError(SocketIOException socketIOException) {
-	    System.out.println("an Error occured");
+	public void onError(SocketIOException socketIOException) {		
+		Log.d("socketio", "error occur");
 	    socketIOException.printStackTrace();
 	}
 	
 	@Override
 	public void onDisconnect() {
-	    System.out.println("Connection terminated.");
+		Log.d("socketio", "Connection established");
 	}
 	
 	@Override
 	public void onConnect() {
-	    System.out.println("Connection established");
+		Log.d("socketio", "Connection established");
 	}
 	
 	@Override
 	public void on(String event, IOAcknowledge ack, Object... args) {
-	    System.out.println("Server triggered event '" + event + "'");
-	    
+		Log.d("socketio", "Server triggered event '" + event + "'");
 	}
 }

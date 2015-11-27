@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -51,7 +50,7 @@
         android:maxLines="2"
         android:paddingBottom="2dp"
         android:paddingTop="2dp"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?listItemTextColor"
         android:typeface="sans"
         android:textSize="17sp" />
 
@@ -67,7 +66,7 @@
         android:paddingTop="@dimen/android_spaces_small"
         android:layout_marginLeft="@dimen/android_spaces_large"
         android:layout_marginRight="@dimen/android_spaces_large"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="?listItemExtraTextColor"
         android:textSize="15sp" />
 
     <RelativeLayout
@@ -94,7 +93,8 @@
             android:layout_marginRight="@dimen/android_spaces"
             android:layout_toEndOf="@id/home_0_item_time_icon_iv"
             android:layout_toRightOf="@id/home_0_item_time_icon_iv"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textColor="?hintTextColor" />
     </RelativeLayout>
 
 </LinearLayout>

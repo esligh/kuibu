@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="?layoutBorderBackGround"            
+            android:background="?layoutBorderBackGround"
             android:orientation="horizontal" >
 
             <EditText
@@ -33,23 +33,25 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginLeft="@dimen/android_spaces_large"            
-            	android:layout_marginRight="@dimen/android_spaces_small"
-            	android:layout_marginTop="@dimen/android_spaces"
-            	android:layout_marginBottom="@dimen/android_spaces_small"                   android:padding="@dimen/android_spaces"                
-                android:hint="@string/write_down_comment" />
+                android:layout_marginBottom="@dimen/android_spaces_small"
+                android:layout_marginLeft="@dimen/android_spaces_large"
+                android:layout_marginRight="@dimen/android_spaces_small"
+                android:layout_marginTop="@dimen/android_spaces"
+                android:hint="@string/write_down_comment"
+                android:padding="@dimen/android_spaces" />
 
             <ImageButton
                 android:id="@+id/btn_send"
                 android:layout_width="@dimen/icon_medium_width"
                 android:layout_height="@dimen/icon_medium_height"
+                android:layout_marginBottom="@dimen/android_spaces_small"
+                android:layout_marginLeft="@dimen/android_spaces_small"
+                android:layout_marginRight="@dimen/android_spaces"
+                android:layout_marginTop="@dimen/android_spaces_large"
+                android:background="@color/transparent"
+                android:contentDescription="@null"
                 android:scaleType="centerInside"
-                android:layout_marginLeft="@dimen/android_spaces_small"            
-            	android:layout_marginRight="@dimen/android_spaces"
-            	android:layout_marginTop="@dimen/android_spaces_large"
-            	android:layout_marginBottom="@dimen/android_spaces_small"                android:background="@color/transparent"
-                android:src="@drawable/bt_send_comment_selector" 
-                android:contentDescription="@null"/>
+                android:src="@drawable/bt_send_comment_selector" />
         </LinearLayout>
     </RelativeLayout>
 

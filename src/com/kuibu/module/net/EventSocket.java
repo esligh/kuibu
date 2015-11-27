@@ -25,7 +25,7 @@ public class EventSocket{
 	{
 		if(mSocket == null) {
 			SocketIO.setDefaultSSLSocketFactory(SSLContext.getDefault());
-			mSocket = new SocketIO(Constants.Config.SOCKETIO_SERVER);
+			mSocket = new SocketIO(Constants.Config.SERVER_URI);
 	        mSocket.connect(callback);  
 		}
 	

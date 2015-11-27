@@ -52,6 +52,13 @@ public abstract class BaseActivity extends AppCompatActivity implements IEventHa
 	protected void onPause() {
 		super.onPause();
 	}
+	
+//	@Override
+//	protected void onStop() {
+//		// TODO Auto-generated method stub
+//		KuibuApplication.getInstance().cancelPendingRequests(this);
+//		super.onStop();		
+//	}
 
 	protected Fragment getFragment()
 	{

@@ -19,10 +19,8 @@ import java.io.File;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Environment;
-import android.text.TextUtils;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,46 +29,31 @@ import com.android.volley.toolbox.Volley;
 import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.PersistentCookieStore;
 import com.kuibu.model.db.SqLiteHelper;
-import com.kuibu.module.activity.R;
 import com.kuibu.module.exception.CrashHandler;
 import com.kuibu.module.net.EventSocket;
 import com.kuibu.module.net.SocketIOCallBack;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 public class KuibuApplication extends Application {
-	private RequestQueue mRequestQueue; // volley request queue ;
+	private static RequestQueue mRequestQueue; // volley request queue ;
 	public static final String TAG = "VolleyPatterns";
 	private static KuibuApplication sInstance;
 	private static PersistentCookieStore persistentCookieStore;
 	private static ACache mCache;
 	private static EventSocket mSocketIo;
 	private static SqLiteHelper mSqlHelper;
-	private File extStorageCachePath;
-	private static DisplayImageOptions defaultOptions ; 
-	
+	private File extStorageCachePath; 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCreate() {
-		super.onCreate();
+		super.onCreate();		
 		mCache = ACache.get(getApplicationContext());
 		sInstance = this;
-		 CrashHandler crashHandler = CrashHandler.getInstance();  
-	     crashHandler.init(this);   
-		defaultOptions = new DisplayImageOptions.Builder()
-		.showImageOnLoading(R.drawable.pictures_no)//image_small_default
-		.showImageForEmptyUri(R.drawable.pictures_no)
-		.showImageOnFail(R.drawable.pictures_no)
-		.cacheInMemory(true)
-		.cacheOnDisk(true)
-		.considerExifParams(true)
-		.bitmapConfig(Bitmap.Config.RGB_565)
-		.imageScaleType(ImageScaleType.EXACTLY)
-		.build(); 
+//		 CrashHandler crashHandler = CrashHandler.getInstance();  
+//	     crashHandler.init(this);   
 		
 		initImageLoader(getApplicationContext());
 
@@ -112,7 +95,6 @@ public class KuibuApplication extends Application {
 			return super.getCacheDir();
 		}
 	}
-
 	
 	public static EventSocket getSocketIoInstance() {
 		if (mSocketIo == null)
@@ -131,7 +113,7 @@ public class KuibuApplication extends Application {
 				context).threadPriority(Thread.NORM_PRIORITY - 2)
 				.denyCacheImageMultipleSizesInMemory()
 				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
-				.defaultDisplayImageOptions(defaultOptions)  
+				.defaultDisplayImageOptions(Constants.defaultOptions)  
 				.memoryCacheSize(6 * 1024 * 1024)  
         		.memoryCacheSizePercentage(13) // default  
 				.diskCacheSize(50 * 1024 * 1024)
@@ -145,7 +127,7 @@ public class KuibuApplication extends Application {
 		return mCache;
 	}
 
-	public static synchronized KuibuApplication getInstance() {
+	public static KuibuApplication getInstance() {
 		return sInstance;
 	}
 
@@ -178,10 +160,9 @@ public class KuibuApplication extends Application {
 	 * @param req
 	 * @param tag
 	 */
-	public <T> void addToRequestQueue(Request<T> req, String tag) {
+	public <T> void addToRequestQueue(Request<T> req, Object tag) {
 		// set the default tag if tag is empty
-		req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-
+		req.setTag(tag==null ? TAG : tag);
 		VolleyLog.d("Adding request to queue: %s", req.getUrl());
 		getRequestQueue().add(req);
 	}
@@ -199,16 +180,28 @@ public class KuibuApplication extends Application {
 		getRequestQueue().add(req);
 	}
 
+	
+//	public void cancelPendingRequests() {
+//		if (mRequestQueue != null) {
+//			mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
+//		    @Override
+//		        public boolean apply(Request<?> request) {
+//		            return true;
+//		        }
+//		    });
+//		}
+//	}
+//	
 	/**
 	 * Cancels all pending requests by the specified TAG, it is important to
 	 * specify a TAG so that the pending/ongoing requests can be cancelled.
 	 * 
 	 * @param tag
 	 */
-	public void cancelPendingRequests(Object tag) {
+	public void cancelPendingRequests(Object tag){
 		if (mRequestQueue != null) {
 			mRequestQueue.cancelAll(tag);
-		}
+		} 
 	}
 
 }

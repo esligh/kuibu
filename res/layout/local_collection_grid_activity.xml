@@ -3,11 +3,11 @@
     xmlns:materialdesign="http://schemas.android.com/apk/res-auto"    
     android:layout_width="match_parent"
     android:layout_height="match_parent" 
-    android:background="?listViewBackground"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:paddingLeft="2dp"
-    android:paddingRight="2dp">
+    android:background="?listCardViewBackground"
+    android:paddingTop="@dimen/android_spaces_small"
+    android:paddingBottom="@dimen/android_spaces_small"
+    android:paddingLeft="@dimen/android_spaces_super_small"
+    android:paddingRight="@dimen/android_spaces_super_small">
 
     <me.maxwin.view.XListView
         android:id="@+id/list"
@@ -16,8 +16,8 @@
         android:fastScrollEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp" />
+        android:layout_marginLeft="@dimen/android_spaces_super_small"
+        android:layout_marginRight="@dimen/android_spaces_super_small"/>
 
     <com.gc.materialdesign.views.ButtonFloat 		    
 		    android:id="@+id/buttonFloat"

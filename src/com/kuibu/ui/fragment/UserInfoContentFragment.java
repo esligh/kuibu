@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +22,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -44,9 +44,8 @@ import com.kuibu.ui.activity.UserListActivity;
 import com.kuibu.ui.activity.UserTopicListActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public final class UserInfoContentFragment extends Fragment implements
-		IConstructFragment {		
-	
+public final class UserInfoContentFragment extends BaseFragment implements
+		IConstructFragment {			
 	private TextView user_name_tv ; 
 	private TextView signature_tv  ;
 	private ImageView user_photo_iv,user_sex_iv; 
@@ -86,7 +85,7 @@ public final class UserInfoContentFragment extends Fragment implements
 	};
 	
 	@Override
-	public Fragment newInstance(String tag) {
+	public BaseFragment newInstance(String tag) {
 		UserInfoContentFragment fragment = new UserInfoContentFragment();
 		return fragment;
 	}
@@ -170,6 +169,8 @@ public final class UserInfoContentFragment extends Fragment implements
 					getActivity().startActivity(intent);
 				}
 			});
+			 
+			
 			topic_box_tv.setOnClickListener(new OnClickListener() {				
 				@Override
 				public void onClick(View arg0) {
@@ -194,6 +195,13 @@ public final class UserInfoContentFragment extends Fragment implements
 		initData(); //solve problem : Fragment（XXFragment） not attached to Activity
 	}
 
+	@Override
+	public void onDetach() {
+		// TODO Auto-generated method stub
+		KuibuApplication.getInstance().cancelPendingRequests(this);
+		super.onDetach();
+	}
+	
 	@SuppressWarnings("deprecation")
 	void initData()
 	{
@@ -319,7 +327,7 @@ public final class UserInfoContentFragment extends Fragment implements
 				error.printStackTrace();
 			}
 		});
-		KuibuApplication.getInstance().addToRequestQueue(req);	
+		KuibuApplication.getInstance().addToRequestQueue(req,this);	
 	}
 	
 	private void doFocus()
@@ -373,9 +381,6 @@ public final class UserInfoContentFragment extends Fragment implements
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}){
 			@Override  
@@ -383,7 +388,10 @@ public final class UserInfoContentFragment extends Fragment implements
 	 			return KuibuUtils.prepareReqHeader();  
 	 		}
 		};
-		KuibuApplication.getInstance().addToRequestQueue(req);	
+
+		req.setRetryPolicy(new DefaultRetryPolicy(Constants.Config.TIME_OUT_LONG,
+			Constants.Config.RETRY_TIMES, 1.0f));
+		KuibuApplication.getInstance().addToRequestQueue(req,this);	
 	}
 
 	@Override

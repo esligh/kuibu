@@ -9,7 +9,7 @@
         android:id="@+id/focus_collect_name_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?listItemTextColor"
         android:paddingLeft="@dimen/android_spaces_large"
         android:paddingRight="@dimen/android_spaces_large"
         android:paddingTop="@dimen/android_spaces"
@@ -23,7 +23,7 @@
         android:paddingLeft="@dimen/android_spaces_large"
         android:paddingRight="@dimen/android_spaces_large"
         android:textSize="16sp" 
-        android:textColor="?android:attr/textColorSecondary"/>
+        android:textColor="?listItemExtraTextColor"/>
     
     <LinearLayout
         android:layout_width="match_parent"

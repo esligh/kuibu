@@ -10,14 +10,18 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kuibu.common.utils.BitmapHelper;
@@ -32,6 +36,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class CollectionImageActivity extends AppCompatActivity{
 
+	public static final int MAX_TEXT_INPUT_LENGTH = 140 ; 
 	private EditText titleEt; 
 	private PhotoView imageIv; 
 	private EditText descTv; 
@@ -43,6 +48,7 @@ public class CollectionImageActivity extends AppCompatActivity{
 	private ImageButton rotateBtn; 
 	private String action ; 
 	private int degree ; 
+	private TextView wordCount ; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +72,56 @@ public class CollectionImageActivity extends AppCompatActivity{
 			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 		
-		titleEt = (EditText)findViewById(R.id.edit_note_title);		
+		titleEt = (EditText)findViewById(R.id.edit_note_title);
+		descTv = (EditText)findViewById(R.id.collection_desc);
+		descTv.setOnFocusChangeListener(new OnFocusChangeListener() {			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				// TODO Auto-generated method stub
+				if(hasFocus){
+					wordCount.setTextColor(getResources().getColor(R.color.edit_boder_focus_color));
+				}else{
+					wordCount.setTextColor(getResources().getColor(R.color.edit_boder_normal_color));
+				}
+			}
+		});
+		descTv.addTextChangedListener(new TextWatcher() {			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				int nSelStart = 0;
+				int nSelEnd = 0;
+				boolean nOverMaxLength = false;
+			   
+				nSelStart = descTv.getSelectionStart();
+				nSelEnd   = descTv.getSelectionEnd();
+			   
+				nOverMaxLength = (s.length() > MAX_TEXT_INPUT_LENGTH) ? true : false;
+				if(nOverMaxLength){
+					Toast.makeText(CollectionImageActivity.this, 
+							getString(R.string.word_exceed), 
+							Toast.LENGTH_SHORT).show();
+			    
+					s.delete(nSelStart - 1, nSelEnd);
+					descTv.setTextKeepState(s);
+			    }
+				wordCount.setText(MAX_TEXT_INPUT_LENGTH-s.length()+"字");
+			}
+		});
+		wordCount = (TextView)findViewById(R.id.wrod_count);
 		imageIv = (PhotoView)findViewById(R.id.collection_image);
 		
 		DisplayMetrics dm = new DisplayMetrics();
@@ -83,7 +138,6 @@ public class CollectionImageActivity extends AppCompatActivity{
 			}
 		});
 		
-		descTv = (EditText)findViewById(R.id.collection_desc);
 		if(isDarkTheme){
 			descTv.setHintTextColor(getResources().getColor(R.color.hint_foreground_material_dark));
 		}else{

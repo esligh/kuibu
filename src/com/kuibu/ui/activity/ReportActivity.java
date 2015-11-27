@@ -3,6 +3,7 @@ package com.kuibu.ui.activity;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
@@ -18,7 +19,7 @@ import com.kuibu.module.net.PublicRequestor;
 public class ReportActivity extends BaseActivity {
 
 	public TextView reportText ; 
-	
+	public boolean bReport = false; 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
@@ -50,8 +51,18 @@ public class ReportActivity extends BaseActivity {
         		params.put("reason", reportText.getText().toString().trim());
         		params.put("defendant_id", getIntent().getStringExtra("defendant"));
         		PublicRequestor.sendReport(params);
+        		bReport = true;  
         		break;
         }
         return super.onOptionsItemSelected(item);	
 	}
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		Intent intent = getIntent();
+		intent.putExtra("is_report", bReport);
+		setResult(RESULT_OK, intent);
+		super.onBackPressed();
+	} 	 
 }

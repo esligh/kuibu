@@ -31,7 +31,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.common.utils.DataUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
+import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.FButton;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -63,8 +63,7 @@ public class TopicInfoActivity extends BaseActivity {
 		topic_desc_tv.setText(getIntent().getStringExtra(StaticValue.TOPICINFO.TOPIC_EXTRA));
 		follow_count_tv = (TextView) findViewById(R.id.follow_count_tv);
 		focusBtn = (FButton) findViewById(R.id.focus_collectpack_bt);
-		bestAuthorList = (ListView) findViewById(R.id.best_author_list);
-		
+		bestAuthorList = (ListView) findViewById(R.id.best_author_list);		
 		bestAuthorList.setOnTouchListener(new OnTouchListener() {				
 			@SuppressLint("ClickableViewAccessibility")
 			@Override
@@ -79,7 +78,6 @@ public class TopicInfoActivity extends BaseActivity {
 		});
 		
 		bestAuthorList.setOnItemClickListener(new OnItemClickListener() {
-
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view, int position,
 					long id) {
@@ -94,8 +92,7 @@ public class TopicInfoActivity extends BaseActivity {
 				intent.putExtra(StaticValue.USERINFO.USER_PHOTO, (String)uInfo.get("photo"));
 				startActivity(intent);
 				overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
-			}
-			
+			}			
 		});
 		focusBtn.setOnClickListener(new OnClickListener() {			
 			@Override
@@ -289,12 +286,8 @@ public class TopicInfoActivity extends BaseActivity {
 			}
 		}){
 			@Override  
-	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			HashMap<String, String> headers = new HashMap<String, String>();
-	 			String credentials = Session.getSession().getToken()+":unused";
-	 			headers.put("Authorization","Basic "+
-	 			SafeEDcoderUtil.encryptBASE64(credentials.getBytes()).replaceAll("\\s+", "")); 
-	 			return headers;  
+	 		public Map<String, String> getHeaders() throws AuthFailureError {   
+	 			return KuibuUtils.prepareReqHeader();  
 	 		}
 		};
 		KuibuApplication.getInstance().addToRequestQueue(req);	

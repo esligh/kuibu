@@ -29,6 +29,10 @@ public class StaticValue {
 		public static final String FLOW_STATISTICS = "flow_statistics";
 		public static final String ADVICE_FEEDBACK  = "advice_feedback";
 		public static final String EXCEPTION_REPORT = "exception_report";
+		
+		public static final String HOME_LAST_REFRESH_TIME = "home_last_refresh_time";
+		public static final String RANK_LAST_REFRESH_TIME = "rank_last_refresh_time";
+		public static final String REC_LAST_REFRESH_TIME = "recommend_last_refresh_time";
 	}
 	
 	public static class USER_ACTION{
@@ -39,6 +43,7 @@ public class StaticValue {
 		public static final String ACTION_FOCUS_COLLECTION = "1400";
 		public static final String ACTION_FOCUS_TOPIC = "2000";
 		public static final String ACTION_FOCUS_COLLECTOR = "3000";
+		public static final String ACTION_REPORT_COLLECTION= "4000";
 	}
 	
 	public static class RequestCode{
@@ -177,6 +182,8 @@ public class StaticValue {
 		public static final String BOX_TYPE_PIC = "2";
 		
 		public static final String VERSION_CODE = "version_code";
+		
+		public static final int PRIVATE_COLLECTPACK= 1;
 	}
 	
 	public static class USERINFO

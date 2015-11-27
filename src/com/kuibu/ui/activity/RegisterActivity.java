@@ -60,7 +60,6 @@ public class RegisterActivity extends BaseActivity implements ICamera {
 	private boolean has_photo = false; 
 	private FinalHttp finalHttp = null;
 	private Uri cameraPic = null; 
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

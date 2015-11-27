@@ -8,13 +8,17 @@ import org.json.JSONObject;
 import android.text.TextUtils;
 
 public class DataUtils {
-	private static final int MAX_FORMAT_VAL = 999;
-
-	public static String formatNumber(int val) {
+	private static final int MAX_FORMAT_VAL_K = 999;
+	private static final int MAX_FORMAT_VAL_W = 9999;
+ 	public static String formatNumber(int val) {
 		if (val < 0)
 			return "0";
 		StringBuffer buffer = new StringBuffer();
-		if (val > MAX_FORMAT_VAL) {
+		if(val > MAX_FORMAT_VAL_W){
+			float n = val / 10000.0f;
+			DecimalFormat decimalFormat = new DecimalFormat(".#");
+			buffer.append(decimalFormat.format(n)).append("W");
+		}else if (val > MAX_FORMAT_VAL_K) {
 			float n = val / 1000.0f;
 			DecimalFormat decimalFormat = new DecimalFormat(".#");
 			buffer.append(decimalFormat.format(n)).append("K");

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
+import android.view.Window;
 
 import com.kuibu.common.utils.PhoneUtils;
 import com.kuibu.data.global.AppInfo;
@@ -20,7 +21,7 @@ public class SplashScreenActivity extends Activity {
 	private boolean bFirstLaunch = false ;  
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
+		Window w;
 		super.onCreate(savedInstanceState);
 		PackageInfo info = PhoneUtils.getPackageInfo(this); 
 		int currentVersion = info.versionCode;  
@@ -36,13 +37,12 @@ public class SplashScreenActivity extends Activity {
 			public void run() {
 				app_init();
 				Intent intent = null; 
-			//	if(bFirstLaunch){
+				if(bFirstLaunch){
 					intent = new Intent(SplashScreenActivity.this,WelcomeActivity.class);
-			//	}else{
-			//		 intent = new Intent(SplashScreenActivity.this, 
-			//					KuibuMainActivity.class);
-			//		 overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
-			//	}				
+				}else{
+					 intent = new Intent(SplashScreenActivity.this, 
+								KuibuMainActivity.class);
+				}				
 				startActivity(intent);
 				finish();
 			}

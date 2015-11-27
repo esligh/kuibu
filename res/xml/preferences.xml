@@ -2,13 +2,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:holo="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/preference_base">
+        
         <CheckBoxPreference
             android:key="dark_theme"
             android:title="@string/preference_darkmode" />
+        
         <CheckBoxPreference
             android:key="no_pictrue"
             android:defaultValue="false"
             android:title="@string/preference_no_picture" />
+        
         <SwitchPreference
             android:key="pre_download"
             android:title="@string/preference_preload" />
@@ -25,9 +28,10 @@
             android:key="message_push"           
             android:title="@string/preference_message"/>
         
+        <!--  
         <PreferenceScreen
             android:key="flow_statistics"           
-            android:title="@string/preference_statistics"/>
+            android:title="@string/preference_statistics"/>-->
           
         <PreferenceScreen
             android:key="account_protect"

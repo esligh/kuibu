@@ -11,6 +11,7 @@
         <item name="listViewBackground">@color/white</item>
         <item name="listCardViewBackground">@color/list_view_bg_light</item>
         <item name="toolbarBackground">@color/colorPrimary</item>
+        
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
@@ -20,8 +21,8 @@
         <item name="android:windowActionBar">false</item>
         <item name="listItemBackground">@drawable/mate_list_item_selector_dark</item>
         <item name="listItemDefaultImage">@drawable/dark_image_small_default</item>
-        <item name="listItemTextColor">@color/list_item_title_dark</item>
-        <item name="listItemExtraTextColor">@color/list_item_intro_dark</item>
+        <item name="listItemTextColor">@color/primary_text_color_dark</item>
+        <item name="listItemExtraTextColor">@color/secondary_text_color_dark</item>
         <item name="listViewBackground">@color/list_view_bg_dark</item>
         <item name="listCardViewBackground">@color/list_card_view_bg_dark</item>
         <item name="toolbarBackground">@drawable/abc_ab_solid_dark_holo</item>             

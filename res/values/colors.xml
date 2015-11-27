@@ -11,9 +11,14 @@
     <color name="background">#FF004068</color>
     <color name="guide_start_background">@color/background</color>
     <color name="guide_end_background">#FF006480</color>
-    <color name="primary_text_color">#EE000000</color>
-    <color name="secondary_text_color">#FF656565</color>
-       
+    <color name="primary_text_color_light">#ee101010</color>
+    <color name="secondary_text_color_light">#ff696969</color>    
+    <color name="primary_text_color_dark">#eeffffff</color>
+    <color name="secondary_text_color_dark">#ffb0b0b0</color>
+    
+    <color name="edit_boder_focus_color">#16a085</color>
+    <color name="edit_boder_normal_color">#BDC7D8</color>
+    
     <!-- 第一种配色方案 -->
  	<color name="colorPrimaryDark">#006480</color>     	
  	<color name="colorPrimary">#006480</color>   
@@ -27,19 +32,12 @@
     
     <!-- 第二种配色方案-->
         
-        
-    <!-- 第三种配色方案 
-    <drawable name="actionbar_background">#00a7ff</drawable>
-    <drawable name="activated_background_color">#00a7ff</drawable>
-    -->
-    
     <color name="light_blue">#b0f0f6</color>
     <color name="dodger_blue">#1E90FF</color>
     <color name="light_grey">#dcdcdc</color>
     <color name="grey">#dbdbdb</color>  
     <color name="super_light_grey">#f6f6f6</color>
-  	<drawable name="textColor">#ff0000</drawable>  
-    
+  	<drawable name="textColor">#ff0000</drawable>    
     <color name="dark_grey">#ff212121</color>
     <color name="lighter_grey">#ffE0E0E0</color>
     <color name="primary">#388E3C</color>
@@ -54,7 +52,7 @@
     <color name="fbutton_color_green_sea">#16a085</color>
     <color name="fbutton_color_clouds">#ecf0f1</color>
     <color name="fbutton_color_silver">#bdc3c7</color>
-    <color name="fbutton_color_concrete">#95a5a6</color>
+    <color name="fbutton_color_concrete">#a5a5a5</color>
     <color name="fbutton_color_asbestos">#7f8c8d</color>
     <color name="fbutton_color_transparent">@android:color/transparent</color>    
 
@@ -85,8 +83,6 @@
     <color name="webview_light">#FFFFFF</color>
     <color name="webview_dark">#343434</color>
     <color name="list_item_extra_dark">#ff116f9e</color>
-    <color name="list_item_title_dark">#ffE0E0E0</color>
-    <color name="list_item_intro_dark">#ff696969</color>
     <color name="list_item_bg_dark_super_highlight">#ff515151</color>
     <color name="list_item_bg_dark_highlight">#ff414141</color>
     <color name="layout_border_backgroud_dark">#ff292929</color>

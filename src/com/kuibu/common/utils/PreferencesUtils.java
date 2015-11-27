@@ -20,11 +20,7 @@ public class PreferencesUtils {
 	 *         storage.
 	 */
 	public static boolean putString(Context context, String key, String value) {
-		return putString(context, PREFERENCE_NAME, key, value);
-	}
-
-	public static boolean putString(Context context, String preferencesName, String key, String value) {
-		SharedPreferences settings = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putString(key, value);
 		return editor.commit(); 
@@ -42,12 +38,9 @@ public class PreferencesUtils {
 	 *         ClassCastException if there is a preference with this name that
 	 *         is not a string
 	 */
-	public static String getString(Context context, String key, String defaultValue) {
-		return getString(context, PREFERENCE_NAME, key, defaultValue);
-	}
 
-	public static String getString(Context context, String preferencesName, String key, String defaultValue) {
-		SharedPreferences settings = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
+	public static String getString(Context context, String key, String defaultValue) {
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
 		return settings.getString(key, defaultValue);
 	}
 	

@@ -10,11 +10,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.TypefaceSpan;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kuibu.app.model.base.CommonAdapter;
@@ -46,7 +42,7 @@ public class CollectPackItemAdapter extends CommonAdapter<CollectPackBean> {
 		String count = item.getCollect_count();
 		SpannableStringBuilder spanBuilder = new SpannableStringBuilder();
 		int end = 0 ; 
-		if(TextUtils.isEmpty(count)){				
+		if(TextUtils.isEmpty(count) || Integer.parseInt(count) <= 0){				
 			spanBuilder.append("0个");
 			end = 1; 
 		}
@@ -65,6 +61,11 @@ public class CollectPackItemAdapter extends CommonAdapter<CollectPackBean> {
 			holder.setImageResource(R.id.type_icon,R.drawable.pack_type_pic);
 		}else{
 			holder.setImageResource(R.id.type_icon,R.drawable.pack_type_word);
+		}
+		if(item.get_private() == StaticValue.SERMODLE.PRIVATE_COLLECTPACK){
+			holder.setVisibility(R.id.private_icon, View.VISIBLE);
+		}else{
+			holder.setVisibility(R.id.private_icon, View.INVISIBLE);
 		}
 	}
 	

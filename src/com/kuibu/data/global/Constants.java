@@ -18,9 +18,7 @@ public final class Constants {
 
 	public static class Config {
 		public static final String SERVER_URI = "http://115.28.200.109:80/";
-		public static final String SOCKETIO_SERVER = "http://115.28.200.109:5000/";
-	//	public static final String SERVER_URI = "http://169.254.62.66:5000/";
-	//	public static final String SOCKETIO_SERVER = "http://115.28.200.109:5000/";
+		//public static final String SERVER_URI = "http://169.254.62.66:5000/"; //local 
 		public static final String REST_API_VERSION = "/caddy/api/v1.0";	
 		public static final boolean DEBUG_MODE = true ; 
 		public static final String USER_PHOTO_TMP  = "pictmp";//用户头像裁剪的缓存文件
@@ -35,7 +33,7 @@ public final class Constants {
 		public static final String USER_PIC_BIG ="100_100";
 		public static final String IMG_COMPRESS_PATH="/compress/"; 
 		public static final String WEBVIEW_IMG_CACHE_DIR = "webview_tmp";
-		public static final int CACHE_SAVE_TIME = 3*24*60*60;
+		public static final int CONTENT_CACHE_SAVE_TIME = 3*60;
 		public static final int MAX_IMAGE_SELECT = 9 ;
 		public static final int PASSWORD_MIN_LEN = 6 ; 
 	}
@@ -71,6 +69,17 @@ public final class Constants {
     public static final String WEBVIEW_DARK_CSSFILE= "file:///android_asset/markdown_css_themes/dark.css";
     public static final String WEBVIEW_LIGHT_CSSFILE= "file:///android_asset/markdown_css_themes/classic.css";    
     public static final String GITGUB_PROJECT = "https://github.com/esligh/kuibu";
+ 
+    public static DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+	.showImageOnLoading(R.drawable.pictures_no)//image_small_default
+	.showImageForEmptyUri(R.drawable.pictures_no)
+	.showImageOnFail(R.drawable.pictures_no)
+	.cacheInMemory(true)
+	.cacheOnDisk(true)
+	.considerExifParams(true)
+	.bitmapConfig(Bitmap.Config.RGB_565)
+	.imageScaleType(ImageScaleType.EXACTLY)
+	.build(); 
     
     public static DisplayImageOptions defaultAvataOptions = new DisplayImageOptions.Builder()
 	.showImageOnLoading(R.drawable.default_pic_avata)//image_small_default

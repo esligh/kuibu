@@ -11,14 +11,12 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -29,8 +27,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
@@ -42,7 +40,7 @@ import com.kuibu.module.adapter.UserListAdapter.ViewHolder;
 //private letter  
 import com.kuibu.ui.activity.SendMessageActivity;
 
-public class NotifyMessageFragment extends Fragment {
+public class NotifyMessageFragment extends BaseFragment {
 	
 	private PullToRefreshListView userList = null;
 	private UserListAdapter listAdapter;
@@ -150,9 +148,6 @@ public class NotifyMessageFragment extends Fragment {
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
 				mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
 			}
 		}) {
 			@Override
@@ -160,7 +155,7 @@ public class NotifyMessageFragment extends Fragment {
 				return KuibuUtils.prepareReqHeader();
 			}
 		};
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,this);
 	}
 	
 	
@@ -181,6 +176,12 @@ public class NotifyMessageFragment extends Fragment {
 		datas = null ;
 	}
 	
+	@Override
+	public void onDetach() {
+		// TODO Auto-generated method stub
+		KuibuApplication.getInstance().cancelPendingRequests(this);
+		super.onDetach();
+	}
 	
 	private void readMsg(String senderId)
 	{
@@ -216,6 +217,7 @@ public class NotifyMessageFragment extends Fragment {
 				return KuibuUtils.prepareReqHeader();
 			}
 		};
-		KuibuApplication.getInstance().addToRequestQueue(req);
+		KuibuApplication.getInstance().addToRequestQueue(req,this);
 	}
+
 }

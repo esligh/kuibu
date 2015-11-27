@@ -15,7 +15,6 @@ import com.kuibu.model.entity.CollectionBean;
 import com.kuibu.module.activity.R;
 
 public class LocalCollectionWAdapter extends BaseAdapter{
-	//private final int ITEM_DESC_MAX_LENGTH = 100 ;  
 	private List<CollectionBean> mData; 
 	private Context context;	 
 	boolean isMulChoice ; 
@@ -88,6 +87,7 @@ public class LocalCollectionWAdapter extends BaseAdapter{
 		StringBuffer result = new StringBuffer(html);
 		return result.toString();
 	}
+	
 	public class HolderView{
 		public TextView collecitonTitle;  
 		public TextView collectionDesc ; 

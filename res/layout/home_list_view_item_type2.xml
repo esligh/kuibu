@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -51,7 +50,7 @@
         android:maxLines="2"
         android:paddingBottom="2dp"
         android:paddingTop="2dp"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?listItemTextColor"
         android:typeface="sans"
         android:textSize="17sp" />
 
@@ -59,6 +58,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        
 	    <ImageView
 	        android:id="@+id/home_2_image_iv"
 	        android:layout_width="match_parent"
@@ -70,6 +70,7 @@
 	        android:layout_marginTop="@dimen/android_spaces_small"
 	        android:layout_marginLeft="@dimen/android_spaces_large"
 	        android:layout_marginRight="@dimen/android_spaces_large"/>
+	    
 	    <TextView
 	        android:id="@+id/home_2_item_desc_tv"
 	        android:layout_width="match_parent"
@@ -84,7 +85,7 @@
 	        android:maxLines="2"
 	        android:textStyle="bold"
 	        android:textSize="15sp"
-	        android:textColor="@color/white"/>
+	        android:textColor="@color/secondary_text_color_dark"/>
 	</FrameLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -110,7 +111,8 @@
             android:layout_marginRight="@dimen/android_spaces"
             android:layout_toEndOf="@id/home_2_item_time_icon_iv"
             android:layout_toRightOf="@id/home_2_item_time_icon_iv"
-            android:textSize="12sp" />
+            android:textSize="12sp" 
+            android:textColor="?hintTextColor"/>
     </RelativeLayout>
 
 </LinearLayout>

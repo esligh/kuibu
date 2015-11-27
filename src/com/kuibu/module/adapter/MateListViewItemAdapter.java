@@ -45,9 +45,9 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		TextView user_tv;
 		ImageView user_icon_iv;
 		TextView title_tv;
-		TextView content_tv;
-		ImageView count_pic_iv; 
-		TextView count_tv; 
+		TextView content_tv; 
+		TextView vote_count_tv; 
+		TextView comment_count_tv;
 	}
 	
 	public class HolderViewForTextPics{
@@ -56,9 +56,9 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		ImageView user_icon_iv;
 		TextView title_tv;
 		TextView content_tv;
-		ImageView item_pic_iv;
-		ImageView count_pic_iv; 
-		TextView count_tv; 
+		ImageView item_pic_iv; 
+		TextView vote_count_tv; 
+		TextView comment_count_tv;
 	}
 	
 	public class HolderViewForPics{
@@ -68,8 +68,8 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		TextView title_tv;
 		ImageView image_iv;
 		TextView desc_tv ; 
-		ImageView count_pic_iv; 
-		TextView count_tv;
+		TextView vote_count_tv; 
+		TextView comment_count_tv;
 	}
 
 	public MateListViewItemAdapter(Context context, List<MateListItem> datas,boolean bwithtop) {
@@ -172,10 +172,10 @@ public class MateListViewItemAdapter extends BaseAdapter {
 						.findViewById(R.id.mate_0_item_title_tv);
 				holderforText.content_tv = (TextView) convertView
 						.findViewById(R.id.mate_0_content_tv);				
-				holderforText.count_tv = (TextView) convertView
-						.findViewById(R.id.mate_0_count_tv);
-				holderforText.count_pic_iv= (ImageView) convertView
-						.findViewById(R.id.mate_0_count_pic_iv);
+				holderforText.vote_count_tv = (TextView) convertView
+						.findViewById(R.id.mate_0_vote_count_tv);
+				holderforText.comment_count_tv= (TextView) convertView
+						.findViewById(R.id.mate_0_comment_count_tv);
 				convertView.setTag(holderforText);
 				holderforText.layout0_rl.setTag(position);
 				break;
@@ -194,10 +194,10 @@ public class MateListViewItemAdapter extends BaseAdapter {
 						.findViewById(R.id.mate_1_content_tv);
 				holderfortextPic.item_pic_iv = (ImageView) convertView
 						.findViewById(R.id.mate_1_item_pic_iv);
-				holderfortextPic.count_tv = (TextView) convertView
-						.findViewById(R.id.mate_1_count_tv);
-				holderfortextPic.count_pic_iv= (ImageView) convertView
-						.findViewById(R.id.mate_1_count_pic_iv);
+				holderfortextPic.vote_count_tv = (TextView) convertView
+						.findViewById(R.id.mate_1_vote_count_tv);
+				holderfortextPic.comment_count_tv= (TextView) convertView
+						.findViewById(R.id.mate_1_comment_count_tv);
 				convertView.setTag(holderfortextPic);
 				break;
 			case MateListItem.ItemType.PICS_MODE:
@@ -212,14 +212,14 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				holderforPics.title_tv = (TextView) convertView
 						.findViewById(R.id.mate_2_item_title_tv);
 				holderforPics.image_iv = (ImageView) convertView
-						.findViewById(R.id.mate_2_item_image_iv);				
+						.findViewById(R.id.mate_2_item_image_iv);
 				holderforPics.image_iv.setAdjustViewBounds(true);
-				holderforPics.image_iv.setMaxHeight(AppInfo.getInstance().screenWidth);
+				holderforPics.image_iv.setMaxWidth(AppInfo.getInstance().screenWidth);
 				holderforPics.desc_tv = (TextView)convertView.findViewById(R.id.mate_2_item_desc_tv);
-				holderforPics.count_tv = (TextView) convertView
-						.findViewById(R.id.mate_2_count_tv);
-				holderforPics.count_pic_iv= (ImageView) convertView
-						.findViewById(R.id.mate_2_count_pic_iv);
+				holderforPics.vote_count_tv = (TextView) convertView
+						.findViewById(R.id.mate_2_vote_count_tv);
+				holderforPics.comment_count_tv= (TextView) convertView
+						.findViewById(R.id.mate_2_comment_count_tv);
 				convertView.setTag(holderforPics);
 				break;
 			}
@@ -295,8 +295,11 @@ public class MateListViewItemAdapter extends BaseAdapter {
 					.getTitle());
 			holderforText.content_tv.setText(datas.get(position)
 					.getSummary());
-			holderforText.count_tv.setText(
-					DataUtils.formatNumber(datas.get(position).getVoteCount()));
+			holderforText.vote_count_tv.setText(new StringBuilder(DataUtils
+					.formatNumber(datas.get(position).getVoteCount())).append(" 赞"));
+
+			holderforText.comment_count_tv.setText(new StringBuilder(DataUtils
+					.formatNumber(datas.get(position).getCommentCount())).append(" 评论"));
 			break;
 		case MateListItem.ItemType.TEXT_PICS_MODE:
 			if(!bwithTop){
@@ -369,10 +372,10 @@ public class MateListViewItemAdapter extends BaseAdapter {
 			}else{
 				holderfortextPic.content_tv.setText(summary);
 			}			
-			holderfortextPic.count_tv.setText(
-					DataUtils.formatNumber(datas.get(position).getVoteCount()));	
-			
-			
+			holderfortextPic.vote_count_tv.setText(new StringBuilder(
+					DataUtils.formatNumber(datas.get(position).getVoteCount())).append(" 赞"));
+			holderfortextPic.comment_count_tv.setText(new StringBuilder(DataUtils
+					.formatNumber(datas.get(position).getCommentCount())).append(" 评论"));
 			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 			boolean noPic = pref.getBoolean(StaticValue.PrefKey.NO_PICTRUE_KEY, false);
 			StringBuffer title = new StringBuffer(datas.get(position).getTitle());
@@ -416,7 +419,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 					holderforPics.user_icon_iv.setImageResource(R.drawable.default_pic_avata);
 				}else{
 					ImageLoader.getInstance().displayImage(url,
-							holderforPics.user_icon_iv,options,null);
+							holderforPics.user_icon_iv,options);
 				}
 			}
 			
@@ -457,7 +460,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				holderforPics.image_iv.setVisibility(View.VISIBLE);
 				String item_url = datas.get(position).getItemPic();
 				ImageLoader.getInstance().displayImage(item_url,
-						holderforPics.image_iv,options,null);
+						holderforPics.image_iv,options);
 			}
 			
 			holderforPics.title_tv.setText(datas.get(position).getTitle().replace("\n", ""));
@@ -467,10 +470,11 @@ public class MateListViewItemAdapter extends BaseAdapter {
 			}else{
 				holderforPics.desc_tv.setVisibility(View.VISIBLE);
 				holderforPics.desc_tv.setText(desc);
-			}
-			
-			holderforPics.count_tv.setText(
-					DataUtils.formatNumber(datas.get(position).getVoteCount()));
+			}			
+			holderforPics.vote_count_tv.setText(new StringBuilder(
+					DataUtils.formatNumber(datas.get(position).getVoteCount())).append(" 赞"));
+			holderforPics.comment_count_tv.setText(new StringBuilder(DataUtils
+					.formatNumber(datas.get(position).getCommentCount())).append(" 评论"));
 			break;
 		}
 		return convertView;

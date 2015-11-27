@@ -10,11 +10,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import uk.co.senab.photoview.PhotoView;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,37 +47,36 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.CollectionItemBean;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.net.PublicRequestor;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 public class CollectionImageDetailActivity extends BaseActivity{	
 	
 	private PhotoView imageIv; 
 	private TextView  titleTv ; 
 	private TextView  descTv ; 
-	private LinearLayout toolsLayout ; 
 	private boolean isInFavorite = false;
 	private boolean isSupport = false; 
 	private FButton likeBtn , commentBtn ;
-	private int voteCount ,commentCount; 
-	private ImageButton reportBtn;  
+	private int voteCount ,commentCount;   
 	private CollectionItemBean collection = new CollectionItemBean(); 
 	private MultiStateView mMultiStateView;	 
-    private MenuItem mFavActionItem ;
+    private MenuItem mFavActionItem ,mReportItem;
     private Animation imgAnim ;
-    
+    private boolean bReport = false; 
+    private String createBy ; 
+    private LinearLayout layoutTools ; 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.collection_image_detail_activity);
-		setTitle(null);
-		ActionBar toolbar =getSupportActionBar(); 
+		setTitle(null);		
+		/*ActionBar toolbar =getSupportActionBar(); 
 		if(toolbar != null){
 			toolbar.setDisplayHomeAsUpEnabled(true);
 			toolbar.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_ab_solid_dark_holo));
 		}
+		*/
 		mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
 		mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
         .setOnClickListener(new View.OnClickListener() {
@@ -91,16 +89,7 @@ public class CollectionImageDetailActivity extends BaseActivity{
 		imgAnim = AnimationUtils.loadAnimation(CollectionImageDetailActivity.this, 
 				R.anim.anim_slide_in_up);
 		
-		toolsLayout = (LinearLayout)findViewById(R.id.layout_tools);
-		reportBtn = (ImageButton)findViewById(R.id.report_btn);
-		reportBtn.setAnimation(imgAnim);
-		reportBtn.setOnClickListener( new OnClickListener() {			
-			@Override
-			public void onClick(View view) {
-				doReport();
-			}
-		});
-		
+		layoutTools = (LinearLayout)findViewById(R.id.layout_tools);		
 		imageIv = (PhotoView)findViewById(R.id.image_iv);
 		imageIv.setAdjustViewBounds(true);
 		DisplayMetrics dm = new DisplayMetrics();
@@ -169,10 +158,7 @@ public class CollectionImageDetailActivity extends BaseActivity{
 					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {						
 						JSONObject obj = new JSONObject(response.getString("result"));
 						if(obj!=null){
-							readFromJson(obj);
-							toolsLayout.setVisibility(View.VISIBLE);
-							toolsLayout.startAnimation(imgAnim);												
-							
+							readFromJson(obj);																		
 							titleTv.setText(collection.getTitle());
 							if(TextUtils.isEmpty(collection.getSummary())){
 								descTv.setVisibility(View.GONE);
@@ -183,12 +169,7 @@ public class CollectionImageDetailActivity extends BaseActivity{
 									descTv.startAnimation(anim);
 							}
 							
-							ImageLoader.getInstance().displayImage(collection.getCover(), imageIv,new SimpleImageLoadingListener(){
-								@Override
-								public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-									reportBtn.setVisibility(View.VISIBLE);
-								}
-							});
+							ImageLoader.getInstance().displayImage(collection.getCover(), imageIv);
 							imageIv.startAnimation(imgAnim);
 							imageIv.setVisibility(View.VISIBLE);							
 						}
@@ -214,10 +195,11 @@ public class CollectionImageDetailActivity extends BaseActivity{
 
 	private void readFromJson(JSONObject obj) throws JSONException
 	{
+		createBy = obj.getString("create_by");
 		collection.setTitle(obj.getString("title"));
 		collection.setContent(obj.getString("content"));
 		collection.setSummary(obj.getString("abstract"));
-		collection.setCreateBy(obj.getString("create_by"));
+		collection.setCreateBy(createBy);
 		collection.setVoteCount(obj.getString("vote_count"));
 		collection.setCommentCount(obj.getString("comment_count"));
 		collection.setCover(obj.getString("cover"));
@@ -225,7 +207,17 @@ public class CollectionImageDetailActivity extends BaseActivity{
 		collection.setCisn(obj.getString("cisn"));
 		collection.setCreateDate(obj.getString("create_time"));
 		collection.setType(obj.getString("type"));
-		
+		String uid = Session.getSession().getuId();
+		if(uid != null && uid.equals(createBy)){
+			layoutTools.setVisibility(View.GONE);
+    		mFavActionItem.setVisible(false);
+    		mReportItem.setVisible(false);
+		}else{
+			layoutTools.setVisibility(View.VISIBLE);
+    		mFavActionItem.setVisible(true);
+    		mReportItem.setVisible(true);
+    		layoutTools.startAnimation(imgAnim);	
+		}
 		voteCount = Integer.parseInt(collection.getVoteCount());
 		commentCount = Integer.parseInt(collection.getCommentCount());
 		
@@ -239,13 +231,6 @@ public class CollectionImageDetailActivity extends BaseActivity{
         	StringBuilder buff = new StringBuilder(getString(R.string.like))
         	.append(" ").append(DataUtils.formatNumber(voteCount));
         	likeBtn.setText(buff.toString());
-        }
-        
-        String uid = Session.getSession().getuId(); 
-        if(uid != null && uid.equals(collection.getCreateBy())){
-        	toolsLayout.setVisibility(View.GONE);
-        }else{
-        	toolsLayout.setVisibility(View.VISIBLE);
         }
 	}
 	
@@ -343,21 +328,55 @@ public class CollectionImageDetailActivity extends BaseActivity{
 							params.put("reason",items[position]);
 						
 						switch(position){
-						case 0:							
-							PublicRequestor.sendReport(params);
-							break;
-						case 1: case 2: case 3: case 4:
-							PublicRequestor.sendReport(params);
-							break;
-						case 5:
-							Intent intent = new Intent(CollectionImageDetailActivity.this,ReportActivity.class);
-							intent.putExtra("defendant", collection.getCreateBy());
-							startActivityForResult(intent, StaticValue.RequestCode.REPORT_COMPLETE);							
-							break;
+							case 0: case 1: case 2: case 3: case 4:							
+								sendReport(params);
+								break;
+							case 5:
+								Intent intent = new Intent(CollectionImageDetailActivity.this,ReportActivity.class);
+								intent.putExtra("defendant", collection.getCreateBy());
+								startActivityForResult(intent, StaticValue.RequestCode.REPORT_COMPLETE);							
+								break;
 						}
 					}									
 		});
 		builder.show();
+	}
+	public void sendReport(Map<String,String> params)
+	{
+		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
+				.append(Constants.Config.REST_API_VERSION)
+				.append("/add_report").toString();
+		
+		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
+				params), new Response.Listener<JSONObject>() {
+			@SuppressLint("SimpleDateFormat")
+			@Override
+			public void onResponse(JSONObject response) {
+				try {
+					String state = response.getString("state");
+					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
+						bReport = true ;
+						mReportItem.setIcon(R.drawable.ic_action_report_disabled);
+						Toast.makeText(KuibuApplication.getContext(),"感谢您的举报,我们会尽快处理",Toast.LENGTH_SHORT).show();
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}, new Response.ErrorListener() {
+			@Override
+			public void onErrorResponse(VolleyError error) {
+				VolleyLog.e("Error: ", error.getMessage());
+				VolleyLog.e("Error:", error.getCause());
+				error.printStackTrace();
+			}
+		}) {
+			@Override
+			public Map<String, String> getHeaders() throws AuthFailureError {
+				return KuibuUtils.prepareReqHeader();
+			}
+		};
+		KuibuApplication.getInstance().addToRequestQueue(req);		
 	}
 	
 	public void loadActions()
@@ -391,6 +410,10 @@ public class CollectionImageDetailActivity extends BaseActivity{
 								mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
 								isInFavorite = true;
 							}
+							if(codes.contains(StaticValue.USER_ACTION.ACTION_REPORT_COLLECTION)){
+								mReportItem.setIcon(R.drawable.ic_action_report_disabled);
+								bReport = true ; 								
+							}
 						}						
 					}
 				} catch (JSONException e) {
@@ -411,13 +434,14 @@ public class CollectionImageDetailActivity extends BaseActivity{
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.content_detail, menu);
 		mFavActionItem = menu.findItem(R.id.menu_item_fav_action_bar);
-		if (isInFavorite) {
-			mFavActionItem.setIcon(R.drawable.ab_fav_active);
-			mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
-		} else {
-			mFavActionItem.setIcon(R.drawable.ab_fav_normal);
-			mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
-		}
+		mReportItem = menu.findItem(R.id.menu_item_report_action_bar);
+//		if (isInFavorite) {
+//			mFavActionItem.setIcon(R.drawable.ab_fav_active);
+//			mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
+//		} else {
+//			mFavActionItem.setIcon(R.drawable.ab_fav_normal);
+//			mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
+//		}
 		return true;
 	}
 	
@@ -439,7 +463,14 @@ public class CollectionImageDetailActivity extends BaseActivity{
 					Toast.makeText(CollectionImageDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 				}
 				break;
-				
+			case R.id.menu_item_report_action_bar:
+				if(!bReport){
+					doReport();
+				}else{
+					Toast.makeText(CollectionImageDetailActivity.this, getString(R.string.have_reported),
+							Toast.LENGTH_SHORT).show();
+				}
+				break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -474,11 +505,15 @@ public class CollectionImageDetailActivity extends BaseActivity{
 					}
 				}				
 				break;
-			default:
+			case StaticValue.RequestCode.REPORT_COMPLETE:
+				if(data!=null){
+					bReport = data.getBooleanExtra("is_report", false);
+					if(bReport){
+						mReportItem.setIcon(R.drawable.ic_action_report_disabled);
+					}					
+				}
 				break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
-	}
-	
-	
+	}	
 }

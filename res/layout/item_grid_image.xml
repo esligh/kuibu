@@ -1,39 +1,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/news_list"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/news_item_bg"
+    android:layout_height="wrap_content"    
+    android:layout_marginLeft="@dimen/android_spaces_super_small"
+    android:layout_marginRight="@dimen/android_spaces_super_small"    
+    android:layout_marginTop="@dimen/android_spaces_super_small"
+    android:layout_marginBottom="@dimen/android_spaces_super_small"
     android:orientation="vertical">
     
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        
-	    <TextView
-	        android:id="@+id/item_title"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:paddingTop="2dp"
-	        android:paddingBottom="2dp"
-	        android:textColor="@color/primary_text_color" 
-	        android:textSize="16sp"/>
-	    
+        android:layout_height="wrap_content"        
+        android:layout_marginTop="@dimen/android_spaces_super_small"
+        android:layout_marginLeft="@dimen/android_spaces_super_small"
+    	android:layout_marginRight="@dimen/android_spaces_super_small"    	
+	    android:padding="@dimen/android_spaces_small"
+        android:background="?listViewBackground">
+    	        
 	    <ImageView
 		    android:id="@+id/published_icon"
 		    android:layout_width="@dimen/icon_super_small_width"
 		    android:layout_height="@dimen/icon_super_small_height"
 		    android:layout_alignParentRight="true"
-		    android:layout_marginLeft="@dimen/android_spaces_small"
-		    android:layout_marginRight="@dimen/android_spaces_small"
 		    android:scaleType="centerInside"
 		    android:src="@drawable/ic_wait_publish"
 		    android:contentDescription="@null"/>
+	    
+	    <TextView
+	        android:id="@+id/item_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_toLeftOf="@id/published_icon"
+	        android:textColor="?listItemTextColor" 
+	        android:textSize="16sp"/>
+	    
     </RelativeLayout>
     
     <FrameLayout
         android:id = "@+id/img_fl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">    
+        android:layout_height="wrap_content"        
+        android:background="?listViewBackground"
+        android:layout_marginLeft="@dimen/android_spaces_super_small"
+    	android:layout_marginRight="@dimen/android_spaces_super_small"
+    	android:padding="@dimen/android_spaces_small">    
 	    
 	    <ImageView
 	        android:id="@+id/item_pic"
@@ -65,9 +76,28 @@
     
 	<TextView
         android:id="@+id/item_desc"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"   
+        android:layout_marginLeft="@dimen/android_spaces_super_small"
+    	android:layout_marginRight="@dimen/android_spaces_super_small"
+    	android:paddingLeft="@dimen/android_spaces_small"
+    	android:paddingRight="@dimen/android_spaces_small"
+    	android:paddingBottom="@dimen/android_spaces_small"
+    	android:background="?listViewBackground"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="?listItemExtraTextColor" />
+	
+	<TextView
+        android:id="@+id/date_time"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:textColor="@color/secondary_text_color" />
+        android:layout_marginLeft="@dimen/android_spaces_super_small"
+    	android:layout_marginRight="@dimen/android_spaces_super_small"
+    	android:layout_marginBottom="@dimen/android_spaces_small"
+    	android:paddingLeft="@dimen/android_spaces_small"
+    	android:paddingRight="@dimen/android_spaces_small"
+    	android:paddingBottom="@dimen/android_spaces_small"
+    	android:background="?listViewBackground"
+        android:textColor="?hintTextColor" />	
 </LinearLayout>
