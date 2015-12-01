@@ -13,7 +13,8 @@ import com.kuibu.module.activity.R;
 public class FavoriteBoxCardListAdapter extends CommonAdapter<Map<String,String>> {
 
 
-    public FavoriteBoxCardListAdapter(Context context, List<Map<String,String>> items,int layoutId) {
+    public FavoriteBoxCardListAdapter(Context context, List<Map<String,String>> items
+    		,int layoutId) {
         super(context,items,layoutId);
     }
 

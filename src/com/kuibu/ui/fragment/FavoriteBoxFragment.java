@@ -1,13 +1,7 @@
 package com.kuibu.ui.fragment;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -15,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,27 +17,23 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.MultiStateView;
-import com.kuibu.data.global.Constants;
+import com.kuibu.custom.widget.MultiStateView.ViewState;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
-import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.FavoriteBoxCardListAdapter;
+import com.kuibu.module.presenter.FavoriteBoxPresenterImpl;
+import com.kuibu.module.presenter.interfaces.FavoriteBoxPresenter;
 import com.kuibu.ui.activity.FavoriteBoxInfoActivity;
+import com.kuibu.ui.view.interfaces.FavoriteBoxView;
 
-public class FavoriteBoxFragment extends Fragment {
+public class FavoriteBoxFragment extends Fragment implements FavoriteBoxView{
 	
-	private List<Map<String,String>> datas= new ArrayList<Map<String,String>>() ; 
-    private ListView cardsList;
+    private ListView boxList;
     private FavoriteBoxCardListAdapter adapter ;  
     private MultiStateView mMultiStateView;
+    private FavoriteBoxPresenter mPresenter ; 
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,29 +44,28 @@ public class FavoriteBoxFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				mMultiStateView.setViewState(MultiStateView.ViewState.LOADING);
-				loadData();
+				mPresenter.loadBoxList();
 			}   	
         });
-        cardsList = (ListView) rootView.findViewById(R.id.cards_list);
-        cardsList.setOnItemClickListener(new OnItemClickListener() {
-        	
+        boxList = (ListView) rootView.findViewById(R.id.cards_list);
+        boxList.setOnItemClickListener(new OnItemClickListener() {        	
 			@Override
 			public void onItemClick(AdapterView<?> viewAdapter, View view, int position,
 					long id) {
 				// TODO Auto-generated method stub
-				String count = datas.get(position).get("box_count");
+				String count = mPresenter.getDataItem(position).get("box_count");
 				if(Integer.parseInt(count)>0){
 					Intent intent = new Intent(getActivity(),
 							FavoriteBoxInfoActivity.class);
-					intent.putExtra("box_id", datas.get(position).get("box_id"));
-					intent.putExtra("box_type", datas.get(position).get("box_type"));
+					intent.putExtra("box_id", mPresenter.getDataItem(position).get("box_id"));
+					intent.putExtra("box_type", mPresenter.getDataItem(position).get("box_type"));
 					intent.putExtra("create_by", Session.getSession().getuId());
 					getActivity().startActivity(intent);
 					getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}
 			}       	
 		});
-        cardsList.setOnItemLongClickListener(new OnItemLongClickListener() {
+        boxList.setOnItemLongClickListener(new OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> adapterView, View view,
 					final int position, long id) {
@@ -89,7 +77,7 @@ public class FavoriteBoxFragment extends Fragment {
 						public void onClick(DialogInterface dialog, int pos) {
 							switch(pos){
 								case 0:
-									delFavoriteBox(position);
+									mPresenter.delBox(position);
 								break;
 							}
 						}
@@ -98,8 +86,10 @@ public class FavoriteBoxFragment extends Fragment {
 				return false;
 			}        	
 		});
-        loadData(); 
-        showView();
+		adapter = new FavoriteBoxCardListAdapter(this.getActivity(), null,R.layout.collect_list_item_card);
+		boxList.setAdapter(adapter);
+		mPresenter = new FavoriteBoxPresenterImpl(this);
+		mPresenter.loadBoxList(); 
         return rootView;
     }
     
@@ -109,7 +99,7 @@ public class FavoriteBoxFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onHiddenChanged(hidden);
 		if(!hidden){ 			 
-			loadData();
+			mPresenter.loadBoxList();
 		}
 	}
 
@@ -121,118 +111,27 @@ public class FavoriteBoxFragment extends Fragment {
 		super.onDetach();
 	}
 
+	@Override
+	public Intent getDataIntent() {
+		// TODO Auto-generated method stub
+		return getActivity().getIntent();
+	}
 
-	private void showView()
-    {
-    	if(adapter == null){
-    		adapter = new FavoriteBoxCardListAdapter(this.getActivity(), datas,R.layout.collect_list_item_card);
-    		cardsList.setAdapter(adapter);
-    	}else{
-    		adapter.refreshView(datas);
-    	}
-    }
-    
-	private void loadFromArray(JSONArray arr)
-    {
-		try{
-			for(int i=0;i<arr.length();i++){
-				JSONObject obj = arr.getJSONObject(i);
-				Map<String,String> item = new HashMap<String,String>();
-				item.put("box_id", obj.getString("box_id"));
-				item.put("box_type", obj.getString("box_type"));
-				item.put("box_name", obj.getString("box_name"));
-				item.put("box_desc", obj.getString("box_desc"));
-				item.put("box_count", obj.getString("box_count"));
-				item.put("focus_count", obj.getString("focus_count"));
-				item.put("titles", obj.getString("titles"));
-				datas.add(item);
-			}
-    	}catch (JSONException e) {
-			e.printStackTrace();
-		}
-    	if(datas.size()>0){
-    		mMultiStateView.setViewState(MultiStateView.ViewState.CONTENT);
-    	}else{
-    		mMultiStateView.setViewState(MultiStateView.ViewState.EMPTY);
-    	} 	
-    }
-    private  void loadData()
-    {
-    	Map<String,Object> params = new HashMap<String,Object>();
-    	String uid = getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_ID);
-    	if(TextUtils.isEmpty(uid)){
-    		Bundle args = getArguments() ;
-    		uid = args.getString(StaticValue.USERINFO.USER_ID);
-    	}
-		params.put("uid",uid);
-		params.put("off", String.valueOf(datas.size()));
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/get_boxdetail";
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						String data = response.getString("result");
-						if(!TextUtils.isEmpty(data)){
-							JSONArray arr = new JSONArray(data);														
-							loadFromArray(arr);
-							showView();
-						}
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				if(datas.isEmpty())
-					mMultiStateView.setViewState(MultiStateView.ViewState.ERROR);
-			}
-		});
-		KuibuApplication.getInstance().addToRequestQueue(req,this);
-    }
-   
-    private void delFavoriteBox(final int position)
-    {
-    	Map<String,String> params = new HashMap<String,String>();
-		params.put("uid",Session.getSession().getuId());
-		params.put("box_id", datas.get(position).get("box_id"));
-		final String URL = Constants.Config.SERVER_URI
-				+ Constants.Config.REST_API_VERSION + "/del_favoritebox";
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						datas.remove(position);
-						showView();
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-			}
-		}){
-			@Override  
-	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			return KuibuUtils.prepareReqHeader();  
-	 		}
-		};		
-		KuibuApplication.getInstance().addToRequestQueue(req,this);	
-    }
+	@Override
+	public void refreshList(List<Map<String,String>> data) {
+		// TODO Auto-generated method stub
+		adapter.refreshView(data);
+	}
+
+	@Override
+	public void setMultiStateView(ViewState state) {
+		// TODO Auto-generated method stub
+		mMultiStateView.setViewState(state);
+	}
+
+	@Override
+	public Bundle getDataArguments() {
+		// TODO Auto-generated method stub
+		return getArguments();
+	}
 }

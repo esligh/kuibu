@@ -5,24 +5,18 @@ import java.io.FileNotFoundException;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -36,36 +30,28 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.BufferManager;
 import com.kuibu.common.utils.FileUtils;
 import com.kuibu.common.utils.PhoneUtils;
 import com.kuibu.common.utils.SafeEDcoderUtil;
 import com.kuibu.common.utils.StorageUtils;
-import com.kuibu.common.utils.VolleyErrorHelper;
 import com.kuibu.data.global.Constants;
-import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
+import com.kuibu.module.presenter.SettingPresenterImpl;
+import com.kuibu.module.presenter.interfaces.SettingPresenter;
 import com.kuibu.ui.activity.AdviceFeedBackActivity;
 import com.kuibu.ui.activity.MDHandBookActivity;
+import com.kuibu.ui.view.interfaces.SettingView;
 
 public class SettingsFragment extends PreferenceFragment implements
-		OnPreferenceChangeListener ,OnPreferenceClickListener{
+		OnPreferenceChangeListener ,OnPreferenceClickListener,SettingView{
 	
-	private OnPreChangeListener mListener = null;
-	private FinalHttp finalHttp = null;
-	private int mNewVersionCode ; 
-	private String mAppVersionName ;   
-    private ProgressDialog progressDlg; 
+	private OnPreChangeListener mListener = null;	
     private PreferenceScreen mVersion ; 
-    private final int MAX_PROGRESS = 100  ; 
-    private String mUpdateUrl; 
     
+    private SettingPresenter mPresenter ; 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -125,7 +111,9 @@ public class SettingsFragment extends PreferenceFragment implements
 		findPreference(StaticValue.PrefKey.HAND_BOOK).setOnPreferenceClickListener(this);
 	//	findPreference(StaticValue.PrefKey.FLOW_STATISTICS).setOnPreferenceClickListener(this);
 		findPreference(StaticValue.PrefKey.ADVICE_FEEDBACK).setOnPreferenceClickListener(this);
-		findPreference(StaticValue.PrefKey.EXCEPTION_REPORT).setOnPreferenceClickListener(this);					
+		findPreference(StaticValue.PrefKey.EXCEPTION_REPORT).setOnPreferenceClickListener(this);
+		
+		mPresenter = new SettingPresenterImpl(this);
 	}
 
 	@Override
@@ -153,7 +141,7 @@ public class SettingsFragment extends PreferenceFragment implements
 		if(pref.getKey().equals(StaticValue.PrefKey.ABOUT_ME)){
 			showAbout();
 		}else if (pref.getKey().equals(StaticValue.PrefKey.LASTEST_VERSION)) {
-			reqAppVersion();
+			mPresenter.checkVersion();
 		}else if(pref.getKey().equals(StaticValue.PrefKey.HAND_BOOK)){
 			Intent intent = new Intent(getActivity(),MDHandBookActivity.class);
 			getActivity().startActivity(intent);
@@ -166,78 +154,8 @@ public class SettingsFragment extends PreferenceFragment implements
 			Intent intent = new Intent(getActivity(),AdviceFeedBackActivity.class);
 			getActivity().startActivity(intent);
 			getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
-		}else if(pref.getKey().equals(StaticValue.PrefKey.EXCEPTION_REPORT)){ 
-			final String fileName = new StringBuilder("crash-")
-				.append(SafeEDcoderUtil.MD5(PhoneUtils.getDeviceId(getActivity())))
-				.append(".log").toString();
-			final String path = new StringBuilder(StorageUtils.getFileDirectory(getActivity())
-						.getAbsolutePath()).append(Constants.Config.CRASH_DIR)
-						.append(fileName).toString(); 
-			if(!FileUtils.isFileExist(path)){
-					Toast.makeText(getActivity(), "暂无异常日志", Toast.LENGTH_SHORT).show();
-					return true; 
-			}
-              new AlertDialog.Builder(getActivity()).setTitle("异常")
-              .setMessage("上传异常日志?")
-              .setPositiveButton(getActivity().getString(R.string.btn_confirm),
-            		  new  DialogInterface.OnClickListener(){
-      			@Override
-      			public void onClick(DialogInterface arg0, int arg1) {
-      				
-      				String URL = new StringBuilder(Constants.Config.SERVER_URI)
-      				.append(Constants.Config.REST_API_VERSION)
-      				.append("/crash_collector").toString();
-      				try {
-      						if(progressDlg == null){
-      							progressDlg = new ProgressDialog(getActivity());      							
-      						}
-      						progressDlg.setTitle(getString(R.string.preference_exception));   
-      						progressDlg.show();
-      		    			AjaxParams params = new AjaxParams();
-      		    			params.put("file_name", fileName);
-      						params.put("data", new File(path));
-      						if(finalHttp == null){ 
-      							finalHttp = new FinalHttp() ;
-      						}
-      						finalHttp.post(URL, params, new AjaxCallBack<String>() {
-      							@Override
-      							public void onFailure(Throwable t, int errorNo,
-      									String strMsg) {
-      								super.onFailure(t, errorNo, strMsg);
-      								progressDlg.cancel();
-
-      								Toast.makeText(getActivity(), getString(R.string.upload_fail), 
-      										Toast.LENGTH_SHORT).show();
-      							}
-      							
-      							@Override
-      							public void onLoading(long count, long current) {
-      								super.onLoading(count, current);
-      								int progress = 0;
-      								if (current != count && current != 0) {
-      									progress = (int) (current / (float) count * MAX_PROGRESS);
-      								} else {
-      									progress = MAX_PROGRESS;
-      								}
-      								progressDlg.setProgress(progress);
-      								
-      							}
-      							
-								@Override
-      							public void onSuccess(String t) {									
-      								super.onSuccess(t);
-      								progressDlg.dismiss();
-      								FileUtils.delFile(path);
-      								Toast.makeText(getActivity(), getString(R.string.upload_success), 
-      										Toast.LENGTH_SHORT).show();
-      							}						
-      						});  
-      					} catch (FileNotFoundException e) {
-      						//do nothing 
-      						e.printStackTrace();
-      					}		   	 			
-      	    	}
-              }).setNegativeButton(getActivity().getString(R.string.btn_cancel), null).show();	
+		}else if(pref.getKey().equals(StaticValue.PrefKey.EXCEPTION_REPORT)){
+			
 		}
 		return true;
 	}
@@ -270,139 +188,12 @@ public class SettingsFragment extends PreferenceFragment implements
 		textView.setMovementMethod(LinkMovementMethod.getInstance());
 		dialog.show();
 	}
-	
-    
-	private void reqAppVersion()
-	{	
-		if(progressDlg == null){
-			progressDlg = new ProgressDialog(getActivity());
-			progressDlg.setCanceledOnTouchOutside(false);
-			progressDlg.setMessage(getString(R.string.get_versioninfo));
-		}	
-		progressDlg.show();
-		
-		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
-							.append(Constants.Config.REST_API_VERSION)
-							.append("/get_appinfo").toString();
-		JsonObjectRequest req = new JsonObjectRequest(URL, null, 
-				new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if(StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)){
-						String data = response.getString("result");
-						JSONArray arr = new JSONArray(data);
-						String versionName =  "";
-						for(int i =0;i<arr.length();i++){
-							JSONObject obj = arr.getJSONObject(i);
-							String key = obj.getString("cfg_key");
-							if(StaticValue.SERMODLE.VERSION_CODE.equals(key)){
-								mNewVersionCode = obj.getInt("cfg_value_a");
-								versionName = obj.getString("cfg_name");
-								mUpdateUrl = obj.getString("cfg_value_b");										
-							}
-						}
-						mAppVersionName = new StringBuffer(Constants.APP_NAME).append("-").
-								append(versionName).append(".apk").toString();
-						int curVersionCode = PhoneUtils.getPackageInfo(getActivity()).versionCode;
-						progressDlg.dismiss();
-						if(mNewVersionCode > curVersionCode){
-							doUpdate();
-						}else{							
-							Toast.makeText(getActivity(), getString(R.string.no_new_version), Toast.LENGTH_SHORT).show();
-						}	
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				Toast.makeText(getActivity().getApplicationContext(), 
-						VolleyErrorHelper.getMessage(error, getActivity().getApplicationContext()), 
-						Toast.LENGTH_SHORT).show();
-			}
-		});
-		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
-	
-	private void doUpdate()
-	{   
-		if(progressDlg == null){
-			progressDlg =  new ProgressDialog(getActivity());
-		}
-		progressDlg.setMax(MAX_PROGRESS);
-		progressDlg.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL); 	
-	
-         Dialog dialog = new AlertDialog.Builder(getActivity()).setTitle(getString(R.string.update_version))
-        		 .setMessage(getString(R.string.quest_update))
-                 .setPositiveButton(getString(R.string.btn_confirm),    
-                         new DialogInterface.OnClickListener() {    
-                             @Override    
-                             public void onClick(DialogInterface dialog,    
-                                     int witch) {    
-                            	 progressDlg.setTitle(getString(R.string.updating));   
-                            	 progressDlg.show();
-                                 downLoadApp();    
-                             }    
-                         })    
-                 .setNegativeButton(getString(R.string.btn_cancel),    
-                         new DialogInterface.OnClickListener() {    
-                             public void onClick(DialogInterface dialog,    
-                                     int witch) {                                
-                             }    
-                         }).create();   
-         dialog.show();    
-	}
-	
-	private void downLoadApp() {
-		String apkPath = new StringBuilder(
-				Environment.getExternalStorageDirectory().getAbsolutePath()) 
-				.append('/').append(mAppVersionName).toString();
-		File file = new File(apkPath);
-		if (file.exists()) {
-			file.delete();
-		}
-		final String URL = mUpdateUrl;
-		if(finalHttp == null) 
-				finalHttp = new FinalHttp() ; 
-		finalHttp.download(URL, apkPath, new AjaxCallBack<File>() {
-			@Override
-			public void onLoading(long count, long current) {
-				super.onLoading(count, current);
-				int progress = 0;
-				if (current != count && current != 0) {
-					progress = (int) (current / (float) count * MAX_PROGRESS);
-				} else {
-					progress = MAX_PROGRESS;
-				}
-				progressDlg.setProgress(progress);
-			}
 
-			@Override
-			public void onSuccess(File t) {				
-				super.onSuccess(t);
-				progressDlg.dismiss();
-				Intent intent = new Intent(Intent.ACTION_VIEW);  
-	            intent.setDataAndType(Uri.fromFile(new File(Environment  
-	                    .getExternalStorageDirectory(), mAppVersionName)),  
-	                    "application/vnd.android.package-archive");  
-	            startActivity(intent);  
-			}
-
-			@Override
-			public void onFailure(Throwable t, int errorNo, String strMsg) {
-				super.onFailure(t, errorNo, strMsg);
-				Toast.makeText(getActivity(), getString(R.string.update_fail), Toast.LENGTH_SHORT)
-						.show();
-				progressDlg.cancel();
-			}
-		});    
+	@Override
+	public Context getInstantce() {
+		// TODO Auto-generated method stub
+		return getActivity();
 	}
+
 }
 

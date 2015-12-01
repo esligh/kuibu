@@ -14,9 +14,9 @@ public final class FocusConstruct implements
 	public BaseFragment newInstance(String tag) {		
 		BaseFragment  fragment = null; 
 		if(StaticValue.TAB_PAGE.TAB_PAGE_FOCUS_COLLECT.equals(tag)){
-			fragment = new FocusCollectPackFragment();
+			fragment = new FollowedPackFragment();
 		}else if(StaticValue.TAB_PAGE.TAB_PAGE_FOCUS_TOPIC.equals(tag)){			
-			fragment = new FocusTopicFragment();
+			fragment = new FollowedTopicFragment();
 			Bundle bundle = new Bundle();
 			bundle.putString("uid", Session.getSession().getuId());
 			fragment.setArguments(bundle);

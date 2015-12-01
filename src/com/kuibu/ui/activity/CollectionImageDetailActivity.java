@@ -17,7 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -71,12 +71,6 @@ public class CollectionImageDetailActivity extends BaseActivity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.collection_image_detail_activity);
 		setTitle(null);		
-		/*ActionBar toolbar =getSupportActionBar(); 
-		if(toolbar != null){
-			toolbar.setDisplayHomeAsUpEnabled(true);
-			toolbar.setBackgroundDrawable(getResources().getDrawable(R.drawable.abc_ab_solid_dark_holo));
-		}
-		*/
 		mMultiStateView = (MultiStateView) findViewById(R.id.multiStateView);
 		mMultiStateView.getView(MultiStateView.ViewState.ERROR).findViewById(R.id.retry)
         .setOnClickListener(new View.OnClickListener() {
@@ -400,7 +394,8 @@ public class CollectionImageDetailActivity extends BaseActivity{
 							String[] actions = astr.split(",");
 							codes = Arrays.asList(actions);
 							if(codes.contains(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION)){
-								Drawable drawable= getResources().getDrawable(R.drawable.ab_support_active);
+								Drawable drawable= ContextCompat.getDrawable(KuibuApplication.getContext(),
+										R.drawable.ab_support_active);
 								drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 								likeBtn.setCompoundDrawables(drawable, null, null, null);
 								isSupport = true; 

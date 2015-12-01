@@ -21,6 +21,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,7 +30,6 @@ import com.android.volley.toolbox.Volley;
 import com.kuibu.common.utils.ACache;
 import com.kuibu.common.utils.PersistentCookieStore;
 import com.kuibu.model.db.SqLiteHelper;
-import com.kuibu.module.exception.CrashHandler;
 import com.kuibu.module.net.EventSocket;
 import com.kuibu.module.net.SocketIOCallBack;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -85,6 +85,7 @@ public class KuibuApplication extends Application {
 		return sInstance.getApplicationContext();
 	}
 
+	
 	@Override
 	public File getCacheDir() {
 		if (extStorageCachePath != null) {

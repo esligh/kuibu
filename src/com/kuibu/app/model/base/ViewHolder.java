@@ -30,9 +30,6 @@ public class ViewHolder {
 	private int mPosition ; 
 	private ViewGroup mParent;
 	
-	/**锟斤拷为一锟斤拷锟斤拷锟绞癸拷锟�Open 
-	 * @param rootView
-	 */
 	public ViewHolder(View rootView)
 	{		
 		this.mConvertView = rootView; 
@@ -110,7 +107,7 @@ public class ViewHolder {
 	}
 	
 	/**
-	 * 锟斤拷锟斤拷view锟缴硷拷锟斤拷
+	 * 
 	 * */
 	public void setVisibility(int viewId,int visibility)
 	{
@@ -121,7 +118,8 @@ public class ViewHolder {
 	{
 		((CheckBox)getView(viewId)).setChecked(flag);
 	}
-	/**为TextView 锟斤拷锟斤拷锟侥憋拷
+	
+	/**
 	 * @param viewId
 	 * @param text
 	 * @return
@@ -133,7 +131,7 @@ public class ViewHolder {
 		return this; 
 	}
 	
-	/**为EditText锟斤拷锟斤拷锟侥憋拷
+	/**
 	 * @param viewId
 	 * @param text
 	 * @return
@@ -147,8 +145,7 @@ public class ViewHolder {
 	
 	
 	/** 
-     * 为ImageView锟斤拷锟斤拷图片 
-     *  
+     *   
      * @param viewId 
      * @param drawableId 
      * @return 
@@ -161,8 +158,7 @@ public class ViewHolder {
     } 
     
     /** 
-     * 为ImageView锟斤拷锟斤拷图片 
-     *  
+     * 
      * @param viewId 
      * @param drawableId 
      * @return 
@@ -174,9 +170,7 @@ public class ViewHolder {
         return this;  
     }  
     
-    /** 
-     * 为ImageView锟斤拷锟斤拷图片 need ImageLoader library 
-     *  
+    /**  
      * @param viewId 
      * @param drawableId 
      * @return 

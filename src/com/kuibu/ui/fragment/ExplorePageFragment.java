@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.view.ContextThemeWrapper;
@@ -14,18 +15,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kuibu.common.utils.PreferencesUtils;
+import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.TabHotInfo;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.TabPageViewAdapter;
 import com.viewpagerindicator.SlidingTabIndicator;
 
-/**
- * 内容fragment
- */
 public  class ExplorePageFragment extends Fragment 
 {
-	private final int DEFAULT_BACKUP_TABPAGE_NUM = 3;	
+	private final int DEFAULT_BACKUP_TABPAGE_NUM = 1; //close the pre-load action of viewpager	
 	private List<TabHotInfo> exportpageTabTitle = null; 
 	private TabPageViewAdapter adapter= null;
 	private ViewPager pager ; 
@@ -45,15 +44,10 @@ public  class ExplorePageFragment extends Fragment
 		    LayoutInflater themeflater = inflater.cloneInContext(contextTheme);
 			View rootView = themeflater.inflate(R.layout.frame_tabpage, container, false);
 			pager = (ViewPager)rootView.findViewById(R.id.pager);
-			initData();
-			if(adapter == null){
-				adapter =  new TabPageViewAdapter(getChildFragmentManager(),
-						exportpageTabTitle,new ExploreConstruct());
-				pager.setAdapter(adapter);
-			}
-			else{
-				adapter.updateView(exportpageTabTitle);
-			}		    
+			prepareTabTitle();			
+			adapter =  new TabPageViewAdapter(getChildFragmentManager(),
+					exportpageTabTitle,new ExploreConstruct());
+			pager.setAdapter(adapter);					    
 			pager.setOffscreenPageLimit(DEFAULT_BACKUP_TABPAGE_NUM); 
 			SlidingTabIndicator indicator = (SlidingTabIndicator)rootView.findViewById(R.id.indicator);
 		    indicator.setViewPager(pager);
@@ -69,25 +63,18 @@ public  class ExplorePageFragment extends Fragment
 		    	indicator.setCustomTabColorizer(new SlidingTabIndicator.TabColorizer() {
 			            @Override
 			            public int getIndicatorColor(int position) {
-			                return getResources().getColor(R.color.list_item_bg_dark_super_highlight);
+			                return ContextCompat.getColor(KuibuApplication.getContext(), 
+			                		R.color.list_item_bg_dark_super_highlight);
 			            }
 			    });	
 		    }else{
-		    	indicator.setBackgroundColor(getResources().getColor(R.color.slidingtab_background_light));
+		    	indicator.setBackgroundColor(ContextCompat.getColor(KuibuApplication.getContext(),
+		    			R.color.slidingtab_background_light));
 		    }	    
 		    return rootView;
 	}
-	
-//	@Override
-//	public void onHiddenChanged(boolean hidden) {
-//		// TODO Auto-generated method stub
-//		super.onHiddenChanged(hidden);
-//		if(!hidden){
-//			pager.getAdapter().notifyDataSetChanged();
-//		}
-//	}
-	
-	public  void initData(){
+		
+	public  void prepareTabTitle(){
 		if(exportpageTabTitle == null){
 			exportpageTabTitle = new ArrayList<TabHotInfo>();
 			String[] itemTitle = getResources().getStringArray(R.array.home_tab_name);

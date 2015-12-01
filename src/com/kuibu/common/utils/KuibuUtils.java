@@ -8,16 +8,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.kuibu.data.global.Constants;
+import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
+import com.kuibu.module.activity.R;
+import com.kuibu.module.net.PublicRequestor;
+import com.kuibu.ui.activity.ReportActivity;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
 public class KuibuUtils {
@@ -29,7 +39,8 @@ public class KuibuUtils {
 	 * String path=getApplicationContext().getPackageResourcePath();
 	 * 获取程序默认数据库路径
 	 * getApplicationContext().getDatabasePath(s).getAbsolutePath();
-	 * */
+	 * */	
+	
 	public static String getImgCacheDir(Context context)
 	{
 		File imgDir = new File(StorageUtils.getCacheDirectory(context).getAbsolutePath(),
@@ -39,7 +50,7 @@ public class KuibuUtils {
 		}
 		return imgDir.getAbsolutePath();		
 	}
-	
+		
 	public static String getCacheImgFilePath(Context context, String imageUrl) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getImgCacheDir(context)).append(File.separator)
@@ -115,4 +126,52 @@ public class KuibuUtils {
 		PreferencesUtils.putString(context, key,now);
 		return label ; 
 	}
+	
+	public static void showReportView(final Context context , final Map<String,String> params)
+	{
+		AlertDialog.Builder builder = new Builder(context);
+		builder.setTitle(getString(R.string.report_reason));
+		builder.setItems(context.getResources().getStringArray(R.array.report_comment), 
+				new OnClickListener(){
+					@Override
+					public void onClick(
+							DialogInterface dialog,
+							int position) {						
+						String[] items = context.getResources().getStringArray(
+								R.array.report_comment);
+						
+						if(items != null && items.length > position)
+							params.put("reason",items[position]);
+						
+						switch(position){
+							case 0:case 1:case 2:case 3:case 4:
+								PublicRequestor.sendReport(params);
+								break;
+							case 5:
+								Intent intent = new Intent(context,ReportActivity.class);
+								intent.putExtra("defendant_id", params.get("defendant_id"));
+								context.startActivity(intent);
+								break;
+						}
+					}									
+		});
+		builder.show();
+	}
+	
+	public static void showText(String text,int duration)
+	{
+		Toast.makeText(KuibuApplication.getContext(), text, duration).show();
+	}
+	
+	public static void showText(int resid,int duration)
+	{
+		Toast.makeText(KuibuApplication.getContext(),
+				KuibuApplication.getContext().getString(resid), duration).show();
+	}
+	
+	public static String getString(int resId)
+	{
+		return KuibuApplication.getContext().getString(resId);
+	}
+	
 }

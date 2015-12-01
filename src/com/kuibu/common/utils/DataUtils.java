@@ -27,6 +27,11 @@ public class DataUtils {
 		}
 		return buffer.toString();
 	}
+ 	
+ 	public static String formatNumber(String val)
+ 	{
+ 		return formatNumber(Integer.parseInt(val));		
+ 	}
 
 	public static JSONArray joinJSONArray(String jsonArrnew, String jsonArrold) {
 		StringBuffer buffer = new StringBuffer();

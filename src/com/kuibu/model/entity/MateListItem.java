@@ -1,8 +1,6 @@
 package com.kuibu.model.entity;
 
 /**
- * 主要的列表项数据定义
- * 如首页列表，本月热榜等
  * 
  * @author ThinkPad
  *
@@ -10,7 +8,9 @@ package com.kuibu.model.entity;
 public class MateListItem  extends BaseEntity{
 	
 	private static final long serialVersionUID = 1L;
-	public static final int ITEM_TYPE_COUNT = 3; 
+	
+	public static final int ITEM_TYPE_COUNT = 3;
+	
 	public static class ItemType{
 		public static final int TEXT_MODE=0,TEXT_PICS_MODE=1,PICS_MODE=2 ; 
 	}

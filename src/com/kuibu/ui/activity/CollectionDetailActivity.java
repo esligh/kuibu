@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.JsonReader;
@@ -390,14 +391,6 @@ public class CollectionDetailActivity extends AppCompatActivity
 		getMenuInflater().inflate(R.menu.content_detail, menu);
 		mFavActionItem = menu.findItem(R.id.menu_item_fav_action_bar);
 		mReportItem = menu.findItem(R.id.menu_item_report_action_bar);
-//		mShareItem = menu.findItem(R.id.menu_item_share_action_bar);
-//		if (isInFavorite) {
-//			mFavActionItem.setIcon(R.drawable.ab_fav_active);
-//			mFavActionItem.setTitle(R.string.actionbar_item_fav_cancel);
-//		} else {
-//			mFavActionItem.setIcon(R.drawable.ab_fav_normal);
-//			mFavActionItem.setTitle(R.string.actionbar_item_fav_add);
-//		}
 		mFavActionItem.setVisible(false);
 		mReportItem.setVisible(false);
 		return true;
@@ -821,11 +814,13 @@ public class CollectionDetailActivity extends AppCompatActivity
 						Drawable drawable = null ; 
 						if (isSupport) {
 							voteCount -= 1; 
-							drawable= getResources().getDrawable(R.drawable.ab_support_normal);												
+							drawable= ContextCompat.getDrawable(KuibuApplication.getContext(),
+									R.drawable.ab_support_normal);												
 							isSupport = false;						
 						} else {
 							voteCount += 1; 
-							drawable= getResources().getDrawable(R.drawable.ab_support_active);
+							drawable= ContextCompat.getDrawable(KuibuApplication.getContext(),
+									R.drawable.ab_support_active);
 							isSupport = true;				
 						}
 						drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
@@ -881,7 +876,8 @@ public class CollectionDetailActivity extends AppCompatActivity
 							String[] actions = astr.split(",");
 							codes = Arrays.asList(actions);
 							if(codes.contains(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION)){
-								Drawable drawable= getResources().getDrawable(R.drawable.ab_support_active);
+								Drawable drawable= ContextCompat.getDrawable(KuibuApplication.getContext(),
+										R.drawable.ab_support_active);
 								drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 								likeBtn.setCompoundDrawables(drawable, null, null, null);
 								isSupport = true; 

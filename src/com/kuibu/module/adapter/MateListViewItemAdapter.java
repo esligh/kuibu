@@ -26,7 +26,7 @@ import com.kuibu.data.global.AppInfo;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.MateListItem;
 import com.kuibu.module.activity.R;
-import com.kuibu.ui.activity.CollectInfoListActivity;
+import com.kuibu.ui.activity.PackInfoActivity;
 import com.kuibu.ui.activity.CollectionDetailActivity;
 import com.kuibu.ui.activity.CollectionImageDetailActivity;
 import com.kuibu.ui.activity.UserInfoActivity;
@@ -115,7 +115,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return datas.size();
+		return datas == null ? 0 : datas.size();
 	}
 
 	@Override
@@ -277,7 +277,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				public void onClick(View view) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(LayoutInflater.from(context).getContext(),
-							CollectInfoListActivity.class);
+							PackInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("create_by", datas.get(position).getCreateBy());
 					LayoutInflater.from(context).getContext().startActivity(intent);	
@@ -346,7 +346,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub	
 					Intent intent = new Intent(LayoutInflater.from(context).getContext(),
-							CollectInfoListActivity.class);
+							PackInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("create_by", datas.get(position).getCreateBy());
 
@@ -428,7 +428,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				public void onClick(View view) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(LayoutInflater.from(context).getContext(),
-							CollectInfoListActivity.class);
+							PackInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
 					intent.putExtra("create_by", datas.get(position).getCreateBy());

@@ -30,6 +30,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.kuibu.app.model.base.BaseActivity;
+import com.kuibu.app.model.base.CommonAdapter;
+import com.kuibu.app.model.base.ViewHolder;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
@@ -38,14 +40,14 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.MessageItemBean;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.adapter.MessageListAdapter;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class SendMessageActivity extends BaseActivity {
 	
 	private PullToRefreshListView msgList; 
 	private EditText msgEt;
 	private ImageButton btnSend;
-	private MessageListAdapter adapter; 
+	private CommonAdapter<MessageItemBean> adapter; 
 	private List<MessageItemBean> mDatas = new ArrayList<MessageItemBean>();
 	private MultiStateView mMultiStateView;
 
@@ -103,10 +105,24 @@ public class SendMessageActivity extends BaseActivity {
 	private void showView()
 	{
 		if(adapter == null){
-			adapter = new MessageListAdapter(this,mDatas);
+			adapter = new CommonAdapter<MessageItemBean>(this,mDatas,R.layout.message_list_item){
+				@Override
+				public void convert(ViewHolder holder, MessageItemBean item) {
+					// TODO Auto-generated method stub
+					String photo = item.getCreatorPic();
+					if(TextUtils.isEmpty(photo) || photo.equals("null")){
+						holder.setImageResource(R.id.user_photo_iv,R.drawable.default_pic_avata);
+					}else{
+						holder.setImageByUrl(R.id.user_photo_iv, photo);
+					}		
+					holder.setTvText(R.id.user_name_tv,item.getCreatorName());
+					holder.setTvText(R.id.message_tv,item.getMessage());
+					holder.setTvText(R.id.date_tv,item.getCreateTime());
+				}				
+			};
 			msgList.setAdapter(adapter);
 		}else{
-			adapter.updateView(mDatas);
+			adapter.refreshView(mDatas);
 		}
 	}
 	

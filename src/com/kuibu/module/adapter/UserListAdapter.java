@@ -26,7 +26,7 @@ public class UserListAdapter extends BaseAdapter{
 		this.mContext = context ; 
 	}
 	
-	public void updateView( List<Map<String, Object>> datas)
+	public void refreshView( List<Map<String, Object>> datas)
 	{
 		this.datas = datas;
 		this.notifyDataSetChanged();
@@ -35,9 +35,7 @@ public class UserListAdapter extends BaseAdapter{
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub		
-		if(datas!=null)
-			return datas.size();
-		return 0 ; 
+		return datas == null ? 0 :datas.size();
 	}
 
 	@Override

@@ -35,12 +35,12 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.CollectPackBean;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.adapter.CollectPackItemAdapter;
+import com.kuibu.module.adapter.AlbumAdapter;
 
 public class CollectPackListActivity extends BaseActivity{
 
 	private PullToRefreshListView packList;
-	private CollectPackItemAdapter packAdapter;
+	private AlbumAdapter packAdapter;
 	private List<CollectPackBean> datas = new ArrayList<CollectPackBean>();
 	private String uid;
 	private MultiStateView mMultiStateView;
@@ -159,7 +159,7 @@ public class CollectPackListActivity extends BaseActivity{
 
 	private void showView() {
 		if (packAdapter == null) {
-			packAdapter = new CollectPackItemAdapter(this, datas,R.layout.collectpack_list_item);
+			packAdapter = new AlbumAdapter(this, datas,R.layout.collectpack_list_item);
 			packList.setAdapter(packAdapter);
 		} else {
 			packAdapter.refreshView(datas);

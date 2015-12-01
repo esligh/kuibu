@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/android_spaces">
+    
         <TextView
             android:id="@+id/user_name_tv"
             android:layout_width="match_parent"
@@ -34,5 +35,6 @@
             android:singleLine="true"
             android:layout_below="@id/user_name_tv" />
     </RelativeLayout>
-
+	
+        
 </LinearLayout>

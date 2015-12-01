@@ -44,9 +44,7 @@ public class TopicListAdapter extends BaseAdapter implements Filterable{
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		if(datas == null)
-			return 0 ;
-		return datas.size();
+		return datas == null ? 0 : datas.size();
 	}
 
 	@Override

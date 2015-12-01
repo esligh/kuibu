@@ -8,40 +8,35 @@
 
 package com.kuibu.ui.activity;
 
-import java.net.MalformedURLException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.dd.processbutton.iml.ActionProcessButton;
 import com.kuibu.app.model.base.BaseActivity;
-import com.kuibu.app.module.core.LoginProcess;
-import com.kuibu.app.module.core.LoginProcess.OnLoginLisener;
-import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.common.utils.NetUtils;
 import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.data.global.Constants;
@@ -50,37 +45,41 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.DrawerListItem;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.adapter.NavigationDrawerFragment;
-import com.kuibu.ui.fragment.CollectionMainFragment;
+import com.kuibu.module.presenter.LoginPresenterImpl;
+import com.kuibu.module.presenter.interfaces.LoginPresenter;
+import com.kuibu.ui.fragment.AlbumFragment;
 import com.kuibu.ui.fragment.ExplorePageFragment;
 import com.kuibu.ui.fragment.FavoriteBoxFragment;
-import com.kuibu.ui.fragment.FocusPageFragment;
+import com.kuibu.ui.fragment.FollowedPageFragment;
 import com.kuibu.ui.fragment.HomePageFragment;
+import com.kuibu.ui.fragment.NavigationDrawerFragment;
+import com.kuibu.ui.view.interfaces.LoginView;
 
 public class KuibuMainActivity extends BaseActivity 
-	implements NavigationDrawerFragment.NavigationDrawerCallbacks, OnLoginLisener {
+	implements NavigationDrawerFragment.NavigationDrawerCallbacks, LoginView{
+	
+	private static final int PROGRESS_LEN  = 10 ;
+	private static final int DEFAULT_POSITINO = 1;
 	
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 	private Fragment currentFragment;
 	private Fragment lastFragment;
-	private LoginProcess mLoginProcess = null;
-	private static final int DEFAULT_POSITINO = 1; //登录状态抽屉选项的默认位置
+	private LoginPresenter loginPresenter ; 	
 	private MenuItem mLogoutMenu,mNotifyMenu;
-	private int mCurposition = 0  ;
+	private int mCurposition;	
+	private AlertDialog mDialogLogin; 
+	private ActionProcessButton  mBtnLogin; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_kuibu_main);
-		mLoginProcess = new LoginProcess(this);
-		mLoginProcess.setOnLoginLisener(this);
+		loginPresenter = new LoginPresenterImpl(this);
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.navigation_drawer);
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));	
-		getSupportFragmentManager().beginTransaction()
-			.add(R.id.container, new PlaceholderFragment()).commit();
-		mLoginProcess.autoLogin(); //自动登录
-		
+		loginPresenter.autoLogin();		
 		if (savedInstanceState != null) {		
 			//#bug fragment overlay
 			mCurposition = savedInstanceState.getInt(StaticValue.TAG_VLAUE.DRAWER_POSITION);
@@ -103,27 +102,11 @@ public class KuibuMainActivity extends BaseActivity
 		}		
 	}
 	
-	
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-	}
-
-	@Override
-	protected void onStop() {
-		// TODO Auto-generated method stub
-		super.onStop();
-	}
-
-
 	@Override
 	public void onNavigationDrawerItemSelected(int position , String title, String tag) {
 		if (Constants.Tag.LOGIN.equals(tag)) { 
-			if (mLoginProcess == null)
-				return;
 			if (!Session.getSession().isLogin()) {
-				mLoginProcess.show();
+				showLoginView();
 				return;
 			} else {
 				Intent intent = new Intent(this, UserInfoActivity.class);
@@ -160,7 +143,7 @@ public class KuibuMainActivity extends BaseActivity
 				args.putString(StaticValue.USERINFO.USER_ID, Session.getSession().getuId());
 				currentFragment.setArguments(args);
 			} else if (Constants.Tag.DRAFT.equals(tag)) {
-				currentFragment = new CollectionMainFragment();
+				currentFragment = new AlbumFragment();
 				Bundle args = new Bundle();
 				args.putString(StaticValue.TAG_VLAUE.ARG_SECTION_TAG, tag);
 				currentFragment.setArguments(args);
@@ -170,7 +153,7 @@ public class KuibuMainActivity extends BaseActivity
 				args.putString(StaticValue.TAG_VLAUE.ARG_SECTION_TAG, tag);
 				currentFragment.setArguments(args);
 			}else if(Constants.Tag.FOCUS.equals(tag)){
-				currentFragment = new FocusPageFragment();
+				currentFragment = new FollowedPageFragment();
 				Bundle args = new Bundle();
 				args.putString(StaticValue.TAG_VLAUE.ARG_SECTION_TAG, tag);
 				currentFragment.setArguments(args);
@@ -233,7 +216,7 @@ public class KuibuMainActivity extends BaseActivity
 		Intent intent = null;
 		switch (id) {
 		case R.id.action_notify://msg menu 
-			intent = new Intent(this,NotifyMessageActivity.class);
+			intent = new Intent(this,NotifyActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			mNotifyMenu.setIcon(getResources().getDrawable(R.drawable.ic_action_notify));
@@ -249,83 +232,13 @@ public class KuibuMainActivity extends BaseActivity
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	
-	public static class PlaceholderFragment extends Fragment {
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.launch_main, container,
-					false);
-			return rootView;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @description: 登录完成回调接口
-	 * @see com.kuibu.module.dlg.LoginDialog.OnLoginLisener#onLoginComplete(java.util.Map)
-	 */
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onLoginComplete(Map<String,Object> params) {
-		String errCode = (String)params.get("errCode");
-		if (StaticValue.RESPONSE_STATUS.LOGIN_SUCCESS.equals(errCode)) {
-			if(!(Boolean)params.get("isAuto")){
-				mNotifyMenu.setVisible(true);
-				mLogoutMenu.setVisible(true);
-			}
-			//登录成功，准备切换DrawerList
-			String[] itemTitle = getResources().getStringArray(
-					R.array.drawer_item_title_login);
-			String[] itemTag = getResources().getStringArray(
-					R.array.drawer_item_tag_login);
-
-			int[] itemIconRes = { R.drawable.ic_drawer_home,
-					R.drawable.ic_drawer_explore, R.drawable.ic_drawer_follow,
-					R.drawable.ic_drawer_collect, R.drawable.ic_drawer_draft,
-					R.drawable.ic_drawer_setting };
-
-			List<DrawerListItem> newData = new ArrayList<DrawerListItem>();
-			for (int i = 0; i < itemTitle.length; i++) {
-				DrawerListItem item = new DrawerListItem(getResources()
-						.getDrawable(itemIconRes[i]), itemTitle[i], itemTag[i]);
-				newData.add(item);
-			}
-			params.put("itemData", newData);			
-			mNavigationDrawerFragment.updateDrawerList(params);
-		}
-		mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
-
-		//success,establish persistent connection 
-		try {
-			JSONObject obj = new JSONObject();
-			obj.put("uid", Session.getSession().getuId());
-			obj.put("name", Session.getSession().getuName());
-			KuibuApplication.getSocketIoInstance().SetUp();
-			KuibuApplication.getSocketIoInstance().getSocketIO().
-			emit(StaticValue.EVENT.LOGIN_EVENT, obj);					
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		//login success 
-		login_over();
-	}
-
-	
-	/**
-	 * 注销当前用户  
-	 */
 	
 	private void doLogout()
 	{
 		mLogoutMenu.setVisible(false);	
 		mNotifyMenu.setVisible(false);
 		Session.getSession().setLogin(false);
-		//移除涉及到缓存的Framgent
+		//remove fragments cached 
 		String[] tags = getResources().getStringArray(R.array.drawer_item_logout_tag);
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -336,128 +249,12 @@ public class KuibuMainActivity extends BaseActivity
 			}
 		}		
 		ft.commit();		
-		KuibuApplication.getInstance().getPersistentCookieStore().clear(); //清理cookie
-		//准备切换DrawerList
-		List<DrawerListItem> newData = new ArrayList<DrawerListItem>();
-		String[] itemTitle = getResources().getStringArray(R.array.drawer_item_title_nolgoin);
-        String[] itemTag = getResources().getStringArray(R.array.drawer_item_tag_nologin);
-        int[] itemIconRes = {
-        		R.drawable.ic_drawer_register,
-        		R.drawable.ic_drawer_explore,
-        		R.drawable.ic_drawer_setting
-        };
-        for (int i = 0; i < itemTitle.length; i++) {
-			DrawerListItem item = new DrawerListItem(getResources().getDrawable(itemIconRes[i]),
-					itemTitle[i],itemTag[i]);
-			newData.add(item);
-		}
-
-        Map<String,Object> params = new HashMap<String,Object>();
-        params.put("itemData", newData);
-        params.put("uName", this.getString(R.string.login));
-        mNavigationDrawerFragment.updateDrawerList(params);
-		mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
-		logout();
+		KuibuApplication.getInstance().getPersistentCookieStore().clear(); 
+	    switchDrawerList(false);
+		loginPresenter.logout();
 	}
-	
-	private void login_over()
-	{
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("uid", Session.getSession().getuId());
-		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
-					.append(Constants.Config.REST_API_VERSION)
-					.append("/login_over").toString();
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						//logout success
-						boolean have_message = response.getBoolean("have_message");
-						if(have_message){
-							mNotifyMenu.setIcon(getResources().getDrawable(R.drawable.ic_action_notify_active));
-						}
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-			}
-		}){
-			@Override  
-	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			return KuibuUtils.prepareReqHeader();
-	 		}
-		};
-		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
-	
-	private void logout()
-	{
-		if(!Session.getSession().isLogin())
-			return ;
-		if(KuibuApplication.getSocketIoInstance().
-				getSocketIO()!=null){
-			if(KuibuApplication.getSocketIoInstance().getSocketIO().isConnected()){
-				try {
-					JSONObject obj = new JSONObject();
-					obj.put("uid", Session.getSession().getuId());
-					KuibuApplication.getSocketIoInstance().getSocketIO().
-						emit(StaticValue.EVENT.LOGOUT_EVENT, obj);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				} 				
-				KuibuApplication.getSocketIoInstance().getSocketIO().disconnect();
-			}			
-		}
-				
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("uid", Session.getSession().getuId());
-		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
-					.append(Constants.Config.REST_API_VERSION)
-					.append("/user_logout").toString();
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						//logout success
-						
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-			}
-		}){
-			@Override  
-	 		public Map<String, String> getHeaders() throws AuthFailureError {  
-	 			return KuibuUtils.prepareReqHeader();
-	 		}
-		};
-		KuibuApplication.getInstance().addToRequestQueue(req);
-	}
-	
-	private boolean doubleBackToExitPressedOnce;
-	
+		
+	private boolean doubleBackToExitPressedOnce; //only used here 		
 	@Override
 	public void onBackPressed() {
 		if (doubleBackToExitPressedOnce) {
@@ -490,29 +287,102 @@ public class KuibuMainActivity extends BaseActivity
 		}
 	}
 	
+	@SuppressLint("InflateParams")
 	@Override
-	public void eventResponse(JSONObject entity)
-	{
-		try {			
-		    String type = entity.getString("event_type");
-			if(StaticValue.EVENT.TYPE_NEWLETTERS.equals(type)){ 
-				Toast.makeText(this,getString(R.string.received_letter) , 
-						Toast.LENGTH_LONG).show();
-				mNotifyMenu.setIcon(getResources().getDrawable(R.drawable.ic_action_notify_active));
-			}else if(StaticValue.EVENT.TYPE_NEWCOMMETN.equals(type)){
-				Toast.makeText(this, getString(R.string.received_comment), 
-						Toast.LENGTH_LONG).show();
-			}else if(StaticValue.EVENT.TYPE_KEEPALIVE.equals(type)){
-				
-			}				
-		} catch (JSONException e) {
-			e.printStackTrace();
+	public void showLoginView() {
+		LinearLayout loginLayout = (LinearLayout) LayoutInflater.from(this).inflate(
+				R.layout.login_dialog,null);
+		final EditText userEmail = (EditText) loginLayout.findViewById(R.id.login_user_email);
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+		String account = pref.getString(StaticValue.PrefKey.LOGIN_ACCOUNT, null);
+		
+		if(!TextUtils.isEmpty(account)){
+			userEmail.setText(account);
+		}
+		
+		final EditText userPwd = (EditText) loginLayout.findViewById(R.id.login_user_pwd);
+		mBtnLogin = (ActionProcessButton)loginLayout.findViewById(R.id.btnLogIn);
+		mBtnLogin.setMode(ActionProcessButton.Mode.ENDLESS);		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this)
+						.setTitle(getString(R.string.login)).setView(loginLayout);
+		mDialogLogin = builder.show();
+		mBtnLogin.setOnClickListener(new OnClickListener() {			
+			@Override
+			public void onClick(View arg0) {
+				String email = userEmail.getText().toString().trim();
+				String pwd = userPwd.getText().toString().trim();				
+				if(TextUtils.isEmpty(email) || TextUtils.isEmpty(pwd)){
+					Toast.makeText(getApplicationContext(), getString(R.string.input_account),
+							Toast.LENGTH_SHORT).show();
+				}else{
+					mBtnLogin.setProgress(PROGRESS_LEN);
+					loginPresenter.login(email, pwd);
+				}
+			}
+		});
+	}
+
+	@Override
+	public void switchDrawerList(boolean loginState) {
+        Map<String,Object> params = new HashMap<String,Object>();
+        List<DrawerListItem> newData = new ArrayList<DrawerListItem>();
+        String[] itemTitle = null ; 
+        String[] itemTag = null ;
+        int[] iconRes;
+		if (loginState) {
+			itemTitle = getResources().getStringArray(
+					R.array.drawer_item_title_login);
+			itemTag = getResources().getStringArray(
+					R.array.drawer_item_tag_login);
+			int[] itemIconRes = { R.drawable.ic_drawer_home,
+					R.drawable.ic_drawer_explore, R.drawable.ic_drawer_follow,
+					R.drawable.ic_drawer_collect, R.drawable.ic_drawer_draft,
+					R.drawable.ic_drawer_setting };
+			iconRes = itemIconRes; 
+		}else{			
+			itemTitle = getResources().getStringArray(R.array.drawer_item_title_nolgoin);
+	        itemTag = getResources().getStringArray(R.array.drawer_item_tag_nologin);
+	        int[] itemIconRes = {
+	        		R.drawable.ic_drawer_register,
+	        		R.drawable.ic_drawer_explore,
+	        		R.drawable.ic_drawer_setting
+	        };
+	        iconRes = itemIconRes; 
+		}
+		for (int i = 0; i < itemTitle.length; i++) {
+			@SuppressWarnings("deprecation")
+			DrawerListItem item = new DrawerListItem(getResources().
+					getDrawable(iconRes[i]),itemTitle[i],itemTag[i]);
+			newData.add(item);
+		}
+        params.put("itemData", newData);
+        mNavigationDrawerFragment.updateDrawerList(params);
+		mNavigationDrawerFragment.selectItem(DEFAULT_POSITINO);
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void setMsgMenuIcon(boolean state) {
+		if(state){
+			mNotifyMenu.setIcon(getResources().getDrawable
+					(R.drawable.ic_action_notify_active));
+		}else{
+			mNotifyMenu.setIcon(getResources().getDrawable
+					(R.drawable.ic_action_notify));
+		}		
+	}
+
+	@Override
+	public void hideLoginView() {
+		if(mDialogLogin !=null){
+			mDialogLogin.dismiss();
 		}
 	}
 
 	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		
-	}
+	public void setLoginBtnProgress(int progress) {
+		if(mBtnLogin !=null){
+			mBtnLogin.setProgress(progress);
+		}
+	}	
 }

@@ -117,8 +117,7 @@ public class TopicInfoActivity extends BaseActivity {
 					mDatas); 
 			bestAuthorList.setAdapter(authorAdapter);
 		} else {
-			authorAdapter.updateView(mDatas);
-			
+			authorAdapter.refreshView(mDatas);			
 		}
 	}
 	

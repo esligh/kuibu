@@ -19,7 +19,8 @@ import com.kuibu.module.net.PublicRequestor;
 public class ReportActivity extends BaseActivity {
 
 	public TextView reportText ; 
-	public boolean bReport = false; 
+	public boolean bReport = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
@@ -33,7 +34,8 @@ public class ReportActivity extends BaseActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);	
 		MenuItem edit=menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
-		        		StaticValue.MENU_ITEM.SEND_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,"发送");		          
+		        		StaticValue.MENU_ITEM.SEND_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,
+		        		getString(R.string.send));		          
 		edit.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         return true;
 	}
@@ -49,7 +51,7 @@ public class ReportActivity extends BaseActivity {
         		Map<String,String> params = new HashMap<String,String>();
         		params.put("accuser_id", Session.getSession().getuId());
         		params.put("reason", reportText.getText().toString().trim());
-        		params.put("defendant_id", getIntent().getStringExtra("defendant"));
+        		params.put("defendant_id", getIntent().getStringExtra("defendant_id"));
         		PublicRequestor.sendReport(params);
         		bReport = true;  
         		break;

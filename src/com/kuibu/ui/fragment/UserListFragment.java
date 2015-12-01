@@ -172,7 +172,7 @@ public class UserListFragment extends Fragment {
 			authorAdapter = new UserListAdapter(this.getActivity(), datas);
 			userList.setAdapter(authorAdapter);
 		} else {
-			authorAdapter.updateView(datas);
+			authorAdapter.refreshView(datas);
 		}
 	}
 }

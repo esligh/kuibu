@@ -48,7 +48,7 @@
     <string name="person_text">人</string>
     
     <string name="send_message">发送私信&#8230;</string>
-    
+    <string name="send">发送</string>
     <string name="boring_text">不感兴趣</string>
     <string name="funny_text">有意思</string>
     <string name="collect_text">收藏</string>
@@ -203,11 +203,19 @@
 	<string name="have_reported">你已经举报过了</string>
 	<string name="upload_fail">上传失败</string>
 	<string name="upload_success">上传成功</string>
+	<string name="input_account">请输入账号和密码.</string>
+	<string name="no_this_user">没有此用户,请您先注册</string>
+	<string name="pwd_error">密码错误</string>
+
+	<string name="question_upload_log">上传异常日志?</string>
+	<string name="no_upload_log">暂无异常日志</string>
+		
 	<!-- menu text -->
 	<string name ="operator">操作</string>
 	<string name ="reply">回复</string>
 	<string name ="cancel_reply">取消回复</string>
 	<string name ="clear_all">清空</string>
+	<string name ="exception">异常</string>
 	
 	<!-- volley error info -->
 	<string name ="no_internet">当前网络状态不好</string>

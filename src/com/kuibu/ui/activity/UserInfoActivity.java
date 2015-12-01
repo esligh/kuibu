@@ -13,7 +13,7 @@ import com.kuibu.app.model.base.BaseActivity;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
-import com.kuibu.ui.fragment.UserInfoContentFragment;
+import com.kuibu.ui.fragment.UserHomeFragment;
 
 public class UserInfoActivity extends BaseActivity {	
 	
@@ -25,7 +25,7 @@ public class UserInfoActivity extends BaseActivity {
 		FragmentManager fm = getSupportFragmentManager();
 		Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
 		if(fragment == null){
-			fragment = new UserInfoContentFragment();
+			fragment = new UserHomeFragment();
 			fm.beginTransaction().add(R.id.fragmentContainer,fragment).commit();
 		}
 		setTitle(getString(R.string.home_page));

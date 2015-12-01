@@ -1,15 +1,31 @@
 package com.kuibu.ui.view.interfaces;
 
 /**
- * login view 的接口类*/
-public interface LoginView {	
+ * @author ThinkPad
+ */
+public interface LoginView {		
 	
-	public void showLoginView(); //显示登录界面
-	public void showError();  //显示出错信息	
-	public void switchDrawerList(boolean loginState); //切换抽屉列表
-	public void setMsgMenuIcon(int resId);
-	public void setMsgMenuVisibility();
-	public void setLogoutMenuVisibility();
-		
+	/**
+	 * open dialog to login 
+	 */
+	public void showLoginView();
 	
+	/**
+	 * hide dialog 
+	 */
+	public void hideLoginView();
+	
+	/**
+	 * switch drawer list 
+	 * @param loginState 
+	 * true indicates state of login  
+	 */
+	public void switchDrawerList(boolean loginState);
+	
+	/**
+	 * when user received messages the menu item need to update .  
+	 */
+	public void setMsgMenuIcon(boolean state);
+	
+	public void setLoginBtnProgress(int progress);
 }

@@ -26,9 +26,13 @@ public class TabPageViewAdapter extends FragmentPagerAdapter {
 		this.notifyDataSetChanged();
 	}
     
+	/* (non-Javadoc)
+	 * @see android.support.v4.view.PagerAdapter#getItemPosition(java.lang.Object)
+	 * return POSITION_NONE indicates  we want fragment pagers recreate .
+	 */
 	@Override
 	public int getItemPosition(Object object) {
-		// TODO Auto-generated method stub
+		
 		return PagerAdapter.POSITION_NONE;
 	}
 

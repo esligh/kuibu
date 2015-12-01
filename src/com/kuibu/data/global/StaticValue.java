@@ -1,6 +1,7 @@
 package com.kuibu.data.global;
 
 public class StaticValue {
+	
 	public static final String CHOOSE_PIC_OVER = "com.caddy.pickpic_complete";
 	public static final String CHOOSE_PIC_CANCEL = "com.caddy.pickpic_cancel";
 	public static final String USER_INFO_UPDATE = "com.caddy.update_userinfo" ; 
@@ -33,6 +34,7 @@ public class StaticValue {
 		public static final String HOME_LAST_REFRESH_TIME = "home_last_refresh_time";
 		public static final String RANK_LAST_REFRESH_TIME = "rank_last_refresh_time";
 		public static final String REC_LAST_REFRESH_TIME = "recommend_last_refresh_time";
+		public static final String FAV_LAST_REFRESH_TIME = "fav_last_refresh_time";
 	}
 	
 	public static class USER_ACTION{
