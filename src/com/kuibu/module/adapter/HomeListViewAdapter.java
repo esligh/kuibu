@@ -26,7 +26,7 @@ import com.kuibu.data.global.AppInfo;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.MateListItem;
 import com.kuibu.module.activity.R;
-import com.kuibu.ui.activity.PackInfoActivity;
+import com.kuibu.ui.activity.AlbumInfoActivity;
 import com.kuibu.ui.activity.CollectionDetailActivity;
 import com.kuibu.ui.activity.CollectionImageDetailActivity;
 import com.kuibu.ui.activity.UserInfoActivity;
@@ -240,7 +240,7 @@ public class HomeListViewAdapter extends BaseAdapter {
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(context,
-							PackInfoActivity.class);
+							AlbumInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
 					intent.putExtra("create_by", datas.get(position).getCreateBy());
@@ -289,7 +289,7 @@ public class HomeListViewAdapter extends BaseAdapter {
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(context,
-							PackInfoActivity.class);
+							AlbumInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
 					intent.putExtra("create_by", datas.get(position).getCreateBy());
@@ -367,7 +367,7 @@ public class HomeListViewAdapter extends BaseAdapter {
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(context,
-							PackInfoActivity.class);
+							AlbumInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
 					intent.putExtra("create_by", datas.get(position).getCreateBy());

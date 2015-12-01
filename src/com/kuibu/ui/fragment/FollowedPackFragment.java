@@ -25,7 +25,7 @@ import com.kuibu.model.entity.CollectPackItemBean;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.presenter.FollowedPackPresenterImpl;
 import com.kuibu.module.presenter.interfaces.FollowedPackPresenter;
-import com.kuibu.ui.activity.PackInfoActivity;
+import com.kuibu.ui.activity.AlbumInfoActivity;
 import com.kuibu.ui.view.interfaces.FollowedPackView;
 
 public class FollowedPackFragment extends BaseFragment implements FollowedPackView{
@@ -68,7 +68,7 @@ public class FollowedPackFragment extends BaseFragment implements FollowedPackVi
 			public void onItemClick(AdapterView<?> viewAdapter, View view,
 					int position, long id) {
 				Intent intent = new Intent(getActivity(),
-						PackInfoActivity.class);
+						AlbumInfoActivity.class);
 				intent.putExtra("pack_id", mPresenter.getDataItem(position-1).getId());
 				intent.putExtra("type", mPresenter.getDataItem(position-1).getPackType());
 				intent.putExtra("create_by", mPresenter.getDataItem(position-1).getCreateBy());

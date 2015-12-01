@@ -12,7 +12,9 @@ import android.database.Cursor;
 import com.kuibu.model.entity.LImageLib;
 
 public class ImageLibVo extends BaseDbVo{
+	
 	public static final String BASE_QUERY_STR = "select * from imglib ";
+	
 	public ImageLibVo(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub

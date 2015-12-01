@@ -7,6 +7,7 @@ import me.gujun.android.taggroup.TagGroup;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -45,7 +46,7 @@ import com.kuibu.module.presenter.interfaces.PackInfoPresenter;
 import com.kuibu.ui.view.interfaces.PackInfoView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class PackInfoActivity extends BaseActivity implements
+public class AlbumInfoActivity extends BaseActivity implements
 		OnBorderListener ,PackInfoView{
 	
 	private ListView mList;
@@ -100,7 +101,7 @@ public class PackInfoActivity extends BaseActivity implements
 		tagLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {		
-				Intent intent = new Intent(PackInfoActivity.this,
+				Intent intent = new Intent(AlbumInfoActivity.this,
 					TopicListActivity.class);
 				intent.putExtra("topic_id", mPresenter.getTopids());
 				startActivity(intent);
@@ -127,7 +128,7 @@ public class PackInfoActivity extends BaseActivity implements
 				if (Session.getSession().isLogin()) {
 					mPresenter.follow(packId);
 				} else {
-					Toast.makeText(PackInfoActivity.this, getString(R.string.need_login),
+					Toast.makeText(AlbumInfoActivity.this, getString(R.string.need_login),
 							Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -209,7 +210,7 @@ public class PackInfoActivity extends BaseActivity implements
 	}
 	
 	private void showUserview() {
-		Intent intent = new Intent(PackInfoActivity.this,
+		Intent intent = new Intent(AlbumInfoActivity.this,
 				UserInfoActivity.class);
 		intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
 		intent.putExtra(StaticValue.USERINFO.SHOWLAYOUT, true);
@@ -265,8 +266,7 @@ public class PackInfoActivity extends BaseActivity implements
 		}else{
 			focusLayout.setVisibility(View.VISIBLE);			
 			if (mPresenter.isFollowed()) {
-				int btnColor = getResources().getColor(
-						R.color.fbutton_color_concrete);
+				int btnColor = ContextCompat.getColor(this,R.color.fbutton_color_concrete);
 				focusBtn.setButtonColor(btnColor);
 				focusBtn.setText(getString(R.string.btn_cancel_focus));
 			}
@@ -347,7 +347,7 @@ public class PackInfoActivity extends BaseActivity implements
 				public void onItemClick(PLA_AdapterView<?> viewAdapter, View view,
 						int position, long id) {
 					CollectionBean bean = (CollectionBean)viewAdapter.getAdapter().getItem(position);
-					Intent intent = new Intent(PackInfoActivity.this,
+					Intent intent = new Intent(AlbumInfoActivity.this,
 							CollectionImageDetailActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, bean.getCid());
 					startActivity(intent);
@@ -363,7 +363,7 @@ public class PackInfoActivity extends BaseActivity implements
 						int position, long id) {
 					CollectionItemBean item = (CollectionItemBean)viewAdapter.
 							getAdapter().getItem(position);
-					Intent intent = new Intent(PackInfoActivity.this,
+					Intent intent = new Intent(AlbumInfoActivity.this,
 							CollectionDetailActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item.getId());
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN, item.getCisn());

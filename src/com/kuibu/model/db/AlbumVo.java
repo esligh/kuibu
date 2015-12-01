@@ -9,8 +9,10 @@ import android.database.Cursor;
 import com.kuibu.model.entity.CollectPackBean;
 
 public class AlbumVo extends BaseDbVo{
+	
 	public static final String table_name = " collectpack ";
-    public AlbumVo(Context context) {
+   
+	public AlbumVo(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}

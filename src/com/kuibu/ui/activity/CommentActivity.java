@@ -37,7 +37,6 @@ import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.CommentItemBean;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.net.PublicRequestor;
 import com.kuibu.module.presenter.CommentPresenterImpl;
 import com.kuibu.module.presenter.interfaces.CommentPresenter;
 import com.kuibu.ui.view.interfaces.CommentView;

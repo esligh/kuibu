@@ -31,10 +31,11 @@ public class PackInfoModelImpl implements PackInfoModel{
 		.append("/get_collectpack").toString();
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 		params), new Response.Listener<JSONObject>() {
-			@SuppressWarnings("deprecation")
 			@Override
 			public void onResponse(JSONObject response) {
+				
 				mListener.onLoadPackInfoSuccess(response);
+				
 			}}, new Response.ErrorListener() {
 			@Override
 			public void onErrorResponse(VolleyError error) {
@@ -91,7 +92,6 @@ public class PackInfoModelImpl implements PackInfoModel{
 		}
 		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
 				params), new Response.Listener<JSONObject>() {
-			@SuppressWarnings("deprecation")
 			@Override
 			public void onResponse(JSONObject response) {
 				// TODO Auto-generated method stub

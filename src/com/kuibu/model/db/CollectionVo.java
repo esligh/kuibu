@@ -14,7 +14,9 @@ import com.kuibu.model.entity.CollectionBean;
  * 
  */
 public class CollectionVo extends BaseDbVo {
+	
 	public static final String table_name = "collection" ; 
+	
 	private final String BASE_QUERY_STR = " SELECT _id,cid ,pid,tid,type,title,content,cover,is_pub,is_sync,last_modify FROM collection " ;
 	
     public CollectionVo(Context context) {

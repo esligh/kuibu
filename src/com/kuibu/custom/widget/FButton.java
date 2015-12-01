@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -97,8 +98,8 @@ public class FButton extends Button implements View.OnTouchListener {
         isShadowEnabled = true;
         Resources resources = getResources();
         if (resources == null) return;
-        mButtonColor = resources.getColor(R.color.fbutton_default_color);
-        mShadowColor = resources.getColor(R.color.fbutton_default_shadow_color);
+        mButtonColor = ContextCompat.getColor(getContext(),R.color.fbutton_default_color);
+        mShadowColor = ContextCompat.getColor(getContext(),R.color.fbutton_default_shadow_color);
         mShadowHeight = resources.getDimensionPixelSize(R.dimen.fbutton_default_shadow_height);
         mCornerRadius = resources.getDimensionPixelSize(R.dimen.fbutton_default_conner_radius);
     }

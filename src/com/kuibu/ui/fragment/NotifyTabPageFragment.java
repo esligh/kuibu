@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -57,11 +58,13 @@ public class NotifyTabPageFragment extends Fragment{
 		    	indicator.setCustomTabColorizer(new SlidingTabIndicator.TabColorizer() {
 			            @Override
 			            public int getIndicatorColor(int position) {
-			            	return getResources().getColor(R.color.list_item_bg_dark_super_highlight);
+			            	return ContextCompat.getColor(getActivity(),
+			            			R.color.list_item_bg_dark_super_highlight);
 			            }
 			    });	
 		    }else{
-		    	indicator.setBackgroundColor(getResources().getColor(R.color.slidingtab_background_light));
+		    	indicator.setBackgroundColor(ContextCompat.getColor(getActivity(),
+		    			R.color.slidingtab_background_light));
 		    }		    return rootView;
 	}
 	

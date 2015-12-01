@@ -172,7 +172,7 @@ public class SearchViewActivity extends AppCompatActivity implements SearchView{
 					String tag = item.get("tag");
 					if(tag.equals("collectpack")){
 						Intent intent = new Intent(SearchViewActivity.this,
-								PackInfoActivity.class);
+								AlbumInfoActivity.class);
 						intent.putExtra("pack_id", item.get("item_id"));
 						intent.putExtra("create_by", item.get("create_by"));
 						startActivity(intent);

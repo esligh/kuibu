@@ -6,14 +6,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.widget.Toast;
-
 import com.android.volley.VolleyError;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.MultiStateView;
@@ -127,6 +125,7 @@ public class CommentPresenterImpl implements CommentPresenter,OnCommentListener{
 		mModel.requestAdd(params);
 	}
 	
+	@SuppressLint("SimpleDateFormat")
 	@Override
 	public void onAddCommentResponse(JSONObject response) {
 		try {

@@ -11,7 +11,6 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
@@ -64,7 +63,7 @@ public class AlbumPListPresenterImpl implements AlbumPListPresenter ,OnAlbumPLis
 		collectionVo = new CollectionVo(mView.getInstance());
 		packVo = new AlbumVo(mView.getInstance());
 		imageVo = new ImageLibVo(mView.getInstance());		
-		mTask = new ContentTask(mView.getInstance(),OPER_TYPE_LOADMORE);
+		mTask = new ContentTask(OPER_TYPE_LOADMORE);
 	}
 
 	private void requestCollections(List<CollectionBean> items) {
@@ -148,7 +147,7 @@ public class AlbumPListPresenterImpl implements AlbumPListPresenter ,OnAlbumPLis
 		
 		// TODO Auto-generated method stub
 		if(mTask.getStatus() != Status.RUNNING){
-			mTask = new ContentTask(mView.getInstance(),OPER_TYPE_LOADMORE);
+			mTask = new ContentTask(OPER_TYPE_LOADMORE);
 			mTask.execute("");
 		}
 	}
@@ -212,13 +211,10 @@ public class AlbumPListPresenterImpl implements AlbumPListPresenter ,OnAlbumPLis
 	}
 	
 	private class ContentTask extends AsyncTask<String,Integer,List<CollectionBean>>{
-		
-		private Context context ; 
 		private int oType ; 
 		
-		public ContentTask(Context context , int type)
+		public ContentTask(int type)
 		{
-			this.context = context ; 
 			this.oType = type ; 
 		}
 		

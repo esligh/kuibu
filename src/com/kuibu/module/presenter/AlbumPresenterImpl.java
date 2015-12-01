@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
-
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -52,6 +50,7 @@ public class AlbumPresenterImpl implements AlbumPresenter,OnAlbumListener{
 		handlerEvent();
 	}
 	
+	@SuppressLint("HandlerLeak")
 	private void handlerEvent()
 	{
 		mHandler = new Handler(){

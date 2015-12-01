@@ -1,15 +1,10 @@
 package com.kuibu.ui.activity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -24,44 +19,36 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
-import com.kuibu.common.utils.DataUtils;
-import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.FButton;
-import com.kuibu.data.global.Constants;
-import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.UserListAdapter;
+import com.kuibu.module.presenter.TopicInfoPresenterImpl;
+import com.kuibu.module.presenter.interfaces.TopicInfoPresenter;
+import com.kuibu.ui.view.interfaces.TopicInfoView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class TopicInfoActivity extends BaseActivity {
+public class TopicInfoActivity extends BaseActivity implements TopicInfoView{
 	
-	private ImageView topic_pic_iv;
-	private TextView topic_name_tv, topic_desc_tv;
-	private TextView follow_count_tv;
+	private ImageView topicPicIv;
+	private TextView topicNameTv, topicDescTv;
+	private TextView followCountTv;
 	private FButton focusBtn;
-	private ListView bestAuthorList;
-	private List<Map<String,Object>> mDatas= new ArrayList<Map<String,Object>>(); 
-	private UserListAdapter authorAdapter ; 
-	private boolean bIsFocus ; 
-	private String topic_id ;
+	private ListView bestAuthorList;	 
+	private UserListAdapter authorAdapter ; 	
+	private TopicInfoPresenter mPresenter ; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.topic_info);
-		topic_pic_iv = (ImageView) findViewById(R.id.topic_pic_iv);
-		topic_name_tv = (TextView) findViewById(R.id.topic_name_tv);
-		topic_desc_tv = (TextView) findViewById(R.id.topic_desc_tv);
-		topic_desc_tv.setText(getIntent().getStringExtra(StaticValue.TOPICINFO.TOPIC_EXTRA));
-		follow_count_tv = (TextView) findViewById(R.id.follow_count_tv);
+		topicPicIv = (ImageView) findViewById(R.id.topic_pic_iv);
+		topicNameTv = (TextView) findViewById(R.id.topic_name_tv);
+		topicDescTv = (TextView) findViewById(R.id.topic_desc_tv);
+		topicDescTv.setText(getIntent().getStringExtra(StaticValue.TOPICINFO.TOPIC_EXTRA));
+		followCountTv = (TextView) findViewById(R.id.follow_count_tv);
 		focusBtn = (FButton) findViewById(R.id.focus_collectpack_bt);
 		bestAuthorList = (ListView) findViewById(R.id.best_author_list);		
 		bestAuthorList.setOnTouchListener(new OnTouchListener() {				
@@ -98,29 +85,21 @@ public class TopicInfoActivity extends BaseActivity {
 			@Override
 			public void onClick(View arg0) {
 				if(Session.getSession().isLogin()){
-					doFocus();
+					mPresenter.follow();
 				}else{
 					Toast.makeText(TopicInfoActivity.this, getString(R.string.need_login), 
 							Toast.LENGTH_SHORT).show();
 				}		
 			}
 		});
-		loadData();
-		loadAuthors();
-		showView();
+		authorAdapter = new UserListAdapter(this,null); 
+		bestAuthorList.setAdapter(authorAdapter);
+		mPresenter = new TopicInfoPresenterImpl(this);
+		mPresenter.loadTopicInfo();
+		mPresenter.loadUserList();
 	}
 
-	
-	private void showView() {
-		if ( authorAdapter== null) {
-			authorAdapter = new UserListAdapter(this,
-					mDatas); 
-			bestAuthorList.setAdapter(authorAdapter);
-		} else {
-			authorAdapter.refreshView(mDatas);			
-		}
-	}
-	
+		
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -137,158 +116,79 @@ public class TopicInfoActivity extends BaseActivity {
 		overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
 	}	
 	
-	void loadData() {
-		String topic_name =  this.getIntent().
-				getStringExtra(StaticValue.TOPICINFO.TOPIC_NAME);
-		setTitle(topic_name);
-		String pic_url =  this.getIntent().getStringExtra(StaticValue.TOPICINFO.TOPIC_PIC);
-		topic_id =  this.getIntent().
-				getStringExtra(StaticValue.TOPICINFO.TOPIC_ID);
-		topic_name_tv.setText(topic_name);
-		ImageLoader.getInstance().displayImage(pic_url, topic_pic_iv);		
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("uid", Session.getSession().getuId());
-		params.put("obj_id", topic_id);
-		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
-								.append(Constants.Config.REST_API_VERSION)
-								.append("/get_topicinfo").toString();
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-	
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						JSONObject obj = new JSONObject(response
-								.getString("result"));
-						if (obj != null) {
-							follow_count_tv.setText(DataUtils.formatNumber(obj.getInt("focus_count")));
-							bIsFocus = obj.getBoolean("is_focus");
-							if(bIsFocus){
-								int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
-								focusBtn.setButtonColor(btnColor);						
-								focusBtn.setText(getString(R.string.btn_cancel_focus));								
-							}
-						}
-					}
-				} catch (JSONException e) {
-				
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-			}
-		});
-		KuibuApplication.getInstance().addToRequestQueue(req);
+	@Override
+	public void refreshList(List<Map<String, Object>> data) {
+		// TODO Auto-generated method stub
+		authorAdapter.refreshView(data);			
 	}
-	
-	void loadAuthors()
-	{
-		Map<String,String> params = new HashMap<String,String>();
-		params.put("tid", topic_id);	
-		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
-								.append(Constants.Config.REST_API_VERSION)
-								.append("/get_bestauthor").toString();
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						JSONArray arr = new JSONArray(response
-								.getString("result"));
-						if (arr != null) {
-							for(int i=0;i<arr.length();i++){
-							    JSONObject obj = (JSONObject) arr.get(i);
-							    Map<String,Object> item = new HashMap<String,Object>();
-							    item.put("uid", obj.getString("author_id"));
-							    item.put("sex",obj.getString("author_sex"));
-							    item.put("name", obj.getString("author_name"));
-							    item.put("signature", obj.getString("author_signature"));
-							    item.put("photo", obj.getString("author_pic"));
-							    mDatas.add(item);
-							}
-						}
-						showView();
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-			}
-		});
-		KuibuApplication.getInstance().addToRequestQueue(req);
-		
+
+
+	@Override
+	public Intent getDataIntent() {
+		// TODO Auto-generated method stub
+		return getIntent();
 	}
-	
-	private void doFocus()
-	{		
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("follower_id", Session.getSession().getuId());
-		params.put("type", StaticValue.SERMODLE.TOPIC_TYPE);
-		params.put("obj_id", topic_id);
-		final String URL;
-		if(bIsFocus){ 
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/del_follows";
-		}else{
-			URL = Constants.Config.SERVER_URI
-					+ Constants.Config.REST_API_VERSION + "/add_follows";
-		}
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						int count = Integer.parseInt(follow_count_tv.getText().toString().trim());
-						if(bIsFocus){
-							follow_count_tv.setText(DataUtils.formatNumber(count-1));
-							int btnColor= getResources().getColor(R.color.fbutton_color_green_sea);
-							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText(getString(R.string.btn_focus));	
-							bIsFocus = false; 
-						}else{							
-							follow_count_tv.setText(DataUtils.formatNumber(count+1));
-							int btnColor= getResources().getColor(R.color.fbutton_color_concrete);
-							focusBtn.setButtonColor(btnColor);						
-							focusBtn.setText(getString(R.string.btn_cancel_focus));
-							bIsFocus = true; 
-						}
-					}
-				} catch (JSONException e) {
-					
-					e.printStackTrace();
-				}
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-			}
-		}){
-			@Override  
-	 		public Map<String, String> getHeaders() throws AuthFailureError {   
-	 			return KuibuUtils.prepareReqHeader();  
-	 		}
-		};
-		KuibuApplication.getInstance().addToRequestQueue(req);	
+
+
+	@Override
+	public Context getInstance() {
+		// TODO Auto-generated method stub
+		return this;
+	}
+
+
+	@Override
+	public void setTopicName(String name) {
+		// TODO Auto-generated method stub
+		topicNameTv.setText(name);
+	}
+
+
+	@Override
+	public void setTopicDesc(String desc) {
+		// TODO Auto-generated method stub
+		topicDescTv.setText(desc);
+	}
+
+
+	@Override
+	public void setTopicPic(String url) {
+		// TODO Auto-generated method stub
+		ImageLoader.getInstance().displayImage(url, topicPicIv);
+	}
+
+
+	@Override
+	public void setFollowCount(String count) {
+		// TODO Auto-generated method stub
+		followCountTv.setText(count);
+	}
+
+
+	@Override
+	public void setFollowBtnColor(int color) {
+		// TODO Auto-generated method stub
+		focusBtn.setButtonColor(color);
+	}
+
+
+	@Override
+	public void setFollowBtnText(String text) {
+		// TODO Auto-generated method stub
+		focusBtn.setText(text);
+	}
+
+
+	@Override
+	public String getFollowCount() {
+		// TODO Auto-generated method stub
+		return followCountTv.getText().toString().trim();
+	}
+
+
+	@Override
+	public void setBarTitle(String title) {
+		// TODO Auto-generated method stub
+		setTitle(title);
 	}
 }

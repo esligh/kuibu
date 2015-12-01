@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -44,20 +45,20 @@ public class UserInfoActivity extends BaseActivity {
 	        		MenuItem edit=menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
 			        		StaticValue.MENU_ITEM.EDIT_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,
 			        		getString(R.string.action_modify));	        
-			        edit.setIcon(getResources().getDrawable(R.drawable.ic_edit_light));  
+			        edit.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_edit_light));  
 			        edit.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	        	}else {
 	        		MenuItem sendMsg = menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
 	        				StaticValue.MENU_ITEM.SEND_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID,
 	        				getString(R.string.private_letter));
-	        		sendMsg.setIcon(getResources().getDrawable(R.drawable.ic_action_message));
+	        		sendMsg.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_action_message));
 	        		sendMsg.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	        	}     	
 	        }   
 	        MenuItem share=menu.add(StaticValue.MENU_GROUP.SAVE_ACTIONBAR_GROUP,
 	        		StaticValue.MENU_ITEM.SHARE_ID,StaticValue.MENU_ORDER.SAVE_ORDER_ID+1,
 	        		getString(R.string.share));
-	        share.setIcon(getResources().getDrawable(R.drawable.ic_action_share));
+	        share.setIcon(ContextCompat.getDrawable(this,R.drawable.ic_action_share));
 	        share.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	        share.setVisible(false);
 	        return true;

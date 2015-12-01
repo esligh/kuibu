@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -58,11 +59,13 @@ public class FollowedPageFragment extends BaseFragment {
 	    	mIndicator.setCustomTabColorizer(new SlidingTabIndicator.TabColorizer() {
 		            @Override
 		            public int getIndicatorColor(int position) {
-		                return getResources().getColor(R.color.list_item_bg_dark_super_highlight);
+		                return ContextCompat.getColor(getActivity(),
+		                		R.color.list_item_bg_dark_super_highlight);
 		            }
 		    });	
 	    }else{
-	    	mIndicator.setBackgroundColor(getResources().getColor(R.color.slidingtab_background_light));
+	    	mIndicator.setBackgroundColor(ContextCompat.getColor(getActivity(),
+	    			R.color.slidingtab_background_light));
 	    }
 	    return rootView ; 
 	}

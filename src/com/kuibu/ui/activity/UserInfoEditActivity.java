@@ -1,29 +1,16 @@
 package com.kuibu.ui.activity;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import net.tsz.afinal.FinalHttp;
-import net.tsz.afinal.http.AjaxCallBack;
-import net.tsz.afinal.http.AjaxParams;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,33 +20,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.app.model.base.BaseActivity;
-import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.data.global.Constants;
-import com.kuibu.data.global.KuibuApplication;
-import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.entity.UserInfoBean;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.iterfaces.ICamera;
+import com.kuibu.module.presenter.UserInfoEditPresenterImpl;
+import com.kuibu.module.request.listener.UserInfoEditPresenter;
+import com.kuibu.ui.view.interfaces.UserInfoEditView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.soundcloud.android.crop.Crop;
 
-public class UserInfoEditActivity extends BaseActivity implements ICamera{
+public class UserInfoEditActivity extends BaseActivity 
+	implements ICamera,UserInfoEditView{
 
 	private ImageView userPhoto ; 
 	private TextView userName,userSexM,userSexF;
-	private TextView userSignature,userProfession,userResidence,userEducation; 
-	private UserInfoBean mInfo =new UserInfoBean();
-	private boolean bModifyPhoto  = false ;
-	private FinalHttp finalHttp = null;
-	private Uri cameraPic = null; 
-	private ProgressDialog progressDlg ; 
+	private TextView userSignature,userProfession,userResidence,userEducation;  
+	private Uri cameraPic;
+	private boolean bModifyPhoto  = false ;		 
+	private UserInfoEditPresenter mPresenter ; 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +68,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 				.setPositiveButton(getString(R.string.btn_confirm), new DialogInterface.OnClickListener() {
         			public void onClick(DialogInterface dialog, int which) {
         				String new_name = input.getText().toString().trim();
-        				mInfo.setName(new_name);
+        				mPresenter.getUserInfo().setName(new_name);
         				userName.setText(new_name);
         			}
         		}).show();
@@ -99,7 +79,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub		
-				mInfo.setSex(StaticValue.SERMODLE.USER_SEX_MALE);
+				mPresenter.getUserInfo().setSex(StaticValue.SERMODLE.USER_SEX_MALE);
 				switchSexBack(StaticValue.SERMODLE.USER_SEX_MALE);				
 			}
 		});
@@ -108,7 +88,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
-				mInfo.setSex(StaticValue.SERMODLE.USER_SEX_FEMALE);
+				mPresenter.getUserInfo().setSex(StaticValue.SERMODLE.USER_SEX_FEMALE);
 				switchSexBack(StaticValue.SERMODLE.USER_SEX_FEMALE);
 			}
 		});
@@ -126,7 +106,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
         			public void onClick(DialogInterface dialog, int which) {
         				String signature = input.getText().toString().trim();
         				userSignature.setText(signature);
-        				mInfo.setSignature(signature);
+        				mPresenter.getUserInfo().setSignature(signature);
         			}
         		}).show();
 			}
@@ -145,7 +125,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
         			public void onClick(DialogInterface dialog, int which) {
         				String profession = input.getText().toString().trim();
         				userProfession.setText(profession);
-        				mInfo.setProfession(profession);
+        				mPresenter.getUserInfo().setProfession(profession);
         			}
         		}).show();
 			}
@@ -164,7 +144,7 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
         			public void onClick(DialogInterface dialog, int which) {
         				String residence = input.getText().toString().trim();
         				userResidence.setText(residence);
-        				mInfo.setResidence(residence);
+        				mPresenter.getUserInfo().setResidence(residence);
         			}
         		}).show();
 			}
@@ -183,15 +163,16 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
         			public void onClick(DialogInterface dialog, int which) {
         				String education = input.getText().toString().trim();
         				userEducation.setText(education);
-        				mInfo.setEducation(education);
+        				mPresenter.getUserInfo().setEducation(education);
         			}
         		}).show();
 			}
 		});
-		finalHttp = new FinalHttp();
-		requestDetail();
+		mPresenter = new UserInfoEditPresenterImpl(this);
+		mPresenter.loadUserInfo();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void switchSexBack(String sex)
 	{
 		if(isDarkTheme){
@@ -232,214 +213,14 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 	        		break;
 	        	case StaticValue.MENU_ITEM.SAVE_ID:
 	        		if(bModifyPhoto){
-	        			uploadUserpic();
+	        			mPresenter.uploadUserPic();
 	        		}else{
-	        			requestUpdate();
+	        			mPresenter.updateUserInfo();
 	        		}    		
 	        		break;
 	        }
 	        return super.onOptionsItemSelected(item);	 
 	 }	 
-	 
-	 private void uploadUserpic()
-	{
-			AjaxParams params = new AjaxParams();
-			try {
-				params.put("user_pic", new File(this.getCacheDir(),Constants.Config.USER_PHOTO_TMP));
-				params.put("uid", mInfo.getId());
-				params.put("email", mInfo.getEmail());
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}
-			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
-									.append(Constants.Config.REST_API_VERSION)
-									.append("/upload_userpic").toString();
-			finalHttp.post(URL, params, new AjaxCallBack<String>() {
-				@Override
-				public void onSuccess(String t) {
-					super.onSuccess(t);
-					if (!TextUtils.isEmpty(t)) {
-						try {
-							JSONObject obj = new JSONObject(t);
-							String state = obj.getString("state");
-							if(StaticValue.RESPONSE_STATUS.UPLOAD_SUCCESS.equals(state)){
-								requestUpdate();
-							}else if(StaticValue.RESPONSE_STATUS.UPLOAD_FAILD.equals(state)){								
-								Toast.makeText(UserInfoEditActivity.this, "修改头像失败", Toast.LENGTH_LONG).show();
-							}						
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			});
-	 }
-	 
-	 private void requestDetail()
-	 {
-		if(progressDlg == null ){
-			progressDlg = new ProgressDialog(this);
-			progressDlg.setCanceledOnTouchOutside(false);	
-			progressDlg.setMessage(getString(R.string.please_wait));
-		}
-		progressDlg.show();
-		Map<String, String> params = new HashMap<String, String>();
-		params.put("uid", Session.getSession().getuId());
-		params.put("obj_id", Session.getSession().getuId());
-		final String URL = new StringBuilder(Constants.Config.SERVER_URI)
-							.append(Constants.Config.REST_API_VERSION)
-							.append("/get_userinfo").toString();
-		JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-				params), new Response.Listener<JSONObject>() {
-			@Override
-			public void onResponse(JSONObject response) {
-				// TODO Auto-generated method stub
-				try {
-					String state = response.getString("state");
-					if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
-						JSONObject obj = new JSONObject(response.getString("result"));
-						mInfo.setId(obj.getString("id"));
-						mInfo.setEmail(obj.getString("email"));
-						mInfo.setPhoto(obj.getString("photo"));
-						mInfo.setName(obj.getString("name"));
-						userName.setText(mInfo.getName());
-						String signature= obj.getString("signature");							
-						if(TextUtils.isEmpty(signature) || signature.equals("null")){
-							userSignature.setText(getString(R.string.please_input));
-							mInfo.setSignature("");
-						}else{
-							userSignature.setText(signature);
-							mInfo.setSignature(signature);
-						}
-						String profession = obj.getString("profession");
-						if(TextUtils.isEmpty(profession) || profession.equals("null")){
-							userProfession.setText(getString(R.string.please_input));
-							mInfo.setSignature("");
-						}else{
-							userProfession.setText(profession);
-							mInfo.setSignature(profession);
-						}
-						
-						String residence = obj.getString("residence");
-						if(TextUtils.isEmpty(profession) || residence.equals("null")){
-							userResidence.setText(getString(R.string.please_input));
-							mInfo.setSignature("");
-						}else{
-							userResidence.setText(residence);
-							mInfo.setSignature(residence);
-						}
-						
-						String education = obj.getString("education");
-						if(TextUtils.isEmpty(education) || education.equals("null")){
-							userEducation.setText(getString(R.string.please_input));
-							mInfo.setSignature("");
-						}else{
-							userEducation.setText(education);
-							mInfo.setSignature(education);
-						}
-						String url = obj.getString("photo") ; 
-						if(TextUtils.isEmpty(url) || url.equals("null")){
-							userPhoto.setImageResource(R.drawable.icon_addpic_focused);
-						}else{
-							ImageLoader.getInstance().displayImage(url,userPhoto,Constants.defaultAvataOptions);
-						}	
-						
-						String sex = obj.getString("sex");
-						mInfo.setSex(sex);
-						switchSexBack(sex);	
-					}
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				progressDlg.dismiss();
-			}
-		}, new Response.ErrorListener() {
-			@Override
-			public void onErrorResponse(VolleyError error) {
-				VolleyLog.e("Error: ", error.getMessage());
-				VolleyLog.e("Error:", error.getCause());
-				error.printStackTrace();
-				progressDlg.dismiss();
-			}
-		});
-		KuibuApplication.getInstance().addToRequestQueue(req,this);	
-	}
-	 
-	 private void requestUpdate()
-	 {
-			progressDlg.setMessage(getString(R.string.saving));
-		 	progressDlg.show();
-		 	Map<String, String> params = new HashMap<String, String>();
-			params.put("uid", Session.getSession().getuId());
-			params.put("name", mInfo.getName());
-			params.put("signature", mInfo.getSignature());
-			params.put("sex", mInfo.getSex());
-			params.put("profession", mInfo.getProfession());
-			params.put("residence", mInfo.getResidence());
-			params.put("education", mInfo.getEducation());
-			final String URL = new StringBuilder(Constants.Config.SERVER_URI)
-								.append(Constants.Config.REST_API_VERSION)
-								.append("/update_userinfo").toString();
-			JsonObjectRequest req = new JsonObjectRequest(URL, new JSONObject(
-					params), new Response.Listener<JSONObject>() {
-				@Override
-				public void onResponse(JSONObject response) {
-					// TODO Auto-generated method stub
-					try {
-						String state = response.getString("state");
-						if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {							
-		        			Intent intent = new Intent();
-		        			intent.putExtra(StaticValue.USERINFO.USERINFOENTITY, mInfo);
-		        			intent.setAction(StaticValue.USER_INFO_UPDATE);
-		        			sendBroadcast(intent);		        			
-		        			
-		        			//reset session
-		        			Session.getSession().setuName(mInfo.getName());
-		        			Session.getSession().setuSex(mInfo.getSex());
-		        			Session.getSession().setuSignature(mInfo.getSignature());
-	    
-		        			//reset cookie 							
-		        			Date date = KuibuApplication.getInstance()
-		        					.getPersistentCookieStore().getCookie("token").getExpiryDate();
-		        			KuibuApplication.getInstance().getPersistentCookieStore()
-								.addCookie("user_sex", mInfo.getSex(), date);
-		        			KuibuApplication.getInstance().getPersistentCookieStore()
-								.addCookie("user_name", mInfo.getName(), date);
-		        			KuibuApplication.getInstance().getPersistentCookieStore()
-								.addCookie("user_signature", mInfo.getSignature(), date);	
-		        			
-		        			Toast.makeText(UserInfoEditActivity.this, getString(R.string.modify_success),
-		        					Toast.LENGTH_SHORT).show();
-						}else{
-							Toast.makeText(UserInfoEditActivity.this, getString(R.string.modify_fail),
-		        					Toast.LENGTH_SHORT).show();
-						}
-						progressDlg.dismiss();
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}, new Response.ErrorListener() {
-				@Override
-				public void onErrorResponse(VolleyError error) {
-					VolleyLog.e("Error: ", error.getMessage());
-					VolleyLog.e("Error:", error.getCause());
-					error.printStackTrace();
-					Toast.makeText(UserInfoEditActivity.this, getString(R.string.modify_fail),
-        					Toast.LENGTH_SHORT).show();
-					progressDlg.dismiss();
-				}
-			}){
-				@Override  
-		 		public Map<String, String> getHeaders() throws AuthFailureError {  
-		 			return KuibuUtils.prepareReqHeader();
-		 		} 
-			};
-			KuibuApplication.getInstance().addToRequestQueue(req);
-	 }
 	 
 	 private void showPopup(View v) {
 			Context context = v.getContext();
@@ -514,5 +295,65 @@ public class UserInfoEditActivity extends BaseActivity implements ICamera{
 			// TODO Auto-generated method stub
 			super.onBackPressed();
 			overridePendingTransition(R.anim.anim_slide_out_right, R.anim.anim_slide_in_right);
+		}
+
+		@Override
+		public Intent getDataIntent() {
+			// TODO Auto-generated method stub
+			return getIntent();
+		}
+
+		@Override
+		public Context getInstance() {
+			// TODO Auto-generated method stub
+			return this;
+		}
+
+		@Override
+		public void setUserName(String name) {
+			// TODO Auto-generated method stub
+			userName.setText(name);
+		}
+
+		@Override
+		public void setUserSignature(String signature) {
+			// TODO Auto-generated method stub
+			userSignature.setText(signature);
+		}
+
+		@Override
+		public void setProfession(String profession) {
+			// TODO Auto-generated method stub
+			userProfession.setText(profession);
+		}
+
+		@Override
+		public void setResidence(String residence) {
+			// TODO Auto-generated method stub
+			userResidence.setText(residence);
+		}
+
+		@Override
+		public void setUserPhoto(String url) {
+			// TODO Auto-generated method stub
+			ImageLoader.getInstance().displayImage(url,userPhoto,Constants.defaultAvataOptions);
+		}
+
+		@Override
+		public void setEducation(String edu) {
+			// TODO Auto-generated method stub
+			userEducation.setText(edu);
+		}
+
+		@Override
+		public void switchSex(String sex) {
+			// TODO Auto-generated method stub
+			switchSexBack(sex);
+		}
+
+		@Override
+		public void setUserPhoto(int resId) {
+			// TODO Auto-generated method stub
+			userPhoto.setImageResource(resId);
 		}
 }

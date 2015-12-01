@@ -37,17 +37,17 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public final class UserHomeFragment extends BaseFragment implements
 		IConstructFragment,UserHomeView {		
 	
-	private TextView user_name_tv ; 
-	private TextView signature_tv  ;
-	private ImageView user_photo_iv,user_sex_iv; 
-	private RelativeLayout focus_layout_rl; 
+	private TextView nameTv ; 
+	private TextView signatureTv;
+	private ImageView userPhotoIv,userSexIv; 
+	private RelativeLayout followLayout; 
 	private FButton focusBtn ; 
-	private TextView pack_count_tv,pack_text_tv;
-	private TextView my_follow_count_tv,my_follow_text_tv;
-	private TextView follow_me_count_tv,follow_me_text_tv;
-	private RelativeLayout pack_layout,my_follow_layout,follow_me_layout;
-	private TextView favorite_box_tv,topic_box_tv; 
-	private TextView user_profession_tv,user_email_tv,user_residence_tv;  
+	private TextView packCountTv,packTextTv;
+	private TextView meFollowCountTv,meFollowTextTv;
+	private TextView followMeCountTv,followMeTextTv;
+	private RelativeLayout packLayout,meFollowLayout,followMeLayout;
+	private TextView favoriteBoxTv,topicBoxTv; 
+	private TextView profressionTv,emailTv,residenceTv;  
 	private UserHomePresenter mPresenter ; 
 	
 	private BroadcastReceiver userUpdateReceiver = new BroadcastReceiver(){
@@ -55,22 +55,22 @@ public final class UserHomeFragment extends BaseFragment implements
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			UserInfoBean info = (UserInfoBean)intent.getSerializableExtra(StaticValue.USERINFO.USERINFOENTITY);
-			user_name_tv.setText(info.getName());
-			signature_tv.setText(info.getSignature());
+			nameTv.setText(info.getName());
+			signatureTv.setText(info.getSignature());
 			String profession = info.getProfession();
 			if(TextUtils.isEmpty(profession)){
-				user_profession_tv.setText("暂无职位描述");
+				profressionTv.setText("暂无职位描述");
 			}else{
-				user_profession_tv.setText(profession);
+				profressionTv.setText(profession);
 			}
 			String residence = info.getResidence();
 			if(TextUtils.isEmpty(residence)){
-				user_residence_tv.setText("暂无");
+				residenceTv.setText("暂无");
 			}else{
-				user_residence_tv.setText(residence);
+				residenceTv.setText(residence);
 			}
 			
-			ImageLoader.getInstance().displayImage(info.getPhoto(), user_photo_iv);
+			ImageLoader.getInstance().displayImage(info.getPhoto(), userPhotoIv);
 		}		
 	};
 	
@@ -84,20 +84,20 @@ public final class UserHomeFragment extends BaseFragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.user_info_home,container,false);
-		pack_count_tv = (TextView)rootView.findViewById(R.id.pack_count_tv);
-		pack_text_tv=(TextView)rootView.findViewById(R.id.pack_text_tv);
-		my_follow_count_tv=(TextView)rootView.findViewById(R.id.my_follow_count_tv);
-		my_follow_text_tv=(TextView)rootView.findViewById(R.id.my_follow_text_tv);
-		follow_me_count_tv=(TextView)rootView.findViewById(R.id.follow_me_count_tv);
-		follow_me_text_tv=(TextView)rootView.findViewById(R.id.follow_me_text_tv);
-		pack_layout = (RelativeLayout)rootView.findViewById(R.id.pack_layout);
-		favorite_box_tv = (TextView)rootView.findViewById(R.id.user_favoritebox);
-		topic_box_tv = (TextView)rootView.findViewById(R.id.user_topic);
-		user_profession_tv = (TextView)rootView.findViewById(R.id.user_profession_tv);
-		user_email_tv = (TextView)rootView.findViewById(R.id.user_email_tv);
-		user_residence_tv = (TextView)rootView.findViewById(R.id.user_residence_tv);
-		user_sex_iv = (ImageView)rootView.findViewById(R.id.user_sex_icon);
-		pack_layout.setOnClickListener(new OnClickListener(){				
+		packCountTv = (TextView)rootView.findViewById(R.id.pack_count_tv);
+		packTextTv=(TextView)rootView.findViewById(R.id.pack_text_tv);
+		meFollowCountTv=(TextView)rootView.findViewById(R.id.my_follow_count_tv);
+		meFollowTextTv=(TextView)rootView.findViewById(R.id.my_follow_text_tv);
+		followMeCountTv=(TextView)rootView.findViewById(R.id.follow_me_count_tv);
+		followMeTextTv=(TextView)rootView.findViewById(R.id.follow_me_text_tv);
+		packLayout = (RelativeLayout)rootView.findViewById(R.id.pack_layout);
+		favoriteBoxTv = (TextView)rootView.findViewById(R.id.user_favoritebox);
+		topicBoxTv = (TextView)rootView.findViewById(R.id.user_topic);
+		profressionTv = (TextView)rootView.findViewById(R.id.user_profession_tv);
+		emailTv = (TextView)rootView.findViewById(R.id.user_email_tv);
+		residenceTv = (TextView)rootView.findViewById(R.id.user_residence_tv);
+		userSexIv = (ImageView)rootView.findViewById(R.id.user_sex_icon);
+		packLayout.setOnClickListener(new OnClickListener(){				
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
@@ -108,8 +108,8 @@ public final class UserHomeFragment extends BaseFragment implements
 			}
 		});
 		
-		my_follow_layout = (RelativeLayout)rootView.findViewById(R.id.my_follow_layout);
-		my_follow_layout.setOnClickListener(new OnClickListener() {				
+		meFollowLayout = (RelativeLayout)rootView.findViewById(R.id.my_follow_layout);
+		meFollowLayout.setOnClickListener(new OnClickListener() {				
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
@@ -120,8 +120,8 @@ public final class UserHomeFragment extends BaseFragment implements
 				getActivity().overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 			}
 		});
-		follow_me_layout = (RelativeLayout)rootView.findViewById(R.id.follow_me_layout);
-		follow_me_layout.setOnClickListener(new OnClickListener() {				
+		followMeLayout = (RelativeLayout)rootView.findViewById(R.id.follow_me_layout);
+		followMeLayout.setOnClickListener(new OnClickListener() {				
 			@Override
 			public void onClick(View view) {
 				// TODO Auto-generated method stub
@@ -133,10 +133,10 @@ public final class UserHomeFragment extends BaseFragment implements
 			}
 		});
 		
-		user_name_tv = (TextView)rootView.findViewById(R.id.user_nick_name);
-		signature_tv = (TextView)rootView.findViewById(R.id.signature);
-		user_photo_iv = (ImageView)rootView.findViewById(R.id.user_photo);	
-		focus_layout_rl = (RelativeLayout)rootView.findViewById(R.id.focus_layout_rl);
+		nameTv = (TextView)rootView.findViewById(R.id.user_nick_name);
+		signatureTv = (TextView)rootView.findViewById(R.id.signature);
+		userPhotoIv = (ImageView)rootView.findViewById(R.id.user_photo);	
+		followLayout = (RelativeLayout)rootView.findViewById(R.id.focus_layout_rl);
 		focusBtn = (FButton)rootView.findViewById(R.id.focus_collectpack_bt);
 		focusBtn.setOnClickListener(new OnClickListener() {				
 			@Override
@@ -150,7 +150,7 @@ public final class UserHomeFragment extends BaseFragment implements
 				}
 			}
 		});			
-		favorite_box_tv.setOnClickListener(new OnClickListener() {				
+		favoriteBoxTv.setOnClickListener(new OnClickListener() {				
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub	
@@ -161,7 +161,7 @@ public final class UserHomeFragment extends BaseFragment implements
 		});
 		 
 		
-		topic_box_tv.setOnClickListener(new OnClickListener() {				
+		topicBoxTv.setOnClickListener(new OnClickListener() {				
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
@@ -202,20 +202,20 @@ public final class UserHomeFragment extends BaseFragment implements
 		String sex = null;
 		if(!flag){
 			mPresenter.getUserinfo().put("uid", Session.getSession().getuId());
-			user_name_tv.setText(Session.getSession().getuName());
+			nameTv.setText(Session.getSession().getuName());
 			sex = Session.getSession().getuSex();
 			String signature = Session.getSession().getuSignature();
 			if(TextUtils.isEmpty(signature) ||signature.equals("null")){
-				signature_tv.setText("暂无简介");
+				signatureTv.setText("暂无简介");
 			}else{
-				signature_tv.setText(signature);
+				signatureTv.setText(signature);
 			}
 			 
 			String url = Session.getSession().getuPic();
 			if(TextUtils.isEmpty(url) || url.equals("null")){
-				user_photo_iv.setImageResource(R.drawable.default_pic_avata);
+				userPhotoIv.setImageResource(R.drawable.default_pic_avata);
 			}else{
-				ImageLoader.getInstance().displayImage(url, user_photo_iv,Constants.defaultAvataOptions);
+				ImageLoader.getInstance().displayImage(url, userPhotoIv,Constants.defaultAvataOptions);
 			}			
 		}else{
 			String uid = this.getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_ID);
@@ -225,42 +225,42 @@ public final class UserHomeFragment extends BaseFragment implements
 			String url = this.getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_PHOTO);
 			url = url.replace(Constants.Config.USER_PIC_SMALL,Constants.Config.USER_PIC_BIG);
 			if(uid!=null && uid.equals(Session.getSession().getuId())){
-				focus_layout_rl.setVisibility(View.GONE);
+				followLayout.setVisibility(View.GONE);
 			}else{
-				focus_layout_rl.setVisibility(View.VISIBLE);
+				followLayout.setVisibility(View.VISIBLE);
 			}		
-			user_name_tv.setText(name);
+			nameTv.setText(name);
 			if(TextUtils.isEmpty(signature) ||signature.equals("null")){
-				signature_tv.setText("暂无简介");
+				signatureTv.setText("暂无简介");
 			}else{
-				signature_tv.setText(signature);
+				signatureTv.setText(signature);
 			}
 			sex = this.getActivity().getIntent().getStringExtra(StaticValue.USERINFO.USER_SEX);
 			if(uid!=null && uid.equals(Session.getSession().getuId())){
 				//...
 			}else if(StaticValue.SERMODLE.USER_SEX_MALE.equals(sex)){
-				pack_text_tv.setText("他的收集册");
-				my_follow_text_tv.setText("他关注的人");
-				follow_me_text_tv.setText("关注他的人");
-				favorite_box_tv.setText("他的收藏");
-				topic_box_tv.setText("他的话题");				
+				packTextTv.setText("他的收集册");
+				meFollowTextTv.setText("他关注的人");
+				followMeTextTv.setText("关注他的人");
+				favoriteBoxTv.setText("他的收藏");
+				topicBoxTv.setText("他的话题");				
 			}else{
-				pack_text_tv.setText("她的收集册");
-				my_follow_text_tv.setText("她关注的人");
-				follow_me_text_tv.setText("关注她的人");
-				favorite_box_tv.setText("她的收藏");
-				topic_box_tv.setText("她的话题");		
+				packTextTv.setText("她的收集册");
+				meFollowTextTv.setText("她关注的人");
+				followMeTextTv.setText("关注她的人");
+				favoriteBoxTv.setText("她的收藏");
+				topicBoxTv.setText("她的话题");		
 			}
 			if(TextUtils.isEmpty(url) || url.equals("null")){			
-				user_photo_iv.setImageResource(R.drawable.default_pic_avata);
+				userPhotoIv.setImageResource(R.drawable.default_pic_avata);
 			}else{
-				ImageLoader.getInstance().displayImage(url, user_photo_iv,Constants.defaultAvataOptions);
+				ImageLoader.getInstance().displayImage(url, userPhotoIv,Constants.defaultAvataOptions);
 			}				
 		}		
 		if(StaticValue.SERMODLE.USER_SEX_MALE.equals(sex)){
-			user_sex_iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_gender_m_w));
+			userSexIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_gender_m_w));
 		}else{
-			user_sex_iv.setImageDrawable(getResources().getDrawable(R.drawable.ic_gender_f_w));
+			userSexIv.setImageDrawable(getResources().getDrawable(R.drawable.ic_gender_f_w));
 		}
 		mPresenter.loadUserinfo();
 	}
@@ -286,44 +286,44 @@ public final class UserHomeFragment extends BaseFragment implements
 	@Override
 	public void setFollowMeCount(String text) {
 		// TODO Auto-generated method stub
-		follow_me_count_tv.setText(text);
+		followMeCountTv.setText(text);
 	}
 
 	@Override
 	public void setMeFollowCount(String text) {
 		// TODO Auto-generated method stub
-		my_follow_count_tv.setText(text);
+		meFollowCountTv.setText(text);
 	}
 
 	@Override
 	public void setPackCount(String text) {
 		// TODO Auto-generated method stub
-		pack_count_tv.setText(text);						
+		packCountTv.setText(text);						
 	}
 
 	@Override
 	public void setEmail(String email) {
 		// TODO Auto-generated method stub
-		user_email_tv.setText(email);
+		emailTv.setText(email);
 	}
 
 	@Override
 	public void setProfession(String profession) {
 		// TODO Auto-generated method stub
-		user_profession_tv.setText(profession);
+		profressionTv.setText(profession);
 
 	}
 
 	@Override
 	public void setResidence(String residence) {
 		// TODO Auto-generated method stub
-		user_residence_tv.setText(residence);	
+		residenceTv.setText(residence);	
 	}
 
 	@Override
 	public String getFollowCount() {
 		// TODO Auto-generated method stub
-		return follow_me_count_tv.getText().toString().trim();
+		return followMeCountTv.getText().toString().trim();
 	}
 
 	@Override

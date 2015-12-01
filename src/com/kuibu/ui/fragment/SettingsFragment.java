@@ -1,16 +1,7 @@
 package com.kuibu.ui.fragment;
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import net.tsz.afinal.FinalHttp;
-import net.tsz.afinal.http.AjaxCallBack;
-import net.tsz.afinal.http.AjaxParams;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -28,13 +19,9 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kuibu.common.utils.BufferManager;
-import com.kuibu.common.utils.FileUtils;
 import com.kuibu.common.utils.PhoneUtils;
-import com.kuibu.common.utils.SafeEDcoderUtil;
-import com.kuibu.common.utils.StorageUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
@@ -51,7 +38,9 @@ public class SettingsFragment extends PreferenceFragment implements
 	private OnPreChangeListener mListener = null;	
     private PreferenceScreen mVersion ; 
     
-    private SettingPresenter mPresenter ; 
+    private SettingPresenter mPresenter ;
+    
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);

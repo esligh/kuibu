@@ -372,6 +372,7 @@ public class PreviewWCollectionPresenterImpl implements
 			JSONObject response) {
 		// TODO Auto-generated method stub
 		String delImgIds = (String)params.get("delImgs");
+		@SuppressWarnings("unchecked")
 		List<String> addImgs = (List<String>)params.get("addImgs");
 		try {
 			String state = response.getString("state");
@@ -467,6 +468,7 @@ public class PreviewWCollectionPresenterImpl implements
 			if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS
 					.equals(state)) {
 				collection.cid = response.getString("cid");
+				@SuppressWarnings("unchecked")
 				List<String> images = (List<String>)params.get("images");
 				if (images != null && images.size() > 0) {  //text-pic 
 					uploadImgs(images,true);

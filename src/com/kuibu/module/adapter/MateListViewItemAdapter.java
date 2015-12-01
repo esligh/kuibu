@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ import com.kuibu.data.global.AppInfo;
 import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.MateListItem;
 import com.kuibu.module.activity.R;
-import com.kuibu.ui.activity.PackInfoActivity;
+import com.kuibu.ui.activity.AlbumInfoActivity;
 import com.kuibu.ui.activity.CollectionDetailActivity;
 import com.kuibu.ui.activity.CollectionImageDetailActivity;
 import com.kuibu.ui.activity.UserInfoActivity;
@@ -97,9 +98,9 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		typedArray.recycle();
 		
 		options = new DisplayImageOptions.Builder()
-		.showImageOnLoading(context.getResources().getDrawable(listItemDefaultImageId))
-		.showImageForEmptyUri(context.getResources().getDrawable(listItemDefaultImageId))
-		.showImageOnFail(context.getResources().getDrawable(listItemDefaultImageId))
+		.showImageOnLoading(ContextCompat.getDrawable(context,listItemDefaultImageId))
+		.showImageForEmptyUri(ContextCompat.getDrawable(context,listItemDefaultImageId))
+		.showImageOnFail(ContextCompat.getDrawable(context,listItemDefaultImageId))
 		.cacheInMemory(false)
 		.cacheOnDisk(true)
 		.considerExifParams(true)
@@ -277,7 +278,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				public void onClick(View view) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(LayoutInflater.from(context).getContext(),
-							PackInfoActivity.class);
+							AlbumInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("create_by", datas.get(position).getCreateBy());
 					LayoutInflater.from(context).getContext().startActivity(intent);	
@@ -346,7 +347,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				public void onClick(View arg0) {
 					// TODO Auto-generated method stub	
 					Intent intent = new Intent(LayoutInflater.from(context).getContext(),
-							PackInfoActivity.class);
+							AlbumInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("create_by", datas.get(position).getCreateBy());
 
@@ -428,7 +429,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				public void onClick(View view) {
 					// TODO Auto-generated method stub
 					Intent intent = new Intent(LayoutInflater.from(context).getContext(),
-							PackInfoActivity.class);
+							AlbumInfoActivity.class);
 					intent.putExtra("pack_id", datas.get(position).getPackId());
 					intent.putExtra("type", String.valueOf(datas.get(position).getType()));
 					intent.putExtra("create_by", datas.get(position).getCreateBy());

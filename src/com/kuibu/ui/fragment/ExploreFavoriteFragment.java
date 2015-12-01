@@ -1,13 +1,7 @@
 package com.kuibu.ui.fragment;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,11 +12,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -31,10 +20,7 @@ import com.kuibu.app.model.base.BaseFragment;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.custom.widget.MultiStateView.ViewState;
-import com.kuibu.data.global.Constants;
-import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.entity.MateListItem;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.adapter.HotListViewItemAdapter;
 import com.kuibu.module.presenter.ExploreFavoritePresenterImpl;

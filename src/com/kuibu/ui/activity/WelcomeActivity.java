@@ -5,8 +5,9 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
 import android.view.View;
@@ -27,7 +28,7 @@ import com.kuibu.ui.fragment.SixthGuideFragment;
 import com.kuibu.ui.fragment.ThirdGuideFragment;
 import com.viewpagerindicator.CirclePageIndicator;
 
-public class WelcomeActivity extends ActionBarActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
     final float PARALLAX_COEFFICIENT = 1.2f;
     final float DISTANCE_COEFFICIENT = 0.5f;
@@ -135,8 +136,8 @@ public class WelcomeActivity extends ActionBarActivity {
             mPageWidth = dm.widthPixels;
             mTotalScrollWidth = mPageWidth * mAdapter.getCount();
 
-            mGuideStartBackgroundColor = getResources().getColor(R.color.guide_start_background);
-            mGuideEndBackgroundColor = getResources().getColor(R.color.guide_end_background);
+            mGuideStartBackgroundColor = ContextCompat.getColor(WelcomeActivity.this,R.color.guide_start_background);
+            mGuideEndBackgroundColor = ContextCompat.getColor(WelcomeActivity.this,R.color.guide_end_background);
 
             mGuideTips = getResources().getStringArray(R.array.array_guide_tips);
         }
