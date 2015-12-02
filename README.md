@@ -18,7 +18,8 @@ The ultimate function is to making our own handbooks or albums that have publish
 
 ...
 
-#### screenshot
+#### link
+[http://www.wandoujia.com/apps/com.kuibu.module.activity]()
 
 
 
