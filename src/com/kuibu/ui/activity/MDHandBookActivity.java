@@ -10,7 +10,9 @@ import com.kuibu.data.global.Constants;
 import com.kuibu.module.activity.R;
 
 public class MDHandBookActivity extends BaseActivity{
+	
 	private MarkdownView bookView ; 	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

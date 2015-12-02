@@ -2,7 +2,7 @@ package com.kuibu.model.interfaces;
 
 import java.util.Map;
 
-public interface CollectionDetailModel {
+public interface PCollectionDetailModel {
 
 	public void requestContent(Map<String,String> params);
 	

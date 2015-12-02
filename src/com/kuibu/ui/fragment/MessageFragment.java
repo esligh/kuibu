@@ -27,8 +27,8 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.presenter.MessagePresenterImpl;
 import com.kuibu.module.presenter.interfaces.MessagePresenter;
-import com.kuibu.ui.activity.CollectionDetailActivity;
-import com.kuibu.ui.activity.CollectionImageDetailActivity;
+import com.kuibu.ui.activity.WCollectionDetailActivity;
+import com.kuibu.ui.activity.PCollectionDetailActivity;
 import com.kuibu.ui.view.interfaces.MessageView;
 
 public class MessageFragment extends BaseFragment implements MessageView{
@@ -78,9 +78,9 @@ public class MessageFragment extends BaseFragment implements MessageView{
 				Intent intent = new Intent();
 				String type = item.get("type");
 				if(StaticValue.EDITOR_VALUE.COLLECTION_IMAGE.equals(type)){
-					intent.setClass(getActivity(), CollectionImageDetailActivity.class);
+					intent.setClass(getActivity(), PCollectionDetailActivity.class);
 				}else{
-					intent.setClass(getActivity(), CollectionDetailActivity.class);
+					intent.setClass(getActivity(), WCollectionDetailActivity.class);
 				}
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,item.get("cid"));
 				startActivity(intent);

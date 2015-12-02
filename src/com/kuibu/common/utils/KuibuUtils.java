@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
+import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.net.PublicRequestor;
 import com.kuibu.ui.activity.ReportActivity;
@@ -127,33 +129,38 @@ public class KuibuUtils {
 		return label ; 
 	}
 	
-	public static void showReportView(final Context context , final Map<String,String> params)
+	@SuppressWarnings("deprecation")
+	public static void showReportView(final Context context, final int requestCode, final Map<String,String> params)
 	{
-		AlertDialog.Builder builder = new Builder(context);
+		AlertDialog.Builder builder = null;
+		boolean isDarkTheme = PreferencesUtils.getBooleanByDefault(context,
+				StaticValue.PrefKey.DARK_THEME_KEY, false);
+		if(isDarkTheme){
+			builder = new Builder(context,AlertDialog.THEME_HOLO_DARK);
+		}else{
+			builder = new Builder(context,AlertDialog.THEME_HOLO_LIGHT);
+		}		
 		builder.setTitle(getString(R.string.report_reason));
 		builder.setItems(context.getResources().getStringArray(R.array.report_comment), 
-				new OnClickListener(){
-					@Override
-					public void onClick(
-							DialogInterface dialog,
-							int position) {						
-						String[] items = context.getResources().getStringArray(
-								R.array.report_comment);
-						
-						if(items != null && items.length > position)
-							params.put("reason",items[position]);
-						
-						switch(position){
-							case 0:case 1:case 2:case 3:case 4:
-								PublicRequestor.sendReport(params);
-								break;
-							case 5:
-								Intent intent = new Intent(context,ReportActivity.class);
-								intent.putExtra("defendant_id", params.get("defendant_id"));
-								context.startActivity(intent);
-								break;
-						}
-					}									
+			new OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog,int position) {						
+					String[] items = context.getResources().getStringArray(
+							R.array.report_comment);
+					if(items != null && items.length > position)
+						params.put("reason",items[position]);
+					
+					switch(position){
+						case 0:case 1:case 2:case 3:case 4:
+							PublicRequestor.sendReport(params);
+							break;
+						case 5:
+							Intent intent = new Intent(context,ReportActivity.class);
+							intent.putExtra("defendant_id", params.get("defendant_id"));
+							((Activity)context).startActivityForResult(intent,requestCode);								
+							break;
+				}
+			}									
 		});
 		builder.show();
 	}

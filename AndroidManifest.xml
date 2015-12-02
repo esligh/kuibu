@@ -87,7 +87,7 @@
         </activity>
         
         <activity
-            android:name="com.kuibu.ui.activity.CollectionDetailActivity"
+            android:name="com.kuibu.ui.activity.WCollectionDetailActivity"
             android:hardwareAccelerated="true"
           	android:theme="@style/Theme.TranslucentActionBar.ActionBar.Overlay"
             android:label="@string/app_name" 
@@ -117,7 +117,7 @@
        	    android:name="com.kuibu.ui.activity.PCollectionCreateActivity">      	    	    
        	</activity>
        	<activity
-       	    android:name="com.kuibu.ui.activity.CollectionImageDetailActivity"
+       	    android:name="com.kuibu.ui.activity.PCollectionDetailActivity"
        	    android:screenOrientation="portrait"
             android:configChanges="keyboardHidden|orientation">      	    	    
        	</activity>

@@ -11,6 +11,7 @@ import com.kuibu.module.activity.R;
 import com.kuibu.ui.fragment.FavoriteBoxFragment;
 
 public class FavoriteBoxActivity extends BaseActivity {
+	
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub

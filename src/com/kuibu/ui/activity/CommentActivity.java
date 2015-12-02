@@ -11,7 +11,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,14 +73,7 @@ public class CommentActivity extends BaseActivity implements
 			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 				// TODO Auto-generated method stub
 				mPresenter.getCommentList();
-				String label = DateUtils.formatDateTime(getApplicationContext(), System
-						.currentTimeMillis(),
-						DateUtils.FORMAT_SHOW_TIME
-								| DateUtils.FORMAT_SHOW_DATE
-								| DateUtils.FORMAT_ABBREV_ALL);
-
-				refreshView.getLoadingLayoutProxy()
-						.setLastUpdatedLabel(label);
+				
 			}
 		});
 		editContent = (EditText) findViewById(R.id.edit_comment);
@@ -151,35 +143,34 @@ public class CommentActivity extends BaseActivity implements
 		} else {
 			// context
 			builder.setItems(getResources().getStringArray(R.array.comment_menu_item0),
-					new OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int position) {
-							switch (position) {
-							case 0: // reply
-								if (Session.getSession().isLogin()) {
-									editContent.setHint(new StringBuffer(getString(R.string.reply))
-											.append(" ").append(mPresenter.getCurrentItem().getUserName()));
-									cancelReply.setVisible(true);
-									Map<String, String> tag = new HashMap<String, String>();
-									tag.put("receiver_id", mPresenter.getCurrentItem().getCreateBy());
-									tag.put("receiver_name", mPresenter.getCurrentItem().getUserName());
-									editContent.setTag(tag);
-								} else {
-									Toast.makeText(CommentActivity.this,
-											getString(R.string.need_login), Toast.LENGTH_SHORT)
-											.show();
-								}
-								break;
-							case 1:// report
-								Map<String,String> params = new HashMap<String,String>();
-								params.put("accuser_id", Session.getSession().getuId());
-								params.put("defendant_id", mPresenter.getCurrentItem().getCreateBy());
-								KuibuUtils.showReportView(CommentActivity.this, params);
-								break;
+				new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int position) {
+						switch (position) {
+						case 0: // reply
+							if (Session.getSession().isLogin()) {
+								editContent.setHint(new StringBuffer(getString(R.string.reply))
+										.append(" ").append(mPresenter.getCurrentItem().getUserName()));
+								cancelReply.setVisible(true);
+								Map<String, String> tag = new HashMap<String, String>();
+								tag.put("receiver_id", mPresenter.getCurrentItem().getCreateBy());
+								tag.put("receiver_name", mPresenter.getCurrentItem().getUserName());
+								editContent.setTag(tag);
+							} else {
+								Toast.makeText(CommentActivity.this,
+										getString(R.string.need_login), Toast.LENGTH_SHORT)
+										.show();
 							}
+							break;
+						case 1:// report
+							Map<String,String> params = new HashMap<String,String>();
+							params.put("accuser_id", Session.getSession().getuId());
+							params.put("defendant_id", mPresenter.getCurrentItem().getCreateBy());
+							KuibuUtils.showReportView(CommentActivity.this,0,params);
+							break;
 						}
-					});
-
+					}
+				});
 		}
 		builder.show();
 	}

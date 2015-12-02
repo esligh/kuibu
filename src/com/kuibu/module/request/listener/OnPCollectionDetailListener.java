@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 import com.android.volley.VolleyError;
 
-public interface OnCollectionDetailListener {
+public interface OnPCollectionDetailListener {
 	
 	public void onLoadContentResponse(JSONObject response);
 	
@@ -16,5 +16,4 @@ public interface OnCollectionDetailListener {
 	
 	public void onVolleyError(VolleyError error);
 	
-
 }

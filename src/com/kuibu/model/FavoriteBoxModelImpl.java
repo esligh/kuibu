@@ -41,6 +41,7 @@ public class FavoriteBoxModelImpl implements FavoriteBoxModel{
 				VolleyLog.e("Error: ", error.getMessage());
 				VolleyLog.e("Error:", error.getCause());
 				error.printStackTrace();
+				mListener.onVolleyError(error);
 			}
 		});
 		KuibuApplication.getInstance().addToRequestQueue(req,this);		

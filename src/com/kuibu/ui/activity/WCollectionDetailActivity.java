@@ -53,14 +53,14 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.module.activity.R;
 import com.kuibu.module.iterfaces.OnPageLoadFinished;
 import com.kuibu.module.iterfaces.ResponseListener;
-import com.kuibu.module.presenter.CollectionDetailPresenterImpl;
-import com.kuibu.module.presenter.interfaces.CollectionDetailPresenter;
-import com.kuibu.ui.view.interfaces.CollectionDetailView;
+import com.kuibu.module.presenter.WCollectionDetailPresenterImpl;
+import com.kuibu.module.presenter.interfaces.WCollectionDetailPresenter;
+import com.kuibu.ui.view.interfaces.WCollectionDetailView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 
-public class CollectionDetailActivity extends AppCompatActivity 
-		implements OnPageLoadFinished , CollectionDetailView{
+public class WCollectionDetailActivity extends AppCompatActivity 
+		implements OnPageLoadFinished , WCollectionDetailView{
 	//手指在屏幕滑动，X轴最小变化值
 	private static final int FLING_MIN_DISTANCE_X = 200;
 	//手指在屏幕滑动，Y轴最小变化值
@@ -80,7 +80,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 	private LinearLayout webViewContainer ;
 	private ImageView mHeaderImage ; 
 	private boolean isDarkTheme ; 	 
-	private CollectionDetailPresenter mPresenter ; 
+	private WCollectionDetailPresenter mPresenter ; 
 	private DownloadWebImgTask downLoadTask ; 
 	private int curAlpha;
 
@@ -111,7 +111,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 				if(Session.getSession().isLogin()){
 					mPresenter.doVote(StaticValue.USER_ACTION.ACTION_VOTE_COLLECTION, mPresenter.isVoted());
 				}else{
-					Toast.makeText(CollectionDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
+					Toast.makeText(WCollectionDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 				}
 			}
 		});
@@ -119,7 +119,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 		commentBtn.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(CollectionDetailActivity.this,CommentActivity.class);
+				Intent intent = new Intent(WCollectionDetailActivity.this,CommentActivity.class);
 				intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, mPresenter.getCid());
 				intent.putExtra("create_by", mPresenter.getCreateBy());
 				intent.putExtra("commont_count", mPresenter.getCommentCount());
@@ -147,7 +147,7 @@ public class CollectionDetailActivity extends AppCompatActivity
         scrollView.setOnScrollChangedListener(mOnScrollChangedListener);      
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setUpWebViewDefaults();
-        mPresenter = new CollectionDetailPresenterImpl(this);
+        mPresenter = new WCollectionDetailPresenterImpl(this);
            
    /**
     * 缓存content需要考虑更多的同步问题，比如点赞，评论的数目更新问题*/
@@ -185,7 +185,7 @@ public class CollectionDetailActivity extends AppCompatActivity
 				super.onPageFinished(view, url);
 				String urlStrArray[] = new String[mPresenter.getImageList().size()];
 				mPresenter.getImageList().toArray(urlStrArray);
-				if(PreferencesUtils.getBooleanByDefault(CollectionDetailActivity.this, 
+				if(PreferencesUtils.getBooleanByDefault(WCollectionDetailActivity.this, 
 						StaticValue.PrefKey.NO_PICTRUE_KEY, false)){//无图
 					
 				}else{
@@ -348,25 +348,25 @@ public class CollectionDetailActivity extends AppCompatActivity
 			case R.id.menu_item_fav_action_bar:
 				if(Session.getSession().isLogin()){
 					mActionBarBackgroundDrawable.setAlpha(ALPHA_MAX);					
-					Intent intent = new Intent(CollectionDetailActivity.this,CollectFavoriteBoxActivity.class);
+					Intent intent = new Intent(WCollectionDetailActivity.this,CollectFavoriteBoxActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, mPresenter.getCid());
 					intent.putExtra(StaticValue.COLLECTION.IS_COLLECTED, mPresenter.isInfavorite());
 					startActivityForResult(intent,StaticValue.RequestCode.FAVORITE_BOX_REQCODE);
 					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
 				}else{
-					Toast.makeText(CollectionDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
+					Toast.makeText(WCollectionDetailActivity.this, getString(R.string.need_login), Toast.LENGTH_SHORT).show();
 				}	
 				break;
 			case R.id.menu_item_report_action_bar:
 				if(!mPresenter.isReport()){
 					mPresenter.doReport();
 				}else{
-					Toast.makeText(CollectionDetailActivity.this, getString(R.string.have_reported),
+					Toast.makeText(WCollectionDetailActivity.this, getString(R.string.have_reported),
 							Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case R.id.menu_item_share_action_bar:				
-				Toast.makeText(CollectionDetailActivity.this, "开发中...", Toast.LENGTH_SHORT).show();
+				Toast.makeText(WCollectionDetailActivity.this, "开发中...", Toast.LENGTH_SHORT).show();
 				break;
 		}
 		

@@ -136,7 +136,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 						int position, long id) {
 					CollectionBean bean = (CollectionBean)viewAdapter.getAdapter().getItem(position);
 					Intent intent = new Intent(FavoriteBoxInfoActivity.this,
-							CollectionImageDetailActivity.class);
+							PCollectionDetailActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, bean.getCid());
 					startActivity(intent);
 					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
@@ -168,7 +168,7 @@ public class FavoriteBoxInfoActivity extends BaseActivity implements
 				public void onItemClick(AdapterView<?> viewAdapter, View view,
 						int position, long id) {
 					Intent intent = new Intent(FavoriteBoxInfoActivity.this,
-							CollectionDetailActivity.class);
+							WCollectionDetailActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, mPresenter.
 							getDateItem(position).getId());	
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN,mPresenter.

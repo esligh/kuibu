@@ -89,9 +89,6 @@ public class StaticValue {
 	{
 		public static final String ARG_SECTION_TAG = "section_tag";
 		public static final String DRAWER_POSITION = "drawer_position";
-		
-		public static final String DETAIL_PAGE_VOLLEY = "detail_page_volley";
-		public static final String HOME_PAGE_VOLLEY= "home_page_volley";
 	}
 	
 	public static class CONTENT_ACTIVITY_INFO{

@@ -15,13 +15,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.kuibu.common.utils.KuibuUtils;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
-import com.kuibu.model.interfaces.CollectionDetailModel;
-import com.kuibu.module.request.listener.OnCollectionDetailListener;
+import com.kuibu.model.interfaces.WCollectionDetailModel;
+import com.kuibu.module.request.listener.OnWCollectionDetailListener;
 
-public class CollectionDetailModelImpl implements CollectionDetailModel{
-	private OnCollectionDetailListener mListener ; 
+public class WCollectionDetailModelImpl implements WCollectionDetailModel{
+	private OnWCollectionDetailListener mListener ; 
 	
-	public CollectionDetailModelImpl(OnCollectionDetailListener l) {
+	public WCollectionDetailModelImpl(OnWCollectionDetailListener l) {
 		// TODO Auto-generated constructor stub
 		this.mListener = l ;
 	}

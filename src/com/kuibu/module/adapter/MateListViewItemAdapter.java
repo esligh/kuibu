@@ -28,8 +28,8 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.entity.MateListItem;
 import com.kuibu.module.activity.R;
 import com.kuibu.ui.activity.AlbumInfoActivity;
-import com.kuibu.ui.activity.CollectionDetailActivity;
-import com.kuibu.ui.activity.CollectionImageDetailActivity;
+import com.kuibu.ui.activity.WCollectionDetailActivity;
+import com.kuibu.ui.activity.PCollectionDetailActivity;
 import com.kuibu.ui.activity.UserInfoActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -441,7 +441,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 				@Override
 				public void onClick(View view) {
 					// TODO Auto-generated method stub
-					Intent intent = new Intent(context,CollectionImageDetailActivity.class);
+					Intent intent = new Intent(context,PCollectionDetailActivity.class);
 					intent.putExtra(StaticValue.EDITOR_VALUE.COLLECTION_ID,
 							datas.get(position).getId()) ;
 					context.startActivity(intent);
@@ -488,7 +488,7 @@ public class MateListViewItemAdapter extends BaseAdapter {
 		switch(type){
 		case MateListItem.ItemType.TEXT_MODE:
 		case MateListItem.ItemType.TEXT_PICS_MODE:
-			intent = new Intent(LayoutInflater.from(context).getContext(),CollectionDetailActivity.class);
+			intent = new Intent(LayoutInflater.from(context).getContext(),WCollectionDetailActivity.class);
 			intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID ,datas.get(position).getId());
 			intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN,
 					datas.get(position).getCisn());

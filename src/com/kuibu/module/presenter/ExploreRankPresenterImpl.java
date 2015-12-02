@@ -20,6 +20,7 @@ import com.kuibu.data.global.StaticValue;
 import com.kuibu.model.ExploreRankModelImpl;
 import com.kuibu.model.entity.MateListItem;
 import com.kuibu.model.interfaces.ExploreRankModel;
+import com.kuibu.module.activity.R;
 import com.kuibu.module.presenter.interfaces.ExploreRankPresenter;
 import com.kuibu.module.request.listener.OnExploreRankListener;
 import com.kuibu.ui.view.interfaces.ExploreRankView;
@@ -87,8 +88,8 @@ public class ExploreRankPresenterImpl implements ExploreRankPresenter,
 		if(mdatas!=null && mdatas.isEmpty()){			
 			mView.setMultiStateView(MultiStateView.ViewState.ERROR);
 		}
-		mView.stopRefresh();		
-		KuibuUtils.showText(Toast.LENGTH_SHORT, Toast.LENGTH_SHORT);
+		mView.stopRefresh();
+		KuibuUtils.showText(R.string.net_error, Toast.LENGTH_SHORT);
 	}	
 
 	private void loadFromArray(JSONArray arr,String action)

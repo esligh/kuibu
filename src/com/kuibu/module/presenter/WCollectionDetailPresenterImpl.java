@@ -16,11 +16,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
@@ -32,27 +27,25 @@ import com.android.volley.VolleyError;
 import com.kuibu.common.utils.AssetsUtils;
 import com.kuibu.common.utils.DataUtils;
 import com.kuibu.common.utils.KuibuUtils;
-import com.kuibu.common.utils.PreferencesUtils;
 import com.kuibu.custom.widget.MultiStateView;
 import com.kuibu.data.global.Constants;
 import com.kuibu.data.global.KuibuApplication;
 import com.kuibu.data.global.Session;
 import com.kuibu.data.global.StaticValue;
-import com.kuibu.model.CollectionDetailModelImpl;
-import com.kuibu.model.interfaces.CollectionDetailModel;
+import com.kuibu.model.WCollectionDetailModelImpl;
+import com.kuibu.model.interfaces.WCollectionDetailModel;
 import com.kuibu.module.activity.R;
-import com.kuibu.module.presenter.interfaces.CollectionDetailPresenter;
-import com.kuibu.module.request.listener.OnCollectionDetailListener;
-import com.kuibu.ui.activity.CollectionDetailActivity;
-import com.kuibu.ui.activity.ReportActivity;
-import com.kuibu.ui.view.interfaces.CollectionDetailView;
+import com.kuibu.module.presenter.interfaces.WCollectionDetailPresenter;
+import com.kuibu.module.request.listener.OnWCollectionDetailListener;
+import com.kuibu.ui.view.interfaces.WCollectionDetailView;
 import com.petebevin.markdown.MarkdownProcessor;
 
-public class CollectionDetailPresenterImpl 
-	implements CollectionDetailPresenter,OnCollectionDetailListener{
+public class WCollectionDetailPresenterImpl 
+	implements WCollectionDetailPresenter,OnWCollectionDetailListener{
 
-	private CollectionDetailModel mModel ; 
-	private CollectionDetailView mView ; 
+	private WCollectionDetailModel mModel ; 
+	private WCollectionDetailView mView ; 
+	private static final int LAZY_DELAY_TIME = 200 ;
 	
 	private Handler mHandler  ; 
 	private String cid ,cisn,createBy;
@@ -65,10 +58,10 @@ public class CollectionDetailPresenterImpl
 	private boolean isSupport = false;
 	
 	@SuppressLint("HandlerLeak")
-	public CollectionDetailPresenterImpl(CollectionDetailView view) {
+	public WCollectionDetailPresenterImpl(WCollectionDetailView view) {
 		// TODO Auto-generated constructor stub
 		this.mView = view ;
-		this.mModel = new CollectionDetailModelImpl(this);
+		this.mModel = new WCollectionDetailModelImpl(this);
 		cid = mView.getDataIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_ID);
         cisn = mView.getDataIntent().getStringExtra(StaticValue.SERMODLE.COLLECTION_CISN);
         
@@ -182,51 +175,15 @@ public class CollectionDetailPresenterImpl
 		mModel.requestUserActions(params);
 	}	
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public void doReport() 
 	{ 
-		AlertDialog.Builder builder =null ; 	
-		boolean isDarkTheme = PreferencesUtils.getBooleanByDefault(mView.getInstance(),
-				StaticValue.PrefKey.DARK_THEME_KEY, false);
-		if(isDarkTheme){
-			builder = new Builder(mView.getInstance(),AlertDialog.THEME_HOLO_DARK);
-		}else{
-			builder = new Builder(mView.getInstance(),AlertDialog.THEME_HOLO_LIGHT);
-		}		
-		
-		builder.setTitle(KuibuUtils.getString(R.string.report_reason));
-		builder.setItems(mView.getInstance().getResources().getStringArray(R.array.report_content), 
-				new android.content.DialogInterface.OnClickListener(){
-					@Override
-					public void onClick(
-							DialogInterface dialog,
-							int position) {
-						Map<String,String> params = new HashMap<String,String>();
-						params.put("accuser_id", Session.getSession().getuId());
-						params.put("defendant_id", createBy);
-						params.put("cid", cid);
-						String[] items = mView.getInstance().getResources().getStringArray(
-								R.array.report_content);
-						
-						if(items!=null && items.length>position)
-							params.put("reason",items[position]);
-						
-						switch(position){
-							case 0:	case 1: case 2: case 3: case 4:
-								mModel.doReport(params);
-								break;
-							case 5:
-								mView.setActionBarAlpha(CollectionDetailActivity.ALPHA_MAX);
-								Intent intent = new Intent(mView.getInstance(),ReportActivity.class);
-								intent.putExtra("defendant", createBy);
-								((Activity)mView.getInstance()).startActivityForResult(intent, 
-										StaticValue.RequestCode.REPORT_COMPLETE);							
-								break;
-						}
-					}									
-		});
-		builder.show();
+		Map<String,String> params = new HashMap<String,String>();
+		params.put("accuser_id", Session.getSession().getuId());
+		params.put("defendant_id", createBy);
+		params.put("cid", cid);
+		KuibuUtils.showReportView(mView.getInstance(),
+				StaticValue.RequestCode.REPORT_COMPLETE, params);
 	}
 
 	private String replaceImgTagFromHTML(String html) {
@@ -370,7 +327,8 @@ public class CollectionDetailPresenterImpl
 			if (StaticValue.RESPONSE_STATUS.OPER_SUCCESS.equals(state)) {
 				bReport = true ;
 				mView.setReportMenuRrawable(R.drawable.ic_action_report_disabled);
-				Toast.makeText(KuibuApplication.getContext(),"感谢您的举报,我们会尽快处理",Toast.LENGTH_SHORT).show();
+				Toast.makeText(KuibuApplication.getContext(),KuibuUtils.getString(
+						R.string.thanks_for_report),Toast.LENGTH_SHORT).show();
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -418,7 +376,7 @@ public class CollectionDetailPresenterImpl
 		// TODO Auto-generated method stub
 		return mDetailImageList;
 	}
-
+	 
 	@Override
 	public void lazyShowTools() {
 		// TODO Auto-generated method stub
@@ -428,7 +386,7 @@ public class CollectionDetailPresenterImpl
 				// TODO Auto-generated method stub
 				mHandler.sendEmptyMessage(messageCode);
 			}
-		}, 200);
+		}, LAZY_DELAY_TIME);
 	}
 
 	@Override

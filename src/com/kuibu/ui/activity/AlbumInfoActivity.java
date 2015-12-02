@@ -348,7 +348,7 @@ public class AlbumInfoActivity extends BaseActivity implements
 						int position, long id) {
 					CollectionBean bean = (CollectionBean)viewAdapter.getAdapter().getItem(position);
 					Intent intent = new Intent(AlbumInfoActivity.this,
-							CollectionImageDetailActivity.class);
+							PCollectionDetailActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, bean.getCid());
 					startActivity(intent);
 					overridePendingTransition(R.anim.anim_slide_in_left,R.anim.anim_slide_out_left);
@@ -364,7 +364,7 @@ public class AlbumInfoActivity extends BaseActivity implements
 					CollectionItemBean item = (CollectionItemBean)viewAdapter.
 							getAdapter().getItem(position);
 					Intent intent = new Intent(AlbumInfoActivity.this,
-							CollectionDetailActivity.class);
+							WCollectionDetailActivity.class);
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_ID, item.getId());
 					intent.putExtra(StaticValue.SERMODLE.COLLECTION_CISN, item.getCisn());
 					startActivity(intent);

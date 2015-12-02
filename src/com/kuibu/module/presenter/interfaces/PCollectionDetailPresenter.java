@@ -1,9 +1,10 @@
 package com.kuibu.module.presenter.interfaces;
 
-import java.util.List;
+import com.kuibu.model.entity.CollectionItemBean;
 
-public interface CollectionDetailPresenter {
 
+public interface PCollectionDetailPresenter {
+	
 	public void loadContent();
 	
 	public void loadActions();
@@ -22,17 +23,10 @@ public interface CollectionDetailPresenter {
 	
 	public void setInFavorite(boolean state);
 	
-	public String getCid();
-	
 	public int getCommentCount();
 	
 	public void setCommonCount(int count);
 	
-	public String getCreateBy();
+	public CollectionItemBean getCollection();
 	
-	public List<String> getImageList();
-	
-	public void lazyShowTools();
-	
-	public void removeCallback();
 }
